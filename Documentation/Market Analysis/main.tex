@@ -1,0 +1,181 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}% http://ctan.org/pkg/amsmath
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{comment}
+\usepackage{float}
+\usepackage{biblatex}
+\usepackage{lscape}
+\usepackage{csquotes}
+\usepackage{multirow}
+\addbibresource{bibliography.bib}
+\usepackage[a4paper,pdftex,bottom=20mm, width=160mm]{geometry} % A4paper margins
+\setlength{\parindent}{0pt} % Tar bort indenteringen på paragrafer 
+\setlength{\parskip}{1em}
+
+
+\title{
+\includegraphics[scale=1.5]{liu_logga.png} \\
+\vspace{2.0cm} \textbf{Axis Communication Market Analysis} \\
+ \endgraf\rule{\textwidth}{.4pt}
+  \large \textbf{TDDC88 - Project - Company 3}\\
+   }
+   
+   
+\author{Emma Strömberg, Adrian Redfors}
+\date{\today}
+
+\section{info till skribent}
+Hej alla som hjälper till att skriva detta dokument! 
+
+Var vänlig att skriv in ditt namn ovan och sedan välja ett concept att skriva om. Varje concept har en kort beskrivning om vad den ska innehålla (detta kan tas bort) och jag tänker mig att varje concept har ungefär dubbelt så mycket text som det stycket. Det vill säga sikta på 100-150 ord. Men gå efter känsla! Vi är inte ute efter 30 sidor!
+
+Deadline för detta dokument är fredag 20 september. Tack snälla för din hjälp!
+
+Områden att skriva om:
+
+ - \textbf{KLAR} Vision and Business idea \textit{Adrian}
+ 
+ - \textbf{KLAR} pest \textit{Adrian}
+ 
+ - \textbf{KLAR} porter's five forces \textit{Adrian}
+ 
+ - swot
+ 
+ 
+- market goals and strategy
+
+ - stp
+ 
+ - nabc
+ 
+ - marketing mix
+
+\begin{document}
+
+\maketitle
+
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+% Introduction to the document and it's content
+% syftet med denna rapport är att stödja requirement speification OCH att kunna prioritera requirements gentemot development team.
+% Börja detta stycke med som info om Axis
+ To maintain its competitive edge and meet the dynamic needs of its customers, the company seeks to develop a cutting-edge software solution that enhances its product offerings and aligns with its strategic growth objectives.
+
+This market analysis aims to provide a comprehensive understanding of the current market environment, competitive dynamics, and customer needs that will influence the development of the proposed software solution. By leveraging strategic frameworks such as PEST analysis, Porter’s Five Forces, SWOT, and an examination of the company’s market goals and segmentation strategies, this analysis will identify key opportunities and challenges within the security sector. The insights gained will guide the software project’s requirement specification, ensuring the solution not only aligns with the company’s vision and market strategy but also delivers substantial value to its target customers.
+
+
+\newpage
+\section{Analysis}
+This chapter delves into a detailed analysis of Axis Communications through eight critical strategic models, offering a comprehensive view of its market positioning and strategic landscape. Together, these models will offer valuable insights to the development of a software solution tailored to enhance the company's competitive advantage and strategic alignment.
+
+
+
+\subsection{Vision and Business Idea}
+
+Axis Communications, a company in the network video surveillance industry, states its vision as \enquote{Innovating for a smarter, safer world} \cite{axis_about}. The company's primary focus is on developing network solutions for security and business optimization. Their product portfolio includes network cameras, video management software, access control devices, and audio systems \cite{axis_about, axis_homepage}. 
+
+Axis identifies three core values: \enquote{Always open}, \enquote{Act as one}, and \enquote{Think big} \cite{axis_sustainability2023}. The company emphasizes sustainability and ethical business practices in its corporate communications \cite{axis_sustainability2023}. 
+
+Axis's strategic goals include maintaining its position in network video solutions, expanding into new markets, and focusing on sustainable growth. The company aims to align with current industry trends such as AI integration, cybersecurity enhancement, and cloud-based solutions \cite{axis_trends2022}.
+
+
+\subsection{PEST Analysis}
+
+\subsubsection{Political}
+\begin{itemize}
+    \item \textbf{Data Privacy Regulations:} Implementation of GDPR (Europe) and CCPA (California) necessitates enhanced data protection measures in surveillance technology \cite{iapp2023}.
+    \item \textbf{Cybersecurity Focus:} Increasing government investments in cybersecurity (69\% of enterprises planned to increase spending in 2022) create opportunities for secure surveillance solutions \cite{aipix2023}.
+\end{itemize}
+
+\subsubsection{Economic}
+\begin{itemize}
+    \item \textbf{Market Growth:} Global Security \& Surveillance market projected to grow from US\$15,840 million in 2022 to US\$28,610 million in 2029, indicating a favorable economic environment \cite{mckinsey2023}.
+\end{itemize}
+
+\subsubsection{Social}
+\begin{itemize}
+    \item \textbf{Privacy Concerns:} Growing public awareness of privacy issues (62\% of Australians consider personal information protection a major concern) influences product design and customer communication \cite{iapp2023}.
+    \item \textbf{Corporate Social Responsibility:} Increasing importance of sustainability in the tech industry, affecting all aspects of business from product design to delivery \cite{axis2022}.
+\end{itemize}
+
+\subsubsection{Technological}
+\begin{itemize}
+    \item \textbf{AI and Video Analytics:} Global video analytics market expected to grow by over 400\% to US\$21,778 million by 2027, presenting opportunities for AI integration \cite{aipix2023}.
+    \item \textbf{Cloud-based Solutions:} Adoption of Video Surveillance as a Service (VSaaS) improving security by reducing on-site vulnerabilities \cite{aipix2023}.
+    \item \textbf{Cybersecurity Challenges:} Zero trust networks becoming default, necessitating features like signed firmware, regular updates, and encrypted data/video \cite{axis2022}.
+\end{itemize}
+
+
+
+\subsection{Porter's Five Forces Analysis}
+
+\begin{table}[h]
+\small
+\begin{tabular}{|p{0.23\textwidth}|p{0.725\textwidth}|}
+\hline
+\textbf{Force} & \textbf{Analysis} \\
+\hline
+Threat of New Entrants \newline (Medium) & 
+High capital requirements and R\&D investment (15\% of annual revenue) create significant barriers \cite{axis_newsroom2023}. However, rapid market growth (CAGR 12.4\% 2023-2030) may attract entrants \cite{grandview2023}. \\
+\hline
+Bargaining Power of Suppliers \newline (Low to Medium) & 
+Axis's size (\$1.6B revenue in 2022) provides leverage. Efficient supply chain management evident in 94\% of products having two-week delivery \cite{axis_newsroom2023}. \\
+\hline
+Bargaining Power of Buyers \newline (Medium) & 
+Diverse buyer range with varying power. Multiple vendors available (e.g., Hikvision, Dahua) \cite{stellar2023}. Axis's brand reputation may offset some buyer power for high-quality solutions. \\
+\hline
+Threat of Substitutes \newline (Low to Medium) & 
+Analog CCTV phasing out. AI and advanced analytics integration reduces substitution threat \cite{grandview2023}. Axis's focus on AI-driven analytics increases value proposition \cite{axis_website}. \\
+\hline
+Rivalry Among Existing Competitors \newline (High) & 
+Highly competitive market with global players like Hikvision, Dahua, Hanwha Techwin \cite{stellar2023, grandview2023}. Rapid market growth (projected \$83.3B by 2028) intensifies competition \cite{marketsandmarkets2023}. \\
+\hline
+\end{tabular}
+\caption{Porter's Five Forces Analysis for Axis Communications}
+\label{tab:porters_five_forces}
+\end{table}
+
+\textbf{Market Context:} The global video surveillance market, valued at \$56.90 billion in 2022, is projected to grow at a CAGR of 12.4\% from 2023 to 2030 \cite{grandview2023}. This growth is driven by increasing security demands, smart city initiatives, and advancements in AI and deep learning technologies.
+
+
+\subsection{SWOT}
+% Write this
+A SWOT analysis (Strengths, Weaknesses, Opportunities, Threats) is important to identify internal strengths and weaknesses of Axis Communications, as well as external opportunities and threats. For instance, strengths could be their brand reputation and global reach, while a weakness could be the complexity of integrating their systems with third-party applications. This analysis helps in setting realistic project goals and understanding where the software can add the most value.
+
+
+\subsection{Market Goals and Strategies}
+% Write this
+Understanding Axis Communications' market goals and strategies is essential to ensure the software aligns with its marketing and growth objectives. Are they looking to penetrate new markets, increase market share in existing segments, or introduce innovative features? This will directly impact the software’s functionalities and the target user experience.
+
+
+\subsection{STP}
+% Write this
+Including STP helps you understand which customer segments Axis Communications is targeting and how they are positioned in those segments. For example, they may target government, retail, and enterprise sectors with different solutions. Knowing this helps in customizing the software features to meet the needs of these specific segments.
+Optional Concepts (If Relevant)
+
+
+\subsection{NABC Framework}
+% Write this
+The NABC (Need, Approach, Benefit, Competition) framework is useful for structuring the value proposition of your software solution, especially if you need to pitch the project or its specific features internally or to stakeholders. It can be included as a part of a proposal or business case section rather than the core market analysis.
+
+
+\subsection{Marketing Mix}
+% Write this
+The Marketing Mix (Product, Price, Place, Promotion, People) can provide additional depth to your market analysis by considering how the software will be marketed and positioned. This is especially relevant if your project involves creating a customer-facing product that requires strategic marketing and sales alignment. However, this may be less critical in a technical requirements document and more suited for marketing or go-to-market planning.
+
+\newpage
+\section{Conclusion / Summary}
+% A short conclusion or summary of findings
+
+
+\newpage
+\printbibliography
+
+\end{document}
