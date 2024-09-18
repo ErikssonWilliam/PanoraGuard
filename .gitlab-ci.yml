@@ -1,0 +1,58 @@
+---
+stages:
+  - deploy
+
+variables:
+  LIU_COURSE_CODE: tddc88
+  LIU_COURSE_TERM: ht24
+  LIU_GROUP_NAME: company3
+  LIU_PROJECT_HOST: ${LIU_COURSE_CODE}-${LIU_GROUP_NAME}-${LIU_COURSE_TERM}.kubernetes-public.it.liu.se
+  POD_NAMESPACE: tddc88-ht24-company3
+
+retrieve kubeconfig:
+  stage: deploy
+  when: manual
+  image: bitnami/kubectl
+  before_script:
+    - kubectl config use-context tddc88-ht24/infrastructure:tddc88-ht24
+  script:
+    - TOKEN_DATA=$(kubectl get secret admin-user-token -o json)
+    - CA=$(echo "$TOKEN_DATA" | jq '.data."ca.crt"' -r | base64 -d)
+    - TOKEN=$(echo "$TOKEN_DATA" | jq '.data.token' -r | base64 -d)
+    - |
+      cat << EOF # Store this generated kubeconfig as .kube/config
+      ---
+      apiVersion: v1
+      clusters:
+      - cluster:
+          server: https://tddc88-ht24.course.kubernetes.it.liu.se/
+          certificate-authority-data: $(echo "$CA" | base64 -w0)
+        name: tddc88
+      contexts:
+      - context:
+          cluster: 
+          namespace: $POD_NAMESPACE
+          user: tddc88
+        name: tddc88
+      current-context: tddc88
+      kind: Config
+      preferences: {}
+      users:
+      - name: tddc88
+        user:
+          token: $TOKEN
+      EOF
+
+status:
+  stage: deploy
+  image: bitnami/kubectl
+  before_script:
+    - kubectl version --output=yaml
+    - kubectl config view
+    - kubectl config get-contexts
+    - kubectl config use-context tddc88-ht24/infrastructure:tddc88-ht24
+  script:
+    - kubectl config get-contexts
+    - kubectl get pods
+  variables:
+    GIT_STRATEGY: none
