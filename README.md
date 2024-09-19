@@ -28,7 +28,7 @@ Written by Fredrik Kämmerling, Project Manager, Company 3
 14. Paste the SSH key into the big text box and press **Add Key**.
 
 ### Open Git Bash:
-15. Right-click anywhere on your desktop or in a folder where you want to save the repository.
+15. Right-click in a folder where you want to save the repository.
 16. Select **Show more options**.
 17. Click **Open Git Bash here**.
 
