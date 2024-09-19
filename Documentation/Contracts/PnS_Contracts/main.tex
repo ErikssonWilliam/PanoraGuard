@@ -1,0 +1,225 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{array}
+
+% Disable paragraph indentation globally
+\setlength{\parindent}{0pt}
+
+% Define the header for the first page
+\fancypagestyle{firstpage}{
+    \fancyhf{} % Clear header/footer
+    \fancyhead[L]{\includegraphics[height=3cm]{Liu.jpg}} % Adjust this path for your logo file
+    \fancyhead[C]{}
+    \fancyhead[R]{\colorbox{blue}{\parbox{7.5cm}{\raggedleft \color{white} \textbf{Company 3}}}}
+    \renewcommand{\headrulewidth}{1pt} % No line under the header
+}
+
+\pagestyle{empty} % Disable header on all other pages
+
+% First page formatting
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{\parskip}{\parskip}
+
+\begin{document}
+
+% Apply the header to the first page
+\thispagestyle{firstpage}
+
+\vspace*{3cm} % Adjust spacing to match where you want the title
+
+\begin{center}
+    \textbf{\LARGE Employment Contract}
+\end{center}
+
+\vspace{1em}
+This group contract is made and signed on \underline{\makebox[3cm]{2024-09-18}\hspace{3cm}} [date] between the Product and Sales (P\&S) Line Manager and the members of the Product and Sales Department. The contract is valid until the course is completed, in December 2024. The purpose of this contract is to define the expectations, responsibilities, and consequences for employees to ensure successful collaboration and project completion.
+
+\vspace{1em}
+
+\noindent\textbf{Product and Sales Line Manager} \hfill 
+% comment out other roles than yours
+\textbf{Project Manager} \\
+%\textbf{Lead Analyst} \\
+%\textbf{Deployment Manager} \\
+%\textbf{Technical Writer} \\
+
+% enter your information on every second line below 
+\noindent Name: \underline{\makebox[6cm]{Emma Strömberg}} \hfill Name: \underline{\makebox[6cm]{}} \\
+Phone: \underline{\makebox[6cm]{+46 722 13 01 08}} \hfill Phone: \underline{\makebox[6cm]{+46 7}} \\
+Email: \underline{\makebox[6cm]{emmst476@student.liu.se}} \hfill Email: \underline{\makebox[6cm]{@student.liu.se}} 
+
+
+\vspace{2em}
+
+\section*{1. Roles and Responsibilities}
+\vspace{0.5em} 
+
+\textbf{Product and Sales Line Manager:} 
+The Line Manager will ensure competence development and good working environment, ensures team cohesion, assigns tasks within the department, and maintains formal communication with the project manager and stakeholders, such as bookkeeping. 
+
+The Strategic Product Owner will be responsible for market communication and analysis, have the budget responsibility both in long and short term, and decide which features that shall be scheduled when from a customer's perspective.
+
+\vspace{1em} 
+%\noindent\textbf{Project Manager:}
+%The Project Manager is responsible for ensuring that project goals are achieved by effectively planning, organizing, and leading all project activities. They serve as the primary point of communication between the project team and company leadership, providing updates, addressing concerns, and ensuring alignment with organizational objectives.
+
+%The Project Manager must be both a strong motivator and possess high technical competence, as they will inspire the team while also offering expert guidance on complex issues. As the ultimate decision-maker, they hold the final authority on all project-related matters, ensuring the project’s success from inception to completion.
+
+%\noindent\textbf{Lead Analyst:}   
+%Keeps contact with and interviews end customer. Project leader for customer requirements specification, interprets the requirements when needed. Selects tools and methods for elicitation and analysis.
+
+\noindent\textbf{Lead Tester:}
+Keeps contact with and interviews the analysts and developers. Project leader for test planning, execution, and reporting. Ensures test cases are aligned with customer requirements and the system’s functional specifications. Selects appropriate testing methodologies and tools. Oversees the creation of test scripts and coordinates test cycles, ensuring bugs are logged and tracked. Verifies fixes and ensures the overall quality and performance of the delivered product.
+
+%\noindent\textbf{Deployment Manager:}
+%A Deployment Manager ensures smooth software releases by coordinating, planning, and managing the deployment process. Work closely with development, testing, and operations teams to schedule deployments, manage risks, and ensure quality and security standards are met. 
+
+
+%\noindent\textbf{Technical Writer:}
+%enter your role specification here
+
+\vspace{1em} 
+\noindent Each member is responsible for their designated task and contributing equally to the project’s success.
+
+\vspace{1em}
+\section*{2. Attendance and Punctuality}
+\vspace{0.5em} 
+
+\textbf{Meeting Times:}
+\begin{itemize}[leftmargin=2em]
+    \item Weekly Meetings are held with the company on Thursdays 13.15-17.00.
+    \item Company Meetings are limited to 30 minutes and are mandatory to attend.
+    \item All meetings within each function-group is booked within the group.
+\end{itemize}
+
+\vspace{0.5em} 
+
+\noindent\textbf{Lateness:}
+\begin{itemize}[leftmargin=2em]
+    \item Employees are expected to arrive on time. If unable to arrive in time, it is expected to announce this and the new arrival time.
+    \item If a member is more than 10 minutes late without prior notice more than three times, a formal warning will be issued. Continued tardiness may lead to reassignment of tasks or exclusion from meetings.
+\end{itemize}
+
+\vspace{0.5em} 
+\noindent\textbf{Absences:}
+\begin{itemize}[leftmargin=2em]
+    \item If a employee cannot attend a meeting, they must also inform the team at least 24 hours in advance. Failure to do so will result in a warning unless there are extenuating circumstances.
+\end{itemize}
+
+\vspace{1em}
+
+\section*{3. Sick Leave or Overwhelming Situations}
+\vspace{0.5em} 
+
+\textbf{If a member is sick or feeling overwhelmed:}
+\begin{itemize}[leftmargin=2em]
+    \item Notify the P\&S Line Manager as soon as possible.
+    \item Share any current progress so that others may step in if necessary.
+    \item Recovery or mental health breaks are permitted when communicated to P\&S Line Manager and the Lead in question, so that the team can plan accordingly.
+\end{itemize}
+
+\vspace{1em}
+
+\section*{4. Task Assignments and Deadlines}
+\vspace{0.5em} 
+
+\textbf{Task Assignments:}
+\begin{itemize}[leftmargin=2em]
+    \item Each employee will be assigned specific tasks, which must be completed by the agreed-upon deadlines. 
+    % Emma eller Fredrik? eller alls för pns?
+    \item A clear task list with deadlines will be maintained by the P\&S Manager.
+\end{itemize}
+
+\noindent\textbf{Missed Deadlines:}
+\begin{itemize}[leftmargin=2em]
+    \item If unable to complete a task within its deadline, the employee must inform the responsible Lead and/or the P\&S Line Manager as soon as possible.
+    \item If a task is not completed by the deadline without prior notice, the employee must present an explanation and a plan for future completion. Repeated missed deadlines may result in task reassignment.
+\end{itemize}
+
+\vspace{1em}
+
+\section*{5. Communication}
+\vspace{0.5em} 
+
+\textbf{Primary Mode of Communication:} 
+\begin{itemize}[leftmargin=2em]
+    \item Employees will communicate primarily through Microsoft Teams and in English.
+    \item Other forms of communication are permitted if agreed upon by the team.
+\end{itemize}
+
+\noindent\textbf{Response Time:} 
+\begin{itemize}[leftmargin=2em]
+    \item Employees are expected to respond to Team-messages within 12 working hours.
+    \item All employees are expected to react to or answer posts to show that they have read the information
+    \item It is not expected to work on weekends or weekday evenings. Thus, any messages sent outside of working hours cannot expect any replies until the next working day. 
+    \item Announced absence excuses the expectation to respond within 12 working hours. 
+\end{itemize}
+
+\noindent\textbf{Time Report:} 
+\begin{itemize}[leftmargin=2em]
+    \item Each employee is responsible for continuously updating the Time Report with the number of hours worked each day, what tasks have been worked on, and with what other employees the work has been completed with. 
+    \item Every Friday at 18.00 the Time Report is required to be up to date.
+\end{itemize}
+
+\vspace{1em}
+
+\section*{6. Conflict Resolution}
+\vspace{0.5em} 
+
+Any conflicts between employees should be addressed in the following way:
+\begin{enumerate}[label=\arabic*.]
+    \item Attempt to resolve the issue through direct communication.
+    \item If the issue persists, involve the P\&S Line Manager as a mediator.
+    \item If necessary, escalate to project stakeholders or supervisors.
+\end{enumerate}
+
+\vspace{1em}
+
+\section*{7. Consequences for Unmet Expectations}
+\vspace{0.5em} 
+
+\textbf{Late Submissions or Lack of Participation:}
+\begin{itemize}[leftmargin=2em]
+    \item Formal warning after 2 missed deadlines or lack of participation.
+    \item Task reassignment if the problem persists.
+    \item Possible removal from the team for continual non-participation.
+\end{itemize}
+
+\vspace{0.5em} 
+
+\noindent\textbf{Repeated Absences or Lateness:}
+\begin{itemize}[leftmargin=2em]
+    \item After 3 unexcused absences or tardiness, the P\&S Line Manager will issue a formal warning. Continued issues will result in the team member being placed on probation, with possible task reassignment.
+\end{itemize}
+
+\vspace{1.5em}
+
+\section*{8. Signature}
+We, the undersigned, agree to abide by the terms and conditions set forth in this contract to ensure the smooth functioning and success of the project.
+
+%PnS LM
+\vspace{2em}
+\noindent\includegraphics[height=2cm]{namnteckning (1).jpg}
+
+\noindent\underline{\makebox[8cm]{}} \hfill \underline{\makebox[4cm]{}} \\
+\textbf{Product and Sales Line Manager} \hfill \textbf{Date}
+
+\vspace{4em}
+\noindent\underline{\makebox[8cm]{}} \hfill \underline{\makebox[4cm]{}} \\
+
+%\textbf{Project Manager} \hfill \textbf{Date}
+%\textbf{Lead Analyst} \hfill \textbf{Date}
+\textbf{Lead Tester} \hfill \textbf{Date}
+%\textbf{Deployment Manager} \hfill \textbf{Date}
+%\textbf{Technical Writer} \hfill \textbf{Date}
+
+\vspace{2em}
+\noindent This contract can be revisited and amended by the department if necessary, with the consensus of all parties involved.
+
+\end{document}
