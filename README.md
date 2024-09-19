@@ -1,5 +1,5 @@
 # Getting Started with Git: Installation and Setup Guide
-
+Written by Fredrik Kämmerling, Project Manager, Company 3
 ## Sequence Steps:
 
 ### Download Git:
