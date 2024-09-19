@@ -55,6 +55,7 @@ Written by Fredrik Kämmerling, Project Manager, Company 3
     ```bash
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ```
+If you are propmted to enter a password, the password is the same one you use to log in to your computer.
 3. When it is done installing, type 
     ```bash
     brew install git
