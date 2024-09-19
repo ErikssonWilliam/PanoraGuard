@@ -2,7 +2,7 @@
 Written by Fredrik Kämmerling, Project Manager, Company 3
 ## Sequence Steps for Windows (see for MAC below):
 
-### Download Git:
+### Download Git (If you do not know you have it already):
 1. Go to the [Git website](https://git-scm.com/downloads).
 2. Download the Windows 64-bit installer.
 3. Follow the installation instructions
@@ -49,7 +49,7 @@ Written by Fredrik Kämmerling, Project Manager, Company 3
 
 ## Sequence Steps for MAC:
 
-### Download Git:
+### Download Git (If you do not know you have it already):
 1. Open **Terminal** from **Applications** > **Utilities** or by pressing **Command + Space** and typing "Terminal".
 2. Install Homebrew by typing 
     ```bash
@@ -60,7 +60,7 @@ If you are propmted to enter a password, the password is the same one you use to
     ```bash
     brew install git
     ```
-### Generate SSH Key:
+### Generate SSH Key (If you have not added a key already):
 4. In **Terminal**, type:
       ```bash
       ssh-keygen -t ed25519
