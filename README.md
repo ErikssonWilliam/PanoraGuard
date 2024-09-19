@@ -7,7 +7,7 @@ Written by Fredrik Kämmerling, Project Manager, Company 3
 2. Download the Windows 64-bit installer.
 3. Follow the installation instructions
 
-### Generate SSH Key:
+### Generate SSH Key (If you do not have a SSH key added in GitLab already):
 4. Press the **Windows key** and type `cmd`.
 5. Open **Command Prompt** and type:
       ```bash
