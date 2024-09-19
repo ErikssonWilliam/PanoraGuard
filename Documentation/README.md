@@ -4,12 +4,12 @@ This overview provides a summary of the documents in the project and their statu
 
 ## Document Status
 
-| Document Name       | Description                  | Status       | Version              |
-|---------------------|------------------------------|--------------|-----------------------|
-| `Contracts`      | Template for creating Groupt Contracts | Done       | 1.0         |
-| `Market Analysis`      | Analysis of the market | Created | 1.0         |
-| `Quality Assurance`      | Report ensuring Quality | Created    | 1.0         |
-| `Risk Management`      | Assesing the risks in the project | Created  | 1.0         |
+| Document Name       | Description                            | Status       | Version     |
+|---------------------|----------------------------------------|--------------|-------------|
+| `Contracts`         | Template for creating Groupt Contracts | Done         | 1.0         |
+| `Market Analysis`   | Analysis of the market                 | Created      | 1.0         |
+| `Quality Assurance` | Report ensuring Quality                | Created      | 1.0         |
+| `Risk Management`   | Assesing the risks in the project      | Created      | 1.0         |
 
 ## Document Details
 
