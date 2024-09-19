@@ -7,7 +7,7 @@ This overview provides a summary of the documents in the project and their statu
 | Document Name       | Description                            | Status       | Version     |
 |---------------------|----------------------------------------|--------------|-------------|
 | `Contracts`         | Template for creating Groupt Contracts | Done         | 1.0         |
-| `Market Analysis`   | Analysis of the market                 | Created      | 1.0         |
+| `Market Analysis`   | Analysis of the market                 | Draft        | 1.1         |
 | `Quality Assurance` | Report ensuring Quality                | Created      | 1.0         |
 | `Risk Management`   | Assesing the risks in the project      | Created      | 1.0         |
 
@@ -20,7 +20,7 @@ This overview provides a summary of the documents in the project and their statu
 
 ### `Market Analysis`
 - **Description**: Brief description of what the document is about.
-- **Status**: Under review
+- **Status**: First draft. To be updated in ends.
 - **Comments**: [Any details, notes, or changes]
 
 ### `Quality Assurance`
