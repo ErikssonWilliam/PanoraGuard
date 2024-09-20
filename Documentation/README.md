@@ -10,6 +10,7 @@ This overview provides a summary of the documents in the project and their statu
 | `Market Analysis`   | Analysis of the market                 | Draft        | 1.1         |
 | `Quality Assurance` | Report ensuring Quality                | Created      | 1.0         |
 | `Risk Management`   | Assesing the risks in the project      | Created      | 1.0         |
+| `Requirements`      | Specifies the requirements             | Created      | 1.1         |
 
 ## Document Details
 
@@ -29,6 +30,11 @@ This overview provides a summary of the documents in the project and their statu
 - **Comments**: [Any details, notes, or changes]
 
 ### `Risk Management`
+- **Description**: Brief description of what the document is about.
+- **Status**: In progress
+- **Comments**: [Any details, notes, or changes]
+
+### `Requirements specification`
 - **Description**: Brief description of what the document is about.
 - **Status**: In progress
 - **Comments**: [Any details, notes, or changes]
