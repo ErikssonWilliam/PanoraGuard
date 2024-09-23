@@ -298,14 +298,47 @@ The design within the application will compile with the color scheme and other d
 
 
 \subsection{Software system attributes}
-This part should focus on the systems handling power and attributes. For example how many active users, how easy it is to incorporate and use, code standards and so on. \textbf{Will be most useful if the developers decide this so ask Chioma.} 
 
+\subsubsection{Kubernetes}
+The system must be scalable to accommodate varying workloads by utilizing Kubernetes for container orchestration. Kubernetes will be responsible for automating the deployment, scaling, and operation of application containers. This will allow the system to efficiently manage spikes in user activity, ensuring that the application can support an expected maximum of [X] concurrent users without performance degradation. The specific requirements referring to the use of Kubernetes are:
+\begin{itemize}
+    \item 
+The system should automatically scale based on resource demand (CPU, memory).
+    \item 
+High availability through Kubernetes clusters with redundant nodes.
+    \item 
+The system should maintain availability even under peak user loads or infrastructure failures.
+    \item 
+Monitoring and self-healing capabilities must be enabled via Kubernetes.
+\end{itemize}
+
+\subsubsection{Code Standards}
+The system must adhere to well-defined coding standards to ensure maintainability, scalability, and consistency across the development lifecycle. The code should follow code standards introduced at Linköping University, ensuring that it is clean, readable, and easy to extend. Compliance with these standards will also enhance collaboration across teams and minimize technical debt. The specific requirements referring to the code standards are:
+
+\begin{itemize}
+    \item 
+Developers must adhere to established code guidelines. All code should follow consistent naming conventions, indentation, and commenting practices.
+    \item 
+The project must utilize Gitlab as a version control system, adhering to the GitFlow branching strategy to ensure organized collaboration and version management.
+    \item 
+Unit tests, integration tests, and code coverage thresholds (e.g., 80 percentage) must be implemented to verify the correctness of the system and prevent regressions during updates.
+\end{itemize}
+
+\subsubsection{Language Limitation}
+The system must be developed using specific programming languages and technologies due to project requirements and platform constraints, C is required for ACAP development. The choice of languages is required to ensure compatibility with target platforms and shall allow a smooth user experience. The specific requirements referring to the language limitation:
+
+\begin{itemize}
+    \item 
+All components interacting directly with Axis devices must be written in C, as this is the supported language for ACAP development.
+    \item 
+Depending on future system requirements, frameworks such as React or Angular may be considered for front-end development to improve development efficiency and ensure scalability.
+\end{itemize}
 
 \newpage
 ¨% Here you'll find additional relevant info about the project
 
 
-\newpage
+
 \printbibliography
 
 \end{document}
