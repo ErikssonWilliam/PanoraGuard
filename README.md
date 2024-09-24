@@ -123,7 +123,8 @@ Written by Jonathan Hermansson and Emil Näslund Löthmark, Developers, Company 
 We will use **Git Flow** as our integration model. The key branches in this workflow are:
 
 - **Main Branch**: Production-ready code.
-- **Development Branch**: Integration branch for features and testing.
+- **Testing Branch**: Code ready for testing.
+- **Development Branch**: Integration branch for features.
 
 New branches should always be created from the `development` branch, and once complete, merged back into it. Testers should use the `development` branch to test before any changes are merged into the `main` branch.
 
@@ -131,12 +132,16 @@ New branches should always be created from the `development` branch, and once co
 
 To clone the repository, use one of the following commands:
 
-```bash
-- Via HTTPS: `git clone https://gitlab.liu.se/tddc88-ht24/company3.git`
-```
+- Via HTTPS:
 
 ```bash
-- Via SSH: `git clone git@gitlab.liu.se:tddc88-ht24/company3.git`
+git clone https://gitlab.liu.se/tddc88-ht24/company3.git
+```
+
+Via SSH:
+
+```bash
+git clone git@gitlab.liu.se:tddc88-ht24/company3.git
 ```
 
 This will create a local copy of the remote repository.
@@ -148,7 +153,7 @@ This will create a local copy of the remote repository.
 To check which branch you're on, use:
 
 ```bash
-- `git branch`
+git branch
 ```
 
 The active branch will have a star `*` beside it. Use this and make sure you are on the `development` branch before proceeding to the next step.
@@ -160,10 +165,12 @@ No one should push changes directly to `main`. Instead, create a new branch for 
 eg.
 
 ```bash
-- `git checkout -b feature/your-feature-name`
--  `fix/your-fix-name`
--  `docs/docname-update`
+git checkout -b feature/your-feature-name
 ```
+
+Other name examples:
+`fix/your-fix-name`
+`docs/docname-update`
 
 ... and so on
 
@@ -178,13 +185,13 @@ Make your changes to the codebase as necessary.
 After making changes, stage the files you modified:
 
 ```bash
-- `git add file1 file2 …`
+git add file1 file2 …
 ```
 
 - or
 
 ```bash
-- `git add .` (this adds all files in the folder)
+git add . (this adds all files in the folder, avoid using)
 ```
 
 Staging prepares your changes to be committed.
@@ -194,7 +201,7 @@ Staging prepares your changes to be committed.
 Commit the changes with a descriptive message:
 
 ```bash
-- `git commit -m "Implemented change X"`
+git commit -m "Implemented change X"
 ```
 
 Committing saves your changes to the local repository.
@@ -204,7 +211,7 @@ Committing saves your changes to the local repository.
 Before pushing, it’s a good practice to ensure your feature branch is up to date with the latest `development` changes:
 
 ```bash
-- `git pull origin development`
+git pull origin development
 ```
 
 This pulls any new changes from `development` into your feature branch and helps resolve conflicts before merging.
@@ -214,7 +221,7 @@ This pulls any new changes from `development` into your feature branch and helps
 Once your feature branch is up to date and all changes are committed, push your branch to the remote repository:
 
 ```bash
-- `git push origin your-branch-name`
+git push origin your-branch-name
 ```
 
 ### Merge Changes (Done on GitLab)
@@ -232,13 +239,13 @@ This will initiate the review process and integrate your changes into `developme
 After the merge request is approved and merged, delete your local feature branch:
 
 ```bash
-- `git branch -d your-branch-name`
+git branch -d your-branch-name
 ```
 
 If the remote branch still exists (in case the option to delete it wasn't enabled during the merge), you can delete it manually:
 
 ```bash
-- `git push origin --delete your-branch-name`
+git push origin --delete your-branch-name
 ```
 
 ## Git Commands Cheat Sheet
