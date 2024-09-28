@@ -12,3 +12,10 @@ def mock_user_profile():
         "name": "John Doe",
         "email": "johndoe@example.com"
     })
+
+@app.route ('/api/camera', methods=['GET'])
+def mock_camera_data():
+    return jsonify ({
+        "id": 1,
+        "location": "Hallway",
+    })
