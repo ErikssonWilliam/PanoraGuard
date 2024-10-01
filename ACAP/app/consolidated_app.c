@@ -1,19 +1,3 @@
-/**
- * Copyright (C) 2024 Axis Communications AB, Lund, Sweden
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     <http://www.apache.org/licenses/LICENSE-2.0>
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
@@ -40,11 +24,11 @@ static void on_connection_error(mdb_error_t* error, void* user_data) {
 static void on_message(const mdb_message_t* message, void* user_data) {
     const struct timespec* timestamp     = mdb_message_get_timestamp(message);
     const mdb_message_payload_t* payload = mdb_message_get_payload(message);
-    //payload is the data, it follows a JSON schema
-
+    //payload is the data, it follows a JSON schema, see link
+    //https://axiscommunications.github.io/acap-documentation/docs/api/src/api/metadata-broker/html/standard_topics.html
+    
     channel_identifier_t* channel_identifier = (channel_identifier_t*)user_data;
     
-
     syslog(LOG_INFO,
            "message received from topic: %s on source: %s: Monotonic time - "
            "%lld.%.9ld. Data - %.*s",
@@ -54,7 +38,6 @@ static void on_message(const mdb_message_t* message, void* user_data) {
            timestamp->tv_nsec,
            (int)payload->size,
            (char*)payload->data);
-
 }
 
 static void on_done_subscriber_create(const mdb_error_t* error, void* user_data) {
@@ -80,8 +63,7 @@ int main(int argc, char** argv) {
     (void)argv;
     syslog(LOG_INFO, "Subscriber started...");
 
-    // For com.axis.analytics_scene_description.v0.beta source corresponds to the
-    // video channel number.
+    // source corresponds to the video channel number, should be 1
     channel_identifier_t channel_identifier    = {.topic =
                                                       "com.axis.consolidated_track.v1.beta",
                                                   .source = "1"};
