@@ -1,11 +1,3 @@
-/*
-Steps to build ACAP
-docker build --tag <Image Name>  .
-docker create <Image Name>
-docker cp <Image ID>:/opt/app ./ACAP/build
-copy .eap file from the build folder, and install it on the camera
-*/ 
-
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
