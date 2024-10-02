@@ -1,11 +1,12 @@
-from flask import jsonify
-from app import app
+from flask import jsonify, Blueprint
 
-@app.route("/")
+routes = Blueprint("routes", __name__)
+
+@routes.route("/")
 def home():
     return "Hello world"
 
-@app.route('/api/user', methods=['GET'])
+@routes.route('/api/user', methods=['GET'])
 def mock_user_profile():
     return jsonify({
         "id": 1,
@@ -13,7 +14,7 @@ def mock_user_profile():
         "email": "johndoe@example.com"
     })
 
-@app.route ('/api/camera', methods=['GET'])
+@routes.route ('/api/camera', methods=['GET'])
 def mock_camera_data():
     return jsonify ({
         "id": 1,
