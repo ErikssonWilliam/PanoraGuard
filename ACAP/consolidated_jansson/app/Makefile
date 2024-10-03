@@ -1,12 +1,16 @@
-PROG1	= consolidated_app
+PROG1	= consolidated_jansson
 OBJS1	= $(PROG1).c
 PROGS	= $(PROG1)
 DEBUG_DIR = debug
 
-PKGS = mdb
+# Add jansson to the PKGS list
+PKGS = mdb jansson
 
 CFLAGS += $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --cflags $(PKGS))
 LDLIBS += $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --libs $(PKGS))
+
+# If pkg-config doesn't work for jansson, you can add it manually like this:
+# LDLIBS += -ljansson
 
 CFLAGS += \
 					-Wall \

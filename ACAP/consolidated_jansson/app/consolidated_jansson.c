@@ -1,3 +1,16 @@
+/*
+Steps to build ACAP
+docker build --tag <Image Name>  .
+docker create <Image Name>
+docker cp <Image ID>:/opt/app ./build
+copy .eap file from the build folder, and install it on the camera
+
+To change the name of the ACAP:
+1. Change the name of the app in the Makefile
+2. Change the name of the app in the manifest.json
+3. Change the name of the app in the .c file
+*/ 
+
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,6 +21,9 @@
 #include <mdb/connection.h>
 #include <mdb/error.h>
 #include <mdb/subscriber.h>
+
+// Add JSON library for parsing JSON data
+#include <jansson.h> 
 
 typedef struct channel_identifier {
     char* topic;
@@ -24,20 +40,44 @@ static void on_connection_error(mdb_error_t* error, void* user_data) {
 static void on_message(const mdb_message_t* message, void* user_data) {
     const struct timespec* timestamp     = mdb_message_get_timestamp(message);
     const mdb_message_payload_t* payload = mdb_message_get_payload(message);
-    //payload is the data, it follows a JSON schema, see link
-    //https://axiscommunications.github.io/acap-documentation/docs/api/src/api/metadata-broker/html/standard_topics.html
     
     channel_identifier_t* channel_identifier = (channel_identifier_t*)user_data;
     
-    syslog(LOG_INFO,
-           "message received from topic: %s on source: %s: Monotonic time - "
-           "%lld.%.9ld. Data - %.*s",
-           channel_identifier->topic,
-           channel_identifier->source,
-           (long long)timestamp->tv_sec,
-           timestamp->tv_nsec,
-           (int)payload->size,
-           (char*)payload->data);
+    // Parse JSON payload
+    json_error_t error;
+    json_t* root = json_loadb((const char*)payload->data, payload->size, 0, &error);
+    
+    if (!root) {
+        syslog(LOG_ERR, "JSON parsing error: %s", error.text);
+        return;
+    }
+
+    // Extract classes array
+    json_t* classes = json_object_get(root, "classes");
+    if (json_is_array(classes) && json_array_size(classes) > 0) {
+        json_t* first_class = json_array_get(classes, 0);
+        
+        // Extract score and type
+        json_t* score = json_object_get(first_class, "score");
+        json_t* type = json_object_get(first_class, "type");
+        
+        if (json_is_real(score) && json_is_string(type)) {
+            double score_value = json_real_value(score);
+            const char* type_value = json_string_value(type);
+            
+            syslog(LOG_INFO,
+                   "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f",
+                   channel_identifier->topic,
+                   channel_identifier->source,
+                   (long long)timestamp->tv_sec,
+                   timestamp->tv_nsec,
+                   type_value,
+                   score_value);
+        }
+    } 
+    
+    // Clean up
+    json_decref(root);
 }
 
 static void on_done_subscriber_create(const mdb_error_t* error, void* user_data) {
