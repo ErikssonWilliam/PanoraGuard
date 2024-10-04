@@ -1,22 +1,28 @@
-from flask import jsonify, Blueprint
+from flask import Blueprint
 from ..controllers.users_controller import UserController
 
 users_bp = Blueprint("users", __name__)
 
-#implement the commented out lines and remove the current return values when database is running and connected in models
+@users_bp.route('/register', methods=['GET']) # change method to POST and implement registration logic in controller
+def register_user():
+    return UserController.register_user()
 
-@users_bp.route('/', methods=['GET'])
-def get_users():
- #   users = UserController.get_all_users()
- #   return jsonify(users), 200
- return 'getting all users'
+@users_bp.route('/all', methods=['GET'])
+def get_all_users():
+    return UserController.get_all_users()
 
-@users_bp.route('/<string:user_id>', methods=['GET']) #replace string with uuid when implemented
+@users_bp.route('/update/<string:user_id>', methods=['GET']) #change method to PUT and implement update logic in controller
+def update_user(user_id):
+    return UserController.update_user_by_id(user_id)
+
+@users_bp.route('/delete/<string:user_id>', methods=['GET']) #change method to DELETE and implement deletion logic in controller
+def delete_user(user_id):
+    return UserController.delete_user_by_id(user_id)
+
+@users_bp.route('/<string:user_id>', methods=['GET']) # replace string with uuid when implemented
 def get_user(user_id):
- #   user = UserController.get_user_by_id(user_id)
- #   if user:
- #       return jsonify(user), 200
- #   else:
- #       return jsonify({'message': 'User not found'}), 404
- return jsonify({"user_id": str(user_id)})
+    return UserController.get_user_by_id(user_id)
+
+
+ 
     
