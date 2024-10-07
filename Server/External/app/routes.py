@@ -1,4 +1,5 @@
 from flask import jsonify, Blueprint
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime
 from .models import *
 from .mock_data import get_mock_user
@@ -24,3 +25,10 @@ def mock_camera_data():
         "id": 1,
         "location": "Hallway",
     })
+    
+# Skyddad ruta med JWT-token
+@routes.route('/api/protected', methods=['GET'])
+@jwt_required()
+def protected():
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
