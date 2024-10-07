@@ -27,8 +27,8 @@ def create_app():
         db.drop_all()
         # Create all tables defined in the models
         db.create_all()
-        create_mock_users()
-        create_mock_image_snapshot()
+        # Fill tables with mock data
+        create_mock_data()
 
     app.register_blueprint(routes, url_prefix=("/"))
     app.register_blueprint(auth, url_prefix="/")
