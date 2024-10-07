@@ -1,14 +1,22 @@
-from flask import Flask
+from flask import Flask, jsonify
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
 from .routes import routes
 from .database import db
 from flask_sqlalchemy import SQLAlchemy
 from .models import *
+from .auth import auth
 
 def create_app():
     app = Flask(__name__)
 
     # Load config from config.py
     app.config.from_object("config.Config")
+
+    # Configure JWT & Bcrypt
+    app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Byt ut detta mot en stark nyckel
+    bcrypt = Bcrypt(app)
+    jwt = JWTManager(app)
 
     # Initialize the database
     db.init_app(app)
@@ -17,11 +25,7 @@ def create_app():
         # Create all tables defined in the models
         db.create_all()
 
-        # Insert mock data
-        #admin = User(username='admin', password_hash='hashed_password', role=UserRole.ADMIN, email='admin@example.com')
-        #db.session.add(admin)
-        #db.session.commit()
-
     app.register_blueprint(routes, url_prefix=("/"))
-
+    app.register_blueprint(auth, url_prefix="/")
+    
     return app

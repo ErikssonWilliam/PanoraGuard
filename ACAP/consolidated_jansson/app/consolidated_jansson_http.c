@@ -9,8 +9,15 @@
 #include <mdb/error.h>
 #include <mdb/subscriber.h>
 
+// Code ------------------------------------------------------------
+
 // Add JSON library for parsing JSON data
 #include <jansson.h> 
+
+// Add libcurl for HTTP requests (lightweight HTTP client library)
+#include <curl/curl.h>
+
+// ------------------------------------------------------------------
 
 typedef struct channel_identifier {
     char* topic;
@@ -22,6 +29,42 @@ static void on_connection_error(mdb_error_t* error, void* user_data) {
 
     syslog(LOG_ERR, "Got connection error: %s, Aborting...", error->message);
     abort();
+}
+
+// Code ----------------------------------------------------------------
+
+// Function to handle the response from the HTTP request
+static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
+    (void)contents; // Suppress unused parameter warning
+    (void)userp;    // Suppress unused parameter warning
+    
+    // This callback is needed by curl, but we don't need to do anything with the response
+    return size * nmemb;
+}
+
+// Function to send HTTP POST request to the specified URL with the JSON data
+static void send_http_request(const char* url, const char* data) {
+    
+    // Initialize curl
+    CURL *curl;
+    CURLcode res;
+
+    curl = curl_easy_init();
+    if(curl) {
+
+        // Set the URL and data for the HTTP POST request
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+
+        // Perform the HTTP POST request
+        res = curl_easy_perform(curl);
+        if(res != CURLE_OK)
+            syslog(LOG_ERR, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+
+        // Clean up
+        curl_easy_cleanup(curl);
+    }
 }
 
 // Function to handle incoming object detection data from the Metadata Broker
@@ -68,12 +111,35 @@ static void on_message(const mdb_message_t* message, void* user_data) {
                    timestamp->tv_nsec,
                    type_value,
                    score_value);
+
+            // Prepare data for HTTP request
+            char data[256];
+            snprintf(data, sizeof(data), 
+                     "topic=%s&source=%s&time=%lld.%.9ld&type=%s&score=%.4f",
+                     channel_identifier->topic,
+                     channel_identifier->source,
+                     (long long)timestamp->tv_sec,
+                     timestamp->tv_nsec,
+                     type_value,
+                     score_value);
+
+            // Send HTTP request
+            send_http_request("http://192.168.1.126:5000/camera/data", data); // TODO: Change to the correct IP address
+
+            // The output of the HTTP request will look like this:
+            // topic=com.axis.consolidated_track.v1.beta&source=1&time=1234567890.123456789&type=person&score=0.9876
+
+            // Add error handling for the HTTP request
+            // ...
         }
     } 
     
     // Clean up
     json_decref(root);
 }
+
+// ------------------------------------------------------------------
+
 
 static void on_done_subscriber_create(const mdb_error_t* error, void* user_data) {
     if (error != NULL) {
@@ -96,6 +162,10 @@ static void sig_handler(int signum) {
 int main(int argc, char** argv) {
     (void)argc;
     (void)argv;
+
+    // Initialize libcurl
+    curl_global_init(CURL_GLOBAL_ALL);
+
     syslog(LOG_INFO, "Subscriber started...");
 
     // source corresponds to the video channel number, should be 1
@@ -146,6 +216,9 @@ end:
     mdb_connection_destroy(&connection);
 
     syslog(LOG_INFO, "Subscriber closed...");
+
+    // Cleanup libcurl
+    curl_global_cleanup();
 
     return 0;
 }

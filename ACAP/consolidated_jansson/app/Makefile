@@ -1,4 +1,4 @@
-PROG1	= consolidated_jansson
+PROG1	= consolidated_jansson_http
 OBJS1	= $(PROG1).c
 PROGS	= $(PROG1)
 DEBUG_DIR = debug
@@ -11,6 +11,7 @@ LDLIBS += $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --libs $(PKGS))
 
 # If pkg-config doesn't work for jansson, you can add it manually like this:
 # LDLIBS += -ljansson
+LDLIBS += -lcurl
 
 CFLAGS += \
 					-Wall \
