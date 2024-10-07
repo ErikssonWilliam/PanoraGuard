@@ -6,6 +6,8 @@ from .database import db
 from flask_sqlalchemy import SQLAlchemy
 from .models import *
 from .auth import auth
+from .mock_data import *
+
 
 def create_app():
     app = Flask(__name__)
@@ -14,18 +16,21 @@ def create_app():
     app.config.from_object("config.Config")
 
     # Configure JWT & Bcrypt
-    app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Byt ut detta mot en stark nyckel
+    # Byt ut detta mot en stark nyckel
+    app.config['JWT_SECRET_KEY'] = 'your-secret-key'
     bcrypt = Bcrypt(app)
     jwt = JWTManager(app)
 
     # Initialize the database
     db.init_app(app)
-
     with app.app_context():
+        db.drop_all()
         # Create all tables defined in the models
         db.create_all()
+        create_mock_users()
+        create_mock_image_snapshot()
 
     app.register_blueprint(routes, url_prefix=("/"))
     app.register_blueprint(auth, url_prefix="/")
-    
+
     return app
