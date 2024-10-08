@@ -1,7 +1,6 @@
-from flask import Flask, request
- 
+from flask import Flask, request, jsonify
+
 app = Flask(__name__)
- 
 @app.route('/camera/data', methods=['POST'])
 def receive_camera_data():
     # Access form data
@@ -20,6 +19,30 @@ def receive_camera_data():
  
     # Return a response
     return "Data received successfully", 200
- 
+
+
+@app.route('/camera/dataM', methods=['POST'])
+def receive_camera_dataM():
+    # Access JSON data
+    data = request.get_json()
+
+    # Check if the data is None or missing keys
+    if not data or 'topic' not in data:
+        print("Error: No data received")
+        return jsonify({"error": "No data received"}), 400
+
+    # Extract data from the JSON object
+    topic = data.get('topic')
+    source = data.get('source')
+    timestamp = data.get('timestamp')
+    object_type = data.get('type')
+    score = data.get('score')
+
+    # Process the data as needed
+    print(f"Received data: Topic={topic}, Source={source}, Time={timestamp}, Type={object_type}, Score={score}")
+
+    # Return a response
+    return jsonify({"message": "Data received successfully"}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
