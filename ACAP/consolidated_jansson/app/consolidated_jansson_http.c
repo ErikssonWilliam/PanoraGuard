@@ -51,10 +51,14 @@ static void send_http_request(const char* url, const char* data) {
 
     curl = curl_easy_init();
     if(curl) {
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Accept: application/json");
+        headers = curl_slist_append(headers, "Content-Type: application/json");
 
         // Set the URL and data for the HTTP POST request
         curl_easy_setopt(curl, CURLOPT_URL, url);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
 
         // Perform the HTTP POST request
@@ -67,23 +71,15 @@ static void send_http_request(const char* url, const char* data) {
     }
 }
 
-// Function to handle incoming object detection data from the Metadata Broker
-static void on_message(const mdb_message_t* message, void* user_data) {
-    
-    // Get the timestamp and payload from the message. Payload is the JSON data.
-    const struct timespec* timestamp     = mdb_message_get_timestamp(message);
-    const mdb_message_payload_t* payload = mdb_message_get_payload(message);
-    
-    // Get the channel identifier from the user data
-    channel_identifier_t* channel_identifier = (channel_identifier_t*)user_data;
-    
+// Method to parse the JSON payload and extract "type" and "score" from the first class
+static bool parse_json_payload(const mdb_message_payload_t* payload, char** type_value, double* score_value) {
     // Parse JSON payload into a JSON object: root, using Jansson library
     json_error_t error;
     json_t* root = json_loadb((const char*)payload->data, payload->size, 0, &error);
     
     if (!root) {
         syslog(LOG_ERR, "JSON parsing error: %s", error.text);
-        return;
+        return false; // Error in JSON parsing
     }
 
     // Extract classes array
@@ -99,45 +95,67 @@ static void on_message(const mdb_message_t* message, void* user_data) {
         
         // Check if score and type are valid
         if (json_is_real(score) && json_is_string(type)) {
-            double score_value = json_real_value(score);
-            const char* type_value = json_string_value(type);
-            
-            // Log the detected object information
-            syslog(LOG_INFO,
-                   "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f",
-                   channel_identifier->topic,
-                   channel_identifier->source,
-                   (long long)timestamp->tv_sec,
-                   timestamp->tv_nsec,
-                   type_value,
-                   score_value);
-
-            // Prepare data for HTTP request
-            char data[256];
-            snprintf(data, sizeof(data), 
-                     "topic=%s&source=%s&time=%lld.%.9ld&type=%s&score=%.4f",
-                     channel_identifier->topic,
-                     channel_identifier->source,
-                     (long long)timestamp->tv_sec,
-                     timestamp->tv_nsec,
-                     type_value,
-                     score_value);
-
-            // Send HTTP request
-            send_http_request("http://192.168.1.126:5000/camera/data", data); // TODO: Change to the correct IP address
-
-            // The output of the HTTP request will look like this:
-            // topic=com.axis.consolidated_track.v1.beta&source=1&time=1234567890.123456789&type=person&score=0.9876
-
-            // Add error handling for the HTTP request
-            // ...
+            *score_value = json_real_value(score);
+            *type_value = strdup(json_string_value(type)); // Duplicate string to return
+            json_decref(root); // Clean up
+            return true; // Success
         }
-    } 
-    
-    // Clean up
-    json_decref(root);
+    }
+
+    json_decref(root); // Clean up in case of error
+    return false; // Error if classes array is invalid or fields are missing
 }
 
+
+// Function to handle incoming object detection data from the Metadata Broker
+static void on_message(const mdb_message_t* message, void* user_data) {
+    
+    // Get the timestamp and payload from the message. Payload is the JSON data.
+    const struct timespec* timestamp     = mdb_message_get_timestamp(message);
+    const mdb_message_payload_t* payload = mdb_message_get_payload(message);
+    
+    // Get the channel identifier from the user data
+    channel_identifier_t* channel_identifier = (channel_identifier_t*)user_data;
+    
+     // Variables for parsed data
+    char* type_value = NULL;
+    double score_value = 0.0;
+
+     // Parse the JSON payload
+    if (parse_json_payload(payload, &type_value, &score_value)) {        
+           // Log the detected object information
+        syslog(LOG_INFO,
+                "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f",
+                channel_identifier->topic,
+                channel_identifier->source,
+                (long long)timestamp->tv_sec,
+                timestamp->tv_nsec,
+                type_value,
+                score_value);
+
+        // Prepare data for HTTP request, Create a JSON object
+        json_t* json_data = json_object();
+        json_object_set_new(json_data, "topic", json_string(channel_identifier->topic));
+        json_object_set_new(json_data, "source", json_string(channel_identifier->source));
+        json_object_set_new(json_data, "time_sec", json_integer((long long)timestamp->tv_sec));
+        json_object_set_new(json_data, "time_nsec", json_integer(timestamp->tv_nsec));
+        json_object_set_new(json_data, "type", json_string(type_value));
+        json_object_set_new(json_data, "score", json_real(score_value));
+
+        // Convert the JSON object to a string
+        char* json_str = json_dumps(json_data, JSON_ENCODE_ANY);
+
+        // Send HTTP request
+        send_http_request("http://192.168.1.123:5000/camera/dataM", json_str); // TODO: Change to the correct IP address
+
+        // The output of the HTTP request will look like this:
+        // topic=com.axis.consolidated_track.v1.beta&source=1&time=1234567890.123456789&type=person&score=0.9876
+
+        // Add error handling for the HTTP request
+        // ...
+    }
+} 
+    
 // ------------------------------------------------------------------
 
 
