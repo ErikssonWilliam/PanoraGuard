@@ -77,6 +77,7 @@ static bool parse_json_payload(const mdb_message_payload_t* payload, char** type
     json_error_t error;
     json_t* root = json_loadb((const char*)payload->data, payload->size, 0, &error);
     
+    // Check if the JSON object was created successfully
     if (!root) {
         syslog(LOG_ERR, "JSON parsing error: %s", error.text);
         return false; // Error in JSON parsing
@@ -95,10 +96,45 @@ static bool parse_json_payload(const mdb_message_payload_t* payload, char** type
         
         // Check if score and type are valid
         if (json_is_real(score) && json_is_string(type)) {
+<<<<<<< HEAD
             *score_value = json_real_value(score);
             *type_value = strdup(json_string_value(type)); // Duplicate string to return
             json_decref(root); // Clean up
             return true; // Success
+=======
+            double score_value = json_real_value(score);
+            const char* type_value = json_string_value(type);
+            
+            // Log the detected object information
+            syslog(LOG_INFO,
+                   "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f",
+                   channel_identifier->topic,
+                   channel_identifier->source,
+                   (long long)timestamp->tv_sec,
+                   timestamp->tv_nsec,
+                   type_value,
+                   score_value);
+
+            // Prepare data for HTTP request
+            char data[256];
+            snprintf(data, sizeof(data), 
+                     "topic=%s&source=%s&time=%lld.%.9ld&type=%s&score=%.4f",
+                     channel_identifier->topic,
+                     channel_identifier->source,
+                     (long long)timestamp->tv_sec,
+                     timestamp->tv_nsec,
+                     type_value,
+                     score_value);
+
+            // Send HTTP request
+            send_http_request("http://192.168.1.123:5000/camera/data", data); // TODO: Change to the correct IP address
+
+            // The output of the HTTP request will look like this:
+            // topic=com.axis.consolidated_track.v1.beta&source=1&time=1234567890.123456789&type=person&score=0.9876
+
+            // Add error handling for the HTTP request
+            // ...
+>>>>>>> 0b8417a63635189f0371185b582e6eadf88828d3
         }
     }
 
