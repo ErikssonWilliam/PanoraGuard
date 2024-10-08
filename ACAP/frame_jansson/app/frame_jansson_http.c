@@ -9,9 +9,15 @@
 #include <mdb/error.h>
 #include <mdb/subscriber.h>
 
+// Code ------------------------------------------------------------
+
 // Add JSON library for parsing JSON data
 #include <jansson.h> 
 
+// Add libcurl for HTTP requests (lightweight HTTP client library)
+#include <curl/curl.h>
+
+// ------------------------------------------------------------------
 typedef struct channel_identifier {
     char* topic;
     char* source;
@@ -24,8 +30,41 @@ static void on_connection_error(mdb_error_t* error, void* user_data) {
     abort();
 }
 
-// Function to handle output from the Metadata Broker
-// ...
+// Code ----------------------------------------------------------------
+
+// Function to handle the response from the HTTP request
+static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
+    (void)contents; // Suppress unused parameter warning
+    (void)userp;    // Suppress unused parameter warning
+    
+    // This callback is needed by curl, but we don't need to do anything with the response
+    return size * nmemb;
+}
+
+// Function to send HTTP POST request to the specified URL with the JSON data
+static void send_http_request(const char* url, const char* data) {
+    
+    // Initialize curl
+    CURL *curl;
+    CURLcode res;
+
+    curl = curl_easy_init();
+    if(curl) {
+
+        // Set the URL and data for the HTTP POST request
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+
+        // Perform the HTTP POST request
+        res = curl_easy_perform(curl);
+        if(res != CURLE_OK)
+            syslog(LOG_ERR, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+
+        // Clean up
+        curl_easy_cleanup(curl);
+    }
+}
 
 // Function to handle incoming object detection data from the Metadata Broker
 static void on_message(const mdb_message_t* message, void* user_data) {
@@ -97,23 +136,22 @@ static void on_message(const mdb_message_t* message, void* user_data) {
                        type_value,
                        score_value);
                 
-                // // Log clothing colors if it's a Human
-                // if (strcmp(type_value, "Human") == 0) {
-                //     json_t* upper_colors = json_object_get(class_obj, "upper_clothing_colors");
-                //     json_t* lower_colors = json_object_get(class_obj, "lower_clothing_colors");
-                    
-                //     if (json_is_array(upper_colors) && json_array_size(upper_colors) > 0) {
-                //         json_t* first_upper_color = json_array_get(upper_colors, 0);
-                //         const char* upper_color_name = json_string_value(json_object_get(first_upper_color, "name"));
-                //         syslog(LOG_INFO, "Upper clothing color: %s", upper_color_name);
-                //     }
-                    
-                //     if (json_is_array(lower_colors) && json_array_size(lower_colors) > 0) {
-                //         json_t* first_lower_color = json_array_get(lower_colors, 0);
-                //         const char* lower_color_name = json_string_value(json_object_get(first_lower_color, "name"));
-                //         syslog(LOG_INFO, "Lower clothing color: %s", lower_color_name);
-                //     }
-                // }
+                // Prepare data for HTTP request 
+                char data[256];
+                snprintf(data, sizeof(data), 
+                         "topic=%s&source=%s&time=%lld.%.9ld&type=%s&score=%.4f",
+                         channel_identifier->topic,
+                         channel_identifier->source,
+                         (long long)timestamp->tv_sec,
+                         timestamp->tv_nsec,
+                         type_value,
+                         score_value);
+
+                // Send HTTP request
+                send_http_request("http://192.168.1.123:5000/camera/data", data); // TODO: Change to the correct IP address
+
+                // Add error handling for the HTTP request
+                // ...
             }
         }
     }
@@ -121,6 +159,8 @@ static void on_message(const mdb_message_t* message, void* user_data) {
     // Clean up
     json_decref(root);
 }
+
+// ------------------------------------------------------------------
 
 
 static void on_done_subscriber_create(const mdb_error_t* error, void* user_data) {
