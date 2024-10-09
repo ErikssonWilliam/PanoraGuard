@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
-from .models import User, UserRole
+from ..models import User, UserRole
 from datetime import datetime, timedelta
 
-auth = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth', __name__)
 bcrypt = Bcrypt()
 
 # Dummy users database (kan ersättas med riktig databas)
@@ -19,7 +19,7 @@ users_db = {
     }
 }
 
-@auth.route('/login', methods=['POST'])
+@auth_bp.route('/login', methods=['POST'])
 def login():
     username = request.json.get('username', None)
     password = request.json.get('password', None)
@@ -38,7 +38,7 @@ def login():
     return jsonify(access_token=access_token, refresh_token=refresh_token), 200
 
 #Route för att förnya access tokens med refresh tokens
-@auth.route('/refresh', methods=['POST'])
+@auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)  # Kräver att refresh token skickas
 def refresh():
     current_user = get_jwt_identity()  # Hämtar användaren från refresh token
@@ -47,7 +47,7 @@ def refresh():
     return jsonify(access_token=new_access_token), 200
 
 
-@auth.route('/protected', methods=['GET'])
+@auth_bp.route('/protected', methods=['GET'])
 @jwt_required()  # Kräver giltig access token
 def protected():
     current_user = get_jwt_identity()  # Hämtar den inloggade användarens identitet från access token
