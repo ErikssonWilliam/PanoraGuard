@@ -6,26 +6,33 @@ import uuid
 from sqlalchemy.dialects.postgresql import UUID
 
 # Enums for the different roles and statuses
+
+
 class UserRole(Enum):
     OPERATOR = "operator"
     MANAGER = "manager"
     ADMIN = "admin"
     GUARD = "guard"
 
+
 class AlarmStatus(Enum):
     PENDING = "pending"
     CONFIRMED = "confirmed"
     CANCELED = "canceled"
 
+
 class ActionType(Enum):
     CONFIRM = "confirm"
     CANCEL = "cancel"
+
 
 class ScheduleType(Enum):
     DAILY = "daily"
     WEEKLY = "weekly"
 
 # User model
+
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -36,21 +43,29 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 # ImageSnapshot model
+
+
 class ImageSnapshot(db.Model):
     __tablename__ = 'image_snapshots'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     url = db.Column(db.String, nullable=False)
-    captured_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    captured_at = db.Column(db.DateTime, nullable=False,
+                            default=datetime.utcnow)
 
 # VideoClip model
+
+
 class VideoClip(db.Model):
     __tablename__ = 'video_clips'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     url = db.Column(db.String, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
-    captured_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    captured_at = db.Column(db.DateTime, nullable=False,
+                            default=datetime.utcnow)
 
 # Alarm model
+
+
 class Alarm(db.Model):
     __tablename__ = 'alarms'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -58,13 +73,17 @@ class Alarm(db.Model):
     confidence = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     location = db.Column(db.String, nullable=False)
-    image_snapshot_id = db.Column(UUID(as_uuid=True), db.ForeignKey('image_snapshots.id'))
-    video_clip_id = db.Column(UUID(as_uuid=True), db.ForeignKey('video_clips.id'))
+    image_snapshot_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey('image_snapshots.id'))
+    video_clip_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey('video_clips.id'))
     status = db.Column(db.Enum(AlarmStatus), nullable=False)
     operator_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'))
     actions_taken = db.relationship('AlarmAction', backref='alarm')
 
 # AlarmAction model
+
+
 class AlarmAction(db.Model):
     __tablename__ = 'alarm_actions'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -73,6 +92,8 @@ class AlarmAction(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Schedule model
+
+
 class Schedule(db.Model):
     __tablename__ = 'schedules'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
