@@ -5,7 +5,6 @@ from .routes import routes
 from .database import db
 from flask_sqlalchemy import SQLAlchemy
 from .models import *
-from .auth import auth
 
 def create_app():
     app = Flask(__name__)
@@ -26,6 +25,6 @@ def create_app():
         db.create_all()
 
     app.register_blueprint(routes, url_prefix=("/"))
-    app.register_blueprint(auth, url_prefix="/")
+    # app.register_blueprint(auth, url_prefix="/auth")
     
     return app
