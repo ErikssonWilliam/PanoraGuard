@@ -1,20 +1,12 @@
-<<<<<<< HEAD
-from flask import Flask
-from .routes.users_routes import users_bp
-from .routes.alarms_routes import alarms_bp
-
-app = Flask(__name__)
-app.register_blueprint(users_bp, url_prefix=("/users"))
-app.register_blueprint(alarms_bp, url_prefix=("/alarms"))
-=======
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
-from .routes import routes
+from .alarms.alarms_routes import alarms_bp
+from .users.users_routes import users_bp
 from .database import db
 from flask_sqlalchemy import SQLAlchemy
 from .models import *
-from .auth import auth
+from .auth.auth import auth_bp
 from .mock_data import *
 
 
@@ -39,8 +31,9 @@ def create_app():
         # Fill tables with mock data
         create_mock_data()
 
-    app.register_blueprint(routes, url_prefix=("/"))
-    app.register_blueprint(auth, url_prefix="/")
+
+    app.register_blueprint(users_bp, url_prefix=("/users"))
+    app.register_blueprint(alarms_bp, url_prefix=("/alarms"))
+    app.register_blueprint(auth_bp, url_prefix="/auth")
 
     return app
->>>>>>> cbe9cf8f6d9e6da81134dd97f07ae8fc044c1a4c
