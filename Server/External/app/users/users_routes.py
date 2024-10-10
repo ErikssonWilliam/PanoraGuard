@@ -20,9 +20,9 @@ def update_user(user_id):
 def delete_user(user_id):
     return UserController.delete_user(user_id)
 
-@users_bp.route('/<uuid:user_id>', methods=['GET'])
-def get_user(user_id):
-    return UserController.get_user_by_id(user_id)
+@users_bp.route('/<string:uname>', methods=['GET'])
+def get_user(uname):
+    return UserController.get_user_by_uname(uname)
 
 
  

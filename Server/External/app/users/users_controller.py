@@ -11,10 +11,10 @@ class UserController:
         users = UserService.get_users()
         return jsonify([{"username": u.username, "email": u.email} for u in users]), 200
 
-    def get_user_by_id(user_id):
-        user = UserService.get_user_by_id(user_id)
+    def get_user_by_uname(uname):
+        user = UserService.get_user_by_uname(uname)
         if user:
-            return jsonify(user), 200
+            return jsonify({"username": user.username, "email": user.email}), 200
         return jsonify({'error': 'User not found'}), 404
 
     
