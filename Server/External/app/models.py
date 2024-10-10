@@ -31,8 +31,6 @@ class ScheduleType(Enum):
     WEEKLY = "weekly"
 
 # User model
-
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -43,8 +41,6 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 # ImageSnapshot model
-
-
 class ImageSnapshot(db.Model):
     __tablename__ = 'image_snapshots'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -53,8 +49,6 @@ class ImageSnapshot(db.Model):
                             default=datetime.utcnow)
 
 # VideoClip model
-
-
 class VideoClip(db.Model):
     __tablename__ = 'video_clips'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -64,8 +58,6 @@ class VideoClip(db.Model):
                             default=datetime.utcnow)
 
 # Alarm model
-
-
 class Alarm(db.Model):
     __tablename__ = 'alarms'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -82,8 +74,6 @@ class Alarm(db.Model):
     actions_taken = db.relationship('AlarmAction', backref='alarm')
 
 # AlarmAction model
-
-
 class AlarmAction(db.Model):
     __tablename__ = 'alarm_actions'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -92,8 +82,6 @@ class AlarmAction(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 # Schedule model
-
-
 class Schedule(db.Model):
     __tablename__ = 'schedules'
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

@@ -2,12 +2,12 @@ from flask import jsonify, request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
 from datetime import datetime, timedelta
-from auth_db_mock import users_db
+from .auth_db_mock import users_db
 from .auth_service import AuthService
 
 #will request entered data, tries the calls and returns the results
 
-bcrypt = Bcrypt()
+#bcrypt = Bcrypt()
 
 class AuthController:
 

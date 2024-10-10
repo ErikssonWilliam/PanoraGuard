@@ -5,15 +5,15 @@ from .models import *
 from .mock_data import get_mock_user
 from datetime import timedelta
 
-routes = Blueprint("routes", __name__)
+#routes = Blueprint("routes", __name__)
 bcrypt = Bcrypt()
 
-@routes.route("/")
+#@routes.route("/")
 def home():
     return "Hello world"
 
 # Mock user profile endpoint
-@routes.route('/api/user/<user_id>', methods=['GET'])
+#@routes.route('/api/user/<user_id>', methods=['GET'])
 def mock_user_profile(user_id):
     mock_user = get_mock_user(int(user_id))
     return jsonify({
@@ -23,17 +23,17 @@ def mock_user_profile(user_id):
     })
 
 # JWT-protected route example
-@routes.route('/api/protected', methods=['GET'])
+#@routes.route('/api/protected', methods=['GET'])
 @jwt_required()
 def protected_route():
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
 
 # User registration (for testing)
-@routes.route('/register', methods=['POST'])
+#@routes.route('/register', methods=['POST'])
 
 # User login 
-@routes.route('/login', methods=['POST'])
+#@routes.route('/login', methods=['POST'])
 def login():
     username = request.json.get('username', None)
     password = request.json.get('password', None)

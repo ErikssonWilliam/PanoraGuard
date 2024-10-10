@@ -11,10 +11,6 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     return AuthController.login()
 
-@auth_bp.route('/signup', methods=['POST'])
-def signup():
-    return AuthController.signup()
-
 #Route för att förnya access tokens med refresh tokens
 @auth_bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)  # Kräver att refresh token skickas

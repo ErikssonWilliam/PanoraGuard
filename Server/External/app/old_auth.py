@@ -4,10 +4,10 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from .models import User, UserRole
 from datetime import datetime, timedelta
 
-auth = Blueprint('auth', __name__)
+###uth = Blueprint('auth', __name__)
 bcrypt = Bcrypt()
 
-# Dummy users database (kan ersättas med riktig databas)
+#Dummy users database (kan ersättas med riktig databas)
 users_db = {
     "john_doe": {
         "password_hash": bcrypt.generate_password_hash("password123").decode('utf-8'),

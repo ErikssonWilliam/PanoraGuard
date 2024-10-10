@@ -7,7 +7,7 @@ from .cameras.cameras_routes import cameras_bp
 from .clips.clips_routes import clips_bp
 from .schedules.schedules_routes import schedules_bp
 from .snapshots.snapshots_routes import snapshots_bp
-from .auth.auth import auth_bp
+from .auth.auth_routes import auth_bp
 from .database import db
 from flask_sqlalchemy import SQLAlchemy
 from .models import *
@@ -34,7 +34,6 @@ def create_app():
         db.create_all()
         # Fill tables with mock data
         create_mock_data()
-
 
     app.register_blueprint(users_bp, url_prefix=("/users"))
     app.register_blueprint(alarms_bp, url_prefix=("/alarms"))

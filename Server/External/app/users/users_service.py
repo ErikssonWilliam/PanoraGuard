@@ -1,34 +1,48 @@
 #move logic here
 from app.models import *
 from flask import jsonify
+from ..mock_data import *
+from ..database import db
 
 class UserService:
 
-    def get_users():
-       users = User.query.all() #query database for all users
-       return [{
-           'id': user.id,
-           'username': user.username,
-           'email': user.email,
-           'role': user.role,
-           'created_at': user.created_at
-        } for user in users]
-    
-    def get_user_by_id(user_id): 
-        user = User.query.get(user_id) #query database for user by id
-        if user:
-            return {
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'role': user.role,
-                'created_at': user.created_at
-            }
-        else:
-            return None
-        
-    def update_user_by_id(user_id):
-            return jsonify({"message": "user updated"}) # switch for update logic here
+    session = db.session
 
-    def delete_user_by_id(user_id):
-            return jsonify({"message": "user deleted"}) # switch for deletion logic here
+    def get_users():
+       return User.query.all()
+    
+    def get_user_by_id(self, user_id): 
+        return User.query.get(user_id)
+        
+    def create_user(username, password_hash, role, email):
+       new_user = User(
+            username=username,
+            password_hash=password_hash, #encrypt
+            role=role,
+            email=email
+        )
+       session.add(new_user)
+       session.commit()
+       return new_user
+        
+    def update_user(self, user_id, username=None, email=None, role=None):
+        user = self.get_user_by_id(user_id)
+        if user:
+            if username:
+                user.username = username
+            if email:
+                user.email = email
+            if role:
+                user.role = role
+            self.db_session.commit()
+            return user
+        return None
+
+    def delete_user(self, user_id):
+#        user = self.get_user_by_id(user_id)
+        user = User.query.delete(user_id)
+        if user:
+            self.db_session.delete(user)
+            self.db_session.commit()
+            return True
+        return False

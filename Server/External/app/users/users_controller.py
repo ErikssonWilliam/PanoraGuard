@@ -1,6 +1,6 @@
 from app.models import *
-from flask import jsonify
-from ..auth.auth_db_mock import users_db
+from flask import jsonify, request
+#from ..auth.auth_db_mock import users_db
 from .users_service import UserService
 
 #will request entered data, tries the calls and returns the results
@@ -8,13 +8,34 @@ from .users_service import UserService
 class UserController:
 
     def get_users():
-        return UserService.get_users()
+        users = UserService.get_users()
+        return jsonify([{"username": u.username, "email": u.email} for u in users]), 200
 
-    
     def get_user_by_id(user_id):
         return UserService.get_user_by_id(user_id)
     
-#    def create_user(username, password, role):             #Is this gonna be in auth or user???
+    def create_user():
+        data=request.json
+        new_user=UserService.create_user(
+            username=data['username'],
+            password_hash=data['password_hash'],
+            role=data['role'],
+            email=data['email']
+            )
+        return jsonify({"message": "User created", "user": str(new_user)}), 201
+    
+    def update_user(user_id):
+        return UserService.update_user_by_id(user_id)
+    
+    def delete_user(user_id):
+        deleted = UserService.delete_user(user_id)
+        if deleted:
+            return jsonify({"message": "User deleted"}), 200
+        return jsonify({"message": "User not found"}), 404
+
+    
+
+    #    def create_user(username, password, role):             #Is this gonna be in auth or user???
 #        if not username or not password or not role:
 #            return jsonify({"msg": "Missing fields"}), 400
 #
@@ -28,10 +49,3 @@ class UserController:
 #        }
 #        # add logic to add user to database
 #        return jsonify({"msg": "User created successfully"}), 201
-    
-    def update_user_by_id(user_id):
-        return UserService.update_user_by_id(user_id)
-    
-    def delete_user_by_id(user_id):
-        return UserService.delete_user_by_id(user_id)
-    

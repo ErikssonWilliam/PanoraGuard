@@ -2,9 +2,10 @@ from flask import jsonify
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
 from .auth_db_mock import users_db
-from .auth_controller import bcrypt
 from datetime import datetime, timedelta
 from ..users.users_controller import UserController
+
+bcrypt = Bcrypt()
 
 class AuthService:
     def login(username, password):
