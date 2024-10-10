@@ -1,5 +1,6 @@
 from flask import Blueprint
 from .users_controller import UserController
+from uuid import UUID
 
 users_bp = Blueprint("users", __name__)
 

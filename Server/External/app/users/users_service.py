@@ -11,8 +11,8 @@ class UserService:
     def get_users():
        return User.query.all()
     
-    def get_user_by_id(self, user_id): 
-        return User.query.get(user_id)
+    def get_user_by_id(user_id): 
+        return User.query.filter_by(id=user_id).first()
         
     def create_user(username, password_hash, role, email):
        new_user = User(

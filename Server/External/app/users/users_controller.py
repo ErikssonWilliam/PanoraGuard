@@ -12,7 +12,11 @@ class UserController:
         return jsonify([{"username": u.username, "email": u.email} for u in users]), 200
 
     def get_user_by_id(user_id):
-        return UserService.get_user_by_id(user_id)
+        user = UserService.get_user_by_id(user_id)
+        if user:
+            return jsonify(user), 200
+        return jsonify({'error': 'User not found'}), 404
+
     
     def create_user():
         data=request.json
