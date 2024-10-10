@@ -16,7 +16,6 @@ source venv/bin/activate # macOS/Linux
 python -m pip install -U pip
 pip install -r requirements.txt
 ```
-
 ## Set Up Environment Variables
 Create a `.env` file and add
 ```

@@ -7,7 +7,7 @@ ARG SDK=acap-native-sdk
 FROM ${REPO}/${SDK}:${VERSION}-${ARCH}-ubuntu${UBUNTU_VERSION}
 
 # Install Jansson library
-RUN apt-get update && apt-get install -y libjansson-dev
+RUN apt-get update && apt-get install -y libjansson-dev libcurl4-openssl-dev
 
 # Building the ACAP application
 COPY ./app /opt/app/
