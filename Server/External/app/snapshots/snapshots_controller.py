@@ -11,7 +11,7 @@ class SnapshotController:
     def add_snapshot():
         return SnapshotService.add_snapshot()
     
-    def get_snapshot_by_id(snapshot_id):
+    def get_snapshot_by_id(snapshot_id):        
         return SnapshotService.get_snapshot_by_id(snapshot_id)
     
     def delete_snapshot_by_id(snapshot_id):

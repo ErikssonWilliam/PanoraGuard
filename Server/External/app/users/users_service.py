@@ -35,7 +35,7 @@ class UserService:
             session.commit()
             return user
 
-    def delete_user(user_id):
+    def delete_user(user_id):        
         user = User.query.get(user_id)
         if user:
             session.delete(user)

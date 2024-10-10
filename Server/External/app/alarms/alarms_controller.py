@@ -20,6 +20,9 @@ class AlarmController:
 #        } for alarm in alarms] 
         return jsonify({"message": "get all alarms"})
     
+    def add_alarm():
+        return AlarmService.add_alarm()
+    
     def get_alarm_by_id(alarm_id):
 #        alarm = Alarm.query.get(alarm_id)
 #       if alarm:
@@ -36,3 +39,6 @@ class AlarmController:
 #        else:
 #            return None
         return jsonify({"alarm_id": str(alarm_id)}) 
+    
+    def delete_alarm_by_id(alarm_id):
+        return AlarmService.delete_alarm_by_id(alarm_id)

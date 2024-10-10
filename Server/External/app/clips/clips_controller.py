@@ -2,7 +2,7 @@ from app.models import *
 from flask import jsonify
 from .clips_service import ClipService
 
-#request entered data and tries the calls and returns the results
+#will request entered data, tries the calls and returns the results
 
 class ClipController:
     def get_clips():

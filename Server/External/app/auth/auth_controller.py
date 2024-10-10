@@ -21,17 +21,6 @@ class AuthController:
         except Exception as e:
             return jsonify({"msg": "Invalid username or password"}), 401
 
-    def signup():
-        username = request.json.get('username', None)
-        password = request.json.get('password', None)
-        role = request.json.get('role', None)
-
-        try:
-            new_user = AuthService.signup(username, password, role)
-            return jsonify(message='User created successfully'), 201
-        except Exception as e:
-            return jsonify({"msg": "Invalid username or password"}), 401
-
     def refresh():
         current_user = get_jwt_identity()  # Hämtar användaren från refresh token
         new_access_token = create_access_token(identity=current_user, expires_delta=timedelta(minutes=15))
