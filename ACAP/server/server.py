@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-
+#Hanterar inte JSON-format. Ligger kvar temporärt för att hantera FrameByFrame
 app = Flask(__name__)
 @app.route('/camera/data', methods=['POST'])
 def receive_camera_data():
@@ -20,8 +20,8 @@ def receive_camera_data():
     # Return a response
     return "Data received successfully", 200
 
-
-@app.route('/camera/dataM', methods=['POST'])
+#Hanterar alla JSON request från kameran 
+@app.route('/camera/data_JSON', methods=['POST'])
 def receive_camera_dataM():
     # Access JSON data
     data = request.get_json()
