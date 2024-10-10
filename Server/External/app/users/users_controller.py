@@ -1,40 +1,37 @@
 from app.models import *
 from flask import jsonify
+from ..auth.auth_db_mock import users_db
+from .users_service import UserService
 
-#implement the commented out lines and remove the current mock return values when database is running and connected in models
+#will request entered data, tries the calls and returns the results
 
 class UserController:
-    def get_all_users():
-       users = User.query.all() #query database for all users
-       return [{
-           'id': user.id,
-           'username': user.username,
-           'email': user.email,
-           'role': user.role,
-           'created_at': user.created_at
-        } for user in users]
+
+    def get_users():
+        return UserService.get_users()
 
     
     def get_user_by_id(user_id):
-#        user = User.query.get(user_id) #query database for user by id
-#        if user:
-#            return {
-#                'id': user.id,
-#                'username': user.username,
-#                'email': user.email,
-#                'role': user.role,
-#                'created_at': user.created_at
-#            }
-#        else:
-#            return None
-        return jsonify({"user_id": str(user_id)})
+        return UserService.get_user_by_id(user_id)
     
-    def register_user():
-        return jsonify({"message": "user registered"}) # switch for registration logic here
+#    def create_user(username, password, role):             #Is this gonna be in auth or user???
+#        if not username or not password or not role:
+#            return jsonify({"msg": "Missing fields"}), 400
+#
+#        if username in users_db:
+#            return jsonify({"msg": "User already exists"}), 409
+#
+#        password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+#        users_db[username] = {
+#        "password_hash": password_hash,
+#        "role": role
+#        }
+#        # add logic to add user to database
+#        return jsonify({"msg": "User created successfully"}), 201
     
     def update_user_by_id(user_id):
-        return jsonify({"message": "user updated"}) # switch for update logic here
+        return UserService.update_user_by_id(user_id)
     
     def delete_user_by_id(user_id):
-        return jsonify({"message": "user deleted"}) # switch for deletion logic here
+        return UserService.delete_user_by_id(user_id)
     

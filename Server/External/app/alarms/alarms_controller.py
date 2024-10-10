@@ -1,9 +1,12 @@
 from app.models import *
 from flask import jsonify
+from .alarms_service import AlarmService
+
+#will request entered data, tries the calls and returns the results
 
 class AlarmController:
 
-    def get_all_alarms():
+    def get_alarms():
 #        alarms = Alarm.query.all()
 #        return [{
 #            "id": alarm.id,
