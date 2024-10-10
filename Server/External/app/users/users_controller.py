@@ -11,12 +11,11 @@ class UserController:
         users = UserService.get_users()
         return jsonify([{"username": u.username, "email": u.email} for u in users]), 200
 
-    def get_user_by_uname(uname):
-        user = UserService.get_user_by_uname(uname)
+    def get_user_by_id(user_id):
+        user = UserService.get_user_by_id(user_id)
         if user:
             return jsonify({"username": user.username, "email": user.email}), 200
         return jsonify({'error': 'User not found'}), 404
-
     
     def create_user():
         data=request.json
@@ -29,27 +28,16 @@ class UserController:
         return jsonify({"message": "User created", "user": str(new_user)}), 201
     
     def update_user(user_id):
-        return UserService.update_user_by_id(user_id)
+        data = request.json
+        user = UserService.get_user_by_id(user_id)
+        updated = UserService.update_user(user, data)
+        if updated:
+            return jsonify({"message": "User updated"}), 200
+        return jsonify({"message": "User not found"}), 404
+
     
     def delete_user(user_id):
         deleted = UserService.delete_user(user_id)
         if deleted:
             return jsonify({"message": "User deleted"}), 200
         return jsonify({"message": "User not found"}), 404
-
-    
-
-    #    def create_user(username, password, role):             #Is this gonna be in auth or user???
-#        if not username or not password or not role:
-#            return jsonify({"msg": "Missing fields"}), 400
-#
-#        if username in users_db:
-#            return jsonify({"msg": "User already exists"}), 409
-#
-#        password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-#        users_db[username] = {
-#        "password_hash": password_hash,
-#        "role": role
-#        }
-#        # add logic to add user to database
-#        return jsonify({"msg": "User created successfully"}), 201

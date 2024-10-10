@@ -11,8 +11,8 @@ class UserService:
     def get_users():
        return User.query.all()
     
-    def get_user_by_uname(uname): 
-        return User.query.filter_by(username=uname).first()
+    def get_user_by_id(user_id): 
+        return User.query.filter_by(id=user_id).first()
         
     def create_user(username, password_hash, role, email):
        new_user = User(
@@ -25,24 +25,20 @@ class UserService:
        session.commit()
        return new_user
         
-    def update_user(self, user_id, username=None, email=None, role=None):
-        user = self.get_user_by_id(user_id)
-        if user:
-            if username:
-                user.username = username
-            if email:
-                user.email = email
-            if role:
-                user.role = role
-            self.db_session.commit()
+    def update_user(user, data):
+            if data.get('username'):
+                user.username = data.get('username')
+            if data.get('email'):
+                user.email = data.get('email')
+            if data.get('role'):
+                user.role = data.get('role')
+            session.commit()
             return user
-        return None
 
-    def delete_user(self, user_id):
-#        user = self.get_user_by_id(user_id)
-        user = User.query.delete(user_id)
+    def delete_user(user_id):
+        user = User.query.get(user_id)
         if user:
-            self.db_session.delete(user)
-            self.db_session.commit()
+            session.delete(user)
+            session.commit()
             return True
         return False
