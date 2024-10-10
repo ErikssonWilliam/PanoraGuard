@@ -30,6 +30,7 @@ def create_app():
 
     # Import and register routes
     from .routes import api
+    from .testRoutes import api
 
     app.register_blueprint(api)
 
