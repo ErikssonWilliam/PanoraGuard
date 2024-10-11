@@ -29,11 +29,11 @@ def create_app():
     # Initialize the database
     db.init_app(app)
     with app.app_context():
-        db.drop_all()
+#        db.drop_all()
         # Create all tables defined in the models
         db.create_all()
         # Fill tables with mock data
-        create_mock_data()
+#        create_mock_data()
 
     app.register_blueprint(users_bp, url_prefix=("/users"))
     app.register_blueprint(alarms_bp, url_prefix=("/alarms"))
