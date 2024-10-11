@@ -1,7 +1,7 @@
 from enum import Enum
 from datetime import datetime
 from dataclasses import dataclass
-from .database import db
+from app.extensions import db
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import UUID as UUIDType
@@ -37,6 +37,7 @@ class JWTToken:
     role: UserRole  # User's role
     exp: datetime  # Expiration time
 
+
 ##################################################
 ###### Below is data stored in the database ######
 ##################################################
@@ -46,30 +47,29 @@ class JWTToken:
 # Assumes the URL points to an object stored in a object storage cloud service.
 class ImageSnapshot(db.Model):
     # Class for image snapshot
-    __tablename__ = 'image_snapshots'
+    __tablename__ = "image_snapshots"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     url = db.Column(db.String, nullable=False)
-    captured_at = db.Column(db.DateTime, nullable=False,
-                            default=datetime.utcnow)
+    captured_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
 # Represents a video clip associated with an alarm event.
 # Assumes the URL points to a video object stored in a object storage cloud service.
 class VideoClip(db.Model):
     # Class for image snapshot
-    __tablename__ = 'video_clips'
+    __tablename__ = "video_clips"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     url = db.Column(db.String, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
-    captured_at = db.Column(db.DateTime, nullable=False,
-                            default=datetime.utcnow)
+    captured_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
 
 # Represents a user in the system, such as an operator or manager.
 
 
 class User(db.Model):
     # Class for user
-    __tablename__ = 'users'
+    __tablename__ = "users"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -77,12 +77,21 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    def exposed_fields(self):
+        return {
+            "id": str(self.id),
+            "username": self.username,
+            "email": self.email,
+            "role": self.role.name,
+        }
+
+
 # Represents a camera in the system, which triggers alarms.
 
 
 class Camera(db.Model):
     # Class for camera
-    __tablename__ = 'cameras'
+    __tablename__ = "cameras"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     ip_address = db.Column(db.String(45), nullable=False)
     location = db.Column(db.String(120), nullable=False)
@@ -91,29 +100,33 @@ class Camera(db.Model):
 # The Alarm structure stores metadata about an alarm event and its associations.
 # The operator_id is optional, meaning it will only be populated when an operator responds to the alarm.
 class Alarm(db.Model):
-    __tablename__ = 'alarms'
+    __tablename__ = "alarms"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    camera_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
-        'cameras.id'), nullable=False)
+    camera_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey("cameras.id"), nullable=False
+    )
     confidence_score = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     image_snapshot_id = db.Column(
-        UUID(as_uuid=True), db.ForeignKey('image_snapshots.id'))
-    video_clip_id = db.Column(
-        UUID(as_uuid=True), db.ForeignKey('video_clips.id'))
+        UUID(as_uuid=True), db.ForeignKey("image_snapshots.id")
+    )
+    video_clip_id = db.Column(UUID(as_uuid=True), db.ForeignKey("video_clips.id"))
     status = db.Column(db.Enum(AlarmStatus), nullable=False)
     operator_id = db.Column(
-        UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=True)
+        UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True
+    )
 
 
 class CameraControlAction(db.Model):
     # Class for camera control action
-    __tablename__ = 'camera_control_actions'
+    __tablename__ = "camera_control_actions"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    camera_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
-        'cameras.id'), nullable=False)
+    camera_id = db.Column(
+        UUID(as_uuid=True), db.ForeignKey("cameras.id"), nullable=False
+    )
     initiated_by = db.Column(
-        UUID(as_uuid=True), db.ForeignKey('users.id'), nullable=False)
+        UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=False
+    )
     control_type = db.Column(db.Enum(CameraControlType), nullable=False)
     value = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
