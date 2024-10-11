@@ -1,0 +1,4 @@
+# Document Ownership for Customer Requirements Specification
+
+Document Owner: [Analyst Team]
+# Add section owners below as needed

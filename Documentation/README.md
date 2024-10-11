@@ -38,3 +38,6 @@ This overview provides a summary of the documents in the project and their statu
 - **Description**: Brief description of what the document is about.
 - **Status**: In progress
 - **Comments**: [Any details, notes, or changes]
+  
+## Autogit Program
+A program is being developed to handle the documentation and versioning of the project. During the current stage the program might generate errenous readme.md, this will be rectified shortly. To check out the program, visit [Autogit](https://gitlab.liu.se/adrre341/overleaf-gitlab-pipeline).
