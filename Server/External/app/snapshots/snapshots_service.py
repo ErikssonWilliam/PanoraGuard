@@ -1,4 +1,4 @@
-#logic
+# logic
 from app.models import *
 import base64
 import os
@@ -10,7 +10,6 @@ if not os.path.exists(UPLOAD_FOLDER):
     print("Created folder: " + UPLOAD_FOLDER)
 
 class SnapshotService:
-
     def get_snapshots():
         return #add logic
     
@@ -33,8 +32,8 @@ class SnapshotService:
             raise Exception(f"Failed to save snapshot: {str(e)}")
     
     def get_snapshot_by_id(snapshot_id):
-        return #add logic
-    
+        return  # add logic
+
     def delete_snapshot_by_id(snapshot_id):
         return #add logic
 

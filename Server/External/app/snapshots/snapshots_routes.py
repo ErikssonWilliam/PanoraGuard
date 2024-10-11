@@ -3,6 +3,7 @@ from .snapshots_controller import SnapshotController
 
 snapshots_bp = Blueprint("snapshots", __name__)
 
+
 @snapshots_bp.route("/", methods=["GET"])
 def get_snapshots():
     return SnapshotController.get_snapshots()
