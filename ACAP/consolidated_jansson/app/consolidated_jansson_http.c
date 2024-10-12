@@ -149,7 +149,7 @@ static void on_message(const mdb_message_t* message, void* user_data) {
         char* json_str = json_dumps(json_data, JSON_ENCODE_ANY);
 
         // Send HTTP request
-        send_http_request("http://192.168.1.125:5000/camera/data_JSON", json_str); // TODO: Change to the correct IP address
+        send_http_request("http://192.168.1.110:5000/camera/data_JSON", json_str); // TODO: Change to the correct IP address
 
         // The output of the HTTP request will look like this:
         // topic=com.axis.consolidated_track.v1.beta&source=1&time=1234567890.123456789&type=person&score=0.9876

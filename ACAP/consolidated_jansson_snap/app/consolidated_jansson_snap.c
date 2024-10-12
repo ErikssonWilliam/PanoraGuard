@@ -11,8 +11,6 @@
 #include <jansson.h>  // For JSON handling
 #include <curl/curl.h> // For HTTP requests
 
-// ------------------------------------------------------------------
-
 // Structure to hold channel topic and source info
 typedef struct channel_identifier {
     char* topic;
@@ -25,69 +23,20 @@ static void on_connection_error(mdb_error_t* error, void* user_data) {
     abort();
 }
 
-// ------------------------------------------------------------------
-// Function to handle the response from HTTP requests
+// Code ------------------------------------------------------------------
+
+// Function to handle the response from the HTTP request
 static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
-    (void)contents; // Suppress unused parameter warning
-    (void)userp;    // Suppress unused parameter warning
-    return size * nmemb;
-}
-
-// // Function to send HTTP POST request to the specified URL with the JSON data
-// static void send_http_request(const char* url, const char* data) {
-//     CURL *curl;
-//     CURLcode res;
-
-//     curl = curl_easy_init();
-//     if(curl) {
-//         struct curl_slist *headers = NULL;
-//         headers = curl_slist_append(headers, "Accept: application/json");
-//         headers = curl_slist_append(headers, "Content-Type: application/json");
-
-//         curl_easy_setopt(curl, CURLOPT_URL, url);
-//         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
-//         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-//         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-
-//         res = curl_easy_perform(curl);
-//         if(res != CURLE_OK)
-//             syslog(LOG_ERR, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-
-//         curl_easy_cleanup(curl);
-//     }
-// }
-
-// Method to parse the JSON payload and extract "type" and "score" from the first class
-static bool parse_json_payload(const mdb_message_payload_t* payload, char** type_value, double* score_value) {
-    json_error_t error;
-    json_t* root = json_loadb((const char*)payload->data, payload->size, 0, &error);
-
-    if (!root) {
-        syslog(LOG_ERR, "JSON parsing error: %s", error.text);
-        return false; // Error in JSON parsing
-    }
-
-    json_t* classes = json_object_get(root, "classes");
-    if (json_is_array(classes) && json_array_size(classes) > 0) {
-        json_t* first_class = json_array_get(classes, 0);
-        json_t* score = json_object_get(first_class, "score");
-        json_t* type = json_object_get(first_class, "type");
-
-        if (json_is_real(score) && json_is_string(type)) {
-            *score_value = json_real_value(score);
-            *type_value = strdup(json_string_value(type)); // Duplicate string to return
-            json_decref(root); // Clean up
-            return true; // Success
-        }
-    }
-
-    json_decref(root); // Clean up in case of error
-    return false; // Error if classes array is invalid or fields are missing
+    (void)userp;
+    
+    size_t total_size = size * nmemb;
+    syslog(LOG_INFO, "Response from camera: %.*s", (int)total_size, (char *)contents);
+    return total_size;
 }
 
 // Function to enable the best snapshot feature by sending an HTTP request (using Basic Authentication)
 static void enable_best_snapshot(void) {
-    const char* url = "http://192.168.1.116/config/rest/best-snapshot/v1/enabled"; // Use actual camera IP
+    const char* url = "http://192.168.1.121/config/rest/best-snapshot/v1/enabled"; // Use actual camera IP
     const char* data = "{\"data\":true}"; // JSON payload to enable best snapshot
     CURL *curl;
     CURLcode res;
@@ -107,9 +56,17 @@ static void enable_best_snapshot(void) {
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
+        // Capture the response data
+        char response_data[1024];  // Buffer to hold response
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, response_data);
+
         res = curl_easy_perform(curl);
-        if(res != CURLE_OK)
+        if(res != CURLE_OK) {
             syslog(LOG_ERR, "Failed to enable best snapshot: %s", curl_easy_strerror(res));
+        } else {
+            syslog(LOG_INFO, "Response from camera: %s", response_data);
+        }
 
         curl_easy_cleanup(curl);
     }
@@ -118,7 +75,7 @@ static void enable_best_snapshot(void) {
 // Function to retrieve the best snapshot from the camera (using Basic Authentication)
 static void retrieve_best_snapshot(char* snapshot_data, size_t snapshot_data_size) {
     (void)snapshot_data_size;
-    const char* url = "http://192.168.1.116/config/rest/best-snapshot/v1/snapshot"; // Use actual camera IP
+    const char* url = "http://192.168.1.121/config/rest/best-snapshot/v1/snapshot"; // Use actual camera IP
     CURL *curl;
     CURLcode res;
     curl = curl_easy_init();
@@ -138,70 +95,125 @@ static void retrieve_best_snapshot(char* snapshot_data, size_t snapshot_data_siz
     }
 }
 
-// Function to send metadata to the external server
-static void send_metadata(const char* metadata) {
-    const char* url = "http://192.168.1.113:5000/camera/data_JSON"; // Use your server's metadata endpoint
+// // Function to send snapshot to the external server
+// static void send_snapshot(const char* snapshot_data) {
+//     const char* url = "http://192.168.1.110:5000/camera/data_JSON"; // Use your server's snapshot endpoint
 
+//     CURL *curl;
+//     CURLcode res;
+//     curl = curl_easy_init();
+//     if(curl) {
+//         struct curl_slist *headers = NULL;
+//         headers = curl_slist_append(headers, "Content-Type: application/octet-stream");
+
+//         curl_easy_setopt(curl, CURLOPT_URL, url);
+//         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, snapshot_data);
+//         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+//         res = curl_easy_perform(curl);
+//         if(res != CURLE_OK)
+//             syslog(LOG_ERR, "Failed to send snapshot: %s", curl_easy_strerror(res));
+
+//         curl_slist_free_all(headers);
+//         curl_easy_cleanup(curl);
+//     }
+// }
+
+// Function to send HTTP POST request to the specified URL with the JSON data
+static void send_http_request(const char* url, const char* data) {
+    
+    // Initialize curl
     CURL *curl;
     CURLcode res;
-    curl = curl_easy_init();
-    if(curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, metadata);
 
-        res = curl_easy_perform(curl);
-        if(res != CURLE_OK)
-            syslog(LOG_ERR, "Failed to send metadata: %s", curl_easy_strerror(res));
-
-        curl_easy_cleanup(curl);
-    }
-}
-
-// Function to send snapshot to the external server
-static void send_snapshot(const char* snapshot_data) {
-    const char* url = "http://192.168.1.113:5000/camera/data_JSON"; // Use your server's snapshot endpoint
-
-    CURL *curl;
-    CURLcode res;
     curl = curl_easy_init();
     if(curl) {
         struct curl_slist *headers = NULL;
-        headers = curl_slist_append(headers, "Content-Type: application/octet-stream");
+        headers = curl_slist_append(headers, "Accept: application/json");
+        headers = curl_slist_append(headers, "Content-Type: application/json");
 
+        // Set the URL and data for the HTTP POST request
         curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, snapshot_data);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
 
+        // Perform the HTTP POST request
         res = curl_easy_perform(curl);
         if(res != CURLE_OK)
-            syslog(LOG_ERR, "Failed to send snapshot: %s", curl_easy_strerror(res));
+            syslog(LOG_ERR, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
 
-        curl_slist_free_all(headers);
+        // Clean up
         curl_easy_cleanup(curl);
     }
 }
 
+// Method to parse the JSON payload and extract "type" and "score" from the first class
+static bool parse_json_payload(const mdb_message_payload_t* payload, char** type_value, double* score_value) {
+    // Parse JSON payload into a JSON object: root, using Jansson library
+    json_error_t error;
+    json_t* root = json_loadb((const char*)payload->data, payload->size, 0, &error);
+    
+    // Check if the JSON object was created successfully
+    if (!root) {
+        syslog(LOG_ERR, "JSON parsing error: %s", error.text);
+        return false; // Error in JSON parsing
+    }
+
+    // Extract classes array
+    json_t* classes = json_object_get(root, "classes");
+    if (json_is_array(classes) && json_array_size(classes) > 0) {
+        
+        // Get the first class in the classes array
+        json_t* first_class = json_array_get(classes, 0);
+        
+        // Extract score and type from the first class
+        json_t* score = json_object_get(first_class, "score");
+        json_t* type = json_object_get(first_class, "type");
+        
+        // Check if score and type are valid
+        if (json_is_real(score) && json_is_string(type)) {
+
+            *score_value = json_real_value(score);
+            *type_value = strdup(json_string_value(type)); // Duplicate string to return
+            json_decref(root); // Clean up
+            return true; // Success
+
+        }
+    }
+
+    json_decref(root); // Clean up in case of error
+    return false; // Error if classes array is invalid or fields are missing
+}
+
+
 // Function to handle incoming object detection data from the Metadata Broker
 static void on_message(const mdb_message_t* message, void* user_data) {
-    const struct timespec* timestamp = mdb_message_get_timestamp(message);
+    
+    // Get the timestamp and payload from the message. Payload is the JSON data.
+    const struct timespec* timestamp     = mdb_message_get_timestamp(message);
     const mdb_message_payload_t* payload = mdb_message_get_payload(message);
-
+    
+    // Get the channel identifier from the user data
     channel_identifier_t* channel_identifier = (channel_identifier_t*)user_data;
-
+    
+     // Variables for parsed data
     char* type_value = NULL;
     double score_value = 0.0;
 
-    if (parse_json_payload(payload, &type_value, &score_value)) {
+     // Parse the JSON payload
+    if (parse_json_payload(payload, &type_value, &score_value)) {        
+           // Log the detected object information
         syslog(LOG_INFO,
-               "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f",
-               channel_identifier->topic,
-               channel_identifier->source,
-               (long long)timestamp->tv_sec,
-               timestamp->tv_nsec,
-               type_value,
-               score_value);
+                "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f",
+                channel_identifier->topic,
+                channel_identifier->source,
+                (long long)timestamp->tv_sec,
+                timestamp->tv_nsec,
+                type_value,
+                score_value);
 
-        // Create JSON object for metadata
+        // Prepare data for HTTP request, Create a JSON object
         json_t* json_data = json_object();
         json_object_set_new(json_data, "topic", json_string(channel_identifier->topic));
         json_object_set_new(json_data, "source", json_string(channel_identifier->source));
@@ -210,29 +222,47 @@ static void on_message(const mdb_message_t* message, void* user_data) {
         json_object_set_new(json_data, "type", json_string(type_value));
         json_object_set_new(json_data, "score", json_real(score_value));
 
-        // Convert JSON to string
-        char* metadata_str = json_dumps(json_data, JSON_ENCODE_ANY);
+        // Convert the JSON object to a string
+        char* json_str = json_dumps(json_data, JSON_ENCODE_ANY);
 
-        // Enable best snapshot
+        // Send HTTP request
+        send_http_request("http://192.168.1.110:5000/camera/data_JSON", json_str); // TODO: Change to the correct IP address
+
+        // Enable best snapshot feature
         enable_best_snapshot();
+        syslog(LOG_INFO, "Attempted to enable best snapshot feature");
 
-        // Buffer to hold the snapshot data
-        char snapshot_data[65536]; 
+        // ---------------------------------------------------------------
+
+        // Buffer to store the snapshot data
+        char snapshot_data[1024]; // Adjust the buffer size as needed
+
+        // // TODO:
+        // // Add a delay before retrieving the snapshot
+        // #include <unistd.h> // for sleep --> WIll go at the beginning of this file
+        // sleep(2); // Wait 2 seconds to allow the snapshot to be available --> This is because we get error messages saying 
+        // retrieve_best_snapshot(snapshot_data, sizeof(snapshot_data));
+
+
+        // Retrieve the best snapshot from the camera
         retrieve_best_snapshot(snapshot_data, sizeof(snapshot_data));
 
-        // Log the metadata and snapshot data
-        syslog(LOG_INFO, "Metadata: %s", metadata_str);
-        syslog(LOG_INFO, "Snapshot data: %s", snapshot_data);
+        // Log the retrieved snapshot data
+        syslog(LOG_INFO, "Retrieved best snapshot data: %s", snapshot_data);
 
-        // Send metadata and snapshot separately
-        send_metadata(metadata_str);
-        send_snapshot(snapshot_data);
+        // ---------------------------------------------------------------
 
-        free(metadata_str);
-        free(type_value); // Free the duplicated string
-        json_decref(json_data); // Clean up the JSON object
+        // Free the JSON string
+        free(json_str);
+        json_decref(json_data);
+
+        // Free the type_value string
+        free(type_value);
+
+        // Add error handling for the HTTP request
+        // ...
     }
-}
+} 
 
 // ------------------------------------------------------------------
 

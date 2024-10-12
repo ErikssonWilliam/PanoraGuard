@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+
 #Hanterar inte JSON-format. Ligger kvar temporärt för att hantera FrameByFrame
 app = Flask(__name__)
 @app.route('/camera/data', methods=['POST'])
