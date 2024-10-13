@@ -1,8 +1,11 @@
 import React from 'react'
+import Admin from './pages/admin'
 
 const App = () => {
   return (
-    <div>App</div>
+    <div>
+      <Admin />
+    </div>
   )
 }
 
