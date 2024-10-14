@@ -1,8 +1,8 @@
-import React from 'react'
-
+import React from 'react';
+import PanoraGuardDashboard from './components/PanoraGuardDashboard';
 const App = () => {
   return (
-    <div>App</div>
+    <div> < PanoraGuardDashboard /></div>
   )
 }
 
