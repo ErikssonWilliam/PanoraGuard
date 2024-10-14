@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+       'poppings' : ['poppings','sans-serif'],
+       'jakarta' : [ "Plus Jakarta Sans", 'sans-serif'],
+      },
       colors: {
         NavyBlue: '#0A3D62',
         SlateBlue: '#2E5984',
