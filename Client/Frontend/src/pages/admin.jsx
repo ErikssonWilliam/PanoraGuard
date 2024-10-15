@@ -29,6 +29,9 @@ const Admin = () => {
             < ManageData />
           </div>
         );
+        default:
+          return <div>Select a component from the sidebar</div>;
+  
 
     }
   };
@@ -40,18 +43,18 @@ const Admin = () => {
         {/* Step 3: Sidebar with click handlers to update the state */}
         <div className=" text-white">
             <div className="">
-                <a href="/" className='font-poppings text-xl'>panoraGaurd</a>
+                <a href="/" className='font-poppings text-xl'>panoraGuard</a>
             </div>
 
           <div className="flex flex-col space-y-16 pt-16">
             <div>
-              <a href='' onClick={() => setSelectedComponent('Camera')}>Camera Configuration</a>
+              <button  onClick={() => setSelectedComponent('Camera')}>Camera Configuration</button>
             </div>
             <div>
-              <a href='' onClick={() => setSelectedComponent('Speaker')}>Speaker Configuration</a>
+              <button  onClick={() => setSelectedComponent('Speaker')}>Speaker Configuration</button>
             </div>
             <div>
-              <a href='' onClick={() => setSelectedComponent('ManageData')}>Manage Data</a>
+              <button  onClick={() => setSelectedComponent('ManageData')}>Manage Data</button>
             </div>
           </div>
         </div>
