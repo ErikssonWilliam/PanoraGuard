@@ -8,17 +8,8 @@ from datetime import timedelta
 routes = Blueprint("routes", __name__)
 bcrypt = Bcrypt()
 
-# Dummy users database (replace with actual database)
-users_db = {
-    "john_doe": {
-        "password_hash": bcrypt.generate_password_hash("password123").decode('utf-8'),
-        "role": UserRole.OPERATOR
-    },
-    "jane_doe": {
-        "password_hash": bcrypt.generate_password_hash("password456").decode('utf-8'),
-        "role": UserRole.MANAGER
-    }
-}
+#Empty testdb for postman
+users_db = {}
 
 @routes.route("/")
 def home():
