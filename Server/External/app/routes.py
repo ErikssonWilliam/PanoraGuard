@@ -1,11 +1,11 @@
-from flask import jsonify, Blueprint, request
+from flask import jsonify, request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from .models import *
 from .mock_data import get_mock_user
 from datetime import timedelta
 
-routes = Blueprint("routes", __name__)
+# routes = Blueprint("routes", __name__)
 bcrypt = Bcrypt()
 
 #Empty testdb for postman
@@ -16,22 +16,13 @@ def home():
     return "Hello world"
 
 # Mock user profile endpoint
-@routes.route('/api/user/<user_id>', methods=['GET'])
+# @routes.route('/api/user/<user_id>', methods=['GET'])
 def mock_user_profile(user_id):
     mock_user = get_mock_user(int(user_id))
-    return jsonify({
-        "id": mock_user.id,
-        "username": mock_user.username,
-        "email": mock_user.email
-    })
+    return jsonify(
+        {"id": mock_user.id, "username": mock_user.username, "email": mock_user.email}
+    )
 
-# Mock camera data
-@routes.route('/api/camera', methods=['GET'])
-def mock_camera_data():
-    return jsonify({
-        "id": 1,
-        "location": "Hallway",
-    })
 
 # JWT-protected route example
 @routes.route('/protected', methods=['GET'])
@@ -66,14 +57,14 @@ def register():
 
     return jsonify({"msg": "User created successfully"}), 201
 
-# User login 
-@routes.route('/login', methods=['POST'])
+# User login
+# @routes.route('/login', methods=['POST'])
 def login():
     username = request.json.get('username', None)
     password = request.json.get('password', None)
     
     user = users_db.get(username, None)
-    if not user or not bcrypt.check_password_hash(user['password_hash'], password):
+    if not user or not bcrypt.check_password_hash(user["password_hash"], password):
         return jsonify({"msg": "Invalid username or password"}), 401
     
     # Define the payload structure
