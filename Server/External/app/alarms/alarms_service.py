@@ -1,10 +1,11 @@
 # logic
 from app.models import *
+from typing import List
 
 
 class AlarmService:
-    def get_alarms():
-        return  # add logic
+    def get_alarms() -> List[Alarm]:     
+        return Alarm.query.all()
 
     def add_alarm():
         return  # add logic
