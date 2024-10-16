@@ -20,7 +20,7 @@ class AuthService:
 
         # Generate a JWT token
         access_token = create_access_token(
-            identity={"username": username, "role": user.role.value},
+            identity={"user_id": user.id, "role": user.role.value},
             expires_delta=timedelta(minutes=15),
         )
         # refresh_token = create_refresh_token(
