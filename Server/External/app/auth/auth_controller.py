@@ -35,10 +35,3 @@ class AuthController:
         return jsonify(logged_in_as=current_user), 200
 
 
-#   #Logout + blacklist, tveksamt om detta är bästa hanteringen
-#   @auth.route('/logout', methods=['POST'])
-#   @jwt_required()
-#   def logout():
-#   jti = get_jwt()["jti"]  # JWT ID för att identifiera tokenen som ska ogiltigförklaras (blacklisting)
-#   Här skulle du lägga till denna token till en blacklist om du implementerar en sådan
-#     return jsonify(msg="Utloggad"), 200

@@ -11,13 +11,6 @@ from .schedules.schedules_routes import schedules_bp
 from .snapshots.snapshots_routes import snapshots_bp
 from .auth.auth_routes import auth_bp
 
-from flask_bcrypt import Bcrypt
-from .routes import routes
-from .database import db
-from flask_sqlalchemy import SQLAlchemy
-from .models import *
-from .mock_data import *
-
 
 def create_app():
     app = Flask(__name__)

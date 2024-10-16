@@ -22,17 +22,17 @@ def create_mock_video_clip():
 
 def create_mock_users():
     user1 = User(
-        username="john_doe",
-        password_hash="hashed_password123",
+        username="john_doex",
+        password_hash="hashed_password123x",
         role=UserRole.OPERATOR,
-        email="john@example.com",
+        email="john@examplex.com",
     )
 
     user2 = User(
-        username="jane_doe",
-        password_hash="hashed_password456",
+        username="jane_doeex",
+        password_hash="hashed_password456x",
         role=UserRole.MANAGER,
-        email="jane@example.com",
+        email="jane@examplex.com",
     )
 
     session.add(user1)

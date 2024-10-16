@@ -1,3 +1,4 @@
+"""
 from flask import jsonify, request
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -74,3 +75,4 @@ def login():
 
     access_token = create_access_token(identity={"sub": user_uuid, "role": role}, expires_delta=timedelta(minutes=15))
     return jsonify(access_token=access_token), 200
+"""
