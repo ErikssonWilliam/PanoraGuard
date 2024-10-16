@@ -38,9 +38,10 @@ def receive_camera_dataM():
     timestamp = data.get('timestamp')
     object_type = data.get('type')
     score = data.get('score')
+    image_data = data.get('data')
 
     # Process the data as needed
-    print(f"Received data: Topic={topic}, Source={source}, Time={timestamp}, Type={object_type}, Score={score}")
+    print(f"Received data: Topic={topic}, Source={source}, Time={timestamp}, Type={object_type}, Score={score}, Image Data={image_data}")
 
     # Return a response
     return jsonify({"message": "Data received successfully"}), 200

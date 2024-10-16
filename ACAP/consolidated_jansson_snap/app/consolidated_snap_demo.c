@@ -9,16 +9,14 @@
 #include <mdb/error.h>
 #include <mdb/subscriber.h>
 
-// Code --------------------------------------------
+// Code ------------------------------------
 #include <jansson.h>   // For JSON handling
 #include <curl/curl.h> // For HTTP requests
 
 // Define constants
-#define BUFFER_SIZE 8192
-// TODO:
-// Add API-endpoints here aswell
-// --------------------------------------------------
-
+#define API_URL "http://192.168.1.135:5000/processing/camera/data_JSON" // For external server
+#define ENABLE_SNAPSHOT_URL "http://192.168.1.116/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
+// -----------------------------------------
 
 // Structure to hold channel topic and source info
 typedef struct channel_identifier
@@ -84,35 +82,9 @@ static size_t write_callback(void *contents, size_t size, size_t nmemb, void *us
 //     }
 // }
 
-// // Function to retrieve the best snapshot from the camera (using Basic Authentication)
-// static void retrieve_best_snapshot(char *snapshot_data, size_t snapshot_data_size)
-// {
-//     (void)snapshot_data_size;
-//     const char *url = "http://192.168.1.116/config/rest/best-snapshot/v1"; // Use actual camera IP
-//     CURL *curl;
-//     CURLcode res;
-//     curl = curl_easy_init();
-//     if (curl)
-//     {
-//         // Set Basic Authentication (instead of Digest)
-//         curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-//         curl_easy_setopt(curl, CURLOPT_USERNAME, "root");   // Replace with your username
-//         curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); // Replace with your password
-
-//         curl_easy_setopt(curl, CURLOPT_URL, url);
-//         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-//         curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)snapshot_data);
-//         res = curl_easy_perform(curl);
-//         if (res != CURLE_OK)
-//             syslog(LOG_ERR, "Failed to retrieve best snapshot: %s", curl_easy_strerror(res));
-//         curl_easy_cleanup(curl);
-//     }
-// }
-
 // Function to send HTTP POST request to the specified URL with the JSON data
 static void send_http_request(const char *url, const char *data)
 {
-
     // Initialize curl
     CURL *curl;
     CURLcode res;
@@ -158,7 +130,6 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
     json_t *classes = json_object_get(root, "classes");
     if (json_is_array(classes) && json_array_size(classes) > 0)
     {
-
         // Get the first class in the classes array
         json_t *first_class = json_array_get(classes, 0);
 
@@ -169,13 +140,16 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
         // Check if score and type are valid
         if (json_is_real(score) && json_is_string(type))
         {
-
             *score_value = json_real_value(score);
             *type_value = strdup(json_string_value(type)); // Duplicate string to return
             // json_decref(root);                             // Clean up
             // return true;                                   // Success
         }
-    }     
+        // TODO:
+        // Add else error handling statement (like below)
+    }
+    // TODO: 
+    // Add else error handling statement (like below)     
 
     // Extract the "image" object
     json_t *image = json_object_get(root, "image");
@@ -193,7 +167,7 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
         }
         else
         {
-            syslog(LOG_ERR, "Image object missing fields: bounding_box, data, or timestamp.");
+            syslog(LOG_ERR, "Image object missing field: data");
             json_decref(root);
             return false;
         }
@@ -212,7 +186,6 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
 // Function to handle incoming object detection data from the Metadata Broker
 static void on_message(const mdb_message_t *message, void *user_data)
 {
-
     // Get the timestamp and payload from the message. Payload is the JSON data.
     const struct timespec *timestamp = mdb_message_get_timestamp(message);
     const mdb_message_payload_t *payload = mdb_message_get_payload(message);
@@ -230,7 +203,7 @@ static void on_message(const mdb_message_t *message, void *user_data)
     {
         // Log the detected object information
         syslog(LOG_INFO,
-               "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f, Image: %s",
+               "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f, Image Data: %s",
                channel_identifier->topic,
                channel_identifier->source,
                (long long)timestamp->tv_sec,
@@ -247,11 +220,12 @@ static void on_message(const mdb_message_t *message, void *user_data)
         json_object_set_new(json_data, "time_nsec", json_integer(timestamp->tv_nsec));
         json_object_set_new(json_data, "type", json_string(type_value));
         json_object_set_new(json_data, "score", json_real(score_value));
+        json_object_set_new(json_data, "data", json_string(image_value));
 
         // Convert the JSON object to a string
         char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
         // Send HTTP request
-        send_http_request("http://192.168.1.131:5000/camera/data_JSON", json_str); // TODO: Change to the correct IP address
+        send_http_request("http://192.168.1.135:5000/processing/camera/data_JSON", json_str); // TODO: Change to the correct IP address
 
         // TODO:
         // We do not need to enable snapshot each time. One time is enough. However, what happens when we restart the camera...?
@@ -259,48 +233,13 @@ static void on_message(const mdb_message_t *message, void *user_data)
         // enable_best_snapshot();
         // syslog(LOG_INFO, "Attempted to enable best snapshot feature");
 
-        // ---------------------------------------------------------------
-
-        // // TODO:
-        // // Add a delay before retrieving the snapshot
-        // #include <unistd.h> // for sleep --> WIll go at the beginning of this file
-        // sleep(2); // Wait 2 seconds to allow the snapshot to be available --> This is because we get error messages saying
-        // retrieve_best_snapshot(snapshot_data, sizeof(snapshot_data));
-
-        //------------------ SNAPSHOT ---------------------------------
-
-        // // Buffer to store the snapshot data
-        // char snapshot_data[BUFFER_SIZE]; // Initialize the buffer to zero
-
-        // // Retrieve the best snapshot from the camera
-        // retrieve_best_snapshot(snapshot_data, sizeof(snapshot_data));
-        // syslog(LOG_INFO, "Retrieved best snapshot data: %s", snapshot_data);
-
-        // // Create a JSON object to store the snapshot data
-        // json_t *json_snapshot_data = json_object();
-        // json_object_set_new(json_snapshot_data, "snapshot", json_string(snapshot_data));
-        // // Convert the JSON object to a string
-        // char *json_stri = json_dumps(json_snapshot_data, JSON_ENCODE_ANY);
-
-        // // Send HTTP request with the snapshot data
-        // send_http_request("http://192.168.1.132:5000/snapshots/upload", json_stri);
-
-        // ---------------------------------------------------------------
-
         // Free the JSON string
         free(json_str);
         json_decref(json_data);
-        // -------- Snapshot -----------
-        // free(json_stri);
-        // json_decref(json_snapshot_data);
-        // -----------------------------
 
         // Free the type_value string and image_value string
         free(type_value);
         free(image_value);
-
-        // Add error handling for the HTTP request
-        // ...
     }
 }
 
