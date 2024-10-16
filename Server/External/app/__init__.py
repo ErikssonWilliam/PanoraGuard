@@ -10,6 +10,7 @@ from .clips.clips_routes import clips_bp
 from .schedules.schedules_routes import schedules_bp
 from .snapshots.snapshots_routes import snapshots_bp
 from .auth.auth_routes import auth_bp
+from .dataprocessing.dataprocessing_service import processing
 
 
 def create_app():
@@ -40,5 +41,6 @@ def create_app():
     app.register_blueprint(schedules_bp, url_prefix="/schedules")
     app.register_blueprint(snapshots_bp, url_prefix="/snapshots")
     app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(processing, url_prefix="/processing")
 
     return app
