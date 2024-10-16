@@ -15,6 +15,7 @@ processing = Blueprint("processing", __name__)
 def send_email(subject, body, to_email, snapshot_path=None):
     # Gmail account credentials
     from_email = "tddc88.company3@gmail.com"
+    # This does currently not work (change to real password locally)
     from_password = Config.email_pswrd
 
     # Create the email
@@ -69,8 +70,8 @@ def send_email(subject, body, to_email, snapshot_path=None):
 
 def process_data(data):
     # Function to process incoming data
-    if data.get("Type") == "Human":
-        score = data.get("Score")
+    if data.get("type") == "Human":
+        score = data.get("score")
         response, status_code = SnapshotController.upload_snapshot()
         file_path = None
         if status_code == 201:
