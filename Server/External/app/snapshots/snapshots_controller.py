@@ -13,14 +13,16 @@ class SnapshotController:
     def upload_snapshot():
         try:
             data = request.json
+            
+            print(data)
 
             if not data:
                 return jsonify({"message": "No data provided"}), 400
 
-            if "snapshot" not in data:
+            if "data" not in data:
                 return jsonify({"message": "No snapshot provided"}), 400
 
-            snapshot = data["snapshot"]
+            snapshot = data["data"]
 
             file_path = SnapshotService.upload_snapshot(snapshot)
 

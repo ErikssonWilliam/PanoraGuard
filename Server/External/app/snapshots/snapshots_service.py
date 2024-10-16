@@ -2,6 +2,7 @@
 from app.models import *
 import base64
 import os
+import imghdr
 
 UPLOAD_FOLDER = "./test_snapshots_output"
 if not os.path.exists(UPLOAD_FOLDER):
@@ -18,10 +19,17 @@ class SnapshotService:
             snapshot_data = SnapshotService.base64_padding(snapshot)
             snapshot_binary = base64.b64decode(snapshot_data)
 
+            image_type = imghdr.what(None, h=snapshot_binary)
+
+            if image_type is None:
+                image_type = 'bin'
+
             # if meets_critera(snapshot_binary):
             #     store_snapshot_on_cloud(snapshot_binary)
 
-            file_path = os.path.join(UPLOAD_FOLDER, "snapshottest.png")
+            output_filename = f"output_image.{image_type}"
+
+            file_path = os.path.join(UPLOAD_FOLDER, output_filename)
 
             with open(file_path, "wb") as image_file:
                 image_file.write(snapshot_binary)
