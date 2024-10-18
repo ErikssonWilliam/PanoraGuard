@@ -1,6 +1,5 @@
-from .database import db
+from .extensions import db
 from .models import *
-from datetime import datetime
 
 session = db.session
 
@@ -15,10 +14,7 @@ def create_mock_image_snapshot():
 
 
 def create_mock_video_clip():
-    video_clip = VideoClip(
-        url="https://MockVideo.com/video.mp4",
-        duration=120
-    )
+    video_clip = VideoClip(url="https://MockVideo.com/video.mp4", duration=120)
     session.add(video_clip)
     session.commit()
     return video_clip
@@ -26,17 +22,17 @@ def create_mock_video_clip():
 
 def create_mock_users():
     user1 = User(
-        username="john_doe",
-        password_hash="hashed_password123",
+        username="john_doex",
+        password_hash="hashed_password123x",
         role=UserRole.OPERATOR,
-        email="john@example.com",
+        email="john@examplex.com",
     )
 
     user2 = User(
-        username="jane_doe",
-        password_hash="hashed_password456",
+        username="jane_doeex",
+        password_hash="hashed_password456x",
         role=UserRole.MANAGER,
-        email="jane@example.com",
+        email="jane@examplex.com",
     )
 
     session.add(user1)
@@ -46,10 +42,7 @@ def create_mock_users():
 
 
 def create_mock_camera():
-    camera = Camera(
-        ip_address="HTTPS//127.123.etc",
-        location="A-huset"
-    )
+    camera = Camera(ip_address="HTTPS//127.123.etc", location="A-huset")
     session.add(camera)
     session.commit()
     return camera
@@ -62,7 +55,7 @@ def create_mock_alarm(user, image_snapshot, video_clip, camera):
         image_snapshot_id=image_snapshot.id,
         video_clip_id=video_clip.id,
         status=AlarmStatus.PENDING,
-        operator_id=user.id
+        operator_id=user.id,
     )
 
     session.add(alarm)
@@ -75,7 +68,7 @@ def create_mock_camera_control_action(camera, user):
         camera_id=camera.id,
         initiated_by=user.id,
         control_type=CameraControlType.BRIGHTNESS,
-        value="0.83"
+        value="0.83",
     )
     session.add(cca)
     session.commit()

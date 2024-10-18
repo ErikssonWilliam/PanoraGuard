@@ -17,17 +17,6 @@ def create_app():
         # Create all tables defined in the models
         db.create_all()
 
-        # Check if the 'test' table is empty
-        if Test.query.count() == 0:  # Assuming 'Test' is one of your models
-            # Insert mock data
-            mock_data = [
-                Test(name="Sample Data 1"),
-                Test(name="Sample Data 2"),
-                Test(name="Sample Data 3"),
-            ]
-            db.session.bulk_save_objects(mock_data)
-            db.session.commit()  # Commit the transaction
-
     # Import and register routes
     from .testRoutes import api
 
