@@ -8,13 +8,13 @@ const ManageData = () => {
         <div className="col-span-1 flex flex-col">
             <label htmlFor="location" className='text-blue-600'>Location:</label>
             <select id="location" className='p-2 rounded-lg w-3/4 ring-1 ring-blue-900'>
-                <option value="convention-center">Convention Center</option>
+                <option value="convention-center"></option>
             </select>
         </div>
         <div className="col-span-1 flex flex-col">
                 <label htmlFor="camera-number"className='text-blue-600'>Camera Number:</label>
                 <select id="camera-number" className='p-2 rounded-lg w-3/4 ring-1 ring-blue-900'>
-                    <option value="4">4</option>
+                    <option value="4"></option>
                 </select>
         </div>
 

@@ -20,6 +20,13 @@ export default {
         ButtonsBlue: '#0650C6',
         AlaramRed: '#C60606',
       },
+      keyframes: {
+        float: {
+          '0%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+          '100%': { transform: 'translateY(0)' },
+        },
+      },
     },
   },
   plugins: [],

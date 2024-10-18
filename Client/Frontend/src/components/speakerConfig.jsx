@@ -7,15 +7,15 @@ const SpeakerConfig = () => {
         <div className="grid grid-cols-2 gap-10">
             <div className="col-span-1 flex flex-col">
                 <label htmlFor="location" className='text-blue-600'>Location:</label>
-                <select id="location" className='p-2 rounded-lg w-3/4 ring-1 ring-blue-900'>
-                    <option value="convention-center">Convention Center</option>
+                <select id="location" className='p-2 rounded-lg w-3/4 ring-1 ring-blue-900'> {/**Add more option */}
+                    <option value=""></option>
                 </select>
             </div>
 
             <div className="col-span-1 flex flex-col">
                 <label htmlFor="speaker-number" className='text-blue-600'>Speaker Number:</label>
-                <select id="speaker-number" className='p-2 rounded-lg w-3/4 ring-1 ring-blue-900'>
-                    <option value="4">4</option>
+                <select id="speaker-number" className='p-2 rounded-lg w-3/4 ring-1 ring-blue-900'> {/**Add more option */}
+                    <option value=""></option>
                 </select>
             </div>
         </div>
