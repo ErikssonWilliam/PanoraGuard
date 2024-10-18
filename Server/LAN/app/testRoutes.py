@@ -4,6 +4,7 @@ from .database import db
 import requests
 from requests.auth import HTTPBasicAuth
 from apscheduler.schedulers.background import BackgroundScheduler
+import xml.etree.ElementTree as ET
 
 api = Blueprint("api", __name__)
     
@@ -138,65 +139,71 @@ def set_magnification():
 
 
 
-# Function to enable ACAP
-def enable_acap(url):
+# Function to enable or disable ACAP
+def enable_disable_acap(url, action, acap_name):
     
     try:
         response = requests.post(url, auth=HTTPBasicAuth(username, password))
         # response = requests.post(url, data=client_data, auth=HTTPBasicAuth(username, password), stream=True)
     
         if response.status_code == 200:
-            return {"status": "success", "message": f"ACAP enabled successfully"}
+            return {"status": "success", "message": f"{action} of {acap_name} was successful"}
         else:
             return {"status": "failed", "error": response.text}
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}")
-        return {"status": "failed", "error": str(e)}
-
-
-# Function to disable ACAP
-def disable_acap(url):
-
-    try:
-        response = requests.post(url, auth=HTTPBasicAuth(username, password))
-    
-        if response.status_code == 200:
-            return {"status": "success", "message": f"ACAP disabled successfully"}
-        else:
-            return {"status": "failed", "error": response.text}
-    except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
-        return {"status": "failed", "error": str(e)}   
+        return {"status": "failed", "error": str(e)} 
 
 
 
-
-@api.route("/schedule-acap", methods=["GET"])
-def schedule_acap():
+@api.route("/acap/<string:action>/<string:acap_name>", methods=["GET"])
+def schedule_acap(action, acap_name):
     # Extract JSON data from the incoming request
     #client_data = request.get_json()
 
     # Camera details
-    camera_ip = "192.168.1.121"
-    acap_name = "consolidated_jansson"
+    camera_ip = "192.168.1.116"
 
     
     # Define the external URL
-    url = f"http://{camera_ip}/axis-cgi/applications/control.cgi?action=stop&package={acap_name}"
+    url = f"http://{camera_ip}/axis-cgi/applications/control.cgi?action={action}&package={acap_name}"
 
     
     try:
 
-        #result = disable_acap(url)
+        result = enable_disable_acap(url, action, acap_name)
 
-        scheduler = BackgroundScheduler()
-        scheduler.add_job(enable_acap, 'cron', hour=11, minute=37, args=[url])  
-        scheduler.add_job(disable_acap, 'cron', hour=11, minute=38, args=[url])  
-        scheduler.start()
-
-
-        return jsonify({"status": "success", "message": f"ACAP scheduling set for {acap_name} from 11:00 to 11:05 daily"}), 200
+        return jsonify(result), 200 if result["status"] == "success" else 500
     except Exception as e:
-        return jsonify({"status": "failed", "error": str(e)}), 500   
+        return jsonify({"status": "failed", "error": str(e)}), 500 
 
 
+
+
+@api.route("/add-schedule", methods=["GET"])
+def add_schedule():
+
+    name = "Test schedule"
+    start_time = "2024-10-18T18:00:00"
+    end_time = "2024-10-19T06:00:00"
+    rrule = "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+
+
+    camera_ip = "192.168.1.116"
+
+    url = f"http://{camera_ip}/axis-cgi/events/schedule.cgi"
+    data = {
+        "name": name,
+        "schedule": {
+            "start": start_time,  # Example: "2023-10-17T18:00:00"
+            "end": end_time,      # Example: "2023-10-18T06:00:00"
+            "rrule": rrule      # Example: "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR"
+        }
+    }
+    
+    response = requests.post(url, json=data, auth=HTTPBasicAuth(username, password))
+    
+    if response.status_code == 200:
+        return {"status": "success", "message": "Scheduled event created successfully"}
+    else:
+        return {"status": "failed", "error": response.text}

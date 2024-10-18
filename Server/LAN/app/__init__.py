@@ -29,7 +29,6 @@ def create_app():
             db.session.commit()  # Commit the transaction
 
     # Import and register routes
-    from .routes import api
     from .testRoutes import api
 
     app.register_blueprint(api)
