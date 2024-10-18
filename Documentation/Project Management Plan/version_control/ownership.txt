@@ -1,0 +1,8 @@
+# Document Ownership for Project Management Plan
+
+Document Owner: Project Manager
+# Add section owners below as needed
+
+Project Overview - (Technical Writer)
+
+Rest is shared between Project manager, P&S manager and R&D manager
