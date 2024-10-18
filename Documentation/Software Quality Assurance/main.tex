@@ -14,9 +14,14 @@
 \usepackage{csquotes}
 \usepackage{multirow}
 \usepackage{hyperref}
+\usepackage{array} 
+\usepackage{booktabs} 
+\usepackage[a4paper,pdftex,bottom=20mm, width=160mm]{geometry}
+
 
 \addbibresource{bibliography.bib}
-\usepackage[a4paper,pdftex,bottom=20mm, width=160mm]{geometry}
+
+
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1em}
 
@@ -25,7 +30,9 @@
 \vspace{2.0cm} \textbf{Software Quality Assurance Plan} \\
  \endgraf\rule{\textwidth}{.4pt}
   \large \textbf{TDDC88 - Project - Company 3}\\
-   }
+}
+
+
 
 \author{
 % Add your full name here
@@ -38,6 +45,10 @@
     Chang - Architecture
 }
 \date{\today}
+
+\begin{document}
+
+\begin{comment}
 
 \section{Information for Authors}
 Dear contributors to the Quality Assurance Plan,
@@ -82,11 +93,15 @@ Thank you for your commitment!
     \item Implementation and Verification: \textit{Emma ProductandSalesLineManager}
 \end{itemize}
 
-\begin{document}
+\end{comment}
 
 \maketitle
 
 \newpage
+\input{version_control/version_log} 
+\newpage
+
+
 \tableofcontents
 \newpage
 
@@ -227,20 +242,37 @@ Change management could become crucial in this project as the the limited resour
 
 \newpage
 \section{Continuous Integration and Delivery}
-\textit{Responsible: DeploymentLead}
 
-Detail the implementation of continuous integration (CI) and continuous delivery (CD) practices:
+
+\textbf{CI/CD contribution to the overall quality of the project}
 
 Continuous Integration (CI) and Continuous Delivery (CD) are essential practices for modern programming projects because they streamline the development process, improve code quality, and ensure faster, more reliable releases. CI ensures that code changes are automatically tested and integrated into the main codebase frequently, preventing integration issues and reducing the chances of bugs accumulating. CD extends this by automating the deployment process, allowing for frequent, smaller updates to be delivered to production with minimal risk. Together, CI/CD promotes collaboration, improves developer productivity, and helps deliver high-quality software rapidly and consistently
 
+\vspace{1em}
+\textbf{CI/CD Pipeline Description}
+
+Source Control (Git): The pipeline starts whenever a developer pushes code to the repository, triggering the continuous integration process.
+Building Docker Images: The CI/CD pipeline will automatically build Docker images for each of the components (LAN Server, Front-End, and ACAP) when changes are made in the respective directories. The images are then pushed to a container registry like Azure Container Registry or Docker Hub.
+Deployment to Kubernetes (AKS): After successful builds, the images are deployed to a Kubernetes cluster hosted in Azure. Kubernetes ensures that the containers are deployed in a scalable and resilient manner.
+\vspace{1em}
+
+\textbf{Tools used for automation}
 \begin{itemize}
-    \item CI/CD pipeline description
-    \item Tools used for automation
+    \item \textbf{GitLab CI}: The platform manage the entire CI/CD process, from building Docker images to deploying them on Kubernetes.
+    \item \textbf{Docker}: Docker is used to containerize the different components of your system, ensuring that they can run consistently across different environments.
+    \item \textbf{Kubernetes}: Kubernetes is used to orchestrate the deployment and scaling of the Docker containers across a distributed environment, providing resilience and easy management of the services.
+\end{itemize}
+\vspace{1 em}
+
+\textbf{Still not answered}
+\begin{itemize}
     \item Integration with testing and other quality assurance processes
     \item Frequency of builds and deployments
 \end{itemize}
 
-For grade 5, emphasize how CI/CD contributes to overall software quality and supports rapid, reliable software delivery.
+
+
+
 
 \newpage
 \section{Bug Tracking and Resolution}
@@ -279,15 +311,14 @@ Bug tracking is important for continuous improvements as this allows the team of
 
 
 \newpage
-\section{Internal Quality Practices}
+\section{Internal Review Practices}
+Internal review practices are fundamental to ensuring the quality and success of our project. By embedding these practices into our workflows, we make quality and routine procedures integral to every aspect of our work.
 
-Quality and routines related to quality work are an integral part of this project. The work on quality is ongoing, and responsibility is shared internally among the project’s members. The aim is to promote a proactive culture that identifies and manages risks as much as possible, rather than relying on corrections afterward.
+To achieve this, we are introducing a system for continuous review of critical documents, in the form of code changes, design specifications, test plans, and reports. Project members are encouraged to work iteratively with documents and other tasks to promote continuous improvement of what is delivered both internally and externally. Work will also go through continuous review, with different members at various stages taking on the roles of both author and reviewer. This ensures that different perspectives are applied to each part of the work. These principles aim to identify potential problems early and promote knowledge sharing.
 
-To achieve this, we are introducing a system for continuous review of processes where all critical documents—in the form of code changes, design specifications, test plans, and reports—undergo ongoing review within the team. Team members are encouraged to work iteratively with documents and other tasks to promote continuous improvement of what is delivered both internally and externally. Work will also go through continuous internal review, with different members at various stages taking on the roles of both author and reviewer. This ensures that different perspectives are applied to each part of the work. These principles aim to identify potential problems early and promote knowledge sharing.
+Before each important external meeting, such as the tollgate meeting, thorough internal reviews, or walkthroughs, will be conducted. These sessions will involve the company to examine upcoming deliverables in detail and verify that they meet our established quality standards and align with the project goals. Any deviations or areas for improvement identified during these reviews are addressed immediately, ensuring that what is presented to external stakeholders meets the standards we strive for within the project.
 
-Before each important external meeting, such as the tollgate meeting, thorough internal reviews, or walkthroughs, will be conducted. These sessions will involve the entire team to examine upcoming deliverables in detail and verify that they meet our established quality standards and align with the project goals. Any deviations or areas for improvement identified during these reviews are addressed immediately, ensuring that what is presented to external stakeholders meets the standards we strive for within the project.
-
-To support these routines without introducing unnecessary bureaucratic steps, we will use effective tools for collaboration, communication, document management, and code repositories. Communication channels, such as chat groups in Teams, are used to keep everyone informed about ongoing quality initiatives and any urgent quality issues. During internal meetings—both company-wide and in smaller groups—participants are encouraged to continuously evaluate quality-related matters. The goal is to make quality work an integrated, seamless part of our daily workflow.
+To support these routines without introducing unnecessary bureaucratic steps, we will use effective tools for collaboration, communication, document management, and code repositories. Communication channels, such as chat groups in Teams, are used to keep everyone informed about ongoing quality initiatives and any urgent quality issues. During internal meetings, participants are encouraged to continuously evaluate quality-related matters. The goal is to make quality work an integrated part of our daily workflow.
 
 \newpage
 \section{Change Management}
@@ -324,15 +355,7 @@ The project contains one pre-study and four iterations. After each iteration the
     \label{tab:iteration_table}
 \end{table}
 
-During the retrospectives, an overall assessment of the practices and processes during the previous iteration will be constructed. The Line Managers will collect feedback from each Lead and encourage each employee to utilize the feedback loop. The gathered information will be given to the Process Manager, who will summarize it into an overall evaluation. All practices regarding quality assurance will be addressed through the following areas of inquiry:
-
-\begin{itemize}
-    \item Document version handling
-    \item Internal test cases
-    \item Code refactoring
-    \item Methods of communication
-    \item Sprint retrospective
-\end{itemize}
+During the retrospectives, an overall assessment of practices during the previous iteration will be conducted. The Line Managers will collect feedback from each Lead and encourage each employee to utilize the feedback loop. The gathered information will be given to the Process Manager, who will summarize it into an overall evaluation. This will ensure continuous assessment of quality related practices.
 
 
 \subsection{Feedback Loops from Team Members and Stakeholders}

@@ -10,6 +10,8 @@
 \usepackage{lscape}
 \usepackage{csquotes}
 \usepackage{multirow}
+\usepackage{{ragged2e}}
+\usepackage{{tabularx}}
 \addbibresource{bibliography.bib}
 \usepackage[a4paper,pdftex,bottom=20mm, width=160mm]{geometry} % A4paper margins
 \setlength{\parindent}{0pt} % Tar bort indenteringen på paragrafer 
@@ -29,7 +31,11 @@
 
 \begin{document}
 
+
+
 \maketitle
+\newpage
+\input{version_control/version_log} 
 
 
 \newpage

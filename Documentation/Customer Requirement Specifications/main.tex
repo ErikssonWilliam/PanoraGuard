@@ -13,6 +13,7 @@
 \usepackage{float}
 \usepackage{caption}
 \usepackage{hyperref}
+\usepackage{longtable} 
 
 \addbibresource{bibliography.bib}
 \usepackage[a4paper,pdftex,bottom=20mm, width=160mm]{geometry} % A4paper margins
@@ -47,6 +48,8 @@
 \begin{document}
 
 \maketitle
+\newpage
+\input{version_control/version_log} 
 
 
 \newpage
@@ -145,7 +148,7 @@ Each user story is linked to functional and non-functional requirements based on
 
 \subsection{Backlog}
 
-This subsection ranks the user stories from highest priority to lowest priority. Difficulty means the time and effort required to fullfill a requirement on a scale from 1-5, with 5 being the most difficult.\\
+This subsection ranks the user stories from highest priority to lowest priority. Difficulty means the effort required to fullfill a requirement on a scale from 1-5, with 5 being the most difficult. The ranking of difficulty is made by the developers and may change as the project proceeds.\\
 
 \begin{table}[htbp]
 \centering
@@ -241,61 +244,71 @@ The camera will detect objects in motion, and based on the current confidence le
 
 The system will include a page dedicated to displaying statistics, accessible by the supervisor. This page will retrieve data from the database and display the number of alerts, their locations, and timestamps in a diagram. 
 \clearpage
-\begin{table}[h] 
+\begin{table}[h]
 \centering
 \begin{tabular}{|l|p{8cm}|p{5cm}|}
 \hline
-\textbf{ID} & \textbf{Description} & \textbf{Implementation Plan} \\
+\textbf{ID} & \textbf{Description} & \textbf{Sub-requirements} \\
 \hline
-\hypertarget{FRQ001}{FRQ001-v1} & The camera system shall recognize objects in motion and define what they are with a confidence presented as a percentage. &  \\
+\hypertarget{FRQ001}{FRQ001-v1} & The camera system shall recognize objects in motion and define what they are with a confidence presented as a percentage. & 
+\hyperlink{01-1}{01-1}, \hyperlink{01-2}{01-2}, \hyperlink{01-3}{01-3} \\
 \hline
-\hypertarget{FRQ002}{FRQ002-v1} & The camera system shall send images and videos to the operational system if it is triggered. &  \\
+\hypertarget{FRQ002}{FRQ002-v1} & The camera system shall send images to the external server if it is triggered. & 
+\hyperlink{02-1}{02-1}, \hyperlink{02-2}{02-2}, \hyperlink{02-3}{02-3}, \hyperlink{02-4}{02-4} \\
 \hline
-\hypertarget{FRQ003}{FRQ003-v1} & The operational system shall alert the operator of an intrusion within 5 seconds of detection. &  \\
+\hypertarget{FRQ003}{FRQ003-v1} & The operational system shall alert the operator of an intrusion within 5 seconds of detection. & 
+\hyperlink{03-1}{03-1}, \hyperlink{03-2}{03-2}, \hyperlink{03-3}{03-3}, \hyperlink{03-4}{03-4}, \hyperlink{03-5}{03-5} \\
 \hline
-\hypertarget{FRQ004}{FRQ004-v1} & The operational system shall enable the operator to turn off the alarm (including the speaker) at any time. &  \\
+\hypertarget{FRQ004}{FRQ004-v1} & The operational system shall enable the operator to turn off the alarm (including the speaker) at any time. & 
+\hyperlink{04-1}{04-1}, \hyperlink{04-2}{04-2}, \hyperlink{04-3}{04-3}, \hyperlink{04-4}{04-4} \\
 \hline
-\hypertarget{FRQ005}{FRQ005-v1} & The operational system shall display the option for an operator to either confirm or deny an alarm. &  \\
+\hypertarget{FRQ005}{FRQ005-v1} & The operational system shall display the option to either confirm or deny an alarm. & 
+\hyperlink{05-1}{05-1}, \hyperlink{05-2}{05-2}, \hyperlink{05-3}{05-3}, \hyperlink{05-4}{05-4} \\
 \hline
-\hypertarget{FRQ006}{FRQ006-v1} & The admin shall be able to update the camera schedule within 10 minutes. &  \\
+\hypertarget{FRQ006}{FRQ006-v1} & The admin shall be able to update the camera schedule within 10 minutes 95\% of the time. & 
+\hyperlink{06-1}{06-1}, \hyperlink{06-2}{06-2}, \hyperlink{06-3}{06-3}, \hyperlink{06-4}{06-4}, \hyperlink{06-5}{06-5} \\
 \hline
-\hypertarget{FRQ007}{FRQ007-v1} & The admin shall be able to update the camera’s confidence within 10 minutes. &  \\
+\hypertarget{FRQ007}{FRQ007-v1} & The admin shall be able to update the camera confidence within 10 minutes 95\% of the time. & 
+\hyperlink{07-1}{07-1}, \hyperlink{07-2}{07-2}, \hyperlink{07-3}{07-3} \\
 \hline
-\hypertarget{FRQ008}{FRQ008-v1} & The operator shall be able to see active cameras and their locations live. &  \\
+\hypertarget{FRQ008}{FRQ008-v1} & The operator shall be able to see active cameras and their locations live. & 
+\hyperlink{08-1}{08-1}, \hyperlink{08-2}{08-2}, \hyperlink{08-3}{08-3}, \hyperlink{08-4}{08-4} \\
 \hline
-\hypertarget{FRQ009}{FRQ009-v1} & The operator shall be able to orient into "active camera feeds". &  \\
+\hypertarget{FRQ009}{FRQ009-v1} & The operator shall be able to orient into "active camera feeds." & 
+\hyperlink{09-1}{08-2}, \hyperlink{09-2}{08-3}, \hyperlink{09-3}{08-4} \\
 \hline
-\hypertarget{FRQ010}{FRQ010-v1} & The managers shall be able to see the number of alerts in a diagram. &  \\
+\hypertarget{FRQ010}{FRQ010-v1} & The manager shall be able to see the time of alerts in a diagram. & 
+\hyperlink{10-1}{10-1}, \hyperlink{10-2}{10-2}, \hyperlink{10-3}{10-3}, \hyperlink{10-4}{10-4}, \hyperlink{10-5}{10-5} \\
 \hline
-\hypertarget{FRQ011}{FRQ011-v1} & The managers shall be able to see the location of the alerts in a diagram. &  \\
+\hypertarget{FRQ012}{FRQ012-v1} & The system shall have 4 different user categories, with different access levels (Guard, Operator, Manager, Admin). & 
+\hyperlink{12-1}{12-1}, \hyperlink{12-2}{12-2}, \hyperlink{12-3}{12-3}, \hyperlink{12-4}{12-4} \\
 \hline
-\hypertarget{FRQ012}{FRQ012-v1} & The managers shall be able to see the time of the alerts in a diagram. &  \\
+\hypertarget{FRQ013}{FRQ013-v1} & The guard shall be alerted if the operator approves the alarm on a mobile unit. & 
+\hyperlink{13-1}{13-1} \\
 \hline
-\hypertarget{FRQ013}{FRQ013-v1} & The system shall visually show the operator when an alert is occurring (e.g., popup, change window). &  \\
+\hypertarget{FRQ014}{FRQ014-v1} & The manager shall be able to see statistics and alarm analysis. & 
+\hyperlink{14-1}{14-1}, \hyperlink{14-2}{14-2} \\
 \hline
-\hypertarget{FRQ014}{FRQ014-v1} & The system shall have 4 different "user" categories, with different access levels. (Guard, Operator, Supervisor, Admin) &  \\
-\hline
-\hypertarget{FRQ015}{FRQ015-v1} & The guard shall be alerted if the operator approves the alarm on a mobile unit. &  \\
-\hline
-\hypertarget{FRQ016}{FRQ016-v1} & The operator shall manage and assess the alarms. &  \\
-\hline
-\hypertarget{FRQ017}{FRQ017-v1} & The supervisor shall be able to see statistics and alarm analysis. &  \\
-\hline
-\hypertarget{FRQ018}{FRQ018-v1} & The admin shall be able to configure the system and manage the users and their access levels. &  \\
+\hypertarget{FRQ015}{FRQ015-v1} & The admin shall be able to manage the users. & 
+\hyperlink{15-1}{15-1}, \hyperlink{15-2}{15-2} \\
 \hline
 \end{tabular}
-\captionsetup{justification=centering}
-\caption{Functional Requirements for the Camera System, implementation plan will be decided later on in the project in collaboration with the architect and developers}
-\label{table:functional_requirements}
+\caption{Ordered Functional Requirements with clickable linked Sub-requirements}
+\label{table:requirements_ordered}
 \end{table}
+
+
+
 
  
 
 
 
 
+
+
 \subsection{Non-functional Requirements}
-The system shall have an encrypted and protected database storing data connected to triggered alarms including date, time, location and a comment. It shall also store private information including snapshots in accordance to GDPR regulations. 
+The system shall have an encrypted and protected database storing data connected to triggered alarms including date, time, location and a comment.  
 
     The admin shall be able to schedule when the cameras will be active and inactive and this shall compile within a reasonable amount of time.  It shall also be possible for the admin to update the confidence level in the cameras without a noticeable delay in the system.   
 
@@ -307,73 +320,168 @@ The system as a whole shall be intuitivly to use, its design will be based on th
 \hline
 \textbf{ID} & \textbf{Description} & \textbf{Implementation Plan} \\
 \hline
-\hypertarget{NRQ001}{NRQ001-v1} & The database shall be encrypted to protect sensitive data. & \\
+\hypertarget{NRQ002}{NRQ002-v1} & The database shall store data about triggered alarms, including date, time, location, camera ID, and approved alarm or not (boolean). & 
+\hyperlink{N02-1}{N02-1}, \hyperlink{N02-2}{N02-2}, \hyperlink{N02-3}{N02-3}, \hyperlink{N02-4}{N02-4}, \hyperlink{N02-5}{N02-5}, \hyperlink{N02-6}{N02-6} \\
 \hline
-\hypertarget{NRQ002}{NRQ002-v1} & All data transactions shall happen within 5 seconds. & \\
+\hypertarget{NRQ005}{NRQ005-v1} & The system shall have a cohesive graphic design (Font, Font size, header size, color scheme, page structure...). & 
+\hyperlink{N05-1}{N05-1} \\
 \hline
-\hypertarget{NRQ003}{NRQ003-v1} & The system shall be operable 99\% of the time. & \\
-\hline
-\hypertarget{NRQ004}{NRQ004-v1} & The system shall be able to operate on different hardware without impacting performance. & \\
-\hline
-\hypertarget{NRQ005}{NRQ005-v1} & The user interface shall present the critical information clearly and concisely. & \\
-\hline
-\hypertarget{NRQ006}{NRQ006-v1} & The system shall log each alert and store these logs for at least 1 year. & \\
-\hline
-\hypertarget{NRQ007}{NRQ007-v1} & The system shall provide class-based access control for different user categories. & \\
+\hypertarget{NRQ007}{NRQ007-v1} & The system shall have different pages in the application. & 
+\hyperlink{N07-1}{N07-1}, \hyperlink{N07-2}{N07-2}, \hyperlink{N07-3}{N07-3}, \hyperlink{N07-4}{N07-4} \\
 \hline
 \end{tabular}
 \captionsetup{justification=centering}
-\caption{Non-Functional Requirements for the Camera System, implementation plan will be decided later on in the project in collaboration with the architect and developers}
+\caption{Ordered Non-functional Requirements with clickable linked Sub-requirements}
 \label{table:nonfunctional_requirements}
 \end{table}
 
 \clearpage
 
+\subsection{Sub requirements}
+
+The functional and non functional requirements have been broken down into more manageable tasks. These are connected to their respective requirement through the id, making tracing changes and understanding its motivation clear.
+
+\begin{longtable}{|l|p{15cm}|}
+\hline
+\textbf{ID} & \textbf{Description} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{ID} & \textbf{Description} \\
+\hline
+\endhead
+
+\hline \multicolumn{2}{|r|}{\textit{Continued on the next page}} \\
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+\hypertarget{02-1}{02-1} & The camera system shall output an image from the moment it is triggered. \\
+\hline
+\hypertarget{02-2}{02-2} & The camera system shall communicate with the external server. \\
+\hline
+\hypertarget{02-3}{02-3} & The camera system shall react if an alert is triggered. \\
+\hline
+\hypertarget{02-4}{02-4} & The camera system shall send the image, date, time, and location to the database. \\
+\hline
+\hypertarget{13-1}{13-1} & The guard shall be alerted in the form of an email. \\
+\hline
+\hypertarget{N02-1}{N02-1} & The database shall have all alarms sent to it. \\
+\hline
+\hypertarget{N02-2}{N02-2} & The database shall have a structure allowing time, date, location, and image. \\
+\hline
+\hypertarget{N02-3}{N02-3} & The database shall receive an alarm and save the information. \\
+\hline
+\hypertarget{N02-4}{N02-4} & The database shall be editable, allowing a change of status if the alarm was false. \\
+\hline
+\hypertarget{N02-5}{N02-5} & The database shall store an image only if the alarm was true for a maximum of 6 months. \\
+\hline
+\hypertarget{N02-6}{N02-6} & The database shall be connected with the WebUI, allowing retrieval of information. \\
+\hline
+\hypertarget{12-1}{12-1} & The guards shall not be able to access the application as they are only registered to store their contact info for notifications. \\
+\hline
+\hypertarget{12-2}{12-2} & The manager shall only be able to view statistics and not handle alarms. \\
+\hline
+\hypertarget{12-3}{12-3} & The operator shall only be able to handle alarms and not view statistics. \\
+\hline
+\hypertarget{12-4}{12-4} & The admin shall be able to use all the functionality of the application, including manager and operator functionality, system settings, and role handling. \\
+\hline
+\hypertarget{06-1}{06-1} & The admin shall have access to a WebUI showing the current schedule camera by camera. \\
+\hline
+\hypertarget{06-2}{06-2} & The admin shall have access to a WebUI allowing changes in the schedule. \\
+\hline
+\hypertarget{06-3}{06-3} & The camera schedule shall be updated within 10 minutes. \\
+\hline
+\hypertarget{06-4}{06-4} & The admin shall see these functions by entering each camera separately. \\
+\hline
+\hypertarget{06-5}{06-5} & The admin’s updates shall be performed 95\% of the time. \\
+\hline
+\hypertarget{07-1}{07-1} & The admin shall be able to view the camera’s chosen confidence. \\
+\hline
+\hypertarget{07-2}{07-2} & The admin shall see these functions by entering each camera separately. \\
+\hline
+\hypertarget{07-3}{07-3} & The admin shall be able to update the confidence within 10 minutes 95\% of the time. \\
+\hline
+\hypertarget{15-1}{15-1} & The admin shall be able to change the roles of users. \\
+\hline
+\hypertarget{15-2}{15-2} & The admin shall be able to remove the roles of users. \\
+\hline
+\hypertarget{N07-1}{N07-1} & The system shall have a statistics page (for managers and admins only). \\
+\hline
+\hypertarget{N07-2}{N07-2} & The system shall have a login page as a start page. \\
+\hline
+\hypertarget{N07-3}{N07-3} & The system shall have a start (landing) page. \\
+\hline
+\hypertarget{N07-4}{N07-4} & The system shall have a settings page (for admins only) where confidence levels of cameras can be changed and user roles managed. \\
+\hline
+\hypertarget{01-1}{01-1} & The camera shall output a variable showing what’s in front of it. \\
+\hline
+\hypertarget{01-2}{01-2} & The camera system shall give output of the confidence percentage for the recognized object. \\
+\hline
+\hypertarget{01-3}{01-3} & The camera shall send information to the external server. \\
+\hline
+\hypertarget{03-1}{03-1} & The operational system will receive information regarding alarms. \\
+\hline
+\hypertarget{03-2}{03-2} & The operational system will visually show the operator the alarm. \\
+\hline
+\hypertarget{03-3}{03-3} & The time from an alarm to it being visible for the operator shall be a maximum of 5 seconds. \\
+\hline
+\hypertarget{03-4}{03-4} & The operational system shall show the alarm as a pop-up. \\
+\hline
+\hypertarget{03-5}{03-5} & The pop-up shall disappear when handled. \\
+\hline
+\hypertarget{N05-1}{N05-1} & Wait for UX document. \\
+\hline
+\hypertarget{05-1}{05-1} & The operator will receive the alarm as a pop-up in the WebUI. \\
+\hline
+\hypertarget{05-2}{05-2} & The operator will decide on whether the alarm is true or false. \\
+\hline
+\hypertarget{05-3}{05-3} & The value of the operator’s decision will be added to the database statistics. \\
+\hline
+\hypertarget{05-4}{05-4} & The operator shall have the possibility to manually enter the cameras and decide to start an alarm (if wrongly triggered). \\
+\hline
+\hypertarget{04-1}{04-1} & The pop-up shall be a snapshot, location, time, and a choice to accept or dismiss the alarm. \\
+\hline
+\hypertarget{04-2}{04-2} & The operator shall have access to all active cameras and alarms. \\
+\hline
+\hypertarget{04-3}{04-3} & The operator shall have a button on the alarm that says "cancel alarm." \\
+\hline
+\hypertarget{04-4}{04-4} & The operator shall have a button on the alarm that says "start alarm." \\
+\hline
+\hypertarget{08-1}{08-1} & The operator shall be able to see all active cameras. \\
+\hline
+\hypertarget{08-2}{08-2} & Each camera shall have its confidence, schedule, and location visible. \\
+\hline
+\hypertarget{08-3}{08-3} & The operator shall be able to click on each active camera. \\
+\hline
+\hypertarget{08-4}{08-4} & The operator shall be able to click on an active camera feed. \\
+\hline
+\hypertarget{10-1}{10-1} & The manager shall have access to a site named "history." \\
+\hline
+\hypertarget{10-2}{10-2} & The site should display the relevant statistics. \\
+\hline
+\hypertarget{10-3}{10-3} & This should have get commands connected to the database. \\
+\hline
+\hypertarget{10-4}{10-4} & The manager shall be able to filter statistics. \\
+\hline
+\hypertarget{10-5}{10-5} & This site should have visual displays of the statistics. \\
+\hline
+\hypertarget{14-1}{14-1} & The system shall provide a page only accessible to managers and admins where statistics can be viewed. \\
+\hline
+\hypertarget{14-2}{14-2} & The system shall be able to receive alarm data (according to user story 9) and convert it into readable statistics. \\
+\hline
+\captionsetup{justification=centering}
+\caption{Sub-Requirements with connected id}
+\label{table:longtable}
+\end{longtable}
 
 \subsection{Design Constraints}
 
 
 No significant design elements were requested by Axis Communications, which gives a degree of freedom to be more creative with the design approach. This flexibility allows room to explore various possibilities in terms of functionality and aesthetics, without being constrained by predefined requirements. However, while there is room to innovate, it is crucial that the system remains intuitive and user-friendly. The design shall be developed in iterations through close cooperation between developers, analysts and Axis Communications.
-
-
-\subsection{Software System Attributes}
-
-\textbf{THIS TEXT MIGHT BE MOVED TO ARCHITECTURAL NOTEBOOK}
-
-\subsubsection{Kubernetes}
-The system must be scalable to accommodate varying workloads by utilizing Kubernetes for container orchestration. Kubernetes will be responsible for automating the deployment, scaling, and operation of application containers. This will allow the system to efficiently manage spikes in user activity, ensuring that the application can support an expected maximum of [X] concurrent users without performance degradation. The specific requirements referring to the use of Kubernetes are:
-\begin{itemize}
-    \item 
-The system should automatically scale based on resource demand (CPU, memory).
-    \item 
-High availability through Kubernetes clusters with redundant nodes.
-    \item 
-The system should maintain availability even under peak user loads or infrastructure failures.
-    \item 
-Monitoring and self-healing capabilities must be enabled via Kubernetes.
-\end{itemize}
-
-\subsubsection{Code Standards}
-The system must adhere to well-defined coding standards to ensure maintainability, scalability, and consistency across the development lifecycle. The code should follow code standards introduced at Linköping University, ensuring that it is clean, readable, and easy to extend. Compliance with these standards will also enhance collaboration across teams and minimize technical debt. The specific requirements referring to the code standards are:
-
-\begin{itemize}
-    \item 
-Developers must adhere to established code guidelines. All code should follow consistent naming conventions, indentation, and commenting practices.
-    \item 
-The project must utilize Gitlab as a version control system, adhering to the GitFlow branching strategy to ensure organized collaboration and version management.
-    \item 
-Unit tests, integration tests, and code coverage thresholds (e.g., 80 percentage) must be implemented to verify the correctness of the system and prevent regressions during updates.
-\end{itemize}
-
-\subsubsection{Language Limitation}
-The system must be developed using specific programming languages and technologies due to project requirements and platform constraints, C is required for ACAP development. The choice of languages is required to ensure compatibility with target platforms and shall allow a smooth user experience. The specific requirements referring to the language limitation:
-
-\begin{itemize}
-    \item 
-All components interacting directly with Axis devices must be written in C, as this is the supported language for ACAP development.
-    \item 
-Depending on future system requirements, frameworks such as React or Angular may be considered for front-end development to improve development efficiency and ensure scalability.
-\end{itemize}
 
 \newpage
 ¨% Here you'll find additional relevant info about the project
@@ -382,4 +490,7 @@ Depending on future system requirements, frameworks such as React or Angular may
 
 \printbibliography
 
+\input{changeLogAppendix}
+
 \end{document}
+
