@@ -1,16 +1,44 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import mockUsers from '../mockdata/mockUsers';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate(); // Use navigate from useNavigate
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
-  };
+    console.log('Form submitted');
+ // Checks username and password
+ const user = mockUsers.find((user) => user.username === username && user.password === password);
+
+ if (user) {
+  console.log('User found:', user);
+   // Resets eventual errors
+   setError('');
+
+   // Redirects based on user role
+   switch (user.role) {
+    case 'admin':
+      navigate('/admin');
+      break;
+    case 'operator':
+      navigate('/operator');
+      break;
+    case 'manager':
+      navigate('/dashboard');
+      break;
+    default:
+      setError('Unknown role');
+  }
+} else {
+  // Error if a user cannot be found.
+  setError('Incorrect username or password.');
+}
+};
 
   return (
     <div className="flex h-screen">
@@ -22,6 +50,9 @@ const Login = () => {
               Enter your username and password
             </div>
           </h2>
+
+          {/* Error message */}
+          {error && <p className="text-red-500 mb-4">{error}</p>}
 
           {/* Username Input */}
           <div className="mb-4">
