@@ -5,7 +5,7 @@ from .clips.clips_routes import clips_bp
 from .schedules.schedules_routes import schedules_bp
 from .snapshots.snapshots_routes import snapshots_bp
 from .auth.auth_routes import auth_bp
-from .dataprocessing.dataprocessing_service import processing
+from .dataprocessing.dataprocessing_routes import processing
 
 # Register blueprints
 
