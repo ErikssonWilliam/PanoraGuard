@@ -9,9 +9,9 @@ def get_snapshots():
     return SnapshotController.get_snapshots()
 
 
-@snapshots_bp.route("/add", methods=["POST"])
-def add_snapshot():
-    return SnapshotController.add_snapshot()
+@snapshots_bp.route("/upload", methods=["POST"])
+def upload_snapshot():
+    return SnapshotController.upload_snapshot()
 
 
 @snapshots_bp.route("/<string:snapshot_id>", methods=["GET"])

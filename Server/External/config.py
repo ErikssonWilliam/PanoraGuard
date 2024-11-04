@@ -17,6 +17,7 @@ class Config:
     # Try to load environment variables, exit if critical ones are missing
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
     SECRET_KEY = os.getenv("SECRET_KEY")  # For jwt tokens
+    email_pswrd = os.getenv("email_pswrd")
 
     # Exit if essential environment variables are missing
     if not SQLALCHEMY_DATABASE_URI:
