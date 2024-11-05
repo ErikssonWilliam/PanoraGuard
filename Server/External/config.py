@@ -1,31 +1,29 @@
 import os
-from dotenv import load_dotenv, find_dotenv
 import sys
+import secrets
+from dotenv import load_dotenv, find_dotenv
 
-# Find and load the .env file, exit if not found
 dotenv_path = find_dotenv()
-if not dotenv_path:
-    print(
-        "Error: .env file not found. Please create one with the necessary configurations."
-    )
-    sys.exit(1)
-else:
+if dotenv_path:
     load_dotenv(dotenv_path)
 
 
 class Config:
-    # Try to load environment variables, exit if critical ones are missing
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
-    SECRET_KEY = os.getenv("SECRET_KEY")  # For jwt tokens
-    email_pswrd = os.getenv("email_pswrd")
+    if os.getenv("TESTING"):
+        SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+        SECRET_KEY = secrets.token_hex(16)
+        email_pswrd = "test_password"
+    else:
+        REQUIRED_ENV_VARS = ["DATABASE_URL", "SECRET_KEY", "email_pswrd"]
 
-    # Exit if essential environment variables are missing
-    if not SQLALCHEMY_DATABASE_URI:
-        print("Error: DATABASE_URL not set in the .env file.")
-        sys.exit(1)
-
-    if not SECRET_KEY:
-        print("Error: SECRET_KEY not set in the .env file.")
-        sys.exit(1)
+        missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
+        if missing_vars:
+            print("Error: The following environment variables are missing:")
+            for var in missing_vars:
+                print(f" - {var}")
+            sys.exit(1)
+        SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
+        SECRET_KEY = os.getenv("SECRET_KEY")
+        email_pswrd = os.getenv("email_pswrd")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

@@ -9,8 +9,9 @@ from .dataprocessing.dataprocessing_routes import processing
 
 # Register blueprints
 
-#Empty testdb for postman
+# Empty testdb for postman
 users_db = {}
+
 
 def init_routes(app):
     app.register_blueprint(users_bp, url_prefix="/users")
