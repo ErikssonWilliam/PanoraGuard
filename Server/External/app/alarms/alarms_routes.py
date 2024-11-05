@@ -27,3 +27,8 @@ def get_alarm_by_id(alarm_id):
 @alarms_bp.route("/<string:alarm_id>", methods=["DELETE"])
 def delete_alarm_by_id(alarm_id):
     return AlarmController.delete_alarm_by_id(alarm_id)
+
+# Update alarm status by id
+@alarms_bp.route("/<string:alarm_id>/status", methods=["PUT"])
+def update_alarm_status(alarm_id):
+    return AlarmController.update_alarm_status(alarm_id)

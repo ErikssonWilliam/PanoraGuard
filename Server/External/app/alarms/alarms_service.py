@@ -28,6 +28,21 @@ class AlarmService:
 
     def get_alarm_by_id(schedule_id):
         return  # add logic
+    
+    def update_alarm_status(alarm_id, new_status):
+    # Find the alarm by ID
+        alarm = Alarm.query.get(alarm_id)
+        if alarm:
+            # Check if the status is valid
+            if new_status not in [status.value for status in AlarmStatus]:
+                return None  # Invalid status
+            
+            # Update the alarm status
+            alarm.status = AlarmStatus[new_status.upper()]  # Convert string to enum
+            db.session.commit()
+            return alarm.to_dict()  # Return the updated alarm as a dictionary
+        return None  # Alarm not found
+
 
     def delete_alarm_by_id(schedule_id):
         #    alarm = AlarmController.get_alarm_by_id(alarm_id)
