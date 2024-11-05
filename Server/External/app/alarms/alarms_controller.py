@@ -43,6 +43,18 @@ class AlarmController:
     @staticmethod
     def notify_new_alarm(alarm):
         socketio.emit("new_alarm", alarm)
+        
+    def update_alarm_status(alarm_id):
+        alarm_data = request.get_json()
+        if not alarm_data or 'status' not in alarm_data:
+            return jsonify({"message": "Status is required"}), 400
+
+        updated_alarm = AlarmService.update_alarm_status(alarm_id, alarm_data['status'])
+        if updated_alarm:
+            return jsonify(updated_alarm), 200
+        else:
+            return jsonify({"message": "Alarm not found"}), 404
+
 
 
 # Frontend Logic:
