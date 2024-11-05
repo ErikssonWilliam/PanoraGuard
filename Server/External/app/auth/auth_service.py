@@ -29,4 +29,4 @@ class AuthService:
 
     @staticmethod
     def signup(username, password, role):
-        return UserController.create_user(username, password, role)
+        return
