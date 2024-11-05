@@ -1,5 +1,16 @@
 from .extensions import db
-from .models import *
+from .models import (
+    ImageSnapshot,
+    VideoClip,
+    User,
+    UserRole,
+    Camera,
+    Alarm,
+    CameraControlAction,
+    CameraControlType,
+    AlarmStatus,
+)
+import uuid
 
 session = db.session
 
@@ -35,7 +46,7 @@ def create_mock_users():
         email="jane@examplex.com",
     )
     user3 = User(
-        id="35ad0eab-2347-404e-a833-d8b2fb0367ff",
+        id=uuid.UUID("35ad0eab-2347-404e-a833-d8b2fb0367ff"),
         username="guardian_of_the_galaxy",
         password_hash="hashed_password456xx",
         role=UserRole.GUARD,
@@ -71,7 +82,9 @@ def create_mock_alarm(user, image_snapshot, video_clip, camera, statusState):
     return alarm
 
 
-def create_mock_alarm_test(idtest, user, image_snapshot, video_clip, camera, statusState):
+def create_mock_alarm_test(
+    idtest, user, image_snapshot, video_clip, camera, statusState
+):
     alarm = Alarm(
         id=idtest,
         camera_id=camera.id,
@@ -104,18 +117,20 @@ def create_mock_data():
     video = create_mock_video_clip()
     user1, user2, user3 = create_mock_users()
     camera = create_mock_camera()
-    alarm = create_mock_alarm(user1, image, video, camera, AlarmStatus.PENDING)
-    alarm2 = create_mock_alarm_test(
-        "cc006a17-0852-4e0e-b13c-36e4092f767d", user1, image, video, camera, AlarmStatus.CANCELED)
-    alarm3 = create_mock_alarm(
-        user1, image, video, camera, AlarmStatus.CANCELED)
-    alarm4 = create_mock_alarm(
-        user1, image, video, camera, AlarmStatus.CANCELED)
-    alarm5 = create_mock_alarm(
-        user1, image, video, camera, AlarmStatus.CANCELED)
-    alarm6 = create_mock_alarm(
-        user1, image, video, camera, AlarmStatus.CANCELED)
-    cameraControlAction = create_mock_camera_control_action(camera, user1)
+    create_mock_alarm(user1, image, video, camera, AlarmStatus.PENDING)
+    create_mock_alarm_test(
+        uuid.UUID("cc006a17-0852-4e0e-b13c-36e4092f767d"),
+        user1,
+        image,
+        video,
+        camera,
+        AlarmStatus.CANCELED,
+    )
+    create_mock_alarm(user1, image, video, camera, AlarmStatus.CANCELED)
+    create_mock_alarm(user1, image, video, camera, AlarmStatus.CANCELED)
+    create_mock_alarm(user1, image, video, camera, AlarmStatus.CANCELED)
+    create_mock_alarm(user1, image, video, camera, AlarmStatus.CANCELED)
+    create_mock_camera_control_action(camera, user1)
     return "Success"
 
 

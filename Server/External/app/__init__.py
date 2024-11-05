@@ -14,7 +14,7 @@ def create_app():
     # Configure JWT & Bcrypt
     app.config["JWT_SECRET_KEY"] = app.config.get("SECRET_KEY")
     bcrypt.init_app(app)
-    jwt = JWTManager(app)
+    JWTManager(app)
 
     # Initialize the database
     db.init_app(app)

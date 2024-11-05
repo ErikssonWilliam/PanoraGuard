@@ -1,5 +1,4 @@
 # logic
-from app.models import *
 
 
 class ClipService:

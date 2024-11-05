@@ -59,15 +59,15 @@ status:
   variables:
     GIT_STRATEGY: none
 
-# external-lint:
-#   stage: external-lint
-#   image: python:3.10  
-#   before_script:
-#     - cd Server/External 
-#     - pip install ruff 
-#   script:
-#     - ruff check
-#     - ruff format
+external-lint:
+  stage: external-lint
+  image: python:3.10  
+  before_script:
+    - cd Server/External 
+    - pip install ruff 
+  script:
+    - ruff check
+    - ruff format
 
 external-test:
   stage: external-test

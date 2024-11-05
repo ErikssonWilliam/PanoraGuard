@@ -1,5 +1,4 @@
 # logic
-from app.models import *
 import base64
 import os
 import imghdr
@@ -22,7 +21,7 @@ class SnapshotService:
             image_type = imghdr.what(None, h=snapshot_binary)
 
             if image_type is None:
-                image_type = 'bin'
+                image_type = "bin"
 
             # if meets_critera(snapshot_binary):
             #     store_snapshot_on_cloud(snapshot_binary)
