@@ -21,16 +21,11 @@ class AuthService:
         # Generate a JWT token
         access_token = create_access_token(
             identity={"user_id": user.id, "role": user.role.value},
-            expires_delta=timedelta(minutes=15),
+            expires_delta=timedelta(hours=12),
         )
-        # refresh_token = create_refresh_token(
-        #     identity={"username": username, "role": user["role"].value},
-        #     expires_delta=timedelta(days=1),
-        # )
 
         return {
             "access_token": access_token,
-            # "refresh_token": refresh_token,
         }  # Return a dictionary
 
     @staticmethod

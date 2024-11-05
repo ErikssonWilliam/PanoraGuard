@@ -22,13 +22,7 @@ class AuthController:
             return jsonify(access_token=token), 200
         except Exception as e:
             return jsonify({"msg": str(e)}), 401
-
-    def refresh():
-        current_user = get_jwt_identity()  # Hämtar användaren från refresh token
-        new_access_token = create_access_token(
-            identity=current_user, expires_delta=timedelta(minutes=15)
-        )
-        return jsonify(access_token=new_access_token), 200
+        
 
     def protected():
         current_user = get_jwt_identity()  # hämtar den inloggade användaren
