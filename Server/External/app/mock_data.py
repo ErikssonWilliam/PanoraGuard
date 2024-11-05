@@ -48,13 +48,13 @@ def create_mock_camera():
     return camera
 
 
-def create_mock_alarm(user, image_snapshot, video_clip, camera):
+def create_mock_alarm(user, image_snapshot, video_clip, camera, statusState):
     alarm = Alarm(
         camera_id=camera.id,
         confidence_score=0.95,
         image_snapshot_id=image_snapshot.id,
         video_clip_id=video_clip.id,
-        status=AlarmStatus.PENDING,
+        status=statusState,
         operator_id=user.id,
     )
 
@@ -80,7 +80,17 @@ def create_mock_data():
     video = create_mock_video_clip()
     user1, user2 = create_mock_users()
     camera = create_mock_camera()
-    alarm = create_mock_alarm(user1, image, video, camera)
+    alarm = create_mock_alarm(user1, image, video, camera, AlarmStatus.PENDING)
+    alarm2 = create_mock_alarm(
+        user1, image, video, camera, AlarmStatus.CANCELED)
+    alarm3 = create_mock_alarm(
+        user1, image, video, camera, AlarmStatus.CANCELED)
+    alarm4 = create_mock_alarm(
+        user1, image, video, camera, AlarmStatus.CANCELED)
+    alarm5 = create_mock_alarm(
+        user1, image, video, camera, AlarmStatus.CANCELED)
+    alarm6 = create_mock_alarm(
+        user1, image, video, camera, AlarmStatus.CANCELED)
     cameraControlAction = create_mock_camera_control_action(camera, user1)
     return "Success"
 
