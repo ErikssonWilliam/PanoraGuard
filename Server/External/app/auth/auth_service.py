@@ -23,7 +23,7 @@ class AuthService:
 
         return {
             "access_token": access_token,
-            "role": user.role.value
+            "role": user.role.value,
             # "refresh_token": refresh_token,
         }  # Return a dictionary
 
