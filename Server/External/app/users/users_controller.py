@@ -10,7 +10,7 @@ from .users_service import UserService
 class UserController:
     def get_users():
         users = UserService.get_users()
-        return jsonify([{"username": u.username, "email": u.email} for u in users]), 200
+        return jsonify([{"id": u.id, "username": u.username, "email": u.email} for u in users]), 200
 
     def get_user_by_id(user_id):
         user = UserService.get_user_by_id(user_id)
@@ -27,7 +27,8 @@ class UserController:
             email=data["email"],
         )
         return (
-            jsonify({"message": "User created", "user": new_user.exposed_fields()}),
+            jsonify({"message": "User created",
+                    "user": new_user.exposed_fields()}),
             201,
         )
 
