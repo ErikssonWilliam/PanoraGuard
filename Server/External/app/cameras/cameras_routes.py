@@ -3,6 +3,7 @@ from .cameras_controller import CameraController
 
 cameras_bp = Blueprint("cameras", __name__)
 
+
 @cameras_bp.route("/", methods=["GET"])
 def get_cameras():
     return CameraController.get_cameras()
@@ -23,6 +24,6 @@ def delete_camera_by_id(camera_id):
     return CameraController.delete_camera(camera_id)
 
 
-@cameras_bp.route("/upload/data", methods = ["POST"])
+@cameras_bp.route("/upload/data", methods=["POST"])
 def process_camera_data():
     return CameraController.process_camera_data()

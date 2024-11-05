@@ -1,6 +1,6 @@
 # This file contains the service layer for the alarms module
 
-from app.models import *  # Import the Alarm model
+from app.models import Alarm, AlarmStatus, User, ImageSnapshot  # Import the Alarm model
 from typing import List
 from flask import jsonify
 from app.extensions import db  # Import the database instance
@@ -61,7 +61,7 @@ class AlarmService:
 
     def notify_guard(guard_ID, alarm_ID):
         # Step 1: Get the guard's email
-        guard = User.query.filter_by(id=guard_ID, role='GUARD').first()
+        guard = User.query.filter_by(id=guard_ID, role="GUARD").first()
         if not guard:
             return jsonify({"status": "No guard found"}), 404
 
@@ -72,7 +72,8 @@ class AlarmService:
 
         # Retrieve the associated image snapshot URL
         image_snapshot = ImageSnapshot.query.filter_by(
-            id=alarm.image_snapshot_id).first()
+            id=alarm.image_snapshot_id
+        ).first()
         if not image_snapshot:
             return jsonify({"status": "No image snapshot associated with alarm"}), 404
 
@@ -87,15 +88,15 @@ class AlarmService:
 
         # Create the email
         msg = MIMEMultipart()
-        msg['From'] = from_email
-        msg['To'] = to_email
-        msg['Subject'] = subject
-        msg.attach(MIMEText(body, 'plain'))
+        msg["From"] = from_email
+        msg["To"] = to_email
+        msg["Subject"] = subject
+        msg.attach(MIMEText(body, "plain"))
 
         try:
             print("Email content before sending:")
             print(msg)
-            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server = smtplib.SMTP("smtp.gmail.com", 587)
             server.starttls()
             server.login(from_email, from_password)
             content = msg.as_string()
