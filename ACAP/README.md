@@ -36,7 +36,6 @@ Follow these steps to build and install an ACAP using Docker.
 
 ## Additional Resources
 
-- [Metadata Broker Example](https://github.com/AxisCommunications/acap-native-sdk-examples/tree/main/metadata-broker)
+- [(Message) Metadata Broker Example](https://github.com/AxisCommunications/acap-native-sdk-examples/tree/main/message-broker)
 - [Metadata Broker API Docs](https://axiscommunications.github.io/acap-documentation/docs/api/src/api/metadata-broker/html/standard_topics.html)
-
-
+- [AXIS Scene Metadata integration](https://www.axis.com/developer-community/scene-metadata-integration)

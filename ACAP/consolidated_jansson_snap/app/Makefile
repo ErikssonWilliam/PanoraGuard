@@ -1,4 +1,4 @@
-PROG1	= consolidated_jansson_http
+PROG1	= consolidated_snap_demo
 OBJS1	= $(PROG1).c
 PROGS	= $(PROG1)
 DEBUG_DIR = debug

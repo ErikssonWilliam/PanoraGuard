@@ -2,7 +2,7 @@
     "schemaVersion": "1.7.0",
     "acapPackageConf": {
         "setup": {
-            "appName": "consolidated_jansson_http",
+            "appName": "consolidated_snap_demo",
             "vendor": "Axis Communications",
             "embeddedSdkVersion": "3.0",
             "vendorUrl": "https://www.axis.com",
