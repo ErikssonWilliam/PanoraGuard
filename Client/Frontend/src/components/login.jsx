@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+//import mockUsers from '../mockdata/mockUsers';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loggedIn, setLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate(); // Use navigate from useNavigate
 
-  const handleSubmit =  async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    setUsername(document.getElementById('username').value);
-    setPassword(document.getElementById('password').value);
+
+//    setUsername(document.getElementById("username").value);
+//    setPassword(document.getElementById("password").value);
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/auth/login', {
+      const response = await fetch ("http://localhost:5000/auth/login", {
         method: 'POST',
         headers: {
-          'Content-Type' : 'application/json',
+          "Content-Type" : "application/json",
         },
         body: JSON.stringify({
           username,
@@ -28,24 +31,52 @@ const Login = () => {
         throw new Error("Login failed");
       }
 
-    const result = await response.json();
-    console.log("Success");
-    setResponseMessage("Success");
+    const user = await response.json();
+    setResponseMessage("s");
     } catch (error) {
-      setResponseMessage("Error");
+      setResponseMessage("f")
     }
-    }
+ // Checks username and password
+ //const user = mockUsers.find((user) => user.username === username && user.password === password);
+
+/*if (user) {
+  console.log('User found:', user);
+   // Resets eventual errors
+   setError('');*/
+
+   // Redirects based on user role
+   switch (user.role) {
+    case 'admin':
+      navigate('/admin');
+      break;
+    case 'operator':
+      navigate('/operator');
+      break;
+    case 'manager':
+      navigate('/dashboard');
+      break;
+    default:
+      setError('Unknown role');
+  }
+/*} else {
+  // Error if a user cannot be found.
+  setError('Incorrect username or password.');
+}*/
+};
 
   return (
     <div className="flex h-screen">
       {/* Left Panel */}
       <div className="leftPanel flex flex-1 justify-center items-center bg-gray-100">
-        <form onSubmit={handleSubmit} className="bg-LightGray p-8 rounded-lg shadow-md">
+        <form onSubmit={handleSubmit()} className="bg-LightGray p-8 rounded-lg shadow-md">
           <h2 className="text-xl font-bold text-NavyBlue mb-6">
             <div className="max-w-xs text-center">
               Enter your username and password
             </div>
           </h2>
+
+          {/* Error message */}
+          {error && <p className="text-red-500 mb-4">{error}</p>}
 
           {/* Username Input */}
           <div className="mb-4">
@@ -83,7 +114,6 @@ const Login = () => {
           <button
             type="submit"
             className="w-full bg-ButtonsBlue text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-            onClick={handleSubmit()}
           >
             Submit
           </button>
