@@ -7,15 +7,16 @@ from app.extensions import db # Import the database instance
 
 class AlarmService:
     def get_alarms() -> List[Alarm]:     
-        return Alarm.query.all()
+        alarms = Alarm.query.all()
+        return [alarm.to_dict() for alarm in alarms]
 
     def create_alarm(alarm_data):
         new_alarm = Alarm(
             camera_id=alarm_data["camera_id"],
             confidence_score=alarm_data["confidence_score"],
             timestamp=alarm_data["timestamp"],
-            #image_snapshot_id=alarm_data["image_snapshot_id"],
-            #video_clip_id=alarm_data["video_clip_id"],
+            image_snapshot_id=alarm_data["image_snapshot_id"],
+            video_clip_id=alarm_data["video_clip_id"],
             #ToDO: snapshot_string?
             #ToDo: type?
             status="pending", # Set default status to "pending"

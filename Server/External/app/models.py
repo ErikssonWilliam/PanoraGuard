@@ -109,6 +109,18 @@ class Alarm(db.Model):
     video_clip_id = db.Column(UUID(as_uuid=True), db.ForeignKey("video_clips.id"))
     status = db.Column(db.Enum(AlarmStatus), nullable=False)
     operator_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "camera_id": str(self.camera_id),
+            "confidence_score": self.confidence_score,
+            "timestamp": self.timestamp.isoformat(),
+            "image_snapshot_id": str(self.image_snapshot_id) if self.image_snapshot_id else None,
+            "video_clip_id": str(self.video_clip_id) if self.video_clip_id else None,
+            "status": self.status.value,
+            "operator_id": str(self.operator_id) if self.operator_id else None
+        }
 # ToDo: The alarm shoud NOT have video_clip_id and image_snapshot_id as attributes/relationships...?
 # Also: Add type to the alarm; Human, Vehicle, Face, etc.?
 
