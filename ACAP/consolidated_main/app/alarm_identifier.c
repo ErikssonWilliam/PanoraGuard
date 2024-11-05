@@ -34,12 +34,22 @@ static void on_connection_error(mdb_error_t *error, void *user_data)
 
 // Code ------------------------------------------------------------------
 
-// Function to handle the response from the HTTP request
-static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
-{
-    (void)userp;
+// Function to handle the response from HTTP requests
+static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t total_size = size * nmemb;
-    syslog(LOG_INFO, "Response from camera: %.*s", (int)total_size, (char *)contents);
+    response_data_t *mem = (response_data_t *)userp;
+
+    char *ptr = realloc(mem->memory, mem->size + total_size + 1);
+    if (ptr == NULL) {
+        syslog(LOG_ERR, "Not enough memory for response");
+        return 0;
+    }
+
+    mem->memory = ptr;
+    memcpy(&(mem->memory[mem->size]), contents, total_size);
+    mem->size += total_size;
+    mem->memory[mem->size] = 0;
+
     return total_size;
 }
 
@@ -66,6 +76,70 @@ static void post_to_external(const char *data)
         curl_easy_cleanup(curl);
     }
 }
+
+static void get_camera_id(char** camera_id){
+    CURL *curl;
+    CURLcode res;
+
+    response_data_t response_data;
+    response_data.memory = malloc(1);
+    response_data.size = 0;
+
+    curl = curl_easy_init();
+    if (curl) {
+        const char *data = "{\"apiVersion\":\"1.0\",\"context\":\"Client defined request ID\",\"method\":\"getAllUnrestrictedProperties\"}";
+        
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Accept: application/json");
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+
+        curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.1.121/axis-cgi/basicdeviceinfo.cgi");
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response_data);
+        //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // For detailed debug output
+
+        // Perform the HTTP POST request
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK) {
+            syslog(LOG_ERR, "curl_easy_perform() failed in camera id: %s\n", curl_easy_strerror(res));
+        } else {
+            json_error_t error;
+            json_t *root = json_loads(response_data.memory, 0, &error);
+            if (root) {
+                json_t *data = json_object_get(root, "data");
+                if (data) {
+                    json_t *property_list = json_object_get(data, "propertyList");
+                    if (property_list) {
+                        json_t *id = json_object_get(property_list, "HardwareID");
+                        if (json_is_string(id)) { // Adjust to json_is_string if the value is a string
+                            *camera_id = strdup(json_string_value(id));
+                            syslog(LOG_INFO, "Camera ID: %s", *camera_id);
+                        } else {
+                            syslog(LOG_ERR, "HardwareID not found in the JSON response or is not a string");
+                        }
+                    } else {
+                        syslog(LOG_ERR, "propertyList not found in the JSON response");
+                    }
+                } else {
+                    syslog(LOG_ERR, "data not found in the JSON response");
+                }
+            } else {
+                syslog(LOG_ERR, "JSON parsing error: %s", error.text);
+            }
+        }
+
+        // Clean up
+        curl_easy_cleanup(curl);
+        curl_slist_free_all(headers);
+        free(response_data.memory);
+    } else {
+        syslog(LOG_ERR, "Failed to initialize CURL");
+    }
+}
+
 
 static bool parse_json_payload(const mdb_message_payload_t *payload, char **type_value, double *score_value, char **image_value, char **time)
 {
@@ -142,10 +216,15 @@ static void on_message(const mdb_message_t *message, void *user_data)
     double score_value = 0.0;
     char *image_value = NULL;
     char *time = NULL;
+    char *camera_id = NULL;
 
     bool res = parse_json_payload(payload, &type_value, &score_value, &image_value, &time);
     if (res)
     {
+        get_camera_id(&camera_id);
+        if(!camera_id){
+            return;
+        }
         // Log the detected object information
         syslog(LOG_INFO,
                "Detected object - Topic: %s, Source: %s, Time: %s, Type: %s, Score: %.4f, Image Data: %s",
