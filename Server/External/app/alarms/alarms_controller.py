@@ -7,8 +7,7 @@ from .alarms_service import AlarmService
 
 class AlarmController:
     def get_alarms():
-        alarms = AlarmService.get_alarms()
-        return jsonify[({"alarmID" : a.alarm.id, "timestamp" : a.alarm.timestamp} for a in alarms)]
+        return jsonify(AlarmService.get_alarms())
 
     def add_alarm():
         alarm_data = request.get_json()

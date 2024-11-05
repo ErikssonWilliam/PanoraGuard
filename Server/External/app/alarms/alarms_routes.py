@@ -8,10 +8,10 @@ alarms_bp = Blueprint("alarms", __name__)
 def get_alarms():
     return AlarmController.get_alarms()
 
-# Get latest alarm
-@alarms_bp.route("/new", methods=["GET"])
-def get_new_alarm():
-    return AlarmController.get_new_alarm()
+# # Get latest alarm
+# @alarms_bp.route("/new", methods=["GET"])
+# def get_new_alarm():
+#     return AlarmController.get_new_alarm()
 
 # Add alarm
 @alarms_bp.route("/add", methods=["POST"])
