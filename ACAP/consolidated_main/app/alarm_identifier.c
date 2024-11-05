@@ -67,7 +67,7 @@ static void post_to_external(const char *data)
     }
 }
 
-static bool parse_json_payload(const mdb_message_payload_t *payload, char **type_value, double *score_value, char **image_value)
+static bool parse_json_payload(const mdb_message_payload_t *payload, char **type_value, double *score_value, char **image_value, char **time)
 {
     json_error_t error;
     json_t *root = json_loadb((const char *)payload->data, payload->size, 0, &error);
@@ -78,6 +78,7 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
         return false; 
     }
 
+    //retrive score and type from "classes"
     json_t *classes = json_object_get(root, "classes");
     if(!json_is_array(classes) || json_array_size(classes) = 0){
         syslog(LOG_ERR, "JSON parsing error: No classes object in alarm data");
@@ -87,15 +88,21 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
 
     json_t *first_class = json_array_get(classes, 0);
     json_t *score = json_object_get(first_class, "score");
-    json_t *type = json_object_get(first_class, "type");
 
-    if(!json_is_real(score) || json_is_string(type)){
-        syslog(LOG_ERR, "JSON parsing error: No object score or type found");
+    if(!json_is_real(score)){
+        syslog(LOG_ERR, "JSON parsing error: No object score found");
+        json_decref(root);
+        return false;
+    }
+    *score_value = json_real_value(score);
+
+    json_t *type = json_object_get(first_class, "type");
+    if(!json_is_string(type)){
+        syslog(LOG_ERR, "JSON parsing error: No object type found");
         json_decref(root);
         return false;
     }
 
-    *score_value = json_real_value(score);
     *type_value = strdup(json_string_value(type));
 
     json_t *image = json_object_get(root, "image");
@@ -112,6 +119,15 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
         return false;
     }
     *image_value = strdup(json_string_value(data));
+
+    json_t *t = json_object_get(root, "end_time");
+    if(!json_is_string(t)){
+        syslog(LOG_ERR, "JSON parsing error: No timestamp found in alarm data");
+        json_decref(root);
+        return false;
+    }
+    *time = strdup(json_string_value(t));
+
     json_decref(root);
     return true;
 }
@@ -126,8 +142,9 @@ static void on_message(const mdb_message_t *message, void *user_data)
     char *type_value = NULL;
     double score_value = 0.0;
     char *image_value = NULL;
+    char *time = NULL;
 
-    bool res = parse_json_payload(payload, &type_value, &score_value, &image_value);
+    bool res = parse_json_payload(payload, &type_value, &score_value, &image_value, time);
     if (res)
     {
         // Log the detected object information
@@ -150,7 +167,8 @@ static void on_message(const mdb_message_t *message, void *user_data)
         //json_object_set_new(json_data, "type", json_string(type_value));
         json_object_set_new(json_data, "confidence_score", json_real(score_value));
         json_object_set_new(json_data, "image_base64", json_string(image_value));
-        //TODO: add camera_id, timestamp
+        json_object_set_new(json_data, "timestamp", json_string(time));
+        //TODO: add camera_id
 
         char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
         post_to_external(json_str);
