@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit =  async (e) => {
@@ -12,7 +13,7 @@ const Login = () => {
     setPassword(document.getElementById('password').value);
 
     try {
-      const response = await fetch('http://localhost:5000/user/login', {
+      const response = await fetch('http://127.0.0.1:5000/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type' : 'application/json',
@@ -28,10 +29,10 @@ const Login = () => {
       }
 
     const result = await response.json();
-    setResponseMessage(result.message);
-    setFormData({ username : '', password : ''});
+    console.log("Success");
+    setResponseMessage("Success");
     } catch (error) {
-      setResponseMessage(error.message)
+      setResponseMessage("Error");
     }
     }
 
