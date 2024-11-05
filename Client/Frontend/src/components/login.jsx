@@ -8,6 +8,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate(); // Use navigate from useNavigate
+  const [responseMessage, setResponseMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,64 +17,54 @@ const Login = () => {
 //    setPassword(document.getElementById("password").value);
 
     try {
-      const response = await fetch ("http://localhost:5000/auth/login", {
+      const response = await fetch("http://localhost:5000/auth/login", {
         method: 'POST',
         headers: {
-          "Content-Type" : "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username,
-          password
-        }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
         throw new Error("Login failed");
       }
 
-    const user = await response.json();
-    setResponseMessage("s");
+      const user = await response.json(); // Fetch and store user data
+      setResponseMessage("Logged in");
+
+      // Redirect based on user role
+      switch (user.role) {
+        case 'admin':
+          navigate('/admin');
+          break;
+        case 'operator':
+          navigate('/operator');
+          break;
+        case 'manager':
+          navigate('/dashboard');
+          break;
+        default:
+          setError('Unknown role');
+      }
+
     } catch (error) {
-      setResponseMessage("f")
+      setResponseMessage("User not found");
     }
- // Checks username and password
- //const user = mockUsers.find((user) => user.username === username && user.password === password);
-
-/*if (user) {
-  console.log('User found:', user);
-   // Resets eventual errors
-   setError('');*/
-
-   // Redirects based on user role
-   switch (user.role) {
-    case 'admin':
-      navigate('/admin');
-      break;
-    case 'operator':
-      navigate('/operator');
-      break;
-    case 'manager':
-      navigate('/dashboard');
-      break;
-    default:
-      setError('Unknown role');
-  }
-/*} else {
-  // Error if a user cannot be found.
-  setError('Incorrect username or password.');
-}*/
-};
+  };
 
   return (
     <div className="flex h-screen">
       {/* Left Panel */}
       <div className="leftPanel flex flex-1 justify-center items-center bg-gray-100">
-        <form onSubmit={handleSubmit()} className="bg-LightGray p-8 rounded-lg shadow-md">
+        <form onSubmit={handleSubmit} className="bg-LightGray p-8 rounded-lg shadow-md">
           <h2 className="text-xl font-bold text-NavyBlue mb-6">
             <div className="max-w-xs text-center">
               Enter your username and password
             </div>
           </h2>
+
+          {/* Error message */}
+          {error && <p className="text-red-500 mb-4">{error}</p>}
 
           {/* Error message */}
           {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -117,6 +108,7 @@ const Login = () => {
           >
             Submit
           </button>
+          {responseMessage && <p>{responseMessage}</p>}
         </form>
       </div>
 

@@ -17,9 +17,9 @@ class AuthController:
         password = request.json.get("password", None)
 
         try:
-            token = AuthService.login(username, password)
-            print(token)
-            return jsonify(access_token=token), 200
+            user = AuthService.login(username, password)
+            print(user)
+            return jsonify(user), 200
         except Exception as e:
             return jsonify({"msg": str(e)}), 401
 

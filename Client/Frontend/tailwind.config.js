@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+       'poppings' : ['poppings','sans-serif'],
+       'jakarta' : [ "Plus Jakarta Sans", 'sans-serif'],
+      },
       colors: {
         NavyBlue: '#0A3D62',
         SlateBlue: '#2E5984',
@@ -15,6 +19,13 @@ export default {
         BG: '#F5F7FA',
         ButtonsBlue: '#0650C6',
         AlaramRed: '#C60606',
+      },
+      keyframes: {
+        float: {
+          '0%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+          '100%': { transform: 'translateY(0)' },
+        },
       },
     },
   },

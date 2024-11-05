@@ -1,5 +1,6 @@
 import React from 'react';
 import profileImage from '../assets/react.svg';
+import { Link } from 'react-router-dom';
 
 const ProfilePage = () => {
     return (
@@ -8,7 +9,7 @@ const ProfilePage = () => {
             <header className="navBar bg-BG text-white p-6 flex justify-between items-center">
                 {/* Centered Company Name */}
                 <h1 className="companyName text-3xl font-bold text-ButtonsBlue mx-auto">panoraGuard</h1>
-                <button className="homeButton bg-white text-blue-600 font-semibold py-2 px-4 rounded">Home</button>
+                <Link to='/' className="homeButton bg-white text-blue-600 font-semibold py-2 px-4 rounded">Home</Link>
             </header>
 
             {/* Main Content Area */}
