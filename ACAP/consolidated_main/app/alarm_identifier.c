@@ -80,7 +80,7 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
 
     //retrive score and type from "classes"
     json_t *classes = json_object_get(root, "classes");
-    if(!json_is_array(classes) || json_array_size(classes) = 0){
+    if(!json_is_array(classes) || json_array_size(classes) == 0){
         syslog(LOG_ERR, "JSON parsing error: No classes object in alarm data");
         json_decref(root);
         return false; 
@@ -127,7 +127,6 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
         return false;
     }
     *time = strdup(json_string_value(t));
-
     json_decref(root);
     return true;
 }
@@ -144,27 +143,21 @@ static void on_message(const mdb_message_t *message, void *user_data)
     char *image_value = NULL;
     char *time = NULL;
 
-    bool res = parse_json_payload(payload, &type_value, &score_value, &image_value, time);
+    bool res = parse_json_payload(payload, &type_value, &score_value, &image_value, &time);
     if (res)
     {
         // Log the detected object information
         syslog(LOG_INFO,
-               "Detected object - Topic: %s, Source: %s, Time: %lld.%.9ld, Type: %s, Score: %.4f, Image Data: %s",
+               "Detected object - Topic: %s, Source: %s, Time: %s, Type: %s, Score: %.4f, Image Data: %s",
                channel_identifier->topic,
                channel_identifier->source,
-               (long long)timestamp->tv_sec,
-               timestamp->tv_nsec,
+               time,
                type_value,
                score_value,
                image_value);
 
         // Prepare data for HTTP request, Create a JSON object
         json_t *json_data = json_object();
-        //json_object_set_new(json_data, "topic", json_string(channel_identifier->topic));
-        //json_object_set_new(json_data, "source", json_string(channel_identifier->source));
-        //json_object_set_new(json_data, "time_sec", json_integer((long long)timestamp->tv_sec));
-        //json_object_set_new(json_data, "time_nsec", json_integer(timestamp->tv_nsec));
-        //json_object_set_new(json_data, "type", json_string(type_value));
         json_object_set_new(json_data, "confidence_score", json_real(score_value));
         json_object_set_new(json_data, "image_base64", json_string(image_value));
         json_object_set_new(json_data, "timestamp", json_string(time));
@@ -183,6 +176,7 @@ static void on_message(const mdb_message_t *message, void *user_data)
         json_decref(json_data);
         free(type_value);
         free(image_value);
+        free(time);
     }
 }
 
