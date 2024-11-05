@@ -16,6 +16,7 @@
 // Define constants
 #define EXTERNAL_URL "http://192.168.1.135:5000/processing/camera/data_JSON" // For external server
 #define ENABLE_SNAPSHOT_URL "http://192.168.1.116/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
+#define CAMERA_ID_URL "http://192.168.1.116/axis-cgi/basicdeviceinfo.cgi"
 // -----------------------------------------
 
 // Structure to hold channel topic and source info
@@ -33,6 +34,11 @@ static void on_connection_error(mdb_error_t *error, void *user_data)
 }
 
 // Code ------------------------------------------------------------------
+
+typedef struct {
+    char *memory;
+    size_t size;
+} response_data_t;
 
 // Function to handle the response from HTTP requests
 static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
@@ -93,7 +99,7 @@ static void get_camera_id(char** camera_id){
         headers = curl_slist_append(headers, "Accept: application/json");
         headers = curl_slist_append(headers, "Content-Type: application/json");
 
-        curl_easy_setopt(curl, CURLOPT_URL, "http://192.168.1.121/axis-cgi/basicdeviceinfo.cgi");
+        curl_easy_setopt(curl, CURLOPT_URL, CAMERA_ID_URL);
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -114,9 +120,8 @@ static void get_camera_id(char** camera_id){
                     json_t *property_list = json_object_get(data, "propertyList");
                     if (property_list) {
                         json_t *id = json_object_get(property_list, "HardwareID");
-                        if (json_is_string(id)) { // Adjust to json_is_string if the value is a string
+                        if (json_is_string(id)) { 
                             *camera_id = strdup(json_string_value(id));
-                            syslog(LOG_INFO, "Camera ID: %s", *camera_id);
                         } else {
                             syslog(LOG_ERR, "HardwareID not found in the JSON response or is not a string");
                         }
@@ -194,9 +199,9 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
     }
     *image_value = strdup(json_string_value(data));
 
-    json_t *t = json_object_get(root, "end_time");
+    json_t *t = json_object_get(image, "timestamp");
     if(!json_is_string(t)){
-        syslog(LOG_ERR, "JSON parsing error: No timestamp found in alarm data");
+        syslog(LOG_ERR, "JSON parsing error: No timestamp found in alarm data.");
         json_decref(root);
         return false;
     }
@@ -207,7 +212,6 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
 
 static void on_message(const mdb_message_t *message, void *user_data)
 {
-    const struct timespec *timestamp = mdb_message_get_timestamp(message);
     const mdb_message_payload_t *payload = mdb_message_get_payload(message);
     channel_identifier_t *channel_identifier = (channel_identifier_t *)user_data;
 
@@ -227,20 +231,21 @@ static void on_message(const mdb_message_t *message, void *user_data)
         }
         // Log the detected object information
         syslog(LOG_INFO,
-               "Detected object - Topic: %s, Source: %s, Time: %s, Type: %s, Score: %.4f, Image Data: %s",
+               "Detected object - Topic: %s, Source: %s, Time: %s, Type: %s, Score: %.4f, Image Data: %s, Camera ID: %s",
                channel_identifier->topic,
                channel_identifier->source,
                time,
                type_value,
                score_value,
-               image_value);
+               image_value,
+               camera_id);
 
         // Prepare data for HTTP request, Create a JSON object
         json_t *json_data = json_object();
         json_object_set_new(json_data, "confidence_score", json_real(score_value));
         json_object_set_new(json_data, "image_base64", json_string(image_value));
         json_object_set_new(json_data, "timestamp", json_string(time));
-        //TODO: add camera_id
+        json_object_set_new(json_data, "camera_id", json_string(camera_id));
 
         char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
         post_to_external(json_str);
