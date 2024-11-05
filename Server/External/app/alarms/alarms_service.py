@@ -1,11 +1,8 @@
-# logic
-# Import the Alarm model
-from app.models import *
+# This file contains the service layer for the alarms module
 
+from app.models import * # Import the Alarm model
 from typing import List
-
-# Import the database instance
-from app.extensions import db
+from app.extensions import db # Import the database instance
 
 
 class AlarmService:
