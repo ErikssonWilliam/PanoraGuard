@@ -2,15 +2,18 @@
 
 from app.models import *
 from flask import request, jsonify
-from flask_socketio import SocketIO, emit # Importing the socketio library for real-time communication
+# Importing the socketio library for real-time communication
+from flask_socketio import SocketIO, emit
 from .alarms_service import AlarmService
 
 # Initialising the socketio object
 socketio = SocketIO()
 
+
 class AlarmController:
     def get_alarms():
-        return jsonify(AlarmService.get_alarms()), 200
+        alarms = AlarmService.get_alarms()
+        return jsonify([{"id": a.id} for a in alarms]), 200
 
     @staticmethod
     def add_alarm():
@@ -40,9 +43,24 @@ class AlarmController:
     def delete_alarm_by_id(alarm_id):
         return AlarmService.delete_alarm_by_id(alarm_id)
 
+    def notify_guard(guard_ID, alarm_ID):
+        return AlarmService.notify_guard(guard_ID, alarm_ID)
+
     @staticmethod
     def notify_new_alarm(alarm):
         socketio.emit("new_alarm", alarm)
+        
+    def update_alarm_status(alarm_id):
+        alarm_data = request.get_json()
+        if not alarm_data or 'status' not in alarm_data:
+            return jsonify({"message": "Status is required"}), 400
+
+        updated_alarm = AlarmService.update_alarm_status(alarm_id, alarm_data['status'])
+        if updated_alarm:
+            return jsonify(updated_alarm), 200
+        else:
+            return jsonify({"message": "Alarm not found"}), 404
+
 
 
 # Frontend Logic:

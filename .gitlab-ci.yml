@@ -1,5 +1,7 @@
 ---
 stages:
+  - external-lint
+  - external-test
   - deploy
 
 variables:
@@ -56,3 +58,25 @@ status:
     - kubectl get pods
   variables:
     GIT_STRATEGY: none
+
+# external-lint:
+#   stage: external-lint
+#   image: python:3.10  
+#   before_script:
+#     - cd Server/External 
+#     - pip install ruff 
+#   script:
+#     - ruff check
+#     - ruff format
+
+external-test:
+  stage: external-test
+  image: python:3.10 
+  before_script:
+    - cd Server/External  
+    - pip install -r requirements.txt  
+    - pip install pytest  
+  script:
+    - pytest --maxfail=1
+  variables:
+    TESTING: "true"
