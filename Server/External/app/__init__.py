@@ -2,7 +2,8 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from .extensions import bcrypt, db
 from .routes import init_routes
-#from .mock_data import create_mock_data
+
+# from .mock_data import create_mock_data
 from flask_cors import CORS
 
 
@@ -21,11 +22,11 @@ def create_app():
     # Initialize the database
     db.init_app(app)
     with app.app_context():
-     #   db.drop_all()
+        #   db.drop_all()
         # Create all tables defined in the models
         db.create_all()
         # Fill tables with mock data
-     #   create_mock_data()
+    #   create_mock_data()
 
     init_routes(app)
 
