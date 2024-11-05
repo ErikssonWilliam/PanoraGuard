@@ -1,4 +1,3 @@
-from app.models import *
 from .schedules_service import ScheduleService
 
 # will request entered data, tries the calls and returns the results

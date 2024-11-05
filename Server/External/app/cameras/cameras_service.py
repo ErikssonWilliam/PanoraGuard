@@ -1,5 +1,4 @@
 # logic
-from app.models import *
 
 
 class CameraService:
@@ -14,6 +13,6 @@ class CameraService:
 
     def delete_camera_by_id(camera_id):
         return  # add logic
-    
+
     def process_camera_data(topic, source, time, type, score):
         return

@@ -1,5 +1,3 @@
-from app.models import *
-from flask import jsonify, request
 from .dataprocessing_service import DataprocessingService
 
 

@@ -17,6 +17,7 @@ def get_alarms():
 def notify_guard(guard_ID, alarm_ID):
     return AlarmController.notify_guard(guard_ID, alarm_ID)
 
+
 # # Get latest alarm
 # @alarms_bp.route("/new", methods=["GET"])
 # def get_new_alarm():
@@ -29,6 +30,7 @@ def notify_guard(guard_ID, alarm_ID):
 def add_alarm():
     return AlarmController.add_alarm()
 
+
 # Get alarm by id
 
 
@@ -36,12 +38,14 @@ def add_alarm():
 def get_alarm_by_id(alarm_id):
     return AlarmController.get_alarm_by_id(alarm_id)
 
+
 # Delete alarm by id
 
 
 @alarms_bp.route("/<string:alarm_id>", methods=["DELETE"])
 def delete_alarm_by_id(alarm_id):
     return AlarmController.delete_alarm_by_id(alarm_id)
+
 
 # Update alarm status by id
 @alarms_bp.route("/<string:alarm_id>/status", methods=["PUT"])

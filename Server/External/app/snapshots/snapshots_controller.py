@@ -1,4 +1,3 @@
-from app.models import *
 from flask import jsonify, request
 from .snapshots_service import SnapshotService
 
@@ -13,7 +12,7 @@ class SnapshotController:
     def upload_snapshot():
         try:
             data = request.json
-            
+
             print(data)
 
             if not data:
