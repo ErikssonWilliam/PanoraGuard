@@ -5,12 +5,35 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  async (e) => {
     e.preventDefault();
     // Handle login logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
-  };
+    setUsername(document.getElementById('username').value);
+    setPassword(document.getElementById('password').value);
+
+    try {
+      const response = await fetch('http://localhost:5000/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
+
+    const result = await response.json();
+    setResponseMessage(result.message);
+    setFormData({ username : '', password : ''});
+    } catch (error) {
+      setResponseMessage(error.message)
+    }
+    }
 
   return (
     <div className="flex h-screen">
@@ -59,6 +82,7 @@ const Login = () => {
           <button
             type="submit"
             className="w-full bg-ButtonsBlue text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            onClick={handleSubmit()}
           >
             Submit
           </button>
