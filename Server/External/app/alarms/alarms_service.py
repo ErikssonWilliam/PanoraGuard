@@ -10,6 +10,8 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from config import Config
+import base64
+from email.mime.image import MIMEImage
 
 
 class AlarmService:
@@ -93,6 +95,14 @@ class AlarmService:
         msg.attach(MIMEText(body, "plain"))
 
         try:
+            image_data = base64.b64decode(image_base64)
+            image_attachment = MIMEImage(image_data, name="alarm_image.jpeg")
+            msg.attach(image_attachment)
+        except Exception as e:
+            print(f"Failed to decode image. Error: {e}")
+            return jsonify({"status": "Failed to decode image"}), 500
+
+        try:
             print("Email content before sending:")
             print(msg)
             server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -108,7 +118,7 @@ class AlarmService:
             print(f"Failed to send email. Error: {e}")
 
         # Step 4: Update the alarm status to confirmed
-        alarm.status = AlarmStatus.CONFIRMED
+        alarm.status = AlarmStatus.NOTIFIED
         db.session.commit()
 
         # Step 5: Placeholder for sending the notification
