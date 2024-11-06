@@ -2,9 +2,6 @@ from flask_jwt_extended import (
     create_access_token,
 )
 from datetime import timedelta
-from ..users.users_controller import (
-    UserController,
-)  # don't import controllers in services
 from ..users.users_service import UserService
 from app.extensions import bcrypt
 
@@ -26,8 +23,10 @@ class AuthService:
 
         return {
             "access_token": access_token,
+            "role": user.role.value,
+            # "refresh_token": refresh_token,
         }  # Return a dictionary
 
     @staticmethod
     def signup(username, password, role):
-        return UserController.create_user(username, password, role)
+        return
