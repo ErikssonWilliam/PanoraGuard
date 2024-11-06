@@ -50,4 +50,5 @@ def delete_alarm_by_id(alarm_id):
 # Update alarm status by id
 @alarms_bp.route("/<string:alarm_id>/status", methods=["PUT"])
 def update_alarm_status(alarm_id):
+    #ToDO: Extract operator id from frontend token request, and update operate_id in the alarm
     return AlarmController.update_alarm_status(alarm_id)
