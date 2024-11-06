@@ -12,6 +12,7 @@ import uuid
 
 session = db.session
 
+
 def create_mock_users():
     user1 = User(
         username="john_doex",
@@ -63,9 +64,7 @@ def create_mock_alarm(user, camera, statusState):
     return alarm
 
 
-def create_mock_alarm_test(
-    idtest, user, camera, statusState
-):
+def create_mock_alarm_test(idtest, user, camera, statusState):
     alarm = Alarm(
         id=idtest,
         camera_id=camera.id,
