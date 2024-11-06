@@ -12,9 +12,9 @@ const Header = () => {
         <Link to="/operator">
           <img src={bellIcon} alt="Notification icon" className="w-6 h-6 hover:scale-110 transition-transform duration-200" />
         </Link>
-        <a href="#profile">
+        <span>
           <img src={userIcon} alt="User icon" className="w-6 h-6 hover:scale-110 transition-transform duration-200" />
-        </a>
+        </span>
       </div>
     </header>
   );
