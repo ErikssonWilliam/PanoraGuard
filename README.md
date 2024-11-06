@@ -116,41 +116,51 @@ Written by Fredrik Kämmerling, Project Manager, Company 3
   ```
   Return to step 14.
 
-# Git Flow Integration Model
+# Git Branching Strategy
 
-Written by Jonathan Hermansson and Emil Näslund Löthmark, Developers, Company 3
+Written by Jonathan Hermansson and Emil Näslund Löthmark, Integrators, Company 3
 
-We will use **Git Flow** as our integration model. The key branches in this workflow are:
+We will use a Git Feature Branching strategy. The key branches in this workflow are:
 
-- **Main Branch**: Production-ready code.
-- **Testing Branch**: Code ready for testing.
-- **Development Branch**: Integration branch for features.
+- `main`: Production-ready, deployable code.
+- `test-ready`: Code ready for testing.
+- `development`: Integration branch for features.
 
-New branches should always be created from the `development` branch, and once complete, merged back into it. Testers should use the `development` branch to test before any changes are merged into the `main` branch.
+New branches should always be created from the `development` branch, and once complete, merged back into it. Once an iteration is done the files from `development` are merged into `test-ready` for testing. Once the testing is done and everything works as intended, `test-ready` is merged into `main`.
 
-## Cloning the Git Project
+## Branch Rules
 
-To clone the repository, use one of the following commands:
+As of now the branch rules are as follows:
 
-- Via HTTPS:
+**No** direct pushing to any of the permanent repository branches.
 
-```bash
-git clone https://gitlab.liu.se/tddc88-ht24/company3.git
-```
-
-Via SSH:
-
-```bash
-git clone git@gitlab.liu.se:tddc88-ht24/company3.git
-```
-
-This will create a local copy of the remote repository.
+- Merging to `development` requires **1** review and approval from any **developer** in the project except the author.
+- Merging to `test-ready` requires **1** review and approval from **integrator** or **lead developer**.
+- Merging to `main` requires **2** reviews and approvals from **integrators** or **lead developer**.
 
 ## Basic Git Workflow
 
+After following the prior section **Git: Installation and setup guide** in this document you should now have the project repository stored locally on your computer.
+
+Make sure to **cd** into your git repository before proceeding with this guide.
+
+### Switch Branch
+
+In order to switch to the `development` branch which we are using as our starting point for new branches use:
+
+```bash
+git switch development
+```
+
+or
+
+```bash
+git checkout development
+```
+
 ### See Current Branch
 
-To check which branch you're on, use:
+To check which branch you are on, use:
 
 ```bash
 git branch
@@ -158,9 +168,17 @@ git branch
 
 The active branch will have a star `*` beside it. Use this and make sure you are on the `development` branch before proceeding to the next step.
 
+### Pull Latest Changes
+
+Before starting your work, make sure to pull the latest changes from `development`:
+
+```bash
+git pull origin development
+```
+
 ### Create a Branch
 
-No one should push changes directly to `main`. Instead, create a new branch for each feature or fix you're working on and name it accordingly:
+**No one** should push changes directly to the permanent repository branches. Instead, create a new branch for each feature or fix you are working on and name it accordingly:
 
 eg.
 
@@ -169,7 +187,9 @@ git checkout -b feature/your-feature-name
 ```
 
 Other name examples:
+
 `fix/your-fix-name`
+
 `docs/docname-update`
 
 ... and so on
@@ -188,10 +208,10 @@ After making changes, stage the files you modified:
 git add file1 file2 …
 ```
 
-- or
+or
 
 ```bash
-git add . (this adds all files in the folder, avoid using)
+git add . # this adds all files in the current folder, avoid using unless you really have to
 ```
 
 Staging prepares your changes to be committed.
@@ -208,13 +228,13 @@ Committing saves your changes to the local repository.
 
 ### Pull from Remote `development` Branch
 
-Before pushing, it’s a good practice to ensure your feature branch is up to date with the latest `development` changes:
+Before pushing your completed work, it’s a good practice to ensure your feature branch is up to date with the latest `development` changes:
 
 ```bash
 git pull origin development
 ```
 
-This pulls any new changes from `development` into your feature branch and helps resolve conflicts before merging.
+This pulls any new changes from `development` into your own branch and makes it easier to resolve conflicts before merging.
 
 ### Push Changes
 
@@ -229,20 +249,19 @@ git push origin your-branch-name
 Once your feature branch is pushed:
 
 1. Create a merge request (MR) from your branch to the `development` branch in GitLab.
-2. Assign the lead developer(?) (or the appropriate reviewer) to review the changes.
-3. Ensure the option to **delete the source branch upon merge** is enabled.
+2. Ensure the option to **delete the source branch upon merge** is enabled.
 
-This will initiate the review process and integrate your changes into `development`.
+This will initiate the review process and integrate your changes into `development` when approved.
 
 ### Delete Your Working Branch Locally (After Merge)
 
-After the merge request is approved and merged, delete your local feature branch:
+After the merge request is approved and merged, switch back to the `development` branch and then delete your local feature branch that you just merged:
 
 ```bash
 git branch -d your-branch-name
 ```
 
-If the remote branch still exists (in case the option to delete it wasn't enabled during the merge), you can delete it manually:
+If the remote branch still exists (in case the option to delete it was not enabled during the merge), you can delete it manually:
 
 ```bash
 git push origin --delete your-branch-name
@@ -255,7 +274,8 @@ git push origin --delete your-branch-name
 | `git status`                        | Check the current status of your working directory       |
 | `git add <file>`                    | Stage changes for commit                                 |
 | `git commit -m "message"`           | Commit changes with a message                            |
-| `git pull origin <branch>`          | Pull the latest changes from the remote branch           |
+| `git fetch origin`                  | Fetch changes from remote repository without merging     |
+| `git pull origin <branch>`          | Pull and merge the latest changes from the remote branch |
 | `git push origin <branch>`          | Push changes to the remote branch                        |
 | `git checkout <branch>`             | Switch to an existing branch                             |
 | `git checkout -b <branch-name>`     | Create a new branch and switch to it                     |
