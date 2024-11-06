@@ -69,9 +69,10 @@ class User(db.Model):
 class Camera(db.Model):
     # Class for camera
     __tablename__ = "cameras"
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = db.Column(db.String, primary_key=True)
     ip_address = db.Column(db.String(45), nullable=False)
     location = db.Column(db.String(120), nullable=False)
+    confidence_threshold = db.Column(db.Float, nullable=False)
 
 
 # The Alarm structure stores metadata about an alarm event and its associations.
@@ -79,9 +80,7 @@ class Camera(db.Model):
 class Alarm(db.Model):
     __tablename__ = "alarms"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    camera_id = db.Column(
-        UUID(as_uuid=True), db.ForeignKey("cameras.id"), nullable=False
-    )
+    camera_id = db.Column(db.String , db.ForeignKey("cameras.id"), nullable=False)
     type = db.Column(db.String, nullable=False)
     confidence_score = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
@@ -112,9 +111,7 @@ class CameraControlAction(db.Model):
     # Class for camera control action
     __tablename__ = "camera_control_actions"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    camera_id = db.Column(
-        UUID(as_uuid=True), db.ForeignKey("cameras.id"), nullable=False
-    )
+    camera_id = db.Column(db.String, db.ForeignKey("cameras.id"), nullable=False)
     initiated_by = db.Column(
         UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=False
     )

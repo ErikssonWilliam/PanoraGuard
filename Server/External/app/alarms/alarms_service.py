@@ -1,6 +1,6 @@
 # This file contains the service layer for the alarms module
 
-from app.models import Alarm, AlarmStatus, User
+from app.models import Alarm, AlarmStatus, User, Camera
 from typing import List
 from flask import jsonify
 from app.extensions import db  # Import the database instance
@@ -17,21 +17,44 @@ class AlarmService:
         alarms = Alarm.query.all()
         return [alarm.to_dict() for alarm in alarms]
 
+
+    @staticmethod
     def create_alarm(alarm_data):
+        # Step 1: Extract the alarm data
+        camera_id = alarm_data.get("camera_id")
+        confidence_score = alarm_data.get("confidence_score")
+        alarm_type = alarm_data.get("type")
+        timestamp = alarm_data.get("timestamp")
+        image_base64 = alarm_data.get("image_base64")
+
+        # Step 2: Check if camera_id exists in the database
+        camera = Camera.query.filter_by(id=camera_id).first()
+        if not camera:
+            return {"status": "error", "message": "Camera not found"}
+
+        # Step 3: Check if there is any active alarm with status PENDING for the given camera_id
+        active_alarm = Alarm.query.filter_by(camera_id=camera_id, status=AlarmStatus.PENDING).first()
+        if active_alarm:
+            return {"status": "error", "message": "Already alarm active"}
+
+        # Step 4: Check if confidence_score meets the threshold
+        if confidence_score < camera.confidence_threshold:
+            return {"status": "error", "message": "Confidence score below threshold"}
+
+        # Step 5: Create a new alarm
         new_alarm = Alarm(
-            camera_id=alarm_data["camera_id"],
-            confidence_score=alarm_data["confidence_score"],
-            timestamp=alarm_data["timestamp"],
-            image_snapshot_id=alarm_data["image_snapshot_id"],
-            video_clip_id=alarm_data["video_clip_id"],
-            # ToDO: snapshot_string?
-            # ToDo: type?
-            status="pending",  # Set default status to "pending"
-            operator_id=alarm_data["operator_id"],
+            camera_id=camera_id,
+            type=alarm_type,
+            confidence_score=confidence_score,
+            timestamp=timestamp,
+            image_base64=image_base64,
+            status=AlarmStatus.PENDING
         )
         db.session.add(new_alarm)
         db.session.commit()
-        return new_alarm
+
+        return {"status": "success", "alarm": new_alarm.to_dict()}
+
 
     def get_alarm_by_id(schedule_id):
         return  # add logic

@@ -17,9 +17,13 @@ class AlarmController:
     def add_alarm():
         alarm_data = request.get_json()
         new_alarm = AlarmService.create_alarm(alarm_data)
-        # Notify frontend about the new alarm
-        AlarmController.notify_new_alarm(new_alarm)
-        return jsonify(new_alarm), 201
+        if new_alarm["status"] == "success":
+            # Notify frontend about the new alarm
+            # AlarmController.notify_new_alarm(new_alarm)
+            return jsonify(new_alarm), 201
+        else:
+            return jsonify({"message": new_alarm["message"]}), 400
+
 
     def get_alarm_by_id(alarm_id):
         #        alarm = Alarm.query.get(alarm_id)
