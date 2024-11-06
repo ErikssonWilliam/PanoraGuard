@@ -1,6 +1,6 @@
 # This file contains the service layer for the alarms module
 
-from app.models import Alarm, AlarmStatus, User, ImageSnapshot  # Import the Alarm model
+from app.models import Alarm, AlarmStatus, User 
 from typing import List
 from flask import jsonify
 from app.extensions import db  # Import the database instance
@@ -14,7 +14,8 @@ from config import Config
 
 class AlarmService:
     def get_alarms() -> List[Alarm]:
-        return Alarm.query.all()
+        alarms = Alarm.query.all()
+        return [alarm.to_dict() for alarm in alarms]
 
     def create_alarm(alarm_data):
         new_alarm = Alarm(
