@@ -11,8 +11,7 @@ socketio = SocketIO()
 
 class AlarmController:
     def get_alarms():
-        alarms = AlarmService.get_alarms()
-        return jsonify([{"id": a.id} for a in alarms]), 200
+        return jsonify(AlarmService.get_alarms()), 200
 
     @staticmethod
     def add_alarm():

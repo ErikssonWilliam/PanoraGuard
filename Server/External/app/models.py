@@ -18,8 +18,10 @@ class UserRole(Enum):
 class AlarmStatus(Enum):
     # Enum for representing the current status of an alarm.
     PENDING = "pending"  # Alarm has been triggered, awaiting response
-    CONFIRMED = "confirmed"  # Alarm has been acknowledged and confirmed
-    CANCELED = "canceled"  # Alarm has been canceled, no action needed
+    NOTIFIED = "notified"  # Alarm has been acknowledged and guard has been notified
+    RESOLVED = "resolved"  # Alarm has been resolved by a guard
+    IGNORED = "ignored"  # Alarm has been ignored by an operator
+    # Old alarms will be archived as either resolved or ignored
 
 
 class CameraControlType(Enum):
@@ -43,30 +45,7 @@ class JWTToken:
 ##################################################
 
 
-# Represents an image snapshot taken during an alarm event.
-# Assumes the URL points to an object stored in a object storage cloud service.
-class ImageSnapshot(db.Model):
-    # Class for image snapshot
-    __tablename__ = "image_snapshots"
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    url = db.Column(db.String, nullable=False)
-    captured_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-
-# Represents a video clip associated with an alarm event.
-# Assumes the URL points to a video object stored in a object storage cloud service.
-class VideoClip(db.Model):
-    # Class for image snapshot
-    __tablename__ = "video_clips"
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    url = db.Column(db.String, nullable=False)
-    duration = db.Column(db.Integer, nullable=False)
-    captured_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-
 # Represents a user in the system, such as an operator or manager.
-
-
 class User(db.Model):
     # Class for user
     __tablename__ = "users"
@@ -87,8 +66,6 @@ class User(db.Model):
 
 
 # Represents a camera in the system, which triggers alarms.
-
-
 class Camera(db.Model):
     # Class for camera
     __tablename__ = "cameras"
@@ -105,12 +82,10 @@ class Alarm(db.Model):
     camera_id = db.Column(
         UUID(as_uuid=True), db.ForeignKey("cameras.id"), nullable=False
     )
+    type = db.Column(db.String, nullable=False)
     confidence_score = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    image_snapshot_id = db.Column(
-        UUID(as_uuid=True), db.ForeignKey("image_snapshots.id")
-    )
-    video_clip_id = db.Column(UUID(as_uuid=True), db.ForeignKey("video_clips.id"))
+    image_base64 = db.Column(db.String, nullable=True)
     status = db.Column(db.Enum(AlarmStatus), nullable=False)
     operator_id = db.Column(
         UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True
@@ -121,11 +96,9 @@ class Alarm(db.Model):
             "id": str(self.id),
             "camera_id": str(self.camera_id),
             "confidence_score": self.confidence_score,
+            "type": self.type,
             "timestamp": self.timestamp.isoformat(),
-            "image_snapshot_id": str(self.image_snapshot_id)
-            if self.image_snapshot_id
-            else None,
-            "video_clip_id": str(self.video_clip_id) if self.video_clip_id else None,
+            "image_base64": self.image_base64,
             "status": self.status.value,
             "operator_id": str(self.operator_id) if self.operator_id else None,
         }
