@@ -15,8 +15,8 @@
 
 // Define constants
 #define EXTERNAL_URL "http://192.168.1.135:5000/processing/camera/data_JSON" // For external server
-#define ENABLE_SNAPSHOT_URL "http://192.168.1.116/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
-#define CAMERA_ID_URL "http://192.168.1.116/axis-cgi/basicdeviceinfo.cgi"
+#define ENABLE_SNAPSHOT_URL "http://192.168.1.121/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
+#define CAMERA_ID_URL "http://192.168.1.121/axis-cgi/basicdeviceinfo.cgi"
 // -----------------------------------------
 
 // Structure to hold channel topic and source info
@@ -184,8 +184,14 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
         syslog(LOG_ERR, "JSON parsing error: %s", error.text);
         return false;
     }
+    json_t *classes = json_object_get(root, "classes");
+    if(!json_is_array(classes) || json_array_size(classes) == 0){
+        syslog(LOG_ERR, "JSON parsing error: No classes object in alarm data");
+        json_decref(root);
+        return false; 
+    }
 
-    json_t *first_class = json_object_get(json_object_get(root, "classes"), "0");
+    json_t *first_class = json_array_get(classes, 0);
     if (!first_class || !parse_class_data(first_class, type_value, score_value)) {
         syslog(LOG_ERR, "Failed to parse class data.");
         json_decref(root);
@@ -219,6 +225,14 @@ static void on_message(const mdb_message_t *message, void *user_data)
         return;
     }
 
+    if (strcmp(type_value, "Face") != 0 && strcmp(type_value, "Human") != 0) {
+        syslog(LOG_INFO, "Detected object of type: %s, no alarm will be raised", type_value);
+        free(type_value);
+        free(image_value); 
+        free(time);
+        return;
+    }
+
     get_camera_id(&camera_id);
     if (!camera_id) {
         free(type_value);
@@ -242,7 +256,8 @@ static void on_message(const mdb_message_t *message, void *user_data)
                                   "confidence_score", score_value,
                                   "image_base64", image_value,
                                   "timestamp", time,
-                                  "camera_id", camera_id);
+                                  "camera_id", camera_id,
+                                  "type", type_value);
 
 
     char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
@@ -253,6 +268,53 @@ static void on_message(const mdb_message_t *message, void *user_data)
     free(image_value);
     free(time);
     
+}
+
+static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    (void)userp;
+
+    size_t total_size = size * nmemb;
+    syslog(LOG_INFO, "Response from camera: %.*s", (int)total_size, (char *)contents);
+    return total_size;
+}
+
+
+// Function to enable the best snapshot feature by sending an HTTP request (using Basic Authentication)
+static void enable_best_snapshot(void) {
+    const char* data = "{\"data\":true}"; // JSON payload to enable best snapshot
+    CURL *curl;
+    CURLcode res;
+    curl = curl_easy_init();
+    if(curl) {
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Accept: application/json");
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+
+        // Set Basic Authentication (instead of Digest)
+        curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_easy_setopt(curl, CURLOPT_USERNAME, "root"); 
+        curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); 
+
+        curl_easy_setopt(curl, CURLOPT_URL, ENABLE_SNAPSHOT_URL);
+        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");  // Use PUT as per the documentation
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // Capture the response data
+        char response_data[1024];  // Buffer to hold response
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback_snapshot);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, response_data);
+
+        res = curl_easy_perform(curl);
+        if(res != CURLE_OK) {
+            syslog(LOG_ERR, "Failed to enable best snapshot: %s", curl_easy_strerror(res));
+        } else {
+            syslog(LOG_INFO, "Response from camera: %s", response_data);
+        }
+
+        curl_easy_cleanup(curl);
+    }
 }
 
 // ------------------------------------------------------------------
@@ -305,7 +367,7 @@ int main(int argc, char **argv)
     subscriber = mdb_subscriber_create_async(connection, subscriber_config, on_done_subscriber_create, &channel_identifier, &error);
     if (error != NULL)
         goto end;
-
+    enable_best_snapshot();
     signal(SIGTERM, sig_handler);
     pause();
 
@@ -324,40 +386,3 @@ end:
     return 0;
 }
 
-// // Function to enable the best snapshot feature by sending an HTTP request (using Basic Authentication)
-// static void enable_best_snapshot(void) {
-//     const char* url = "http://192.168.1.116/config/rest/best-snapshot/v1/enabled"; // Use actual camera IP
-//     const char* data = "{\"data\":true}"; // JSON payload to enable best snapshot
-//     CURL *curl;
-//     CURLcode res;
-//     curl = curl_easy_init();
-//     if(curl) {
-//         struct curl_slist *headers = NULL;
-//         headers = curl_slist_append(headers, "Accept: application/json");
-//         headers = curl_slist_append(headers, "Content-Type: application/json");
-
-//         // Set Basic Authentication (instead of Digest)
-//         curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-//         curl_easy_setopt(curl, CURLOPT_USERNAME, "root"); // Replace with your username
-//         curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); // Replace with your password
-
-//         curl_easy_setopt(curl, CURLOPT_URL, url);
-//         curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");  // Use PUT as per the documentation
-//         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
-//         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
-//         // Capture the response data
-//         char response_data[1024];  // Buffer to hold response
-//         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-//         curl_easy_setopt(curl, CURLOPT_WRITEDATA, response_data);
-
-//         res = curl_easy_perform(curl);
-//         if(res != CURLE_OK) {
-//             syslog(LOG_ERR, "Failed to enable best snapshot: %s", curl_easy_strerror(res));
-//         } else {
-//             syslog(LOG_INFO, "Response from camera: %s", response_data);
-//         }
-
-//         curl_easy_cleanup(curl);
-//     }
-// }
