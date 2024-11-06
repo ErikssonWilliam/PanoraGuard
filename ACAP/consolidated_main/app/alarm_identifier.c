@@ -15,8 +15,8 @@
 
 // Define constants
 #define EXTERNAL_URL "http://192.168.1.135:5000/processing/camera/data_JSON" // For external server
-#define ENABLE_SNAPSHOT_URL "http://192.168.1.116/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
-#define CAMERA_ID_URL "http://192.168.1.116/axis-cgi/basicdeviceinfo.cgi"
+#define ENABLE_SNAPSHOT_URL "http://192.168.1.121/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
+#define CAMERA_ID_URL "http://192.168.1.121/axis-cgi/basicdeviceinfo.cgi"
 // -----------------------------------------
 
 // Structure to hold channel topic and source info
@@ -83,81 +83,107 @@ static void post_to_external(const char *data)
     }
 }
 
-static void get_camera_id(char** camera_id){
-    CURL *curl;
-    CURLcode res;
-
-    response_data_t response_data;
-    response_data.memory = malloc(1);
-    response_data.size = 0;
-
-    curl = curl_easy_init();
-    if (curl) {
-        const char *data = "{\"apiVersion\":\"1.0\",\"context\":\"Client defined request ID\",\"method\":\"getAllUnrestrictedProperties\"}";
-        
-        struct curl_slist *headers = NULL;
-        headers = curl_slist_append(headers, "Accept: application/json");
-        headers = curl_slist_append(headers, "Content-Type: application/json");
-
-        curl_easy_setopt(curl, CURLOPT_URL, CAMERA_ID_URL);
-        curl_easy_setopt(curl, CURLOPT_POST, 1L);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response_data);
-        //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // For detailed debug output
-
-        // Perform the HTTP POST request
-        res = curl_easy_perform(curl);
-        if (res != CURLE_OK) {
-            syslog(LOG_ERR, "curl_easy_perform() failed in camera id: %s\n", curl_easy_strerror(res));
-        } else {
-            json_error_t error;
-            json_t *root = json_loads(response_data.memory, 0, &error);
-            if (root) {
-                json_t *data = json_object_get(root, "data");
-                if (data) {
-                    json_t *property_list = json_object_get(data, "propertyList");
-                    if (property_list) {
-                        json_t *id = json_object_get(property_list, "HardwareID");
-                        if (json_is_string(id)) { 
-                            *camera_id = strdup(json_string_value(id));
-                        } else {
-                            syslog(LOG_ERR, "HardwareID not found in the JSON response or is not a string");
-                        }
-                    } else {
-                        syslog(LOG_ERR, "propertyList not found in the JSON response");
-                    }
-                } else {
-                    syslog(LOG_ERR, "data not found in the JSON response");
-                }
-            } else {
-                syslog(LOG_ERR, "JSON parsing error: %s", error.text);
-            }
-        }
-
-        // Clean up
-        curl_easy_cleanup(curl);
-        curl_slist_free_all(headers);
-        free(response_data.memory);
-    } else {
-        syslog(LOG_ERR, "Failed to initialize CURL");
+static bool extract_camera_id(const char *json_data, char **camera_id)
+{
+    json_error_t error;
+    json_t *root = json_loads(json_data, 0, &error);
+    if (!root) {
+        syslog(LOG_ERR, "JSON parsing error in camera ID: %s", error.text);
+        return false;
     }
+
+    json_t *id = json_object_get(json_object_get(json_object_get(root, "data"), "propertyList"), "SerialNumber");
+    if (json_is_string(id)) {
+        *camera_id = strdup(json_string_value(id));
+        json_decref(root);
+        return true;
+    }
+
+    syslog(LOG_ERR, "SerialNumber not found or invalid in JSON response.");
+    json_decref(root);
+    return false;
 }
 
+static void get_camera_id(char **camera_id)
+{
+    CURL *curl = curl_easy_init();
+    if (!curl) {
+        syslog(LOG_ERR, "Failed to initialize CURL");
+        return;
+    }
+
+    response_data_t response_data = {malloc(1), 0}; // Allocate initial memory
+    if (!response_data.memory) {
+        syslog(LOG_ERR, "Memory allocation failed for response_data");
+        curl_easy_cleanup(curl);
+        return;
+    }
+
+    struct curl_slist *headers = curl_slist_append(NULL, "Accept: application/json");
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+
+    const char *data = "{\"apiVersion\":\"1.0\",\"context\":\"Client defined request ID\",\"method\":\"getAllUnrestrictedProperties\"}";
+
+    curl_easy_setopt(curl, CURLOPT_URL, CAMERA_ID_URL);
+    curl_easy_setopt(curl, CURLOPT_POST, 1L);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&response_data);
+
+    CURLcode res = curl_easy_perform(curl);
+    if (res != CURLE_OK) {
+        syslog(LOG_ERR, "curl_easy_perform() failed: %s", curl_easy_strerror(res));
+    } else if (!extract_camera_id(response_data.memory, camera_id)) {
+        syslog(LOG_ERR, "Camera ID extraction failed");
+    }
+
+    curl_easy_cleanup(curl);
+    curl_slist_free_all(headers);
+    free(response_data.memory);
+}
+
+static bool parse_class_data(const json_t *first_class, char **type_value, double *score_value)
+{
+    json_t *score = json_object_get(first_class, "score");
+    if (!json_is_real(score)) {
+        syslog(LOG_ERR, "No valid score found.");
+        return false;
+    }
+    *score_value = json_real_value(score);
+
+    json_t *type = json_object_get(first_class, "type");
+    if (!json_is_string(type)) {
+        syslog(LOG_ERR, "No valid type found.");
+        return false;
+    }
+    *type_value = strdup(json_string_value(type));
+    return true;
+}
+
+static bool parse_image_data(const json_t *image, char **image_value, char **time)
+{
+    json_t *data = json_object_get(image, "data");
+    json_t *timestamp = json_object_get(image, "timestamp");
+
+    if (!json_is_string(data) || !json_is_string(timestamp)) {
+        syslog(LOG_ERR, "Missing image data or timestamp.");
+        return false;
+    }
+
+    *image_value = strdup(json_string_value(data));
+    *time = strdup(json_string_value(timestamp));
+    return true;
+}
 
 static bool parse_json_payload(const mdb_message_payload_t *payload, char **type_value, double *score_value, char **image_value, char **time)
 {
     json_error_t error;
     json_t *root = json_loadb((const char *)payload->data, payload->size, 0, &error);
-
-    if (!root)
-    {
+    if (!root) {
         syslog(LOG_ERR, "JSON parsing error: %s", error.text);
-        return false; 
+        return false;
     }
-
-    //retrive score and type from "classes"
     json_t *classes = json_object_get(root, "classes");
     if(!json_is_array(classes) || json_array_size(classes) == 0){
         syslog(LOG_ERR, "JSON parsing error: No classes object in alarm data");
@@ -166,46 +192,19 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
     }
 
     json_t *first_class = json_array_get(classes, 0);
-    json_t *score = json_object_get(first_class, "score");
-
-    if(!json_is_real(score)){
-        syslog(LOG_ERR, "JSON parsing error: No object score found");
+    if (!first_class || !parse_class_data(first_class, type_value, score_value)) {
+        syslog(LOG_ERR, "Failed to parse class data.");
         json_decref(root);
         return false;
     }
-    *score_value = json_real_value(score);
-
-    json_t *type = json_object_get(first_class, "type");
-    if(!json_is_string(type)){
-        syslog(LOG_ERR, "JSON parsing error: No object type found");
-        json_decref(root);
-        return false;
-    }
-
-    *type_value = strdup(json_string_value(type));
 
     json_t *image = json_object_get(root, "image");
-    if(!json_is_object(image)){
-        syslog(LOG_ERR, "JSON parsing error: No image object in alarm data");
+    if (!json_is_object(image) || !parse_image_data(image, image_value, time)) {
+        syslog(LOG_ERR, "Failed to parse image data.");
         json_decref(root);
         return false;
     }
 
-    json_t *data = json_object_get(image, "data");
-    if(!json_is_string(data)){
-        syslog(LOG_ERR, "JSON parsing error: No image data found in alarm data");
-        json_decref(root);
-        return false;
-    }
-    *image_value = strdup(json_string_value(data));
-
-    json_t *t = json_object_get(image, "timestamp");
-    if(!json_is_string(t)){
-        syslog(LOG_ERR, "JSON parsing error: No timestamp found in alarm data.");
-        json_decref(root);
-        return false;
-    }
-    *time = strdup(json_string_value(t));
     json_decref(root);
     return true;
 }
@@ -222,45 +221,99 @@ static void on_message(const mdb_message_t *message, void *user_data)
     char *time = NULL;
     char *camera_id = NULL;
 
-    bool res = parse_json_payload(payload, &type_value, &score_value, &image_value, &time);
-    if (res)
-    {
-        get_camera_id(&camera_id);
-        if(!camera_id){
-            return;
-        }
-        // Log the detected object information
-        syslog(LOG_INFO,
-               "Detected object - Topic: %s, Source: %s, Time: %s, Type: %s, Score: %.4f, Image Data: %s, Camera ID: %s",
-               channel_identifier->topic,
-               channel_identifier->source,
-               time,
-               type_value,
-               score_value,
-               image_value,
-               camera_id);
+    if (!parse_json_payload(payload, &type_value, &score_value, &image_value, &time)) {
+        return;
+    }
 
-        // Prepare data for HTTP request, Create a JSON object
-        json_t *json_data = json_object();
-        json_object_set_new(json_data, "confidence_score", json_real(score_value));
-        json_object_set_new(json_data, "image_base64", json_string(image_value));
-        json_object_set_new(json_data, "timestamp", json_string(time));
-        json_object_set_new(json_data, "camera_id", json_string(camera_id));
-
-        char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
-        post_to_external(json_str);
-
-        // TODO:
-        // We do not need to enable snapshot each time. One time is enough. However, what happens when we restart the camera...?
-        // Enable best snapshot feature
-        // enable_best_snapshot(); //function at end of file
-        // syslog(LOG_INFO, "Attempted to enable best snapshot feature");
-
-        free(json_str);
-        json_decref(json_data);
+    if (strcmp(type_value, "Face") != 0 && strcmp(type_value, "Human") != 0) {
+        syslog(LOG_INFO, "Detected object of type: %s, no alarm will be raised", type_value);
         free(type_value);
-        free(image_value);
+        free(image_value); 
         free(time);
+        return;
+    }
+
+    get_camera_id(&camera_id);
+    if (!camera_id) {
+        free(type_value);
+        free(image_value); 
+        free(time);
+        return;
+    }
+
+    // Log the detected object information
+    syslog(LOG_INFO,
+           "Detected object - Topic: %s, Source: %s, Time: %s, Type: %s, Score: %.4f, Image Data: %s, Camera ID: %s",
+           channel_identifier->topic,
+           channel_identifier->source,
+           time,
+           type_value,
+           score_value,
+           image_value,
+           camera_id);
+    
+    json_t *json_data = json_pack("{s:f, s:s, s:s, s:s}",
+                                  "confidence_score", score_value,
+                                  "image_base64", image_value,
+                                  "timestamp", time,
+                                  "camera_id", camera_id,
+                                  "type", type_value);
+
+
+    char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
+    post_to_external(json_str);
+    free(json_str);
+    json_decref(json_data);
+    free(type_value);
+    free(image_value);
+    free(time);
+    
+}
+
+static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    (void)userp;
+
+    size_t total_size = size * nmemb;
+    syslog(LOG_INFO, "Response from camera: %.*s", (int)total_size, (char *)contents);
+    return total_size;
+}
+
+
+// Function to enable the best snapshot feature by sending an HTTP request (using Basic Authentication)
+static void enable_best_snapshot(void) {
+    const char* data = "{\"data\":true}"; // JSON payload to enable best snapshot
+    CURL *curl;
+    CURLcode res;
+    curl = curl_easy_init();
+    if(curl) {
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Accept: application/json");
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+
+        // Set Basic Authentication (instead of Digest)
+        curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_easy_setopt(curl, CURLOPT_USERNAME, "root"); 
+        curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); 
+
+        curl_easy_setopt(curl, CURLOPT_URL, ENABLE_SNAPSHOT_URL);
+        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");  // Use PUT as per the documentation
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // Capture the response data
+        char response_data[1024];  // Buffer to hold response
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback_snapshot);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, response_data);
+
+        res = curl_easy_perform(curl);
+        if(res != CURLE_OK) {
+            syslog(LOG_ERR, "Failed to enable best snapshot: %s", curl_easy_strerror(res));
+        } else {
+            syslog(LOG_INFO, "Response from camera: %s", response_data);
+        }
+
+        curl_easy_cleanup(curl);
     }
 }
 
@@ -314,7 +367,7 @@ int main(int argc, char **argv)
     subscriber = mdb_subscriber_create_async(connection, subscriber_config, on_done_subscriber_create, &channel_identifier, &error);
     if (error != NULL)
         goto end;
-
+    enable_best_snapshot();
     signal(SIGTERM, sig_handler);
     pause();
 
@@ -333,40 +386,3 @@ end:
     return 0;
 }
 
-// // Function to enable the best snapshot feature by sending an HTTP request (using Basic Authentication)
-// static void enable_best_snapshot(void) {
-//     const char* url = "http://192.168.1.116/config/rest/best-snapshot/v1/enabled"; // Use actual camera IP
-//     const char* data = "{\"data\":true}"; // JSON payload to enable best snapshot
-//     CURL *curl;
-//     CURLcode res;
-//     curl = curl_easy_init();
-//     if(curl) {
-//         struct curl_slist *headers = NULL;
-//         headers = curl_slist_append(headers, "Accept: application/json");
-//         headers = curl_slist_append(headers, "Content-Type: application/json");
-
-//         // Set Basic Authentication (instead of Digest)
-//         curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-//         curl_easy_setopt(curl, CURLOPT_USERNAME, "root"); // Replace with your username
-//         curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); // Replace with your password
-
-//         curl_easy_setopt(curl, CURLOPT_URL, url);
-//         curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");  // Use PUT as per the documentation
-//         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
-//         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
-//         // Capture the response data
-//         char response_data[1024];  // Buffer to hold response
-//         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-//         curl_easy_setopt(curl, CURLOPT_WRITEDATA, response_data);
-
-//         res = curl_easy_perform(curl);
-//         if(res != CURLE_OK) {
-//             syslog(LOG_ERR, "Failed to enable best snapshot: %s", curl_easy_strerror(res));
-//         } else {
-//             syslog(LOG_INFO, "Response from camera: %s", response_data);
-//         }
-
-//         curl_easy_cleanup(curl);
-//     }
-// }
