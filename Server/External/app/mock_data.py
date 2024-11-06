@@ -43,7 +43,7 @@ def create_mock_users():
 
 
 def create_mock_camera():
-    camera = Camera(ip_address="HTTPS//127.123.etc", location="A-huset")
+    camera = Camera(id="1", ip_address="HTTPS//127.123.etc", location="A-huset", confidence_threshold=0.9)
     session.add(camera)
     session.commit()
     return camera
@@ -95,7 +95,7 @@ def create_mock_camera_control_action(camera, user):
 def create_mock_data():
     user1, user2, user3 = create_mock_users()
     camera = create_mock_camera()
-    create_mock_alarm(user1, camera, AlarmStatus.PENDING)
+    create_mock_alarm(user1, camera, AlarmStatus.RESOLVED)
     create_mock_alarm_test(
         uuid.UUID("cc006a17-0852-4e0e-b13c-36e4092f767d"),
         user1,
@@ -104,7 +104,7 @@ def create_mock_data():
     )
     create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
     create_mock_alarm(user1, camera, AlarmStatus.NOTIFIED)
-    create_mock_alarm(user1, camera, AlarmStatus.PENDING)
+    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
     create_mock_alarm(user1, camera, AlarmStatus.RESOLVED)
     create_mock_camera_control_action(camera, user1)
     return "Success"
