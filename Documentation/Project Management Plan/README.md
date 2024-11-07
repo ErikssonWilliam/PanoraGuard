@@ -5,6 +5,33 @@ This document details the Project Management Plan (PMP) for Company 3's software
 
 ## Changelog
 
+### Version 2.2 - 2024-11-07
+Owner: Project Manager
+
+*This version expands the document to include Processes and Working Methods, Management of Human Resources, and a detailed Project Milestone Plan, while refining the Project Overview with a Competence Plan.*
+
+#### Added
+- Processes and Working Methods section outlining version control strategy and linking to specific process documentation. [Process Manager, Technical Writer]
+- Management of Human Resources section detailing budget management and resource monitoring frameworks. [P&S Manager, R&D Manager, Technical Writer]
+- Detailed Project Milestone Plan section, structured by iteration phase, including goals, deliverables, and organizational changes. [Project Manager, Technical Writer]
+- Competence Plan within Project Overview, outlining development strategies, gap analysis, onboarding procedures, and follow-up mechanisms. [Project Manager, Technical Writer]
+- Preface clarifying the document's purpose and scope. [Technical Writer]
+- Olle Lövborg added to the list of authors. [Technical Writer]
+- Hyperlinks to external documentation in the Processes and Methods section. [Technical Writer]
+- Section numbers and headers added to the project overview section for consistency and to match the rest of the document. [Technical Writer]
+- Table of processes within the processes section. [Process Manager & Technical Writer]
+
+
+#### Changed
+- Project Overview section restructured to include a dedicated Competence Plan subsection, expanding on personnel management. [Project Manager, Technical Writer]
+- Dates adjusted in Project Overview to reflect updated iteration timelines. [Technical Writer]
+- Clarified descriptions and updated tables within the Project Overview. [Technical Writer, P&S Manager, R&D Manager]
+- Updated structure within the milestone plan. [Technical Writer]
+- Change history updated to better match changelog structure. [Technical Writer]
+- Project Overview reorganized with subsections for improved clarity. [Technical Writer]
+- Improved format for the Milestone Plan with visual separators for iterations. [Technical Writer]
+- Modified latex file structure to include separate files for each main section. [Technical Writer]
+
 ### Version 2.1 - 2024-10-18
 Owner: Project Manager, P&S Manager, R&D Manager, [Technical Writer] 
 
@@ -21,7 +48,6 @@ Owner: Project Manager, P&S Manager, R&D Manager, [Technical Writer]
 - Updated document structure for better flow and clarity [Technical Writer]
 
 ### Version 2.0 - 2024-10-04
-Owner: Project Manager, P&S Manager, R&D Manager, [Technical Writer] 
 
 *This version significantly expands the Project Overview section with detailed information about the project and restructures the document to separate sections into their own files.*
 

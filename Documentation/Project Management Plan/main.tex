@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{titlesec}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage[a4paper,pdftex,bottom=20mm, width=160mm]{geometry}
@@ -14,6 +15,9 @@
 \usepackage{csquotes}
 \usepackage{multirow}
 \usepackage{lipsum}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{tabularx}
 \addbibresource{bib.bib}
 
 \title{
@@ -24,7 +28,7 @@
     \large \textbf{TDDC88 Programutvecklingsmetodik}
 }
 
-\author{Company 3 \\Adrian Redfors \\ Fredrik Klämmerling \\ Emma Strömberg \\ Christiana Chioma Ottona }
+\author{Company 3 \\Adrian Redfors \\ Fredrik Klämmerling \\ Emma Strömberg \\ Christiana Chioma Ottona \\ Olle Lövborg}
 \date{\today}
 
 \begin{document}
@@ -42,14 +46,28 @@
 
 \section*{Preface}
 \addcontentsline{toc}{section}{Preface}
-This document serves...
+\textit{Technical Writer Note: This document is work in progress. It demonstrates the direction we're going with the plan, it's a living document that is always in progress. Retroactive imporovements will be done.}
+
+This document serves as the master plan for Company 3's development project in collaboration with Axis Communications AB. It outlines our systematic approach to project execution, monitoring, and control while ensuring alignment with both customer requirements and course objectives.
+
+The Project Management Plan (PMP) defines how we organize our work across departments, manage resources, and implement key software engineering practices. It provides a comprehensive framework for:
+
+\begin{itemize}
+    \item Project process definition and control
+    \item Resource allocation and monitoring
+    \item Milestone planning and tracking
+    \item Cross-functional team coordination
+    \item Quality assurance and risk management
+\end{itemize}
+
+This document is maintained throughout the project lifecycle and serves as a reference point for all team members, linking to specialized plans such as the Quality Assurance Plan, Testing Plan, and Risk Management Plan. Regular updates will reflect our evolving understanding and improvements to our processes.
 
 \newpage
 
 
 
 
-\input{project_overview2}
+
 
 \begin{comment}
 
@@ -57,27 +75,112 @@ IDESPÅN OM INNEHÅLL
 Iden är att vi 
 
 
-- Processes (Olle)
-    - Traceability
-    - Risk managment
-    - Git Hantering
-    - Möten
-    - Utbilding (taggen utbildning)
-    - Communication processes
-    - Felhantering (finns i analytikernas dokument)
-    - Version Control (Adrian)
-    
+- Processes and working method (Olle)
+    -The plan is to create an visual chart representing the main process in the company, in the form of the flow from requirments to a delivered product/function. This will begin the process chapter and will also includa a descriptive text written me (Olle) and the analysts.
+
+        - Text:
+            The following diagram illustrates the core process within our company for delivering a product according to customer specifications. This workflow forms the foundation of our project approach, as it provides a structured method to incorporate customer needs effectively into the final product. Consequently, any changes or adjustments to project scope are handled through this main process, as an integral part of meeting the agreed-upon specifications.
+            
+            The process begins with the customer submitting input on new or adjusted requirements. These requirements are first assessed by a team of analysts, who formalize them into a specification and add it to the product backlog. The requirements are then prioritized; if approved, they proceed to the development team. Otherwise, they are returned to the analysts for refinement and re-evaluation.
+            
+            Once the prioritized requirements are approved, they are added to the development backlog and may be broken down into smaller tasks, or subrequirements. From here, the development team implements the necessary changes, while the testing team prepares to validate the functionality. After development, testing ensures the new functionality meets quality standards. If any functionality fails the tests, it returns to the development team for adjustments. Upon successful testing, the functionality is presented to the customer for final approval.
+            
+            One notable limitation of this workflow is that customer satisfaction is necessary to conclude the process. If the customer is not satisfied, the feedback loop directs the process back to the analysts for a new cycle of adjustments. Only when the customer is satisfied and grants approval does the finalized version proceed to deployment. This workflow, therefore, prioritizes alignment with customer expectations over rapid completion.
+
+        - Flow chart: Process.jpeg
+            
+    -After presenting the overal process, the main working methods (wich contains processes) will be reffered to according to below:
+        - Testing : Test plan (https://www.overleaf.com/project/66ff9154fca1f68722259739)
+        - Error handling: Described in the Testing plan, section "Bug Handling Process" (https://www.overleaf.com/project/66ff9154fca1f68722259739)
+        - Handling of risks: Risk managment plan (https://www.overleaf.com/project/66e6db3848ba4493cf2e8b34)
+        - Git: Described in Git (https://gitlab.liu.se/tddc88-ht24/company3/-/blob/development/README.md?ref_type=heads)
+        - Change management: Is described in Quality Assurance Plan, section "Change Management"
+        - Version Control (Is developed by Adrian)
+        - Plan for competence and education: Is found in this document (Project Management Plan)
+
 
 Management of Human Resources (Emma + Chioma)
-    - Monitoring of people doing work - Burn down chart
     - Budget Management
-    - Retooling skillsets (Onboarding, När analysts tex kommer in och ska börja developa) (Emma)
+        - Expected hours worked 
+        - Burn down chart
+        
+    - Monitoring of people doing work 
+        - Summary of time report 
+        - Individual time report and action
+        - Continuous coversatio about progress and time plans
+        
 
 - Milestone Plan (Fredrik)
     - Pre-iteration 1
-    - Iteration x
+        - Assign roles
+        - Axis crash course (How to build ACAPs, connect to the hardware and use Axis documentation)
+        - Identify customer needs (By interviewing representatives from Axis)
+        - Organize into functional and cross-functional teams (XFT was based on Gap analysis)
+        - Create high level time line (Slides to toll gate)
+        - High level architecture (Changs arch. that were in the toll gate)
+        - Create mockup (The Figma link: https://www.figma.com/proto/KoaRJn49T8aRgeZW0gcEv4/PanoraGuard) 
+    - Iteration 1
         - Goals, Vision
+            - Start developing functions and features (Tasks done by each developer team)
+            - Structure requirements and connect to user stories (This excel: https://liuonline.sharepoint.com/:x:/r/sites/TDDC88_2024_C3-PnS/Delade%20dokument/Product%20and%20Sales%20%5BPnS%5D/Analysts/Product%20Backlog.xlsx?d=w1ada1d637b6f4e81870da3620dd811de&csf=1&web=1&e=fjEouW)
+            - Work on Quality Assurance plan (Testers thinking about how to ensure quality)
+            - Identify risks with the project (Start of risk management plan)
         - Deliverables
+            - Requirements Specification
+            - Quality Assurance plan
+            - Risk Management plan
+        - Knowledge (Fredrik skicka ett form)
+            - Front end team started learning about React
+        - Struktur (i organisationen)
+            - Reorganize cross-functional teams based on developer divisions instead of gap analysis
+        - Follow up (hur det blevs)
+            Back end devs. implemented some core features
+            Front end started, but was never done
+            Testers started to plan testing
+            Architecture was refined
+            Risks were identified
+            Requirements were structured
+            Overall a good iteration, in next iteration - connect front and back end fully since this was not completed
+    - Iteration 2
+        - Goals, Vision
+            - Link requirements to developement tasks and tests
+            - Connect front end user interface with back end functionality, so that we have an actual website that the customer can test
+                - Enable a user to log in via the UI
+                - Alarms shows up in UI, with best snapshot 
+            - Deploy project in Azure so that it can be accessed remotely
+            - Make sure that the pipeline works as intended - testing done automatically and website built
+        - Deliverables
+            - Web site with basic functionality (login and alarm display)
+            - Risk management
+            - Document management system
+        - Knowledge (Fredrik skicka ett form)
+            - 2 Analysts are becoming developers and that we plan to have a dev. crash course for them
+        - Struktur (i organisationen)
+            - Modified cross-functional teams, now has colors instead of dev. names, updated 2 analysts converting to developers
+        - Follow up (hur det blevs)
+    - Iteration 3
+        - Goals, Vision
+            - Implement remaining back end features and connect to front end
+            - Test system
+            - Refine pipeline if needed
+        - Deliverables
+            - Web page
+            - Different plans
+            - Refine Rew. Spec.?
+        - Knowledge 
+            - No current plan 4/11-2024
+        - Struktur (i organisationen)
+            - If needed, covert people to developers
+        - Follow up (hur det blevs)
+    - Iteration 4
+        - Goals, Vision
+            - Buffer time
+            - Complete remaining tasks
+            - Ensure that we align with customer excpectation for the final release
+            - Test. A lot.
+        - Deliverables
+            - All plans
+            - The product.
         - Knowledge (Fredrik skicka ett form)
         - Struktur (i organisationen)
         - Follow up (hur det blevs)
@@ -88,39 +191,10 @@ Management of Human Resources (Emma + Chioma)
 \end{comment}
 
 
-
-\subsection{Work Activities}
-\lipsum[1]
-
-\subsection{Time Allocation}
-\lipsum[1]
-
-\section{Project Assessment and Control}
-\lipsum[1]
-
-
-\subsection{Scope Change Control Plan}
-\lipsum[1]
-
-\subsection{Schedule Control Plan}
-\lipsum[1]
-
-\subsection{Budget Control Plan}
-\lipsum[1]
-
-
-\subsubsection{General-purpose Dissemination}
-\lipsum[1]
-
-\section{Supporting Process Plans}
-\lipsum[1]
-
-\subsection{Risk Management}
-\lipsum[1]
-
-
-\subsection{Cost Management}
-\lipsum[1]
+\include{project_overview}
+\include{processes_and_methods}
+\include{human_resources}
+\include{milestone_plan}
 
 \newpage
 \printbibliography

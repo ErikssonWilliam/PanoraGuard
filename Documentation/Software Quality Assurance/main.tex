@@ -32,7 +32,7 @@
   \large \textbf{TDDC88 - Project - Company 3}\\
 }
 
-% Testing
+
 
 \author{
 % Add your full name here
@@ -40,9 +40,9 @@
     Adrian Redfors - Technical Writer \and 
     Anton Hänström - Testing Lead \and 
     William Eriksson - Analysis Lead \and 
-    Andreas - Deployment Lead \and 
+    Andreas Tetlie - Deployment Lead \and 
     Olle Lövborg - Process Manager \and 
-    Chang - Architecture
+    Chang Guo - Architecture
 }
 \date{\today}
 
@@ -84,8 +84,8 @@ Thank you for your commitment!
     \item Document Structure and Ownership: \textit{Adrian TechnicalWriter}
     \item Testing Strategy: \textit{Anton TestingLead}
     \item Traceability: \textit{William AnalysisLead}
-    \item Continuous Integration and Delivery: \textit{? Andreas DeploymentLead ?}
-    \item Bug Tracking and Resolution: \textit{? Anton TestingLead ?}
+    \item Continuous Integration and Delivery: \textit{Andreas DeploymentLead}
+    \item Bug Tracking and Resolution: \textit{Anton TestingLead}
     \item Internal Quality Practices: \textit{Olle ProcessManager}
     \item Change Management: \textit{*Olle* ProcessManager}
     \item Process Evaluation and Improvement: \textit{Emma ProductandSalesLineManager}
@@ -106,7 +106,14 @@ Thank you for your commitment!
 \newpage
 
 \section{Introduction}
-This Software Quality Assurance (SQA) Plan is a crucial document for our TDDC88 project, aiming to ensure the highest quality standards in our software development process. As we are targeting grade 5, this plan incorporates all necessary components to meet and exceed the course requirements.
+% \textit{Responsible: *Emma* ProductandSalesLineManager}
+This Software Quality Assurance (SQA) Plan is a crucial document for our TDDC88 project, designed to ensure the highest quality standards in our software development process. Targeting a grade 5, this plan outlines the standards, practices, procedures, and tools our team will use to meet and exceed course requirements while delivering a product that is reliable, user-friendly, and meets the needs of our client. It details our testing strategies and defect management practices, establishing clear protocols to prevent, detect, and resolve issues efficiently. Through systematic quality control and improvement measures, we aim to minimize defects, maintain system stability, and optimize the user experience. Additionally, the SQA plan clarifies team roles and responsibilities in the quality process and outlines metrics and reporting mechanisms to track our progress. Adhering to these guidelines will enable us to achieve a product that is not only technically sound but also reflects the user-centric focus central to our client’s vision.
+
+\subsection{Quality Objective}
+In this project, usability is the primary quality factor guiding our software development and assurance processes. Our Analyst group has consulted extensively with the customer, Axis Communications, and together we have agreed that simplicity is key: fewer features and functions are preferred, as long as they work reliably and align closely with the specified requirements. Usability is essential because it directly impacts user satisfaction, productivity, and adoption rates. A highly usable product allows users to intuitively and efficiently accomplish their tasks without extensive training or frustration, meeting user needs while achieving business goals. By focusing on usability over extensive functionality, we aim to deliver a streamlined, dependable product that not only performs well technically but also integrates seamlessly into users' workflows, fostering trust and encouraging long-term engagement.
+
+\subsection{Purpose}
+This plan is designed to be a living document, regularly updated to reflect our evolving practices and lessons learned. Each section outlines specific quality assurance activities, their purpose, and the individuals responsible for their implementation.
 
 The purpose of this document is twofold:
 \begin{enumerate}
@@ -114,7 +121,7 @@ The purpose of this document is twofold:
     \item To clearly communicate responsibilities and expectations to all team members, ensuring a coordinated effort towards achieving our quality goals.
 \end{enumerate}
 
-This plan is designed to be a living document, regularly updated to reflect our evolving practices and lessons learned. Each section outlines specific quality assurance activities, their purpose, and the individuals responsible for their implementation.
+
 
 \newpage
 \section{Document Structure and Ownership}
@@ -140,7 +147,10 @@ Each section owner is responsible for authorship of their own section. This dece
     \item \textit{Adrian Technical Writer}: Responsible for version control, document formatting, and maintaining overall document consistency
 \end{itemize}
 
-This collaborative approach supports continuous improvement by leveraging diverse expertise and maintaining clear lines of communication.
+This collaborative approach supports continuous improvement by leveraging diverse expertise and maintaining clear lines of communication. These include \textit{Lead Tester}, \textit{Lead Deployment}, \textit{Architect}, \textit{Lead Analyst}, and \textit{Process Manager}.
+
+\subsection{Document Review}
+All project documentation, including the SQA Plan, is subject to regular review by the \textit{Product and Sales Line Manager} to ensure it meets both internal quality standards and client expectations. This review process is a structured part of our document quality assurance approach explained in Section \ref{document_review}, aimed at identifying areas for improvement and ensuring alignment with project objectives and best practices.
 
 \subsection{Version Control System}
 To support requirements for integration with development processes and continuous improvement, we implement a robust version control system:
@@ -170,6 +180,7 @@ This structure supports continuous improvement and integration with overall deve
 \end{itemize}
 
 It is our belief that by maintaining this structured approach to document management and version control, we ensure that our SQA plan remains a living, evolving guide that directly supports our commitment to high-quality software development and continuous process improvement.
+
 
 \newpage
 \section{Testing Strategy}
@@ -314,11 +325,18 @@ Bug tracking is important for continuous improvements as this allows the team of
 \section{Internal Review Practices}
 Internal review practices are fundamental to ensuring the quality and success of our project. By embedding these practices into our workflows, we make quality and routine procedures integral to every aspect of our work.
 
+To support these routines without introducing unnecessary bureaucratic steps, we will use effective tools for collaboration, communication, document management, and code repositories. Communication channels, such as chat groups in Teams, are used to keep everyone informed about ongoing quality initiatives and any urgent quality issues. During internal meetings, participants are encouraged to continuously evaluate quality-related matters. The goal is to make quality work an integrated part of our daily workflow.
+
+\subsection{Document Quality Assurance}
+\label{document_review}
 To achieve this, we are introducing a system for continuous review of critical documents, in the form of code changes, design specifications, test plans, and reports. Project members are encouraged to work iteratively with documents and other tasks to promote continuous improvement of what is delivered both internally and externally. Work will also go through continuous review, with different members at various stages taking on the roles of both author and reviewer. This ensures that different perspectives are applied to each part of the work. These principles aim to identify potential problems early and promote knowledge sharing.
 
+Each review consists of a thorough assessment of the document's clarity, completeness, technical accuracy, and compliance with project requirements. Following the review, the reviewer provides detailed feedback to the relevant document author(s), including specific recommendations or required changes. The assigned authors are then responsible for incorporating this feedback promptly, with additional follow-up reviews scheduled as needed to confirm the updates. This iterative process helps maintain high documentation quality throughout the project life-cycle and ensures that all materials remain current, comprehensive, and valuable to project stakeholders. 
+
+\subsection{External Meeting Quality Assurance}
 Before each important external meeting, such as the tollgate meeting, thorough internal reviews, or walkthroughs, will be conducted. These sessions will involve the company to examine upcoming deliverables in detail and verify that they meet our established quality standards and align with the project goals. Any deviations or areas for improvement identified during these reviews are addressed immediately, ensuring that what is presented to external stakeholders meets the standards we strive for within the project.
 
-To support these routines without introducing unnecessary bureaucratic steps, we will use effective tools for collaboration, communication, document management, and code repositories. Communication channels, such as chat groups in Teams, are used to keep everyone informed about ongoing quality initiatives and any urgent quality issues. During internal meetings, participants are encouraged to continuously evaluate quality-related matters. The goal is to make quality work an integrated part of our daily workflow.
+
 
 \newpage
 \section{Change Management}

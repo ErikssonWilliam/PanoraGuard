@@ -1,8 +1,12 @@
 # Document Ownership for Project Management Plan
 
-Document Owner: Project Manager
-# Add section owners below as needed
+Document Owners: Project Manager
+Project Overview - Technical Writer & Fredrik Project Manager
 
-Project Overview - (Technical Writer)
 
-Rest is shared between Project manager, P&S manager and R&D manager
+
+Section: Project Overview - Adrian Technical Writer)
+Section: Project Schedule - Adrian Technical Writer & Fredrik Project Manager
+Section: Proecess and Working methods - Olle Process Manager
+Section: Managment of Human Resources - Emma P&S Manager, Chioma R&D Manager
+Section: Project Milestone Plan -  Fredrik Project Manager & Adrian Technical Writer
