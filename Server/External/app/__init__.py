@@ -3,10 +3,8 @@ from flask_jwt_extended import JWTManager
 from .extensions import bcrypt, db
 from .routes import init_routes
 from .mock_data import create_mock_data
-
-# from .mock_data import create_mock_data
+from .socketio_instance import socketio # Import the SocketIO instance
 from flask_cors import CORS
-
 
 def create_app():
     app = Flask(__name__)
@@ -31,5 +29,8 @@ def create_app():
         create_mock_data()
 
     init_routes(app)
+
+    # Attach socketio to the app with CORS settings
+    socketio.init_app(app, cors_allowed_origins="http://localhost:3000") 
 
     return app

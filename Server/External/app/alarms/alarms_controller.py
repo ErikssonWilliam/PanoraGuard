@@ -1,14 +1,8 @@
 # This file contains the controller for the alarms module
 from flask import request, jsonify
 from app.models import Alarm  # important for frontend
-
-# Importing the socketio library for real-time communication
-from flask_socketio import SocketIO
 from .alarms_service import AlarmService
-
-# Initialising the socketio object
-socketio = SocketIO()
-
+from app.socketio_instance import socketio
 
 class AlarmController:
     def get_alarms():
@@ -20,7 +14,7 @@ class AlarmController:
         new_alarm = AlarmService.create_alarm(alarm_data)
         if new_alarm["status"] == "success":
             # Notify frontend about the new alarm
-            # AlarmController.notify_new_alarm(new_alarm)
+            socketio.emit("new_alarm", new_alarm["alarm"])
             return jsonify(new_alarm), 201
         else:
             return jsonify({"message": new_alarm["message"]}), 400
@@ -40,9 +34,9 @@ class AlarmController:
     def notify_guard(guard_ID, alarm_ID):
         return AlarmService.notify_guard(guard_ID, alarm_ID)
 
-    @staticmethod
-    def notify_new_alarm(alarm):
-        socketio.emit("new_alarm", alarm)
+    # @staticmethod
+    # def notify_new_alarm(alarm):
+    #     socketio.emit("new_alarm", alarm)
 
     def update_alarm_status(alarm_id):
         alarm_data = request.get_json()
