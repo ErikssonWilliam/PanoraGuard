@@ -1,6 +1,6 @@
 # This file contains the controller for the alarms module
 from flask import request, jsonify
-from app.models import Alarm  # Viktigt tillägg
+from app.models import Alarm  # important for frontend
 
 # Importing the socketio library for real-time communication
 from flask_socketio import SocketIO
@@ -8,6 +8,7 @@ from .alarms_service import AlarmService
 
 # Initialising the socketio object
 socketio = SocketIO()
+
 
 class AlarmController:
     def get_alarms():
@@ -23,24 +24,6 @@ class AlarmController:
             return jsonify(new_alarm), 201
         else:
             return jsonify({"message": new_alarm["message"]}), 400
-
-    # Does not properly serialize the Alarm object for frontend compatibility.
-    # def get_alarm_by_id(alarm_id):
-    #     alarm = Alarm.query.get(alarm_id)
-    #     if alarm:
-    #         return {
-    #             "id": alarm.id,
-    #             "camera_id": alarm.camera_id,
-    #             "confidence_score": alarm.confidence_score,
-    #             "timestamp": alarm.timestamp,
-    #             "image_snapshot_id": alarm.image_snapshot_id,
-    #             "video_clip_id": alarm.video_clip_id,
-    #             "status": alarm.status,
-    #             "operator_id": alarm.operator_id
-    #         }
-    #     else:
-    #         return None
-    #     return jsonify({"alarm_id": str(alarm_id)})
 
     # Properly serializes the Alarm object using to_dict() to ensure correct JSON formatting for frontend compatibility
     @staticmethod
@@ -71,7 +54,6 @@ class AlarmController:
             return jsonify(updated_alarm), 200
         else:
             return jsonify({"message": "Alarm not found"}), 404
-
 
 
 # Frontend Logic:

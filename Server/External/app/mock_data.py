@@ -43,7 +43,12 @@ def create_mock_users():
 
 
 def create_mock_camera():
-    camera = Camera(id="1", ip_address="HTTPS//127.123.etc", location="A-huset", confidence_threshold=0.9)
+    camera = Camera(
+        id="1",
+        ip_address="HTTPS//127.123.etc",
+        location="A-huset",
+        confidence_threshold=0.9,
+    )
     session.add(camera)
     session.commit()
     return camera
