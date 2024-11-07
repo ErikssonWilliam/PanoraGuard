@@ -11,7 +11,8 @@ alarms_bp = Blueprint("alarms", __name__)
 def get_alarms():
     return AlarmController.get_alarms()
 
-@alarms_bp.route("/<string:alarm_ID>/image", methods=['GET'])
+
+@alarms_bp.route("/<string:alarm_ID>/image", methods=["GET"])
 def get_alarm_image(alarm_ID):
     return AlarmController.get_alarm_image(alarm_ID)
 

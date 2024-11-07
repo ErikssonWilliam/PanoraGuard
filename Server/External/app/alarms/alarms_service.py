@@ -60,7 +60,7 @@ class AlarmService:
 
     def get_alarm_by_id(schedule_id):
         return  # add logic
-    
+
     def get_alarm_image(alarm_ID):
         # Retrieve the alarm by ID
         alarm = Alarm.query.filter_by(id=alarm_ID).first()
@@ -74,7 +74,7 @@ class AlarmService:
 
         # Decode and return the image data
         try:
-            image_data = base64.b64decode(image_base64)
+            # image_data = base64.b64decode(image_base64)
             return jsonify({"image": image_base64}), 200  # Return the Base64 directly
         except Exception as e:
             print(f"Failed to decode image. Error: {e}")
