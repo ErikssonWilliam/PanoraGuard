@@ -4,6 +4,7 @@ from app.models import Alarm  # important for frontend
 from .alarms_service import AlarmService
 from app.socketio_instance import socketio
 
+
 class AlarmController:
     def get_alarms():
         return jsonify(AlarmService.get_alarms()), 200
