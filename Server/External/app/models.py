@@ -80,7 +80,7 @@ class Camera(db.Model):
 class Alarm(db.Model):
     __tablename__ = "alarms"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    camera_id = db.Column(db.String , db.ForeignKey("cameras.id"), nullable=False)
+    camera_id = db.Column(db.String, db.ForeignKey("cameras.id"), nullable=False)
     type = db.Column(db.String, nullable=False)
     confidence_score = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
