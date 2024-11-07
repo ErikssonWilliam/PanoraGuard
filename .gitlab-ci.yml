@@ -67,7 +67,7 @@ external-lint:
     - pip install ruff 
   script:
     - ruff check
-    - ruff format
+    - ruff format --check
 
 external-test:
   stage: external-test
