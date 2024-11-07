@@ -74,6 +74,14 @@ class Camera(db.Model):
     location = db.Column(db.String(120), nullable=False)
     confidence_threshold = db.Column(db.Float, nullable=False)
 
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "ip_adress": str(self.ip_address),
+            "location": self.location,
+            "confidence_threshold": self.confidence_threshold,
+        }
+
 
 # The Alarm structure stores metadata about an alarm event and its associations.
 # The operator_id is optional, meaning it will only be populated when an operator responds to the alarm.
