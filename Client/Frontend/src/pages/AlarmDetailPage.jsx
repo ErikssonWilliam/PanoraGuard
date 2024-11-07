@@ -32,6 +32,7 @@ const AlarmDetailPage = () => {
           >
             Look at the live feed
           </button>
+          {/** notifyGuard will send and email to the guard */}
           <button className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200">
             Notify the Guard
           </button>
