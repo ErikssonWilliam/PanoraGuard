@@ -41,6 +41,10 @@ class AlarmController:
         return AlarmService.notify_guard(guard_ID, alarm_ID)
 
     @staticmethod
+    def get_alarm_image(alarm_ID):
+        return AlarmService.get_alarm_image(alarm_ID)
+
+    @staticmethod
     def notify_new_alarm(alarm):
         socketio.emit("new_alarm", alarm)
 

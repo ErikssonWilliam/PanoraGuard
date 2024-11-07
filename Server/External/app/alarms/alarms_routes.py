@@ -3,12 +3,18 @@ from .alarms_controller import AlarmController
 
 alarms_bp = Blueprint("alarms", __name__)
 
+
 # Get all alarms
 
 
 @alarms_bp.route("/", methods=["GET"])
 def get_alarms():
     return AlarmController.get_alarms()
+
+
+@alarms_bp.route("/<string:alarm_ID>/image", methods=["GET"])
+def get_alarm_image(alarm_ID):
+    return AlarmController.get_alarm_image(alarm_ID)
 
 
 @alarms_bp.route("/notify/<string:guard_ID>/<string:alarm_ID>", methods=["POST"])

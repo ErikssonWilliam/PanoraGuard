@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import liveFootage from '../assets/live-footage.png';
 import Header from '../components/OperatorHeader';
 
 const AlarmDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [alarm, setAlarm] = useState(null);
+  const [liveFootage, setLiveFootage] = useState('');  // State for live footage image
   const [error, setError] = useState('');
 
   // Gets id from location.state or from URL parameters as fallback
@@ -20,9 +20,7 @@ const AlarmDetailPage = () => {
       return;
     }
 
-    // Remove any stale data from sessionStorage at component mount
-    sessionStorage.removeItem('alarmData');
-
+    // Fetch alarm details and image when component mounts
     const fetchAlarmDetails = async () => {
       try {
         console.log('Fetching alarm details...');
@@ -49,7 +47,21 @@ const AlarmDetailPage = () => {
       }
     };
 
+    const fetchAlarmImage = async () => {
+      try {
+        const imageResponse = await axios.get(`http://127.0.0.1:5000/alarms/${id}/image`);
+        if (imageResponse.data && imageResponse.data.image) {
+          // Update liveFootage with Base64 image data URL
+          setLiveFootage(`data:image/jpeg;base64,${imageResponse.data.image}`);
+        }
+      } catch (error) {
+        console.error("Error fetching image:", error);
+        setError('Failed to load alarm image.');
+      }
+    };
+
     fetchAlarmDetails();
+    fetchAlarmImage();
   }, [id, navigate]);
 
   const updateAlarmStatus = async (newStatus) => {
@@ -60,7 +72,7 @@ const AlarmDetailPage = () => {
       });
       console.log(`Alarm status updated to ${newStatus}:`, response.data);
   
-      // Merge new status with current alarm-object
+      // Merge new status with current alarm object
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
         status: response.data.status, // Updates status
@@ -77,7 +89,11 @@ const AlarmDetailPage = () => {
       <div className="flex-grow flex flex-col items-center justify-center p-8">
         <div className="flex w-11/12 justify-between bg-custom-bg max-w-6xl">
           <div className="w-2/5">
-            <img src={liveFootage} alt="Live footage" className="w-full h-auto rounded-lg" />
+            {liveFootage ? (
+              <img src={liveFootage} alt="Live footage" className="w-full h-auto rounded-lg" />
+            ) : (
+              <p>Loading live footage...</p>
+            )}
           </div>
           <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2">
             {alarm ? (
