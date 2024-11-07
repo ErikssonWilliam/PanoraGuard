@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 //import mockUsers from '../mockdata/mockUsers';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate(); // Use navigate from useNavigate
-  const [responseMessage, setResponseMessage] = useState('');
+  const [responseMessage, setResponseMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-//    setUsername(document.getElementById("username").value);
-//    setPassword(document.getElementById("password").value);
+    //    setUsername(document.getElementById("username").value);
+    //    setPassword(document.getElementById("password").value);
 
     try {
       const response = await fetch("http://localhost:5000/auth/login", {
-        method: 'POST',
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -34,19 +34,18 @@ const Login = () => {
 
       // Redirect based on user role
       switch (user.role) {
-        case 'admin':
-          navigate('/admin');
+        case "admin":
+          navigate("/admin");
           break;
-        case 'operator':
-          navigate('/operator');
+        case "operator":
+          navigate("/operator");
           break;
-        case 'manager':
-          navigate('/dashboard');
+        case "manager":
+          navigate("/dashboard");
           break;
         default:
-          setError('Unknown role');
+          setError("Unknown role");
       }
-
     } catch (error) {
       setResponseMessage("User not found");
     }
@@ -56,7 +55,10 @@ const Login = () => {
     <div className="flex h-screen">
       {/* Left Panel */}
       <div className="leftPanel flex flex-1 justify-center items-center bg-gray-100">
-        <form onSubmit={handleSubmit} className="bg-LightGray p-8 rounded-lg shadow-md">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-LightGray p-8 rounded-lg shadow-md"
+        >
           <h2 className="text-xl font-bold text-NavyBlue mb-6">
             <div className="max-w-xs text-center">
               Enter your username and password
@@ -71,7 +73,9 @@ const Login = () => {
 
           {/* Username Input */}
           <div className="mb-4">
-            <label className="block text-gray-700" htmlFor="username">Username</label>
+            <label className="block text-gray-700" htmlFor="username">
+              Username
+            </label>
             <input
               type="text"
               id="username"
@@ -84,9 +88,11 @@ const Login = () => {
 
           {/* Password Input */}
           <div className="mb-4 relative">
-            <label className="block text-gray-700" htmlFor="password">Password</label>
+            <label className="block text-gray-700" htmlFor="password">
+              Password
+            </label>
             <input
-              type={showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -97,7 +103,7 @@ const Login = () => {
               className="absolute right-4 top-9 text-gray-500 cursor-pointer"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? '🙈' : '👁️'}
+              {showPassword ? "🙈" : "👁️"}
             </span>
           </div>
 
