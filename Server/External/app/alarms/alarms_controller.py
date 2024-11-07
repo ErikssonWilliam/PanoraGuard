@@ -24,7 +24,6 @@ class AlarmController:
         else:
             return jsonify({"message": new_alarm["message"]}), 400
 
-
     def get_alarm_by_id(alarm_id):
         #        alarm = Alarm.query.get(alarm_id)
         #       if alarm:
