@@ -19,6 +19,11 @@ def get_camera_by_id(camera_id):
     return CameraController.get_camera(camera_id)
 
 
+@cameras_bp.route("/<string:camera_id>/conf/<string:confidence>", methods=["POST"])
+def set_confidence(camera_id, confidence):
+    return CameraController.set_confidence(camera_id, confidence)
+
+
 @cameras_bp.route("/<string:camera_id>", methods=["DELETE"])
 def delete_camera_by_id(camera_id):
     return CameraController.delete_camera(camera_id)

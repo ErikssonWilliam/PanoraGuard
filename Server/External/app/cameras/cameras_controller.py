@@ -17,6 +17,9 @@ class CameraController:
     def delete_camera(camera_id):
         return CameraService.delete_camera(camera_id)
 
+    def set_confidence(camera_id, confidence):
+        return CameraService.set_confidence(camera_id, confidence)
+
     def process_camera_data():
         data = request.json
 

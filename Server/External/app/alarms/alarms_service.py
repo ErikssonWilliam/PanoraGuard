@@ -1,6 +1,6 @@
 # This file contains the service layer for the alarms module
 
-from app.models import Alarm, AlarmStatus, User, ImageSnapshot  # Import the Alarm model
+from app.models import Alarm, AlarmStatus, User, Camera
 from typing import List
 from flask import jsonify
 from app.extensions import db  # Import the database instance
@@ -10,30 +10,74 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from config import Config
+import base64
+from email.mime.image import MIMEImage
 
 
 class AlarmService:
     def get_alarms() -> List[Alarm]:
-        return Alarm.query.all()
+        alarms = Alarm.query.all()
+        return [alarm.to_dict() for alarm in alarms]
 
+    @staticmethod
     def create_alarm(alarm_data):
+        # Step 1: Extract the alarm data
+        camera_id = alarm_data.get("camera_id")
+        confidence_score = alarm_data.get("confidence_score")
+        alarm_type = alarm_data.get("type")
+        image_base64 = alarm_data.get("image_base64")
+
+        # Step 2: Check if camera_id exists in the database
+        camera = Camera.query.filter_by(id=camera_id).first()
+        if not camera:
+            return {"status": "error", "message": "Camera not found"}
+
+        # Step 3: Check if there is any active alarm with status PENDING for the given camera_id
+        active_alarm = Alarm.query.filter_by(
+            camera_id=camera_id, status=AlarmStatus.PENDING
+        ).first()
+        if active_alarm:
+            return {"status": "error", "message": "Already alarm active"}
+
+        # Step 4: Check if confidence_score meets the threshold
+        if confidence_score < camera.confidence_threshold:
+            return {"status": "error", "message": "Confidence score below threshold"}
+
+        # Step 5: Create a new alarm
         new_alarm = Alarm(
-            camera_id=alarm_data["camera_id"],
-            confidence_score=alarm_data["confidence_score"],
-            timestamp=alarm_data["timestamp"],
-            image_snapshot_id=alarm_data["image_snapshot_id"],
-            video_clip_id=alarm_data["video_clip_id"],
-            # ToDO: snapshot_string?
-            # ToDo: type?
-            status="pending",  # Set default status to "pending"
-            operator_id=alarm_data["operator_id"],
+            camera_id=camera_id,
+            type=alarm_type,
+            confidence_score=confidence_score,
+            image_base64=image_base64,
+            status=AlarmStatus.PENDING,
         )
         db.session.add(new_alarm)
         db.session.commit()
-        return new_alarm
+
+        return {"status": "success", "alarm": new_alarm.to_dict()}
 
     def get_alarm_by_id(schedule_id):
         return  # add logic
+
+    def get_alarm_image(alarm_ID):
+        # Retrieve the alarm by ID
+        alarm = Alarm.query.filter_by(id=alarm_ID).first()
+        if not alarm:
+            return jsonify({"status": "No alarm found"}), 404
+
+        # Retrieve the associated image snapshot
+        image_base64 = alarm.image_base64
+        if not image_base64:
+            return jsonify({"status": "No image snapshot associated with alarm"}), 404
+
+        # Decode and return the image data
+        try:
+            # image_data = base64.b64decode(image_base64)
+            # Return the Base64 directly
+            return jsonify({"image": image_base64}), 200
+        except Exception as e:
+            print(f"Failed to decode image. Error: {e}")
+            return jsonify({"status": "Failed to decode image"}), 500
 
     def update_alarm_status(alarm_id, new_status):
         # Find the alarm by ID
@@ -71,16 +115,14 @@ class AlarmService:
             return jsonify({"status": "No alarm found"}), 404
 
         # Retrieve the associated image snapshot URL
-        image_snapshot = ImageSnapshot.query.filter_by(
-            id=alarm.image_snapshot_id
-        ).first()
-        if not image_snapshot:
+        image_base64 = alarm.image_base64
+        if not image_base64:
             return jsonify({"status": "No image snapshot associated with alarm"}), 404
 
         # Step 3: Send the email
         score = alarm.confidence_score
         subject = "Human Detected Alert"
-        body = f"Slow down cowboy! \nYou have been caught with a score: {score}\n"
+        body = f"Slow down cowboy! \nYou have been caught with a score: {score}\n Please check the image attached.\n Head to camera id: {alarm.camera_id}"
         to_email = guard.email
         # Gmail account credentials
         from_email = "tddc88.company3@gmail.com"
@@ -92,6 +134,14 @@ class AlarmService:
         msg["To"] = to_email
         msg["Subject"] = subject
         msg.attach(MIMEText(body, "plain"))
+
+        try:
+            image_data = base64.b64decode(image_base64)
+            image_attachment = MIMEImage(image_data, name="alarm_image.jpeg")
+            msg.attach(image_attachment)
+        except Exception as e:
+            print(f"Failed to decode image. Error: {e}")
+            return jsonify({"status": "Failed to decode image"}), 500
 
         try:
             print("Email content before sending:")
@@ -109,7 +159,7 @@ class AlarmService:
             print(f"Failed to send email. Error: {e}")
 
         # Step 4: Update the alarm status to confirmed
-        alarm.status = AlarmStatus.CONFIRMED
+        alarm.status = AlarmStatus.NOTIFIED
         db.session.commit()
 
         # Step 5: Placeholder for sending the notification
