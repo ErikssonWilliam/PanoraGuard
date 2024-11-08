@@ -34,6 +34,12 @@ def create_app():
     init_routes(app)
 
     # Attach socketio to the app with CORS settings
-    socketio.init_app(app, cors_allowed_origins=["http://localhost:3000", "https://ashy-meadow-0a76ab703.5.azurestaticapps.net"])
+    socketio.init_app(
+        app,
+        cors_allowed_origins=[
+            "http://localhost:3000",
+            "https://ashy-meadow-0a76ab703.5.azurestaticapps.net",
+        ],
+    )
 
     return app
