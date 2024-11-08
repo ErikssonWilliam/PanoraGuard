@@ -49,8 +49,7 @@ class AlarmController:
         if not alarm_data or "status" not in alarm_data:
             return jsonify({"message": "Status is required"}), 400
 
-        updated_alarm = AlarmService.update_alarm_status(
-            alarm_id, alarm_data["status"])
+        updated_alarm = AlarmService.update_alarm_status(alarm_id, alarm_data["status"])
         if updated_alarm:
             return jsonify(updated_alarm), 200
         else:
