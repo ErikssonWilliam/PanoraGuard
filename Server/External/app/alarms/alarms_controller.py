@@ -12,7 +12,7 @@ class AlarmController:
     @staticmethod
     def add_alarm():
         alarm_data = request.get_json()
-        print(alarm_data) # Debugging
+        print(alarm_data)  # Debugging
         new_alarm = AlarmService.create_alarm(alarm_data)
         if new_alarm["status"] == "success":
             # Notify frontend about the new alarm
