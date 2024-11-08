@@ -14,7 +14,7 @@
 #include <curl/curl.h> // For HTTP requests
 
 // Define constants
-#define EXTERNAL_URL "http://192.168.1.135:5000/processing/camera/data_JSON" // For external server
+#define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add" // For external server
 #define ENABLE_SNAPSHOT_URL "http://192.168.1.121/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
 #define CAMERA_ID_URL "http://192.168.1.121/axis-cgi/basicdeviceinfo.cgi"
 // -----------------------------------------
@@ -252,7 +252,7 @@ static void on_message(const mdb_message_t *message, void *user_data)
            image_value,
            camera_id);
     
-    json_t *json_data = json_pack("{s:f, s:s, s:s, s:s}",
+    json_t *json_data = json_pack("{s:f, s:s, s:s, s:s, s:s}",
                                   "confidence_score", score_value,
                                   "image_base64", image_value,
                                   "timestamp", time,
