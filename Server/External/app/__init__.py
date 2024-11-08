@@ -2,7 +2,7 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from .extensions import bcrypt, db
 from .routes import init_routes
-from .mock_data import create_mock_data
+#from .mock_data import create_mock_data
 from .socketio_instance import socketio  # Import the SocketIO instance
 from flask_cors import CORS
 
