@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/OperatorHeader";
+import { baseURL } from "../api/axiosConfig";
 
 const AlarmDetailPage = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const AlarmDetailPage = () => {
 
     const fetchAlarmDetails = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/alarms/${id}`);
+        const response = await axios.get(`${baseURL}/alarms/${id}`);
         const alarmData = response.data;
         setAlarm({
           id: alarmData.id || alarmData.alarm_id,
@@ -53,7 +54,7 @@ const AlarmDetailPage = () => {
     const fetchAlarmImage = async () => {
       try {
         const imageResponse = await axios.get(
-          `http://127.0.0.1:5000/alarms/${id}/image`
+          `${baseURL}/alarms/${id}/image`
         );
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
@@ -68,7 +69,7 @@ const AlarmDetailPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:5000/users/guards");
+        const response = await axios.get(`${baseURL}/users/guards`);
         setUsers(response.data);
       } catch (err) {
         console.error("Error fetching guards:", err);
@@ -96,7 +97,7 @@ const AlarmDetailPage = () => {
   const updateAlarmStatus = async (newStatus) => {
     try {
       const response = await axios.put(
-        `http://127.0.0.1:5000/alarms/${id}/status`,
+        `${baseURL}/alarms/${id}/status`,
         {
           status: newStatus,
         }
@@ -125,7 +126,7 @@ const AlarmDetailPage = () => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:5000/alarms/notify/${guardID}/${id}`,
+        `${baseURL}/alarms/notify/${guardID}/${id}`,
         {},
         {
           headers: {

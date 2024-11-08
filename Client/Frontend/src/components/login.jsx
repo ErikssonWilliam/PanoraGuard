@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { baseURL } from "../api/axiosConfig";
 //import mockUsers from '../mockdata/mockUsers';
 
 const Login = () => {
@@ -17,7 +18,7 @@ const Login = () => {
     //    setPassword(document.getElementById("password").value);
 
     try {
-      const response = await fetch("https://company3-externalserver.azurewebsites.net/auth/login", {
+      const response = await fetch(`${baseURL}/auth/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
