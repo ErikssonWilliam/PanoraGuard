@@ -11,7 +11,7 @@ from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://ashy-meadow-0a76ab703.5.azurestaticapps.net"]}})
 
     # Load config from config.py
     app.config.from_object("config.Config")
@@ -37,9 +37,10 @@ def create_app():
     socketio.init_app(
         app,
         cors_allowed_origins=[
-            "http://localhost:3000",
-            "https://ashy-meadow-0a76ab703.5.azurestaticapps.net",
+            "http://localhost:3000", 
+            "https://ashy-meadow-0a76ab703.5.azurestaticapps.net"
         ],
+        transports=["websocket", "polling"],  # Ensure both WebSocket and polling are allowed
     )
 
     return app
