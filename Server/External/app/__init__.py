@@ -11,10 +11,13 @@ from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, origins=[
-        "http://localhost:3000",
-        "https://ashy-meadow-0a76ab703.5.azurestaticapps.net",
-    ])
+    CORS(
+        app,
+        origins=[
+            "http://localhost:3000",
+            "https://ashy-meadow-0a76ab703.5.azurestaticapps.net",
+        ],
+    )
 
     # Load config from config.py
     app.config.from_object("config.Config")
