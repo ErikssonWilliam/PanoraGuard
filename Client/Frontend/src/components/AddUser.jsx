@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
+import { baseURL } from "../api/axiosConfig"; 
 
 const AddnewUser = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const AddnewUser = () => {
   const handleSubmit = async () => {
     try {
       const response = await fetch(
-        "https://company3-externalserver.azurewebsites.net/users/create",
+        `${baseURL}/users/create`,
         {
           method: "POST",
           headers: {

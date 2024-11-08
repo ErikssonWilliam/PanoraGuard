@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import liveFootage from '../assets/live-footage.png';
+import { baseURL } from "../api/axiosConfig";
 
 const LiveFeed = () => {
     const location = useLocation();
@@ -14,7 +15,7 @@ const LiveFeed = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:5000/users/guards');
+                const response = await axios.get(`${baseURL}/users/guards/`);
                 setUsers(response.data);
             } catch (err) {
                 console.error('Error fetching guards:', err);
@@ -31,7 +32,7 @@ const LiveFeed = () => {
         if (!confirmAction) return;
 
         try {
-            const response = await axios.put(`http://127.0.0.1:5000/alarms/${id}/status`, { status: newStatus });
+            const response = await axios.put(`${baseURL}/alarms/${id}/status`, { status: newStatus });
             console.log(`Alarm status updated to ${newStatus}:`, response.data);
             setNotificationMessage('Alarm dismissed successfully.');
             setNotificationType('success');
@@ -54,7 +55,7 @@ const LiveFeed = () => {
         if (!confirmNotify) return;
 
         try {
-            const response = await axios.post(`http://127.0.0.1:5000/alarms/notify/${selectedUserId}/${id}`);
+            const response = await axios.post(`${baseURL}/alarms/notify/${selectedUserId}/${id}`);
             console.log('Guard notified successfully:', response.data);
             setNotificationMessage('Notification sent successfully.');
             setNotificationType('success');
