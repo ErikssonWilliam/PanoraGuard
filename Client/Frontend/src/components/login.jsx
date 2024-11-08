@@ -32,6 +32,26 @@ const Login = () => {
       const user = await response.json(); // Fetch and store user data
       setResponseMessage("Logged in");
 
+      // Store token data in local storage
+      localStorage.setItem('accessToken', user.access_token);
+      localStorage.setItem('refreshToken', user.refresh_token);
+
+      // Fetch user info
+      const userInfoResponse = await fetch("http://localhost:5000/auth/userinfo", {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!userInfoResponse.ok) {
+        throw new Error("Failed to fetch user info");
+      }
+
+      const userInfo = await userInfoResponse.json();
+
+      // To pass data to the next page, use the state property
+      // navigate('/admin', { state: { email: userInfo.email, name: userInfo.name } });
       // Redirect based on user role
       switch (user.role) {
         case "admin":

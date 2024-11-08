@@ -8,3 +8,9 @@
 body {
   @apply bg-BG min-h-screen;
 }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
