@@ -60,11 +60,6 @@ const Admin = () => {
               </button>
             </div>
             <div>
-              <button onClick={() => setSelectedComponent("AddUser")}>
-                Add New User
-              </button>
-            </div>
-            <div>
               <button onClick={() => setSelectedComponent("Camera")}>
                 Camera Configuration
               </button>
