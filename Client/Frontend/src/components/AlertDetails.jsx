@@ -1,13 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import AlarmRow from './AlarmRow';
 
 const AlertDetails = () => {
-  const alarms = [
-    { id: 1, cameraNumber: 2, location: 'Lorem ipsum', detected: 'Human', isActive: true },
-    { id: 2, cameraNumber: 2, location: 'Lorem ipsum', detected: 'Human', time: '06:00 PM', isActive: false },
-    { id: 3, cameraNumber: 2, location: 'Lorem ipsum', detected: 'Human', time: '04:00 PM', isActive: false },
-    { id: 4, cameraNumber: 2, location: 'Lorem ipsum', detected: 'Human', time: '02:00 PM', isActive: false },
-  ];
+  const [alarms, setAlarms] = useState([]);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchAlarms = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:5000/alarms/');
+        const allAlarms = response.data;
+
+        // Filters to show pending alarms
+        const pendingAlarms = allAlarms.filter(alarm => alarm.status === 'pending');
+        
+        setAlarms(pendingAlarms);
+      } catch (err) {
+        console.error('Error fetching alarms:', err);
+        setError('Failed to load alarms.');
+      }
+    };
+
+    fetchAlarms();
+  }, []);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="p-4">
@@ -15,9 +35,13 @@ const AlertDetails = () => {
         Alarm Details:
       </h2>
       <div className="space-y-6">
-        {alarms.map((alarm) => (
-          <AlarmRow key={alarm.id} {...alarm} />
-        ))}
+        {Array.isArray(alarms) && alarms.length > 0 ? (
+          alarms.map((alarm) => (
+            <AlarmRow key={alarm.id} {...alarm} />
+          ))
+        ) : (
+          <p>No pending alarms found.</p>
+        )}
       </div>
     </div>
   );

@@ -19,7 +19,6 @@ class AlarmService:
         alarms = Alarm.query.all()
         return [alarm.to_dict() for alarm in alarms]
 
-
     @staticmethod
     def create_alarm(alarm_data):
         # Step 1: Extract the alarm data
@@ -35,7 +34,9 @@ class AlarmService:
             return {"status": "error", "message": "Camera not found"}
 
         # Step 3: Check if there is any active alarm with status PENDING for the given camera_id
-        active_alarm = Alarm.query.filter_by(camera_id=camera_id, status=AlarmStatus.PENDING).first()
+        active_alarm = Alarm.query.filter_by(
+            camera_id=camera_id, status=AlarmStatus.PENDING
+        ).first()
         if active_alarm:
             return {"status": "error", "message": "Already alarm active"}
 
@@ -50,16 +51,34 @@ class AlarmService:
             confidence_score=confidence_score,
             timestamp=timestamp,
             image_base64=image_base64,
-            status=AlarmStatus.PENDING
+            status=AlarmStatus.PENDING,
         )
         db.session.add(new_alarm)
         db.session.commit()
 
         return {"status": "success", "alarm": new_alarm.to_dict()}
 
-
     def get_alarm_by_id(schedule_id):
         return  # add logic
+
+    def get_alarm_image(alarm_ID):
+        # Retrieve the alarm by ID
+        alarm = Alarm.query.filter_by(id=alarm_ID).first()
+        if not alarm:
+            return jsonify({"status": "No alarm found"}), 404
+
+        # Retrieve the associated image snapshot
+        image_base64 = alarm.image_base64
+        if not image_base64:
+            return jsonify({"status": "No image snapshot associated with alarm"}), 404
+
+        # Decode and return the image data
+        try:
+            # image_data = base64.b64decode(image_base64)
+            return jsonify({"image": image_base64}), 200  # Return the Base64 directly
+        except Exception as e:
+            print(f"Failed to decode image. Error: {e}")
+            return jsonify({"status": "Failed to decode image"}), 500
 
     def update_alarm_status(alarm_id, new_status):
         # Find the alarm by ID

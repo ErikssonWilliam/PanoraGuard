@@ -74,13 +74,21 @@ class Camera(db.Model):
     location = db.Column(db.String(120), nullable=False)
     confidence_threshold = db.Column(db.Float, nullable=False)
 
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "ip_adress": str(self.ip_address),
+            "location": self.location,
+            "confidence_threshold": self.confidence_threshold,
+        }
+
 
 # The Alarm structure stores metadata about an alarm event and its associations.
 # The operator_id is optional, meaning it will only be populated when an operator responds to the alarm.
 class Alarm(db.Model):
     __tablename__ = "alarms"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    camera_id = db.Column(db.String , db.ForeignKey("cameras.id"), nullable=False)
+    camera_id = db.Column(db.String, db.ForeignKey("cameras.id"), nullable=False)
     type = db.Column(db.String, nullable=False)
     confidence_score = db.Column(db.Float, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)

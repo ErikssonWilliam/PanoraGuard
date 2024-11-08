@@ -3,12 +3,18 @@ from .alarms_controller import AlarmController
 
 alarms_bp = Blueprint("alarms", __name__)
 
+
 # Get all alarms
 
 
 @alarms_bp.route("/", methods=["GET"])
 def get_alarms():
     return AlarmController.get_alarms()
+
+
+@alarms_bp.route("/<string:alarm_ID>/image", methods=["GET"])
+def get_alarm_image(alarm_ID):
+    return AlarmController.get_alarm_image(alarm_ID)
 
 
 @alarms_bp.route("/notify/<string:guard_ID>/<string:alarm_ID>", methods=["POST"])
@@ -50,5 +56,5 @@ def delete_alarm_by_id(alarm_id):
 # Update alarm status by id
 @alarms_bp.route("/<string:alarm_id>/status", methods=["PUT"])
 def update_alarm_status(alarm_id):
-    #ToDO: Extract operator id from frontend token request, and update operate_id in the alarm
+    # ToDO: Extract operator id from frontend token request, and update operate_id in the alarm
     return AlarmController.update_alarm_status(alarm_id)

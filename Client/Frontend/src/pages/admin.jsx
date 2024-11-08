@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 import CameraConfig from '../components/cameraConfig';
 import ManageData from '../components/manageData';
