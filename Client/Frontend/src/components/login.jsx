@@ -18,7 +18,7 @@ const Login = () => {
     //    setPassword(document.getElementById("password").value);
 
     try {
-      const response = await fetch(`${baseURL}/auth/login/`, {
+      const response = await fetch(`${baseURL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
