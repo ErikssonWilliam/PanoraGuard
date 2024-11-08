@@ -23,11 +23,11 @@ def create_app():
     db.init_app(app)
     with app.app_context():
         print("Creating all tables")
-        db.drop_all()
+    #    db.drop_all()
         # Create all tables defined in the models
         db.create_all()
         # Fill tables with mock data
-        create_mock_data()
+    #    create_mock_data()
 
     init_routes(app)
 
