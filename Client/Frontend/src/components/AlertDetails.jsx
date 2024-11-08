@@ -1,29 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import AlarmRow from './AlarmRow';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import AlarmRow from "./AlarmRow";
+import { io } from "socket.io-client"; // Import the socket.io-client
 
 const AlertDetails = () => {
   const [alarms, setAlarms] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
+  // Initialize socket connection
   useEffect(() => {
+    // Connect to the backend socket server
+    const socket = io("http://127.0.0.1:5000");
+
+    // Fetch initial alarms
     const fetchAlarms = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:5000/alarms/');
+        const response = await axios.get("http://127.0.0.1:5000/alarms/");
         const allAlarms = response.data;
 
         // Filters to show pending alarms
-        const pendingAlarms = allAlarms.filter(alarm => alarm.status === 'pending');
-        
+        const pendingAlarms = allAlarms.filter(
+          (alarm) => alarm.status === "pending"
+        );
         setAlarms(pendingAlarms);
       } catch (err) {
-        console.error('Error fetching alarms:', err);
-        setError('Failed to load alarms.');
+        console.error("Error fetching alarms:", err);
+        setError("Failed to load alarms.");
       }
     };
 
+    // Listen for the new_alarm event
+    socket.on("new_alarm", (newAlarm) => {
+      // Add the new alarm to the existing alarms list
+      setAlarms((prevAlarms) => [...prevAlarms, newAlarm]);
+    });
+
+    // Call fetchAlarms initially
     fetchAlarms();
-  }, []);
+
+    // Cleanup the socket connection on component unmount
+    return () => {
+      socket.off("new_alarm"); // Unsubscribe from the event when component unmounts
+      socket.disconnect(); // Disconnect the socket connection
+    };
+  }, []); // Empty dependency array to run only on mount
 
   if (error) {
     return <div>{error}</div>;
@@ -36,9 +56,7 @@ const AlertDetails = () => {
       </h2>
       <div className="space-y-6">
         {Array.isArray(alarms) && alarms.length > 0 ? (
-          alarms.map((alarm) => (
-            <AlarmRow key={alarm.id} {...alarm} />
-          ))
+          alarms.map((alarm) => <AlarmRow key={alarm.id} {...alarm} />)
         ) : (
           <p>No pending alarms found.</p>
         )}

@@ -1,8 +1,8 @@
-import React from 'react';
-import Header from './Header';
-import StatisticsForm from './StatisticsForm';
-import AlertsChart from './AlertsChart';
-import AlertsDistribution from './AlertsDistribution';
+import React from "react";
+import Header from "./Header";
+import StatisticsForm from "./StatisticsForm";
+import AlertsChart from "./AlertsChart";
+import AlertsDistribution from "./AlertsDistribution";
 
 function PanoraGuardDashboard() {
   return (

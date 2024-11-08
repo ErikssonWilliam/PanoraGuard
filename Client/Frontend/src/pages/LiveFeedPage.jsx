@@ -1,7 +1,6 @@
-import React from 'react';
-import LiveFeedHeader from '../components/LiveFeedHeader'; 
-import LiveFeed from '../components/LiveFeed';
-
+import React from "react";
+import LiveFeedHeader from "../components/LiveFeedHeader";
+import LiveFeed from "../components/LiveFeed";
 
 const LiveFeedPage = () => {
   return (
