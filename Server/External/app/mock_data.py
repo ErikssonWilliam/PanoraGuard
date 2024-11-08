@@ -32,7 +32,7 @@ def create_mock_users():
         username="guardian_of_the_galaxy",
         password_hash="hashed_password456xx",
         role=UserRole.GUARD,
-        email="axel.stridh@gmail.com",
+        email="sbgubbarna1337@gmail.com",
     )
 
     session.add(user1)
@@ -44,7 +44,7 @@ def create_mock_users():
 
 def create_mock_camera():
     camera = Camera(
-        id="B8A44F9EEE36", # This is the camera id for camera 121
+        id="B8A44F9EEE36",  # This is the camera id for camera 121
         ip_address="HTTPS//127.123.etc",
         location="A-huset",
         confidence_threshold=0.5,
