@@ -2,6 +2,7 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from .extensions import bcrypt, db
 from .routes import init_routes
+from .mock_data import create_mock_data
 
 # from .mock_data import create_mock_data
 from .socketio_instance import socketio  # Import the SocketIO instance
@@ -28,11 +29,11 @@ def create_app():
         # Create all tables defined in the models
         db.create_all()
         # Fill tables with mock data
-    #    create_mock_data()
+        create_mock_data()
 
     init_routes(app)
 
     # Attach socketio to the app with CORS settings
-    socketio.init_app(app, cors_allowed_origins="http://localhost:3000")
+    socketio.init_app(app, cors_allowed_origins=["http://localhost:3000", "https://ashy-meadow-0a76ab703.5.azurestaticapps.net"])
 
     return app
