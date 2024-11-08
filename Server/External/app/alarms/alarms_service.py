@@ -75,7 +75,8 @@ class AlarmService:
         # Decode and return the image data
         try:
             # image_data = base64.b64decode(image_base64)
-            return jsonify({"image": image_base64}), 200  # Return the Base64 directly
+            # Return the Base64 directly
+            return jsonify({"image": image_base64}), 200
         except Exception as e:
             print(f"Failed to decode image. Error: {e}")
             return jsonify({"status": "Failed to decode image"}), 500
