@@ -25,7 +25,6 @@ class AlarmService:
         camera_id = alarm_data.get("camera_id")
         confidence_score = alarm_data.get("confidence_score")
         alarm_type = alarm_data.get("type")
-        timestamp = alarm_data.get("timestamp")
         image_base64 = alarm_data.get("image_base64")
 
         # Step 2: Check if camera_id exists in the database
@@ -49,7 +48,6 @@ class AlarmService:
             camera_id=camera_id,
             type=alarm_type,
             confidence_score=confidence_score,
-            timestamp=timestamp,
             image_base64=image_base64,
             status=AlarmStatus.PENDING,
         )
@@ -124,7 +122,7 @@ class AlarmService:
         # Step 3: Send the email
         score = alarm.confidence_score
         subject = "Human Detected Alert"
-        body = f"Slow down cowboy! \nYou have been caught with a score: {score}\n"
+        body = f"Slow down cowboy! \nYou have been caught with a score: {score}\n Please check the image attached.\n Head to camera id: {alarm.camera_id}"
         to_email = guard.email
         # Gmail account credentials
         from_email = "tddc88.company3@gmail.com"
