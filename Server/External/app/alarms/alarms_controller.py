@@ -12,6 +12,7 @@ class AlarmController:
     @staticmethod
     def add_alarm():
         alarm_data = request.get_json()
+        print(alarm_data)  # Debugging
         new_alarm = AlarmService.create_alarm(alarm_data)
         if new_alarm["status"] == "success":
             # Notify frontend about the new alarm
@@ -20,12 +21,17 @@ class AlarmController:
         else:
             return jsonify({"message": new_alarm["message"]}), 400
 
+    def get_alarm_image(alarm_ID):
+        return AlarmService.get_alarm_image(alarm_ID)
+
     # Properly serializes the Alarm object using to_dict() to ensure correct JSON formatting for frontend compatibility
     @staticmethod
     def get_alarm_by_id(alarm_id):
-        alarm = Alarm.query.get(alarm_id)  # Fetch the alarm from the database by ID
+        # Fetch the alarm from the database by ID
+        alarm = Alarm.query.get(alarm_id)
         if alarm:
-            return jsonify(alarm.to_dict())  # Convert to dictionary and return as JSON
+            # Convert to dictionary and return as JSON
+            return jsonify(alarm.to_dict())
         else:
             return jsonify({"error": "Alarm not found"}), 404
 

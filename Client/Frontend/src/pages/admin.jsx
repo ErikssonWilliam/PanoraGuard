@@ -1,11 +1,11 @@
-
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
-import CameraConfig from '../components/cameraConfig';
-import ManageData from '../components/manageData';
-import SpeakerConfig from '../components/speakerConfig';
-import user from '../assets/user.svg'
-import AddnewUser from '../components/AddUser';
+import React, { useState } from "react";
+import CameraConfig from "../components/cameraConfig";
+import ManageData from "../components/manageData";
+import SpeakerConfig from "../components/speakerConfig";
+import user from "../assets/user.svg";
+import AddnewUser from "../components/AddUser";
+import { Link } from "react-router-dom";
 
 
 const Admin = () => {
@@ -15,14 +15,15 @@ const Admin = () => {
   // Step 2: Create a function to render the content based on the selected component
   const renderContent = () => {
     switch (selectedComponent) {
+      case "AddUser":
 
-      case 'AddUser':
         return (
-          <div className='p-8'>
-            < AddnewUser/>
+          <div className="p-8">
+            <AddnewUser />
           </div>
-        );      
-      case 'Camera':
+        );
+      case "Camera":
+
         return (
           <div className="p-8">
             <CameraConfig />
@@ -56,14 +57,16 @@ const Admin = () => {
             </a>
           </div>
 
-          <div className="flex flex-col space-y-16 pt-16 ">
-            <div className='hover:font-bold'>
-
-              <button  onClick={() => setSelectedComponent('AddUser')}>Add New User</button>
+          <div className="flex flex-col space-y-16 pt-16">
+            <div>
+              <button onClick={() => setSelectedComponent("AddUser")}>
+                Add New User
+              </button>
             </div>
-            <div className='hover:font-bold'>
-              <button  onClick={() => setSelectedComponent('Camera')}>Camera Configuration</button>
-
+            <div>
+              <button onClick={() => setSelectedComponent("Camera")}>
+                Camera Configuration
+              </button>
             </div>
             <div className='hover:font-bold'>
               <button onClick={() => setSelectedComponent("Speaker")}>
@@ -82,9 +85,9 @@ const Admin = () => {
       {/* Step 4: Content Area that updates based on the selected component */}
       <div className="col-span-5">
         <div className="flex justify-end pr-4">
-          <a href="#">
+          <Link to="/profile">
             <img src={user} alt="userlogo" className="text-right" />
-          </a>
+          </Link>
         </div>
 
         {renderContent()}
