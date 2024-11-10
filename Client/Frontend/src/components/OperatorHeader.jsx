@@ -16,13 +16,13 @@ const Header = () => {
             className="w-6 h-6 hover:scale-110 transition-transform duration-200"
           />
         </Link>
-        <span>
+        <Link to="/profile">
           <img
             src={userIcon}
             alt="User icon"
             className="w-6 h-6 hover:scale-110 transition-transform duration-200"
           />
-        </span>
+        </Link>
       </div>
     </header>
   );
