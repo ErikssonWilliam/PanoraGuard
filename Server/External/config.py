@@ -8,8 +8,20 @@ if dotenv_path:
     load_dotenv(dotenv_path)
 
 
+def is_pytest_running():
+    return (
+        (os.environ.get("PYTEST_VERSION") is not None)
+        or os.path.basename(sys.argv[0])
+        in (
+            "pytest",
+            "py.test",
+        )
+        or "pytest" in sys.modules
+    )
+
+
 class Config:
-    if os.getenv("TESTING"):
+    if is_pytest_running():
         SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
         SECRET_KEY = secrets.token_hex(16)
         email_pswrd = "test_password"

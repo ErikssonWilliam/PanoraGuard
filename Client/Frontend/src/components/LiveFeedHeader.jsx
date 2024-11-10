@@ -1,6 +1,6 @@
-import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import closeIcon from '../assets/close-icon.png';
+import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import closeIcon from "../assets/close-icon.png";
 
 const LiveFeedHeader = () => {
   const navigate = useNavigate();
@@ -9,9 +9,9 @@ const LiveFeedHeader = () => {
   const handleGoBack = () => {
     const id = location.state?.id;
     if (id) {
-      navigate('/alert-details', { state: { id } }); // Navigera tillbaka med `id` som state
+      navigate("/alert-details", { state: { id } }); // Navigera tillbaka med `id` som state
     } else {
-      navigate('/alert-details'); // Om `id` saknas, navigera tillbaka till huvudlistan
+      navigate("/alert-details"); // Om `id` saknas, navigera tillbaka till huvudlistan
     }
   };
 
