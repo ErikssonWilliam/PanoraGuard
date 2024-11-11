@@ -5,6 +5,7 @@ import ManageData from "../components/manageData";
 import SpeakerConfig from "../components/speakerConfig";
 import user from "../assets/user.svg";
 import AddnewUser from "../components/AddUser";
+import { Link } from "react-router-dom";
 
 const Admin = () => {
   // Step 1: Set up state to manage selected component
@@ -81,9 +82,9 @@ const Admin = () => {
       {/* Step 4: Content Area that updates based on the selected component */}
       <div className="col-span-5">
         <div className="flex justify-end pr-4">
-          <a href="#">
+          <Link to="/profile">
             <img src={user} alt="userlogo" className="text-right" />
-          </a>
+          </Link>
         </div>
 
         {renderContent()}

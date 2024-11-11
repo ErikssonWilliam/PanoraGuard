@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AlarmRow from "./AlarmRow";
 import { io } from "socket.io-client"; // Import the socket.io-client
+import { baseURL } from "../api/axiosConfig";
 
 const AlertDetails = () => {
   const [alarms, setAlarms] = useState([]);
@@ -10,12 +11,12 @@ const AlertDetails = () => {
   // Initialize socket connection
   useEffect(() => {
     // Connect to the backend socket server
-    const socket = io("http://127.0.0.1:5000");
+    const socket = io(baseURL);
 
     // Fetch initial alarms
     const fetchAlarms = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:5000/alarms/");
+        const response = await axios.get(`${baseURL}/alarms/`);
         const allAlarms = response.data;
 
         // Filters to show pending alarms
