@@ -39,7 +39,9 @@ class UserService:
         if data.get("role"):
             user.role = data.get("role")
         if data.get("newPassword"):
-            user.password_hash = bcrypt.generate_password_hash(data.get("newPassword")).decode("utf-8")
+            user.password_hash = bcrypt.generate_password_hash(
+                data.get("newPassword")
+            ).decode("utf-8")
         UserService.session.commit()
         return user
 
@@ -50,4 +52,3 @@ class UserService:
             UserService.session.commit()
             return True
         return False
-    
