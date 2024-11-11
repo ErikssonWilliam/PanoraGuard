@@ -18,6 +18,9 @@ class UserService:
     def get_user_by_username(user_name: str) -> Union[User, None]:
         return User.query.filter_by(username=user_name).first()
 
+    def get_user_by_email(email: str):
+        return User.query.filter_by(email=email).first()
+
     def create_user(username: str, password: str, role: UserRole, email: str) -> User:
         new_user = User(
             username=username,
