@@ -33,6 +33,12 @@ const Login = () => {
       const user = await response.json(); // Fetch and store user data
       setResponseMessage("Logged in");
 
+      // Store token data in local storage
+      localStorage.setItem('accessToken', user.access_token);
+      localStorage.setItem('userId', user.user_id);
+      
+      // To pass data to the next page, use the state property
+      // navigate('/admin', { state: { email: userInfo.email, name: userInfo.name } });
       // Redirect based on user role
       switch (user.role) {
         case "admin":
