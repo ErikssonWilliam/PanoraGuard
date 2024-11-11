@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../api/axiosConfig";
 //import mockUsers from '../mockdata/mockUsers';
@@ -34,9 +34,9 @@ const Login = () => {
       setResponseMessage("Logged in");
 
       // Store token data in local storage
-      localStorage.setItem('accessToken', user.access_token);
-      localStorage.setItem('userId', user.user_id);
-      
+      localStorage.setItem("accessToken", user.access_token);
+      localStorage.setItem("userId", user.user_id);
+
       // To pass data to the next page, use the state property
       // navigate('/admin', { state: { email: userInfo.email, name: userInfo.name } });
       // Redirect based on user role
@@ -54,6 +54,7 @@ const Login = () => {
           setError("Unknown role");
       }
     } catch (error) {
+      console.log(error);
       setResponseMessage("User not found");
     }
   };

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import bellIcon from "../assets/bell-01.png";

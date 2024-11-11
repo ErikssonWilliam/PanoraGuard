@@ -1,5 +1,3 @@
-import React from "react";
-
 const SpeakerConfig = () => {
   return (
     <div className="font-poppings text-sm">
