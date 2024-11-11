@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 
 const CameraConfig = () => {
@@ -5,32 +6,25 @@ const CameraConfig = () => {
     <div className="font-poppings text-sm">
       {/** */}
       <div className="grid grid-cols-2 gap-8">
-        <div className="col-span-1 flex flex-col">
-          <label htmlFor="location" className="text-blue-600">
-            Location:
-          </label>
-          <select
-            id="location"
-            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          >
-            {" "}
-            {/**Add more option */}
-            <option value="convention-center">Convention Center</option>
-          </select>
+        <div className="col-span-2 grid grid-cols-2">
+          <div className="col-span-1 flex flex-col">
+            <label htmlFor="location_camera" className="text-blue-600">
+              Camera Location:
+            </label>
+            <select
+              id="location"
+              className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
+            >
+              {" "}
+              {/**Add more option */}
+              <option value="convention-center-1">Convention Center-1</option>
+              <option value="convention-center-2">Convention Center-2</option>
+              <option value="convention-center-garage-1">Convention Center Garage -2</option>
+            </select>
+          </div>
+
         </div>
 
-        <div className="col-span-1 flex flex-col">
-          <label htmlFor="camera-number" className="text-blue-600">
-            Camera Number:
-          </label>
-          <select
-            id="camera-number"
-            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          >
-            {/**Add more option */}
-            <option value="4">4</option>
-          </select>
-        </div>
 
         <div className="pt-4 col-span-1 flex flex-col space-y-10">
           <label htmlFor="confidence-level">Change the confidence level:</label>
@@ -39,6 +33,7 @@ const CameraConfig = () => {
             id="confidence-level"
             min="0"
             max="100"
+            step={25}
             className=" w-3/4"
           />
           <button className="w-1/5 bg-NavyBlue text-white rounded-lg p-2">
@@ -53,6 +48,7 @@ const CameraConfig = () => {
             id="brightness-level"
             min="0"
             max="100"
+            step={25}
             className=" w-3/4"
           />
           <button className="w-1/5 bg-NavyBlue text-white rounded-lg p-2">
