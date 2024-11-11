@@ -35,6 +35,7 @@ const Login = () => {
 
       // Store token data in local storage
       localStorage.setItem('accessToken', user.access_token);
+      localStorage.setItem('userId', user.user_id);
       
       // To pass data to the next page, use the state property
       // navigate('/admin', { state: { email: userInfo.email, name: userInfo.name } });

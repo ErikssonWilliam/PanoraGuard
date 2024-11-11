@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import profileImage from '../assets/react.svg';
 import bellIcon from '../assets/bell-01.png';
 import { Link } from 'react-router-dom';
+import { baseURL } from "../api/axiosConfig";
 
 const ProfilePage = () => {
     const [newPassword, setNewPassword] = useState('');
@@ -11,9 +12,7 @@ const ProfilePage = () => {
 
     // Fetch auth token from local storage
     const authToken = localStorage.getItem('authToken');
-    //const userId = localStorage.getItem("user_id"); FÖRSLAG
-    //const respone = await fetch ("http://localhost:5000/users/${userId}", FÖRSLAG
-
+    const userId = localStorage.getItem('userId');
 
     // Function to handle password change submission
     const handlePasschangeSubmit = async (e) => {
@@ -28,12 +27,12 @@ const ProfilePage = () => {
         } else {
             setErrorMessage('');
             try {
-                const response = await fetch("http://localhost:5000/users/<uuid:user_id>", {
+                const response = await fetch(`${baseURL}/users/${userId}`, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({newPassword}),
+                    body: JSON.stringify({ newPassword }),
                 });
 
                 if (response.ok) {
@@ -46,10 +45,10 @@ const ProfilePage = () => {
             }
         }
     };
-    console.log(authToken)
+
     // Function to fetch user info
     const getUserInfo = async () => {
-        const userInfoResponse = await fetch("http://localhost:5000/users/<uuid:user_id>", {
+        const userInfoResponse = await fetch(`${baseURL}/users/${userId}`, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
