@@ -17,7 +17,8 @@ const Login = () => {
     //    setPassword(document.getElementById("password").value);
 
     try {
-      const response = await fetch("https://company3-externalserver.azurewebsites.net/auth/login", {
+      // const response = await fetch("https://company3-externalserver.azurewebsites.net/auth/login",
+      const response = await fetch("http://localhost:5000/auth/login",  {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,22 +35,7 @@ const Login = () => {
 
       // Store token data in local storage
       localStorage.setItem('accessToken', user.access_token);
-      localStorage.setItem('refreshToken', user.refresh_token);
-
-      // Fetch user info
-      const userInfoResponse = await fetch("http://localhost:5000/auth/userinfo", {
-        method: 'GET',
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!userInfoResponse.ok) {
-        throw new Error("Failed to fetch user info");
-      }
-
-      const userInfo = await userInfoResponse.json();
-
+      
       // To pass data to the next page, use the state property
       // navigate('/admin', { state: { email: userInfo.email, name: userInfo.name } });
       // Redirect based on user role

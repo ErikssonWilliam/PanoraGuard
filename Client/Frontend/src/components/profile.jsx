@@ -11,6 +11,9 @@ const ProfilePage = () => {
 
     // Fetch auth token from local storage
     const authToken = localStorage.getItem('authToken');
+    //const userId = localStorage.getItem("user_id"); FÖRSLAG
+    //const respone = await fetch ("http://localhost:5000/users/${userId}", FÖRSLAG
+
 
     // Function to handle password change submission
     const handlePasschangeSubmit = async (e) => {
@@ -25,12 +28,12 @@ const ProfilePage = () => {
         } else {
             setErrorMessage('');
             try {
-                const response = await fetch("http://localhost:5000/auth/changepass", {
-                    method: 'POST',
+                const response = await fetch("http://localhost:5000/users/<uuid:user_id>", {
+                    method: 'PUT',
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ authToken, newPassword }),
+                    body: JSON.stringify({newPassword}),
                 });
 
                 if (response.ok) {
@@ -43,10 +46,10 @@ const ProfilePage = () => {
             }
         }
     };
-
+    console.log(authToken)
     // Function to fetch user info
     const getUserInfo = async () => {
-        const userInfoResponse = await fetch("http://localhost:5000/auth/userinfo", {
+        const userInfoResponse = await fetch("http://localhost:5000/users/<uuid:user_id>", {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
@@ -110,11 +113,11 @@ const ProfilePage = () => {
                     {/* Right Side - White Part of User Info */}
                     <div className="whiteSection w-3/4 bg-LightGray p-6 flex flex-col relative rounded-tr-lg rounded-br-lg">
                         <div className="greeting absolute top-6 left-6">
-                            <h2 className="text-3xl font-bold text-blue-600">Hello {userInfo.firstname},</h2>
+                            <h2 className="text-3xl font-bold text-blue-600">Hello {userInfo.username},</h2>
                         </div>
                         <div className="description flex-1 flex items-start justify-start mt-24">
                             <div className="max-w-md w-full">
-                                <p className="text-lg text-gray-500">Name: {`${userInfo.firstname} ${userInfo.lastname}`}</p>
+                                <p className="text-lg text-gray-500">Name: {userInfo.username}</p>
                                 <p className="text-lg text-gray-500">Role: {userInfo.role}</p>
                                 <p className="text-lg text-gray-500">Email: {userInfo.email}</p>
                             </div>
