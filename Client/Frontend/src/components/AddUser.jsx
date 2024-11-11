@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import { baseURL } from "../api/axiosConfig"; 
 
 const AddnewUser = () => {
+  const [errorMessage, setErrorMessage] = useState();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
-    role: "None",
+    role: "GUARD",
   });
 
   const handleChange = (e) => {
@@ -32,21 +33,25 @@ const AddnewUser = () => {
         }
       );
 
+      // If response is not ok, handle the error
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Something went wrong"); // Display error message from response
       }
 
       const data = await response.json();
       console.log("User added successfully:", data);
-      // Optionally clear form after successful submission
       setFormData({
         username: "",
         email: "",
         password: "",
-        role: "None",
+        role: "GUARD",
       });
+
+      setErrorMessage("");
     } catch (error) {
-      console.error("Error adding user:", error);
+      console.error("Error adding user", error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -76,6 +81,7 @@ const AddnewUser = () => {
           onChange={handleChange}
         />
       </div>
+      {formData.role != "GUARD" &&
       <div className="flex flex-col">
         <label htmlFor="passwird" className="text-blue-600">
           Password:
@@ -88,6 +94,7 @@ const AddnewUser = () => {
           onChange={handleChange}
         />
       </div>
+      }
       <div className="col-span-1 flex flex-col">
         <label htmlFor="camera-number" className="text-blue-600">
           Designation:
@@ -100,7 +107,6 @@ const AddnewUser = () => {
           onChange={handleChange}
         >
           {/**Add more option */}
-          <option value="None">None</option>
           <option value="GUARD">GUARD</option>
           <option value="OPERATOR">OPERATOR</option>
         </select>
@@ -111,6 +117,11 @@ const AddnewUser = () => {
       >
         Submit
       </button>
+      {errorMessage && (
+        <div style={{ color: 'red', marginTop: '10px' }}>
+          <strong>Error: </strong>{errorMessage}
+        </div>
+      )}
     </div>
   );
 };
