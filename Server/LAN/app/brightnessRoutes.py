@@ -1,9 +1,8 @@
 from flask import Blueprint, request, jsonify
 import requests
-import jwt
 from requests.auth import HTTPBasicAuth
 
-api = Blueprint("api", __name__)
+api = Blueprint("brightness_api", __name__)
 
 # AXIS device credentials
 username = "root"
@@ -18,12 +17,12 @@ def get_brightness():
     Example request JSON body:
         {
             "camera_ip": "192.168.1.116"
-        } 
+        }
     """
 
     data = request.get_json()
     camera_ip = data.get("camera_ip")
-    
+
     url = f"http://{camera_ip}/axis-cgi/param.cgi?action=list&group=ImageSource.I0.Sensor.Brightness"
     response = requests.get(url, auth=HTTPBasicAuth(username, password))
     if response.status_code == 200:
@@ -33,8 +32,12 @@ def get_brightness():
                 return jsonify({"brightness_level": brightness_level}), 200
         return jsonify({"error": "Brightness level not found"}), 404
     else:
-        return jsonify({"error": "Failed to retrieve brightness level", "status_code": response.status_code}), response.status_code
-    
+        return jsonify(
+            {
+                "error": "Failed to retrieve brightness level",
+                "status_code": response.status_code,
+            }
+        ), response.status_code
 
 
 @api.route("/set-brightness", methods=["PUT"])
@@ -46,7 +49,7 @@ def set_brightness():
         {
             "camera_ip": "192.168.1.116",
             "new_brightness": 75
-        } 
+        }
     """
 
     data = request.get_json()
@@ -54,11 +57,23 @@ def set_brightness():
     new_brightness = data.get("new_brightness")
 
     if not (0 <= new_brightness <= 100):
-        return jsonify({"error": "Brightness level must be an integer between 0 and 100"}), 400
-    
+        return jsonify(
+            {"error": "Brightness level must be an integer between 0 and 100"}
+        ), 400
+
     url = f"http://{camera_ip}/axis-cgi/param.cgi?action=update&ImageSource.I0.Sensor.Brightness={new_brightness}"
     response = requests.get(url, auth=HTTPBasicAuth(username, password))
     if response.status_code == 200:
-        return jsonify({"message": "Brightness level updated successfully", "brightness_level": new_brightness}), 200
+        return jsonify(
+            {
+                "message": "Brightness level updated successfully",
+                "brightness_level": new_brightness,
+            }
+        ), 200
     else:
-        return jsonify({"error": "Failed to update brightness level", "status_code": response.status_code}), response.status_code
+        return jsonify(
+            {
+                "error": "Failed to update brightness level",
+                "status_code": response.status_code,
+            }
+        ), response.status_code

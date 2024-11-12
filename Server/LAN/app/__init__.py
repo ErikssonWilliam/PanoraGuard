@@ -16,9 +16,10 @@ def create_app():
         db.create_all()
 
     # Import and register routes
-    from .testRoutes import api
-    from .brightnessRoutes import api
+    from .testRoutes import api as test_api
+    from .brightnessRoutes import api as brightness_api
 
-    app.register_blueprint(api)
+    app.register_blueprint(test_api)
+    app.register_blueprint(brightness_api)
 
     return app

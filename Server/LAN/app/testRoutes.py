@@ -3,7 +3,7 @@ import requests
 import jwt
 from requests.auth import HTTPBasicAuth
 
-api = Blueprint("api", __name__)
+api = Blueprint("test_api", __name__)
 
 # AXIS device credentials
 username = "root"
@@ -85,7 +85,7 @@ def optics_info():
     client_data = {"apiVersion": "1.1", "context": "abc", "method": "getOptics"}
 
     # Define the external URL
-    external_url = "http://192.168.1.121/axis-cgi/opticscontrol.cgi"  # Replace with actual external address
+    external_url = "http://192.168.1.116/axis-cgi/opticscontrol.cgi"  # Replace with actual external address
 
     # AXIS device credentials
     username = "root"
