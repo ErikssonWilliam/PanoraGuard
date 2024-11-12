@@ -17,6 +17,7 @@ def create_app():
 
     # Import and register routes
     from .testRoutes import api
+    from .brightnessRoutes import api
 
     app.register_blueprint(api)
 
