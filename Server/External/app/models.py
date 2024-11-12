@@ -66,6 +66,7 @@ class User(db.Model):
 
 
 # Represents a camera in the system, which triggers alarms.
+# Camera Model
 class Camera(db.Model):
     # Class for camera
     __tablename__ = "cameras"
@@ -77,7 +78,7 @@ class Camera(db.Model):
     def to_dict(self):
         return {
             "id": str(self.id),
-            "ip_adress": str(self.ip_address),
+            "ip_address": str(self.ip_address),
             "location": self.location,
             "confidence_threshold": self.confidence_threshold,
         }

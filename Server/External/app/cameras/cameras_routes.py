@@ -1,3 +1,4 @@
+# Routes
 from flask import Blueprint
 from .cameras_controller import CameraController
 
@@ -10,8 +11,8 @@ def get_cameras():
 
 
 @cameras_bp.route("/add", methods=["POST"])
-def add_camera(camera_id):
-    return CameraController.add_camera(camera_id)
+def add_camera():
+    return CameraController.add_camera()
 
 
 @cameras_bp.route("/<string:camera_id>", methods=["GET"])
