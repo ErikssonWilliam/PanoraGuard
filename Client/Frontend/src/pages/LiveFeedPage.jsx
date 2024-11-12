@@ -1,4 +1,3 @@
-import React from "react";
 import LiveFeedHeader from "../components/LiveFeedHeader";
 import LiveFeed from "../components/LiveFeed";
 

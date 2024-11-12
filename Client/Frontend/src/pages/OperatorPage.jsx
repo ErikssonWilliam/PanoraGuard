@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../components/OperatorHeader";
 import AlertDetails from "../components/AlertDetails";
 

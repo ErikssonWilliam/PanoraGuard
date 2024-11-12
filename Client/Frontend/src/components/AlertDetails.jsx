@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import AlarmRow from "./AlarmRow";
 import { io } from "socket.io-client"; // Import the socket.io-client
@@ -21,7 +21,7 @@ const AlertDetails = () => {
 
         // Filters to show pending alarms
         const pendingAlarms = allAlarms.filter(
-          (alarm) => alarm.status === "pending"
+          (alarm) => alarm.status === "pending",
         );
         setAlarms(pendingAlarms);
       } catch (err) {

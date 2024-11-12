@@ -1,5 +1,3 @@
-import React from "react";
-
 function AlertsChart() {
   const chartData = [
     { day: "01", truePositive: 90, falsePositive: 50 },
