@@ -1,4 +1,4 @@
-# logic
+# CameraService.py
 from app.extensions import db
 from flask import jsonify
 from app.models import Camera
@@ -6,27 +6,43 @@ from typing import List
 
 
 class CameraService:
+    @staticmethod
     def add_camera():
-        return  # add logic
+        # Placeholder logic, complete as necessary
+        return jsonify({"message": "Add camera functionality not implemented"}), 501
 
-    def get_cameras() -> List[Camera]:
+    @staticmethod
+    def get_cameras() -> List[dict]:
         cameras = Camera.query.all()
         return [camera.to_dict() for camera in cameras]
 
+    @staticmethod
     def get_camera_by_id(camera_id):
-        return  # add logic
+        try:
+            camera = Camera.query.get(camera_id)
+            if camera:
+                return camera.to_dict()
+            return None
+        except Exception as e:
+            print("Error in CameraService.get_camera_by_id:", e)
+            return None
 
+    @staticmethod
     def set_confidence(camera_id, confidence):
         camera = Camera.query.filter_by(id=camera_id).first()
         if not camera:
             return jsonify({"status": "No camera found"}), 404
+        try:
+            camera.confidence_threshold = float(confidence)
+            db.session.commit()
+            return jsonify(
+                {"status": "success", "confidence_threshold": confidence}
+            ), 200
+        except Exception as e:
+            print("Error in CameraService.set_confidence:", e)
+            return jsonify({"status": "error", "message": str(e)}), 500
 
-        camera.confidence_threshold = confidence
-        db.session.commit()
-        return "success"
-
+    @staticmethod
     def delete_camera_by_id(camera_id):
-        return  # add logic
-
-    def process_camera_data(topic, source, time, type, score):
-        return
+        # Placeholder logic, complete as necessary
+        return jsonify({"message": "Delete camera functionality not implemented"}), 501
