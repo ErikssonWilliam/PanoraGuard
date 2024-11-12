@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import profileImage from "../assets/react.svg";
+import profileImage from "../assets/C3WBG.png";
 import bellIcon from "../assets/bell-01.png";
 import { Link } from "react-router-dom";
 import { baseURL } from "../api/axiosConfig";
