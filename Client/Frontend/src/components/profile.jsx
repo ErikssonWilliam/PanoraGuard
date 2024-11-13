@@ -4,19 +4,55 @@ import bellIcon from "../assets/bell-01.png";
 import { Link } from "react-router-dom";
 import { baseURL } from "../api/axiosConfig";
 
+const useFetchUserInfo = (userId) => {
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      setLoading(true);
+      setError(""); // Clear any previous errors
+      try {
+        const response = await fetch(`${baseURL}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+
+        const data = await response.json();
+        setUserInfo(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchUserInfo();
+  }, [userId]);
+
+  return { userInfo, loading, error };
+};
+
 const ProfilePage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [userInfo, setUserInfo] = useState(null);
 
-  // // Fetch auth token from local storage
-  // const authToken = localStorage.getItem('authToken');
   const userId = localStorage.getItem("userId");
+
+  const { userInfo, loading, error } = useFetchUserInfo(userId);
 
   // Function to handle password change submission
   const handlePasschangeSubmit = async (e) => {
     e.preventDefault();
+
     if (newPassword !== repeatPassword) {
       setErrorMessage("Passwords do not match!");
       alert("Passwords do not match!");
@@ -26,6 +62,7 @@ const ProfilePage = () => {
       return;
     } else {
       setErrorMessage("");
+
       try {
         const response = await fetch(`${baseURL}/users/${userId}`, {
           method: "PUT",
@@ -47,42 +84,20 @@ const ProfilePage = () => {
     }
   };
 
-  // Function to fetch user info
-  const getUserInfo = async () => {
-    const userInfoResponse = await fetch(`${baseURL}/users/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!userInfoResponse.ok) {
-      throw new Error("Failed to fetch user info");
-    }
-
-    const userInfo = await userInfoResponse.json();
-    return userInfo;
-  };
-
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const info = await getUserInfo();
-        setUserInfo(info);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchUserInfo();
-  });
-
-  if (!userInfo) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
       </div>
     );
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!userInfo) {
+    return <div>No user data found.</div>;
   }
 
   return (
