@@ -83,7 +83,7 @@ class AlarmService:
             print(f"Failed to decode image. Error: {e}")
             return jsonify({"status": "Failed to decode image"}), 500
 
-    def update_alarm_status(alarm_id, new_status, guard_id=None):
+    def update_alarm_status(alarm_id, new_status, guard_id=None, operator_id=None):
         # Find the alarm by ID
         alarm = Alarm.query.get(alarm_id)
         if alarm:
@@ -105,6 +105,16 @@ class AlarmService:
                     alarm.guard_id = guard_id
                 else:
                     return None  # Invalid guard_id
+
+            # Update the operator_id if provided
+            if operator_id:
+                operator = User.query.filter_by(
+                    id=operator_id, role=UserRole.OPERATOR
+                ).first()
+                if operator:
+                    alarm.operator_id = operator_id
+                else:
+                    return None  # Invalid operator_id
 
             # Commit the changes to the database
             db.session.commit()

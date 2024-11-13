@@ -97,6 +97,7 @@ const AlarmDetailPage = () => {
       const response = await axios.put(`${baseURL}/alarms/${id}/status`, {
         status: newStatus,
         guard_id: guardID, // Include guard_id in the request payload
+        // TODO: send operator_id in the request payload based on the inlogged user
       });
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
