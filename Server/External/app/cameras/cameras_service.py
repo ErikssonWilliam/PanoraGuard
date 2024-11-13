@@ -46,3 +46,14 @@ class CameraService:
     def delete_camera_by_id(camera_id):
         # Placeholder logic, complete as necessary
         return jsonify({"message": "Delete camera functionality not implemented"}), 501
+
+    @staticmethod
+    def get_confidence_threshold_by_id(camera_id):
+        try:
+            camera = Camera.query.get(camera_id)
+            if camera:
+                return camera.confidence_threshold
+            return None
+        except Exception as e:
+            print("Error in CameraService.get_confidence_threshold_by_id:", e)
+            return None

@@ -2,14 +2,14 @@ from flask import Blueprint, request, jsonify
 import requests
 from requests.auth import HTTPBasicAuth
 
-api = Blueprint("brightness_api", __name__)
+br_bp = Blueprint("brightness_api", __name__)
 
 # AXIS device credentials
 username = "root"
 password = "secure"
 
 
-@api.route("/get-brightness", methods=["GET"])
+@br_bp.route("/get-brightness", methods=["GET"])
 def get_brightness():
     """
     Route for retrieving the current brightness level of a camera.
@@ -40,7 +40,7 @@ def get_brightness():
         ), response.status_code
 
 
-@api.route("/set-brightness", methods=["PUT"])
+@br_bp.route("/set-brightness", methods=["PUT"])
 def set_brightness():
     """
     Route for changing the brightness level of a camera.
