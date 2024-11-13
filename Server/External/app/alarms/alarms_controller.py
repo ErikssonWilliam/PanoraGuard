@@ -46,8 +46,11 @@ class AlarmController:
         if not alarm_data or "status" not in alarm_data:
             return jsonify({"message": "Status is required"}), 400
 
-        updated_alarm = AlarmService.update_alarm_status(alarm_id, alarm_data["status"])
+        guard_id = alarm_data.get("guard_id")  # Get guard_id from the request data
+        updated_alarm = AlarmService.update_alarm_status(
+            alarm_id, alarm_data["status"], guard_id
+        )
         if updated_alarm:
             return jsonify(updated_alarm), 200
         else:
-            return jsonify({"message": "Alarm not found"}), 404
+            return jsonify({"message": "Alarm not found or invalid guard ID"}), 404

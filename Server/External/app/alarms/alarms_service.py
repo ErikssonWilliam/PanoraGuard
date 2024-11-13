@@ -1,6 +1,6 @@
 # This file contains the service layer for the alarms module
 
-from app.models import Alarm, AlarmStatus, User, Camera
+from app.models import Alarm, AlarmStatus, User, UserRole, Camera
 from typing import List
 from flask import jsonify
 from app.extensions import db  # Import the database instance
@@ -83,7 +83,7 @@ class AlarmService:
             print(f"Failed to decode image. Error: {e}")
             return jsonify({"status": "Failed to decode image"}), 500
 
-    def update_alarm_status(alarm_id, new_status):
+    def update_alarm_status(alarm_id, new_status, guard_id=None):
         # Find the alarm by ID
         alarm = Alarm.query.get(alarm_id)
         if alarm:
@@ -97,6 +97,14 @@ class AlarmService:
             # If the status is changed to IGNORED, delete the image attribute
             if new_status.upper() == "IGNORED":
                 alarm.image_base64 = None
+
+            # If the status is "notified", update the guard_id
+            if new_status.upper() == "NOTIFIED" and guard_id:
+                guard = User.query.filter_by(id=guard_id, role=UserRole.GUARD).first()
+                if guard:
+                    alarm.guard_id = guard_id
+                else:
+                    return None  # Invalid guard_id
 
             # Commit the changes to the database
             db.session.commit()
