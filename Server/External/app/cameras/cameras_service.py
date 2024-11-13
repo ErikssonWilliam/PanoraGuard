@@ -48,6 +48,27 @@ class CameraService:
         return jsonify({"message": "Delete camera functionality not implemented"}), 501
 
     @staticmethod
+    def update_confidence(camera_id, confidence):
+        camera = Camera.query.get(camera_id)
+
+        if not camera:
+            return jsonify({"error": "Camera not found"}), 404
+
+        try:
+            # Update and save confidence threshold
+            camera.confidence_threshold = float(confidence)
+            db.session.commit()
+            return jsonify(
+                {
+                    "message": "Confidence threshold updated successfully",
+                    "confidence_threshold": camera.confidence_threshold,
+                }
+            ), 200
+        except Exception as e:
+            print("Error in CameraService.update_confidence:", e)
+            return jsonify({"error": "Failed to update confidence threshold"}), 500
+
+    @staticmethod
     def get_confidence_threshold_by_id(camera_id):
         try:
             camera = Camera.query.get(camera_id)
