@@ -41,10 +41,6 @@ class AlarmController:
     def notify_guard(guard_ID, alarm_ID):
         return AlarmService.notify_guard(guard_ID, alarm_ID)
 
-    # @staticmethod
-    # def notify_new_alarm(alarm):
-    #     socketio.emit("new_alarm", alarm)
-
     def update_alarm_status(alarm_id):
         alarm_data = request.get_json()
         if not alarm_data or "status" not in alarm_data:
@@ -55,26 +51,3 @@ class AlarmController:
             return jsonify(updated_alarm), 200
         else:
             return jsonify({"message": "Alarm not found"}), 404
-
-
-# Frontend Logic:
-# import io from 'socket.io-client';
-
-# // Connect to the backend WebSocket server
-# const socket = io('http://your-backend-server-url');
-
-# // Listen for the 'new_alarm' event
-# socket.on('new_alarm', (alarm) => {
-#     console.log('New alarm received:', alarm);
-#     // Update the UI or notify the user about the new alarm
-#     displayNewAlarm(alarm);
-# });
-
-# function displayNewAlarm(alarm) {
-#     // Implement your logic to update the UI with the new alarm
-#     // For example, you can add the new alarm to a list of alarms
-#     const alarmList = document.getElementById('alarm-list');
-#     const alarmItem = document.createElement('li');
-#     alarmItem.textContent = `Alarm ID: ${alarm.id}, Confidence Score: ${alarm.confidence_score}`;
-#     alarmList.appendChild(alarmItem);
-# }

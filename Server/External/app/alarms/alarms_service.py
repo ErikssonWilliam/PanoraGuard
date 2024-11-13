@@ -32,12 +32,13 @@ class AlarmService:
         if not camera:
             return {"status": "error", "message": "Camera not found"}
 
-        # Step 3: Check if there is any active alarm with status PENDING for the given camera_id
-        active_alarm = Alarm.query.filter_by(
-            camera_id=camera_id, status=AlarmStatus.PENDING
+        # Step 3: Check if there is any active alarm with status PENDING or NOTIFIED for the given camera_id
+        active_alarm = Alarm.query.filter(
+            Alarm.camera_id == camera_id,
+            Alarm.status.in_([AlarmStatus.PENDING, AlarmStatus.NOTIFIED])
         ).first()
         if active_alarm:
-            return {"status": "error", "message": "Already alarm active"}
+            return {"status": "error", "message": "Already alarm active: " + str(active_alarm.status.value)}
 
         # Step 4: Check if confidence_score meets the threshold
         if confidence_score < camera.confidence_threshold:
