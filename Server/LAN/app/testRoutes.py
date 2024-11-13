@@ -3,7 +3,7 @@ import requests
 import jwt
 from requests.auth import HTTPBasicAuth
 
-api = Blueprint("test_api", __name__)
+test_bp = Blueprint("test_api", __name__)
 
 # AXIS device credentials
 username = "root"
@@ -14,7 +14,7 @@ username = "root"
 password = "secure"
 
 
-@api.route("/test-supported-api-version", methods=["GET"])
+@test_bp.route("/test-supported-api-version", methods=["GET"])
 def api_version():
     # Extract JSON data from the incoming request
     # client_data = request.get_json()
@@ -43,7 +43,7 @@ def api_version():
         )
 
 
-@api.route("/test-lightcontrol", methods=["GET"])
+@test_bp.route("/test-lightcontrol", methods=["GET"])
 def light_control():
     # Extract JSON data from the incoming request
     # client_data = request.get_json()
@@ -77,7 +77,7 @@ def light_control():
         )
 
 
-@api.route("/get-optics-info", methods=["GET"])
+@test_bp.route("/get-optics-info", methods=["GET"])
 def optics_info():
     # Extract JSON data from the incoming request
     # client_data = request.get_json()
@@ -106,7 +106,7 @@ def optics_info():
         )
 
 
-@api.route("/set-magnification", methods=["GET"])
+@test_bp.route("/set-magnification", methods=["GET"])
 def set_magnification():
     # Extract JSON data from the incoming request
     # client_data = request.get_json()
@@ -140,7 +140,7 @@ def set_magnification():
         )
 
 
-@api.route("/jwt", methods=["GET"])
+@test_bp.route("/jwt", methods=["GET"])
 def test_jwt_works_in_both_servers():
     auth_header = request.headers.get("Authorization")
 
@@ -167,7 +167,7 @@ def enable_disable_acap(url, action, acap_name):
         return {"status": "failed", "error": str(e)}
 
 
-@api.route("/acap/<string:action>/<string:acap_name>", methods=["GET"])
+@test_bp.route("/acap/<string:action>/<string:acap_name>", methods=["GET"])
 def schedule_acap(action, acap_name):
     # Extract JSON data from the incoming request
     # client_data = request.get_json()
@@ -186,7 +186,7 @@ def schedule_acap(action, acap_name):
         return jsonify({"status": "failed", "error": str(e)}), 500
 
 
-@api.route("/add-schedule", methods=["GET"])
+@test_bp.route("/add-schedule", methods=["GET"])
 def add_schedule():
     name = "Test schedule"
     start_time = "2024-10-18T18:00:00"
