@@ -1,13 +1,26 @@
+// AlarmRow.js
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import cameraIcon from "../assets/camera-03.png";
 import locationIcon from "../assets/location-icon.png";
 import detectIcon from "../assets/detect-icon.png";
 
-const AlarmRow = ({ id, camera_id, confidence_score, status, timestamp }) => {
+const AlarmRow = ({ id, camera_id, confidence_score, status, timestamp, type }) => {
   const navigate = useNavigate();
+
   const handleDetailsClick = () => {
-    console.log(confidence_score, timestamp); // just to resolve eslint errors
     navigate("/alert-details", { state: { id } }); // Sends ID as state
+  };
+
+  const getStatusClass = () => {
+    if (status === "pending") {
+      return "bg-red-600 hover:bg-red-500";
+    } else if (status === "notified") {
+      return "bg-yellow-500 hover:bg-yellow-400"; // Yellow for notified
+    } else if (status === "resolved") {
+      return "bg-green-500 hover:bg-green-400"; // Green for resolved 
+    }
+
   };
 
   return (
@@ -42,22 +55,26 @@ const AlarmRow = ({ id, camera_id, confidence_score, status, timestamp }) => {
             className="mr-2 w-4 h-4 object-contain"
           />
           <span className="text-sm font-medium text-gray-700">
-            Detected: {"Human"}
+            Detected: {type}
           </span>
         </span>
 
-        {status === "pending" ? (
-          <span
-            className="flex items-center justify-center min-w-[200px] bg-red-600 text-white p-3 rounded-lg shadow hover:bg-red-500 transition duration-200"
-            title="This alarm is currently active"
-          >
-            Active Alarm
-          </span>
-        ) : (
-          <span className="flex items-center justify-center min-w-[200px] bg-white text-gray-600 p-3 rounded-lg shadow">
-            Status: {status}
-          </span>
-        )}
+        <span
+          className={`flex items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg shadow transition duration-200`}
+          title={
+            status === "pending"
+              ? "This alarm is currently active"
+              : status === "notified"
+              ? "This alarm is under investigation"
+              : "This alarm has been resolved"
+          }
+        >
+          {status === "pending"
+            ? "Active Alarm"
+            : status === "notified"
+            ? "Notified"
+            : `Resolved Alarm`}
+        </span>
 
         <button
           onClick={handleDetailsClick}
