@@ -32,6 +32,17 @@ class CameraController:
         return CameraService.set_confidence(camera_id, confidence)
 
     @staticmethod
+    def get_confidence_threshold(camera_id):
+        # Call the service to get the confidence threshold
+        confidence_threshold = CameraService.get_confidence_threshold_by_id(camera_id)
+
+        # Check if the confidence threshold is found, or return a 404 error
+        if confidence_threshold is not None:
+            return jsonify({"confidence_threshold": confidence_threshold}), 200
+        else:
+            abort(404, description="Camera not found")
+
+    @staticmethod
     def process_camera_data():
         data = request.json
         topic = data.get("topic")
