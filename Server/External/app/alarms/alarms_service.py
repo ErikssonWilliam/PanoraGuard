@@ -35,10 +35,13 @@ class AlarmService:
         # Step 3: Check if there is any active alarm with status PENDING or NOTIFIED for the given camera_id
         active_alarm = Alarm.query.filter(
             Alarm.camera_id == camera_id,
-            Alarm.status.in_([AlarmStatus.PENDING, AlarmStatus.NOTIFIED])
+            Alarm.status.in_([AlarmStatus.PENDING, AlarmStatus.NOTIFIED]),
         ).first()
         if active_alarm:
-            return {"status": "error", "message": "Already alarm active: " + str(active_alarm.status.value)}
+            return {
+                "status": "error",
+                "message": "Already alarm active: " + str(active_alarm.status.value),
+            }
 
         # Step 4: Check if confidence_score meets the threshold
         if confidence_score < camera.confidence_threshold:
@@ -88,9 +91,14 @@ class AlarmService:
             if new_status not in [status.value for status in AlarmStatus]:
                 return None  # Invalid status
 
-            # Update the alarm status
-            # Convert string to enum
+            # Update the alarm status by converting the string to an AlarmStatus enum
             alarm.status = AlarmStatus[new_status.upper()]
+
+            # If the status is changed to IGNORED, delete the image attribute
+            if new_status.upper() == "IGNORED":
+                alarm.image_base64 = None
+
+            # Commit the changes to the database
             db.session.commit()
             return alarm.to_dict()  # Return the updated alarm as a dictionary
         return None  # Alarm not found
