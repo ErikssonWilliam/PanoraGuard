@@ -98,6 +98,7 @@ class Alarm(db.Model):
     operator_id = db.Column(
         UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True
     )
+    guard_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True)
 
     def to_dict(self):
         return {
@@ -109,6 +110,7 @@ class Alarm(db.Model):
             "image_base64": self.image_base64,
             "status": self.status.value,
             "operator_id": str(self.operator_id) if self.operator_id else None,
+            "guard_id": str(self.guard_id) if self.guard_id else None,
         }
 
 
