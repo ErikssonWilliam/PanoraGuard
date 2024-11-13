@@ -92,10 +92,12 @@ const AlarmDetailPage = () => {
     }
   }, [location.state]);
 
-  const updateAlarmStatus = async (newStatus) => {
+  const updateAlarmStatus = async (newStatus, guardID = null) => {
     try {
       const response = await axios.put(`${baseURL}/alarms/${id}/status`, {
         status: newStatus,
+        guard_id: guardID, // Include guard_id in the request payload
+        // TODO: send operator_id in the request payload based on the inlogged user
       });
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
@@ -165,7 +167,7 @@ const AlarmDetailPage = () => {
       setNotificationMessage("");
       const notifySuccess = await notifyGuard(selectedUserId);
       if (notifySuccess) {
-        await updateAlarmStatus("notified");
+        await updateAlarmStatus("notified", selectedUserId); // Pass the guard ID
       } else {
         setAlarm((prevAlarm) => ({
           ...prevAlarm,
