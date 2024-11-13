@@ -34,6 +34,9 @@ def set_confidence(camera_id, confidence):
 def delete_camera_by_id(camera_id):
     return CameraController.delete_camera(camera_id)
 
+@cameras_bp.route("/<string:camera_id>/confidence", methods=["PUT"])
+def update_confidence(camera_id):
+    return CameraController.update_confidence(camera_id)
 
 @cameras_bp.route("/upload/data", methods=["POST"])
 def process_camera_data():
