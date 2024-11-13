@@ -41,7 +41,7 @@ class CameraController:
             return jsonify({"confidence_threshold": confidence_threshold}), 200
         else:
             abort(404, description="Camera not found")
-            
+
     @staticmethod
     def update_confidence(camera_id):
         data = request.json

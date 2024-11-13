@@ -81,7 +81,7 @@ class Camera(db.Model):
             "ip_address": str(self.ip_address),
             "location": self.location,
             "confidence_threshold": self.confidence_threshold,
-            "schedule": self.schedule,  
+            "schedule": self.schedule,
         }
 
 
