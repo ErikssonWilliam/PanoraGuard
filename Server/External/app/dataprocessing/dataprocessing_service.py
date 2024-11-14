@@ -1,15 +1,17 @@
-
 from email import encoders
 from email.mime.base import MIMEBase
 import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
 from app.snapshots.snapshots_controller import SnapshotController
 from config import Config
 
 
+# This current function receives data from the ACAP
+# and sends an email to a guard with the picture and
+# alarm data
 class DataprocessingService:
     def send_email(self, subject, body, to_email, snapshot_path=None):
         # Gmail account credentials
@@ -18,10 +20,10 @@ class DataprocessingService:
 
         # Create the email
         msg = MIMEMultipart()
-        msg['From'] = from_email
-        msg['To'] = to_email
-        msg['Subject'] = subject
-        msg.attach(MIMEText(body, 'plain'))
+        msg["From"] = from_email
+        msg["To"] = to_email
+        msg["Subject"] = subject
+        msg.attach(MIMEText(body, "plain"))
 
         # Attach the snapshot file if provided
         if snapshot_path and os.path.exists(snapshot_path):
@@ -33,7 +35,7 @@ class DataprocessingService:
                 encoders.encode_base64(part)
                 part.add_header(
                     "Content-Disposition",
-                    f"attachment; filename={os.path.basename(snapshot_path)}"
+                    f"attachment; filename={os.path.basename(snapshot_path)}",
                 )
                 msg.attach(part)
                 print(f"Snapshot '{snapshot_path}' attached successfully.")
@@ -45,7 +47,7 @@ class DataprocessingService:
         try:
             print("Email content before sending:")
             print(msg)
-            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server = smtplib.SMTP("smtp.gmail.com", 587)
             server.starttls()
             server.login(from_email, from_password)
             content = msg.as_string()
@@ -85,6 +87,7 @@ class DataprocessingService:
             return jsonify({"message": "Invalid data format. Expected JSON."}), 400
 
 
+# OLD CODE HERE <-- This is the old code where "self" is not passed
 # from email import encoders
 # from email.mime.base import MIMEBase
 # import os

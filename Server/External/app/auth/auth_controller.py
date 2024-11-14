@@ -1,31 +1,29 @@
 from flask import jsonify, request
 from flask_jwt_extended import (
-    create_access_token,
     get_jwt_identity,
 )
-from datetime import timedelta
 from .auth_service import AuthService
-
-# will request entered data, tries the calls and returns the results
-
-# bcrypt = Bcrypt()
 
 
 class AuthController:
     def login():
-        username = request.json.get("username", None)
-        password = request.json.get("password", None)
+        data = request.json
+        username = data.get("username")
+        password = data.get("password")
+
+        if not username or not password:
+            return {"error": "Username and password are required"}, 400
 
         try:
-            token = AuthService.login(username, password)
-            print(token)
-            return jsonify(access_token=token), 200
+            result = AuthService.login(username, password)
+            return jsonify(result), 200
+        except KeyError:
+            return {"error": "User not found"}, 400
+        except ValueError:
+            return {"error": "Invalid password"}, 401
         except Exception as e:
-            return jsonify({"msg": str(e)}), 401
-        
+            return {"error": str(e)}, 500
 
     def protected():
         current_user = get_jwt_identity()  # hämtar den inloggade användaren
         return jsonify(logged_in_as=current_user), 200
-
-

@@ -18,6 +18,9 @@ class UserService:
     def get_user_by_username(user_name: str) -> Union[User, None]:
         return User.query.filter_by(username=user_name).first()
 
+    def get_user_by_email(email: str):
+        return User.query.filter_by(email=email).first()
+
     def create_user(username: str, password: str, role: UserRole, email: str) -> User:
         new_user = User(
             username=username,
@@ -38,6 +41,10 @@ class UserService:
             user.email = data.get("email")
         if data.get("role"):
             user.role = data.get("role")
+        if data.get("newPassword"):
+            user.password_hash = bcrypt.generate_password_hash(
+                data.get("newPassword")
+            ).decode("utf-8")
         UserService.session.commit()
         return user
 

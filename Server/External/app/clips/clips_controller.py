@@ -1,4 +1,3 @@
-from app.models import *
 from .clips_service import ClipService
 
 # will request entered data, tries the calls and returns the results

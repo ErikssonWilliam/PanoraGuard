@@ -7,6 +7,8 @@
 ## Create Virtual Environment
 ```bash
 python -m venv venv # or python3 -m venv venv
+#for windows 
+Set-ExecutionPolicy Unrestricted -Scope Process
 venv\Scripts\activate # Windows
 source venv/bin/activate # macOS/Linux
 ```

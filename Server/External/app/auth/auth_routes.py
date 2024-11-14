@@ -2,7 +2,6 @@ from flask import Blueprint
 from flask_jwt_extended import (
     jwt_required,
 )
-from app.models import *
 from .auth_controller import AuthController
 
 
