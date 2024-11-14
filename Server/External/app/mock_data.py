@@ -1,3 +1,5 @@
+import random
+from datetime import datetime, timedelta
 from .extensions import db
 from .models import (
     User,
@@ -69,6 +71,48 @@ def create_mock_alarm(user, camera, statusState):
     return alarm
 
 
+def create_mock_alarm_extra(user, camera, statusState, time):
+    alarm = Alarm(
+        camera_id=camera.id,
+        type="Human",
+        confidence_score=0.95,
+        image_base64="AAAABBBBBCCCCDDDDD",
+        status=statusState,
+        operator_id=user.id,
+        timestamp=time,
+    )
+
+    session.add(alarm)
+
+
+def create_random_alarms(user, camera):
+    start_date = datetime(2023, 11, 14)
+    end_date = datetime(2024, 11, 14)
+    num_days = (end_date - start_date).days
+
+    for i in range(num_days):
+        current_date = start_date + timedelta(days=i)
+
+        # Randomly determine the number of alarms for this day (0 to 3)
+        num_alarms_today = random.randint(0, 3)
+
+        for _ in range(num_alarms_today):
+            # Randomize the exact timestamp within the day
+            random_time = timedelta(
+                hours=random.randint(0, 23),
+                minutes=random.randint(0, 59),
+                seconds=random.randint(0, 59),
+            )
+            alarm_timestamp = current_date + random_time
+
+            status = random.choices(
+                [AlarmStatus.RESOLVED, AlarmStatus.IGNORED], weights=[0.3, 0.7], k=1
+            )[0]
+
+            create_mock_alarm_extra(user, camera, status, alarm_timestamp)
+    session.commit()
+
+
 def create_mock_alarm_test(idtest, user, camera, statusState):
     alarm = Alarm(
         id=idtest,
@@ -107,13 +151,7 @@ def create_mock_data():
         camera,
         AlarmStatus.IGNORED,
     )
-    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
-    create_mock_alarm(user1, camera, AlarmStatus.NOTIFIED)
-    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
-    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
-    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
-    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
-    create_mock_alarm(user1, camera, AlarmStatus.RESOLVED)
+    create_random_alarms(user1, camera)
     create_mock_camera_control_action(camera, user1)
     return "Success"
 
