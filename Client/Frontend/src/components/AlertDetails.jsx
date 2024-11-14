@@ -21,7 +21,7 @@ const AlertDetails = () => {
 
         // Filters to show pending alarms
         const currentAlarms = allAlarms.filter(
-          (alarm) => alarm.status === "pending" || alarm.status === "notified"
+          (alarm) => alarm.status === "pending" || alarm.status === "notified",
         );
         setAlarms(currentAlarms);
       } catch (err) {
