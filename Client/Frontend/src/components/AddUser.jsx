@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
-import { baseURL } from "../api/axiosConfig"; 
+import { baseURL } from "../api/axiosConfig";
 
 const AddnewUser = () => {
   const [errorMessage, setErrorMessage] = useState();
@@ -22,16 +22,13 @@ const AddnewUser = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch(
-        `${baseURL}/users/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch(`${baseURL}/users/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
       // If response is not ok, handle the error
       if (!response.ok) {
@@ -40,13 +37,16 @@ const AddnewUser = () => {
       }
 
       const data = await response.json();
-      console.log("User added successfully:", data);
+
       setFormData({
         username: "",
         email: "",
         password: "",
         role: "GUARD",
       });
+
+      console.log("User added successfully:", data);
+      alert(`User ${data.user.username} added successfully`);
 
       setErrorMessage("");
     } catch (error) {
@@ -81,20 +81,20 @@ const AddnewUser = () => {
           onChange={handleChange}
         />
       </div>
-      {formData.role != "GUARD" &&
-      <div className="flex flex-col">
-        <label htmlFor="passwird" className="text-blue-600">
-          Password:
-        </label>
-        <input
-          type="password"
-          name="password"
-          className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          value={formData.password}
-          onChange={handleChange}
-        />
-      </div>
-      }
+      {formData.role != "GUARD" && (
+        <div className="flex flex-col">
+          <label htmlFor="passwird" className="text-blue-600">
+            Password:
+          </label>
+          <input
+            type="password"
+            name="password"
+            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
+            value={formData.password}
+            onChange={handleChange}
+          />
+        </div>
+      )}
       <div className="col-span-1 flex flex-col">
         <label htmlFor="camera-number" className="text-blue-600">
           Designation:
@@ -118,8 +118,9 @@ const AddnewUser = () => {
         Submit
       </button>
       {errorMessage && (
-        <div style={{ color: 'red', marginTop: '10px' }}>
-          <strong>Error: </strong>{errorMessage}
+        <div style={{ color: "red", marginTop: "10px" }}>
+          <strong>Error: </strong>
+          {errorMessage}
         </div>
       )}
     </div>

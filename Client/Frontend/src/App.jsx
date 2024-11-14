@@ -1,4 +1,3 @@
-import React from "react";
 import Admin from "./pages/admin";
 import PanoraGuardDashboard from "./components/PanoraGuardDashboard";
 import ProfilePage from "./components/profile";

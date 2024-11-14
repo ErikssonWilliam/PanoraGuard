@@ -1,4 +1,3 @@
-import React from "react";
 import userIcon from "../assets/user-01.png";
 import { Link } from "react-router-dom";
 

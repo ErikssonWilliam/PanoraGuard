@@ -1,21 +1,22 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from "../api/axiosConfig";
 //import mockUsers from '../mockdata/mockUsers';
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate(); // Use navigate from useNavigate
-  const [responseMessage, setResponseMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    console.log(formData);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    //    setUsername(document.getElementById("username").value);
-    //    setPassword(document.getElementById("password").value);
 
     try {
       const response = await fetch(`${baseURL}/auth/login`, {
@@ -23,23 +24,19 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error("Login failed");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Something went wrong");
       }
 
       const user = await response.json(); // Fetch and store user data
-      setResponseMessage("Logged in");
 
-      // Store token data in local storage
-      localStorage.setItem('accessToken', user.access_token);
-      localStorage.setItem('userId', user.user_id);
-      
-      // To pass data to the next page, use the state property
-      // navigate('/admin', { state: { email: userInfo.email, name: userInfo.name } });
-      // Redirect based on user role
+      localStorage.setItem("accessToken", user.access_token);
+      localStorage.setItem("userId", user.user_id);
+
       switch (user.role) {
         case "admin":
           navigate("/admin");
@@ -51,10 +48,12 @@ const Login = () => {
           navigate("/dashboard");
           break;
         default:
-          setError("Unknown role");
+          setErrorMessage("Unknown role");
       }
+      setErrorMessage("");
     } catch (error) {
-      setResponseMessage("User not found");
+      console.error("Error logging in", error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -73,10 +72,12 @@ const Login = () => {
           </h2>
 
           {/* Error message */}
-          {error && <p className="text-red-500 mb-4">{error}</p>}
-
-          {/* Error message */}
-          {error && <p className="text-red-500 mb-4">{error}</p>}
+          {errorMessage && (
+            <div style={{ color: "red", marginTop: "10px" }}>
+              <strong>Error: </strong>
+              {errorMessage}
+            </div>
+          )}
 
           {/* Username Input */}
           <div className="mb-4">
@@ -85,9 +86,9 @@ const Login = () => {
             </label>
             <input
               type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
               placeholder="Please enter your username"
               className="mt-1 block w-full px-4 py-2 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" // Blue border
             />
@@ -100,9 +101,9 @@ const Login = () => {
             </label>
             <input
               type={showPassword ? "text" : "password"}
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Please enter your password"
               className="mt-1 block w-full px-4 py-2 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" // Blue border
             />
@@ -121,7 +122,6 @@ const Login = () => {
           >
             Submit
           </button>
-          {responseMessage && <p>{responseMessage}</p>}
         </form>
       </div>
 

@@ -1,7 +1,8 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from .database import db
-from .models import *
+from .testRoutes import test_bp
+from .brightnessRoutes import br_bp
+from .livestream import ls_bp
 
 
 def create_app():
@@ -18,8 +19,9 @@ def create_app():
         db.create_all()
 
     # Import and register routes
-    from .testRoutes import api
 
-    app.register_blueprint(api)
+    app.register_blueprint(test_bp)
+    app.register_blueprint(br_bp)
+    app.register_blueprint(ls_bp)
 
     return app

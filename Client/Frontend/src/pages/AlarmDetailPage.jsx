@@ -45,7 +45,7 @@ const AlarmDetailPage = () => {
         setNotificationMessage(
           err.response && err.response.status === 404
             ? "Alarm not found."
-            : "Failed to load alarm details."
+            : "Failed to load alarm details.",
         );
         setNotificationType("error");
       }
@@ -53,9 +53,7 @@ const AlarmDetailPage = () => {
 
     const fetchAlarmImage = async () => {
       try {
-        const imageResponse = await axios.get(
-          `${baseURL}/alarms/${id}/image`
-        );
+        const imageResponse = await axios.get(`${baseURL}/alarms/${id}/image`);
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
           setLiveFootage(`data:image/jpeg;base64,${imageResponse.data.image}`);
@@ -87,21 +85,20 @@ const AlarmDetailPage = () => {
   useEffect(() => {
     if (location.state?.notifyFailed) {
       setNotificationMessage(
-        "Notification failed. Call the guard and confirm manual handling."
+        "Notification failed. Call the guard and confirm manual handling.",
       );
       setNotificationType("error");
       setManualNotifyVisible(true);
     }
   }, [location.state]);
 
-  const updateAlarmStatus = async (newStatus) => {
+  const updateAlarmStatus = async (newStatus, guardID = null) => {
     try {
-      const response = await axios.put(
-        `${baseURL}/alarms/${id}/status`,
-        {
-          status: newStatus,
-        }
-      );
+      const response = await axios.put(`${baseURL}/alarms/${id}/status`, {
+        status: newStatus,
+        guard_id: guardID, // Include guard_id in the request payload
+        // TODO: send operator_id in the request payload based on the inlogged user
+      });
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
         status: response.data.status,
@@ -133,7 +130,7 @@ const AlarmDetailPage = () => {
             "Content-Type": "application/json",
             Authorization: auth,
           },
-        }
+        },
       );
       console.log("Guard notified successfully:", response.data);
       setNotificationMessage("Notification sent to the guard.");
@@ -143,7 +140,7 @@ const AlarmDetailPage = () => {
     } catch (err) {
       console.error(
         "Error notifying the guard:",
-        err.response ? err.response.data : err.message
+        err.response ? err.response.data : err.message,
       );
       setNotificationMessage("Failed to notify the guard.");
       setNotificationType("error");
@@ -160,7 +157,7 @@ const AlarmDetailPage = () => {
     }
 
     const confirmNotify = window.confirm(
-      "Are you sure you want to notify the guard?"
+      "Are you sure you want to notify the guard?",
     );
     if (!confirmNotify) {
       return;
@@ -170,14 +167,14 @@ const AlarmDetailPage = () => {
       setNotificationMessage("");
       const notifySuccess = await notifyGuard(selectedUserId);
       if (notifySuccess) {
-        await updateAlarmStatus("notified");
+        await updateAlarmStatus("notified", selectedUserId); // Pass the guard ID
       } else {
         setAlarm((prevAlarm) => ({
           ...prevAlarm,
           status: "pending",
         }));
         setNotificationMessage(
-          "Notification failed. Call the guard immediately to ensure the alert is acknowledged."
+          "Notification failed. Call the guard immediately to ensure the alert is acknowledged.",
         );
         setNotificationType("error");
       }
@@ -190,7 +187,7 @@ const AlarmDetailPage = () => {
 
   const handleDismissAlert = () => {
     const confirmDismiss = window.confirm(
-      "Are you sure you want to dismiss the alarm?"
+      "Are you sure you want to dismiss the alarm?",
     );
     if (!confirmDismiss) {
       return;
@@ -202,13 +199,13 @@ const AlarmDetailPage = () => {
     if (callChecked) {
       await updateAlarmStatus("notified");
       setNotificationMessage(
-        "Manual notification confirmed. Status updated to notified."
+        "Manual notification confirmed. Status updated to notified.",
       );
       setNotificationType("success");
       setManualNotifyVisible(false);
     } else {
       setNotificationMessage(
-        "Please call the guard and check Call to confirm manual notification."
+        "Please call the guard and check Call to confirm manual notification.",
       );
       setNotificationType("error");
     }
