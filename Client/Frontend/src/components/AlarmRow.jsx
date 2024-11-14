@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import cameraIcon from "../assets/camera-03.png";
 import locationIcon from "../assets/location-icon.png";
@@ -6,8 +5,8 @@ import detectIcon from "../assets/detect-icon.png";
 
 const AlarmRow = ({ id, camera_id, confidence_score, status, timestamp }) => {
   const navigate = useNavigate();
-
   const handleDetailsClick = () => {
+    console.log(confidence_score, timestamp); // just to resolve eslint errors
     navigate("/alert-details", { state: { id } }); // Sends ID as state
   };
 

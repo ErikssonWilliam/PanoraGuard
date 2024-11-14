@@ -1,13 +1,109 @@
-import React from "react";
-import profileImage from "../assets/react.svg";
+import { useEffect, useState } from "react";
+import profileImage from "../assets/C3WBG.png";
+import bellIcon from "../assets/bell-01.png";
 import { Link } from "react-router-dom";
+import { baseURL } from "../api/axiosConfig";
+
+const useFetchUserInfo = (userId) => {
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      setLoading(true);
+      setError(""); // Clear any previous errors
+      try {
+        const response = await fetch(`${baseURL}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+
+        const data = await response.json();
+        setUserInfo(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchUserInfo();
+  }, [userId]);
+
+  return { userInfo, loading, error };
+};
 
 const ProfilePage = () => {
+  const [newPassword, setNewPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const userId = localStorage.getItem("userId");
+
+  const { userInfo, loading, error } = useFetchUserInfo(userId);
+
+  // Function to handle password change submission
+  const handlePasschangeSubmit = async (e) => {
+    e.preventDefault();
+
+    if (newPassword !== repeatPassword) {
+      setErrorMessage("Passwords do not match!");
+      alert("Passwords do not match!");
+      return;
+    } else if (newPassword.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long!");
+      return;
+    } else {
+      setErrorMessage("");
+
+      try {
+        const response = await fetch(`${baseURL}/users/${userId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ newPassword }),
+        });
+
+        if (response.ok) {
+          alert("Password changed successfully!");
+        } else {
+          throw new Error("Server Error!");
+        }
+      } catch (error) {
+        console.log(error);
+        alert("Something went wrong!");
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!userInfo) {
+    return <div>No user data found.</div>;
+  }
+
   return (
     <div className="profilePage flex flex-col min-h-screen">
       {/* Top Navigation Bar */}
       <header className="navBar bg-BG text-white p-6 flex justify-between items-center">
-        {/* Centered Company Name */}
         <h1 className="companyName text-3xl font-bold text-ButtonsBlue mx-auto">
           panoraGuard
         </h1>
@@ -15,7 +111,7 @@ const ProfilePage = () => {
           to="/"
           className="homeButton bg-white text-blue-600 font-semibold py-2 px-4 rounded"
         >
-          Home
+          <img src={bellIcon} alt="Home" className="w-6 h-6" />
         </Link>
       </header>
 
@@ -36,52 +132,72 @@ const ProfilePage = () => {
 
           {/* Right Side - White Part of User Info */}
           <div className="whiteSection w-3/4 bg-LightGray p-6 flex flex-col relative rounded-tr-lg rounded-br-lg">
-            {/* Greeting and Name Section */}
             <div className="greeting absolute top-6 left-6">
-              <h2 className="text-3xl font-bold text-blue-600">Hello John,</h2>
-              <p className="text-lg text-gray-500">Name: John Dee</p>
+              <h2 className="text-3xl font-bold text-blue-600">
+                Hello {userInfo.username},
+              </h2>
             </div>
-
-            {/* Description Section */}
             <div className="description flex-1 flex items-start justify-start mt-24">
               <div className="max-w-md w-full">
-                <p className="text-gray-700">
-                  About: Lorem ipsum dolor sit amet, consectetur adipiscing
-                  elit. Etiam molestie, justo nec auctor facilisis, lectus metus
-                  venenatis nulla, dignissim aliquam turpis odio tempus ante.
-                  Phasellus ultricies aliquet risus eget fringilla. Duis iaculis
-                  lobortis nulla vel vehicula. Vestibulum ante ipsum primis in
-                  faucibus orci luctus et ultrices posuere cubilia curae; Cras a
-                  massa enim. Mauris ut justo dolor.
+                <p className="text-lg text-gray-500">
+                  Name: {userInfo.username}
                 </p>
+                <p className="text-lg text-gray-500">Role: {userInfo.role}</p>
+                <p className="text-lg text-gray-500">Email: {userInfo.email}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Side - Change Password Section */}
+        {/* Change Password Section */}
         <div className="changePasswordSection w-1/3 bg-BG rounded-lg p-6 mx-10 mt-4">
           <h2 className="text-lg font-semibold">Change Password</h2>
-          <div className="mt-2">
-            <label className="block text-gray-700">New Password</label>
-            <input
-              type="password"
-              className="mt-1 block w-full px-4 py-2 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="Enter new password"
-            />
-          </div>
-          <div className="mt-4">
-            <label className="block text-gray-700">Repeat Password</label>
-            <input
-              type="password"
-              className="mt-1 block w-full px-4 py-2 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              placeholder="Repeat new password"
-            />
-          </div>
-          <button className="submitButton mt-4 bg-blue-600 text-white rounded-lg p-2 w-full">
-            Submit
-          </button>
+          <form onSubmit={handlePasschangeSubmit}>
+            <div className="mt-2">
+              <label className="block text-gray-700">New Password</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="mt-1 block w-full px-4 py-2 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter new password"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-gray-700">Repeat Password</label>
+              <input
+                type="password"
+                value={repeatPassword}
+                onChange={(e) => setRepeatPassword(e.target.value)}
+                className="mt-1 block w-full px-4 py-2 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Repeat new password"
+              />
+            </div>
+            {errorMessage && (
+              <p className="text-red-500 mt-2">{errorMessage}</p>
+            )}
+            <button
+              type="submit"
+              className="submitButton mt-4 bg-blue-600 text-white rounded-lg p-2 w-full"
+            >
+              Submit
+            </button>
+          </form>
         </div>
+      </div>
+
+      {/* Log Out Button */}
+      <div className="fixed bottom-4 right-4">
+        <button
+          onClick={() => {
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userId");
+            window.location.href = "/";
+          }}
+          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300"
+        >
+          Log Out
+        </button>
       </div>
     </div>
   );

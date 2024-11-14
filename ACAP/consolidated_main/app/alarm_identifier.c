@@ -189,9 +189,9 @@ static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb,
     return total_size;
 }
 
-
 // Function to enable the best snapshot feature by sending an HTTP request (using Basic Authentication)
 static void enable_best_snapshot(void) {
+    const char* url = "http://192.168.1.116/config/rest/best-snapshot/v1/enabled"; // Use actual camera IP
     const char* data = "{\"data\":true}"; // JSON payload to enable best snapshot
     CURL *curl;
     CURLcode res;
@@ -203,17 +203,17 @@ static void enable_best_snapshot(void) {
 
         // Set Basic Authentication (instead of Digest)
         curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_easy_setopt(curl, CURLOPT_USERNAME, "root"); 
-        curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); 
+        curl_easy_setopt(curl, CURLOPT_USERNAME, "root"); // Replace with your username
+        curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); // Replace with your password
 
-        curl_easy_setopt(curl, CURLOPT_URL, ENABLE_SNAPSHOT_URL);
+        curl_easy_setopt(curl, CURLOPT_URL, url);
         curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");  // Use PUT as per the documentation
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
         // Capture the response data
         char response_data[1024];  // Buffer to hold response
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback_snapshot);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, response_data);
 
         res = curl_easy_perform(curl);
@@ -226,6 +226,7 @@ static void enable_best_snapshot(void) {
         curl_easy_cleanup(curl);
     }
 }
+
 
 // ------------------------------------------------------------------
 
@@ -277,7 +278,7 @@ int main(int argc, char **argv)
     subscriber = mdb_subscriber_create_async(connection, subscriber_config, on_done_subscriber_create, &channel_identifier, &error);
     if (error != NULL)
         goto end;
-    enable_best_snapshot();
+
     signal(SIGTERM, sig_handler);
     pause();
 
@@ -295,4 +296,3 @@ end:
 
     return 0;
 }
-

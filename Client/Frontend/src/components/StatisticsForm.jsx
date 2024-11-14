@@ -1,5 +1,3 @@
-import React from "react";
-
 function StatisticsForm() {
   return (
     <form className="flex flex-col ml-6 max-w-full w-[773px]">

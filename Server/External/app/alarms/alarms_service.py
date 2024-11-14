@@ -1,6 +1,6 @@
 # This file contains the service layer for the alarms module
 
-from app.models import Alarm, AlarmStatus, User, Camera
+from app.models import Alarm, AlarmStatus, User, UserRole, Camera
 from typing import List
 from flask import jsonify
 from app.extensions import db  # Import the database instance
@@ -25,7 +25,6 @@ class AlarmService:
         camera_id = alarm_data.get("camera_id")
         confidence_score = alarm_data.get("confidence_score")
         alarm_type = alarm_data.get("type")
-        timestamp = alarm_data.get("timestamp")
         image_base64 = alarm_data.get("image_base64")
 
         # Step 2: Check if camera_id exists in the database
@@ -33,12 +32,16 @@ class AlarmService:
         if not camera:
             return {"status": "error", "message": "Camera not found"}
 
-        # Step 3: Check if there is any active alarm with status PENDING for the given camera_id
-        active_alarm = Alarm.query.filter_by(
-            camera_id=camera_id, status=AlarmStatus.PENDING
+        # Step 3: Check if there is any active alarm with status PENDING or NOTIFIED for the given camera_id
+        active_alarm = Alarm.query.filter(
+            Alarm.camera_id == camera_id,
+            Alarm.status.in_([AlarmStatus.PENDING, AlarmStatus.NOTIFIED]),
         ).first()
         if active_alarm:
-            return {"status": "error", "message": "Already alarm active"}
+            return {
+                "status": "error",
+                "message": "Already alarm active: " + str(active_alarm.status.value),
+            }
 
         # Step 4: Check if confidence_score meets the threshold
         if confidence_score < camera.confidence_threshold:
@@ -49,7 +52,6 @@ class AlarmService:
             camera_id=camera_id,
             type=alarm_type,
             confidence_score=confidence_score,
-            timestamp=timestamp,
             image_base64=image_base64,
             status=AlarmStatus.PENDING,
         )
@@ -75,12 +77,13 @@ class AlarmService:
         # Decode and return the image data
         try:
             # image_data = base64.b64decode(image_base64)
-            return jsonify({"image": image_base64}), 200  # Return the Base64 directly
+            # Return the Base64 directly
+            return jsonify({"image": image_base64}), 200
         except Exception as e:
             print(f"Failed to decode image. Error: {e}")
             return jsonify({"status": "Failed to decode image"}), 500
 
-    def update_alarm_status(alarm_id, new_status):
+    def update_alarm_status(alarm_id, new_status, guard_id=None, operator_id=None):
         # Find the alarm by ID
         alarm = Alarm.query.get(alarm_id)
         if alarm:
@@ -88,9 +91,32 @@ class AlarmService:
             if new_status not in [status.value for status in AlarmStatus]:
                 return None  # Invalid status
 
-            # Update the alarm status
-            # Convert string to enum
+            # Update the alarm status by converting the string to an AlarmStatus enum
             alarm.status = AlarmStatus[new_status.upper()]
+
+            # If the status is changed to IGNORED, delete the image attribute
+            if new_status.upper() == "IGNORED":
+                alarm.image_base64 = None
+
+            # If the status is "notified", update the guard_id
+            if new_status.upper() == "NOTIFIED" and guard_id:
+                guard = User.query.filter_by(id=guard_id, role=UserRole.GUARD).first()
+                if guard:
+                    alarm.guard_id = guard_id
+                else:
+                    return None  # Invalid guard_id
+
+            # Update the operator_id if provided
+            if operator_id:
+                operator = User.query.filter_by(
+                    id=operator_id, role=UserRole.OPERATOR
+                ).first()
+                if operator:
+                    alarm.operator_id = operator_id
+                else:
+                    return None  # Invalid operator_id
+
+            # Commit the changes to the database
             db.session.commit()
             return alarm.to_dict()  # Return the updated alarm as a dictionary
         return None  # Alarm not found
@@ -123,7 +149,7 @@ class AlarmService:
         # Step 3: Send the email
         score = alarm.confidence_score
         subject = "Human Detected Alert"
-        body = f"Slow down cowboy! \nYou have been caught with a score: {score}\n"
+        body = f"Slow down cowboy! \nYou have been caught with a score: {score}\n Please check the image attached.\n Head to camera id: {alarm.camera_id}"
         to_email = guard.email
         # Gmail account credentials
         from_email = "tddc88.company3@gmail.com"
