@@ -3,6 +3,7 @@ import profileImage from "../assets/C3WBG.png";
 import bellIcon from "../assets/bell-01.png";
 import { Link } from "react-router-dom";
 import { baseURL } from "../api/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 const useFetchUserInfo = (userId) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -46,6 +47,7 @@ const ProfilePage = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const userId = localStorage.getItem("userId");
+  const navigate = useNavigate();
 
   const { userInfo, loading, error } = useFetchUserInfo(userId);
 
@@ -99,6 +101,21 @@ const ProfilePage = () => {
   if (!userInfo) {
     return <div>No user data found.</div>;
   }
+  const navigateToHome = () => {
+    switch (userInfo.role.toLowerCase()) {
+      case "admin":
+        navigate("/admin");
+        break;
+      case "operator":
+        navigate("/operator");
+        break;
+      case "manager":
+        navigate("/dashboard");
+        break;
+      default:
+        setErrorMessage("Unknown role");
+    }
+  };
 
   return (
     <div className="profilePage flex flex-col min-h-screen">
@@ -107,12 +124,12 @@ const ProfilePage = () => {
         <h1 className="companyName text-3xl font-bold text-ButtonsBlue mx-auto">
           panoraGuard
         </h1>
-        <Link
-          to="/"
+        <button
           className="homeButton bg-white text-blue-600 font-semibold py-2 px-4 rounded"
+          onClick={navigateToHome}
         >
           <img src={bellIcon} alt="Home" className="w-6 h-6" />
-        </Link>
+        </button>
       </header>
 
       {/* Main Content Area */}
