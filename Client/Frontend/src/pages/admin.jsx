@@ -6,6 +6,8 @@ import ManageData from "../components/manageData";
 import user from "../assets/user.svg";
 import AddnewUser from "../components/AddUser";
 import { Link } from "react-router-dom";
+import AlertDetails from "../components/AlertDetails"
+import PanoraGuardDashboard from "../components/PanoraGuardDashboard";
 
 const Admin = () => {
   // Step 1: Set up state to manage selected component
@@ -26,6 +28,12 @@ const Admin = () => {
             <CameraConfig />
           </div>
         );
+      case "OperatorView":
+        return (
+          <div className="p-8">
+            <AlertDetails />
+          </div>
+        ) ;
       /*
       case "Speaker":
         return (
@@ -38,6 +46,9 @@ const Admin = () => {
         return (
           <div className="p-12">
             <ManageData />
+            <div className="flex flex-col">
+              <PanoraGuardDashboard />
+            </div>
           </div>
         );
       default:
@@ -75,6 +86,16 @@ const Admin = () => {
                 }`}
               >
                 Camera Configuration
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={() => setSelectedComponent("OperatorView")}
+                className={`${
+                  selectedComponent === "OpearatorView" ? " font-bold" : " text-white"
+                }`}
+              >
+                Alarm Details
               </button>
             </div>
             {/** commenting speaker configuration to hide its functionality from admin pages 
