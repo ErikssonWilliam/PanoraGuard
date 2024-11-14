@@ -20,10 +20,10 @@ const AlertDetails = () => {
         const allAlarms = response.data;
 
         // Filters to show pending alarms
-        const pendingAlarms = allAlarms.filter(
-          (alarm) => alarm.status === "pending",
+        const currentAlarms = allAlarms.filter(
+          (alarm) => alarm.status === "pending" || alarm.status === "notified",
         );
-        setAlarms(pendingAlarms);
+        setAlarms(currentAlarms);
       } catch (err) {
         console.error("Error fetching alarms:", err);
         setError("Failed to load alarms.");
