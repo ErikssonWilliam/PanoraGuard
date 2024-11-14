@@ -110,6 +110,9 @@ def create_mock_data():
     create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
     create_mock_alarm(user1, camera, AlarmStatus.NOTIFIED)
     create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
+    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
+    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
+    create_mock_alarm(user1, camera, AlarmStatus.IGNORED)
     create_mock_alarm(user1, camera, AlarmStatus.RESOLVED)
     create_mock_camera_control_action(camera, user1)
     return "Success"

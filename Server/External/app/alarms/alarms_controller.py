@@ -9,6 +9,9 @@ class AlarmController:
     def get_alarms():
         return jsonify(AlarmService.get_alarms()), 200
 
+    def get_active_alarms(type):
+        return jsonify(AlarmService.get_active_alarms(type)), 200
+
     @staticmethod
     def add_alarm():
         alarm_data = request.get_json()
@@ -46,7 +49,8 @@ class AlarmController:
         if not alarm_data or "status" not in alarm_data:
             return jsonify({"message": "Status is required"}), 400
 
-        guard_id = alarm_data.get("guard_id")  # Get guard_id from the request data
+        # Get guard_id from the request data
+        guard_id = alarm_data.get("guard_id")
         operator_id = alarm_data.get(
             "operator_id"
         )  # Get operator_id from the request data
