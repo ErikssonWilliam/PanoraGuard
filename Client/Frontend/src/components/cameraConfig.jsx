@@ -1,3 +1,7 @@
+
+/* eslint-disable no-unused-vars */
+import React from "react";
+
 const CameraConfig = () => {
   return (
     <div className="font-poppings text-sm">
