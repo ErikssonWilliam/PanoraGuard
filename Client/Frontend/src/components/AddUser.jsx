@@ -37,13 +37,16 @@ const AddnewUser = () => {
       }
 
       const data = await response.json();
-      console.log("User added successfully:", data);
+
       setFormData({
         username: "",
         email: "",
         password: "",
         role: "GUARD",
       });
+
+      console.log("User added successfully:", data);
+      alert(`User ${data.user.username} added successfully`);
 
       setErrorMessage("");
     } catch (error) {
