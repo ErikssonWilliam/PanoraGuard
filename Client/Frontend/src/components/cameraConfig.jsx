@@ -1,4 +1,3 @@
-
 /* eslint-disable no-unused-vars */
 import React from "react";
 
@@ -20,12 +19,12 @@ const CameraConfig = () => {
               {/**Add more option */}
               <option value="convention-center-1">Convention Center-1</option>
               <option value="convention-center-2">Convention Center-2</option>
-              <option value="convention-center-garage-1">Convention Center Garage -2</option>
+              <option value="convention-center-garage-1">
+                Convention Center Garage -2
+              </option>
             </select>
           </div>
-
         </div>
-
 
         <div className="pt-4 col-span-1 flex flex-col space-y-10">
           <label htmlFor="confidence-level">Change the confidence level:</label>

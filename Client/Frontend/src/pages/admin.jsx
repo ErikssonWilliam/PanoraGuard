@@ -7,7 +7,6 @@ import user from "../assets/user.svg";
 import AddnewUser from "../components/AddUser";
 import { Link } from "react-router-dom";
 
-
 const Admin = () => {
   // Step 1: Set up state to manage selected component
   const [selectedComponent, setSelectedComponent] = useState("Camera");
@@ -16,20 +15,18 @@ const Admin = () => {
   const renderContent = () => {
     switch (selectedComponent) {
       case "AddUser":
-
         return (
           <div className="p-8">
             <AddnewUser />
           </div>
         );
       case "Camera":
-
         return (
           <div className="p-8">
             <CameraConfig />
           </div>
         );
-  /*
+      /*
       case "Speaker":
         return (
           <div className="p-8">
@@ -61,20 +58,22 @@ const Admin = () => {
 
           <div className="flex flex-col space-y-16 pt-16">
             <div>
-              <button onClick={() => setSelectedComponent("AddUser")} className={`${
-                  selectedComponent === "AddUser"
-                    ? " font-bold"
-                    : " text-white"
-                }`}>
+              <button
+                onClick={() => setSelectedComponent("AddUser")}
+                className={`${
+                  selectedComponent === "AddUser" ? " font-bold" : " text-white"
+                }`}
+              >
                 Add New User
               </button>
             </div>
             <div>
-              <button onClick={() => setSelectedComponent("Camera")} className={`${
-                  selectedComponent === "Camera"
-                    ? " font-bold"
-                    : " text-white"
-                }`}>
+              <button
+                onClick={() => setSelectedComponent("Camera")}
+                className={`${
+                  selectedComponent === "Camera" ? " font-bold" : " text-white"
+                }`}
+              >
                 Camera Configuration
               </button>
             </div>
@@ -85,12 +84,15 @@ const Admin = () => {
               </button>
             </div>
             */}
-            <div className='hover:font-bold' >
-              <button onClick={() => setSelectedComponent("ManageData")} className={`${
+            <div className="hover:font-bold">
+              <button
+                onClick={() => setSelectedComponent("ManageData")}
+                className={`${
                   selectedComponent === "ManageData"
                     ? " font-bold"
                     : " text-white"
-                }`}>
+                }`}
+              >
                 Manage Data
               </button>
             </div>
