@@ -33,6 +33,11 @@ Follow these steps to build and install an ACAP using Docker.
 2. Change the app name in **manifest.json**.
 3. Modify the name in the **.c** source file.
 
+##Get camera ID
+
+1. Connect to the same internet as the camera you want to get the ID of
+2. Run this command in a terminal: curl -X POST "http://<Camera IP>/axis-cgi/basicdeviceinfo.cgi" -H "Accept: application/json" -H "Content-Type: application/json" -d "{\"apiVersion\":\"1.0\",\"context\":\"Client defined request ID\",\"method\":\"getAllUnrestrictedProperties\"}"
+3. The camera id will be printed as Serial Number
 
 ## Additional Resources
 
