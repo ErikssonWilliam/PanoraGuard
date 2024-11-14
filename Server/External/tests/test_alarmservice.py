@@ -46,8 +46,8 @@ def alarm(session):
 def test_notify_guard(app, guard, alarm, session):
     with app.app_context():
         # Fetch guard and alarm to ensure they're bound to the same session
-        guard = session.query(User).get(guard.id)
-        alarm = session.query(Alarm).get(alarm.id)
+        guard = session.get(User, guard.id)
+        alarm = session.get(Alarm, alarm.id)
 
         # Mock only SMTP to avoid any session conflicts
         with patch("smtplib.SMTP") as mock_smtp:
@@ -64,7 +64,7 @@ def test_notify_guard(app, guard, alarm, session):
             assert "test_guard@example.com" in args[1]
 
             # Verify the alarm status update in the database
-            updated_alarm = session.query(Alarm).get(alarm.id)
+            updated_alarm = session.get(Alarm, alarm.id)
             assert updated_alarm.status == AlarmStatus.NOTIFIED
 
             # Cleanup

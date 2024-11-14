@@ -5,4 +5,4 @@ from flask_sqlalchemy import SQLAlchemy
 # Initialize extensions
 bcrypt = Bcrypt()
 db = SQLAlchemy()
-flask_migrate = Migrate()
+migrate = Migrate()

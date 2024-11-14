@@ -1,9 +1,7 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
-from .extensions import bcrypt, db, flask_migrate
+from .extensions import bcrypt, db, migrate
 from .routes import init_routes
-from .mock_data import create_mock_data
-from flask_migrate import upgrade, migrate
 from flask_cors import CORS
 from .socketio_instance import socketio  # Import the SocketIO instance
 
@@ -18,17 +16,11 @@ def create_app():
     # Configure JWT & Bcrypt
     app.config["JWT_SECRET_KEY"] = app.config.get("SECRET_KEY")
     bcrypt.init_app(app)
-    flask_migrate.init_app(app, db, directory="app/migrations")
+    migrate.init_app(app, db, directory="app/migrations")
     JWTManager(app)
 
     # Initialize the database and Flask-Migrate
     db.init_app(app)
-
-    with app.app_context():
-        # Automatically apply any migrations
-        migrate()
-        upgrade()
-        create_mock_data()
 
     init_routes(app)
 
