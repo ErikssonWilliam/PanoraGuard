@@ -58,7 +58,7 @@ class UserService:
             UserService.session.commit()
             return True
         return False
-    
+
     def validity_check(data: dict):
         required_fields = ["username", "password", "role", "email"]
 
@@ -67,10 +67,12 @@ class UserService:
                 raise ValueError(f"'{field}' is required and cannot be empty.")
 
         role = data.get("role")
-        if role not in ["GUARD","OPERATOR"]:
+        if role not in ["GUARD", "OPERATOR"]:
             raise ValueError("Invalid role.")
         email = data.get("email").strip()
-        is_valid_email = re.match(r'^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$', email) is not None
+        is_valid_email = (
+            re.match(r"^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$", email) is not None
+        )
         if not is_valid_email:
             raise ValueError("Invalid email format.")
 
@@ -81,4 +83,3 @@ class UserService:
         password = "".join(secrets.choice(alphabet) for i in range(length))
         print(password)
         return password
-

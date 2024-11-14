@@ -62,4 +62,3 @@ class UserController:
         if deleted:
             return jsonify({"message": "User deleted"}), 200
         return jsonify({"message": "User not found"}), 404
-
