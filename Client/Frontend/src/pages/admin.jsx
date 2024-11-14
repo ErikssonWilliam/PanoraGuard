@@ -6,7 +6,7 @@ import ManageData from "../components/manageData";
 import user from "../assets/user.svg";
 import AddnewUser from "../components/AddUser";
 import { Link } from "react-router-dom";
-import AlertDetails from "../components/AlertDetails"
+import AlertDetails from "../components/AlertDetails";
 import PanoraGuardDashboard from "../components/PanoraGuardDashboard";
 
 const Admin = () => {
@@ -33,7 +33,7 @@ const Admin = () => {
           <div className="p-8">
             <AlertDetails />
           </div>
-        ) ;
+        );
       /*
       case "Speaker":
         return (
@@ -92,7 +92,9 @@ const Admin = () => {
               <button
                 onClick={() => setSelectedComponent("OperatorView")}
                 className={`${
-                  selectedComponent === "OpearatorView" ? " font-bold" : " text-white"
+                  selectedComponent === "OpearatorView"
+                    ? " font-bold"
+                    : " text-white"
                 }`}
               >
                 Alarm Details
