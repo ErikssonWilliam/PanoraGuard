@@ -84,8 +84,7 @@ def optics_info():
     # Extract JSON data from the incoming request
     # client_data = request.get_json()
 
-    client_data = {"apiVersion": "1.1",
-                   "context": "abc", "method": "getOptics"}
+    client_data = {"apiVersion": "1.1", "context": "abc", "method": "getOptics"}
 
     # Define the external URL
     # Replace with actual external address
@@ -210,8 +209,7 @@ def add_schedule():
         },
     }
 
-    response = requests.post(
-        url, json=data, auth=HTTPBasicAuth(username, password))
+    response = requests.post(url, json=data, auth=HTTPBasicAuth(username, password))
 
     if response.status_code == 200:
         return {"status": "success", "message": "Scheduled event created successfully"}
@@ -220,6 +218,7 @@ def add_schedule():
 
 
 # Speaker code from Alina
+
 
 @test_bp.route("/start-speaker", methods=["GET"])
 def start_speaker():
@@ -234,17 +233,15 @@ def start_speaker():
     password = "secure"
 
     # Send POST request to the external server
-    response = requests.post(
-        external_url, auth=HTTPBasicAuth(username, password)
-    )
+    response = requests.post(external_url, auth=HTTPBasicAuth(username, password))
 
     # Handle the response from the external server
     if response.status_code == 200:
         return jsonify({"status": "success", "external_response": response.json()}), 200
     else:
         return (
-            jsonify({"status": "failed", "error": response.text}
-                    ), response.status_code,
+            jsonify({"status": "failed", "error": response.text}),
+            response.status_code,
         )
 
 
@@ -262,15 +259,13 @@ def stop_speaker():
     password = "secure"
 
     # Send POST request to the external server
-    response = requests.post(
-        external_url, auth=HTTPBasicAuth(username, password)
-    )
+    response = requests.post(external_url, auth=HTTPBasicAuth(username, password))
 
     # Handle the response from the external server
     if response.status_code == 200:
         return jsonify({"status": "success", "external_response": response.json()}), 200
     else:
         return (
-            jsonify({"status": "failed", "error": response.text}
-                    ), response.status_code,
+            jsonify({"status": "failed", "error": response.text}),
+            response.status_code,
         )
