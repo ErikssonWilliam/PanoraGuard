@@ -1,6 +1,4 @@
 from flask import jsonify, request
-import string
-import secrets
 
 # from ..auth.auth_db_mock import users_db
 from .users_service import UserService
@@ -25,7 +23,7 @@ class UserController:
         data = request.json
 
         if data.get("role") == "GUARD":
-            generated_password = UserController.generate_random_password()
+            generated_password = UserService.generate_random_password()
             data["password"] = generated_password
             print(f"Random password generated for 'guard': {generated_password}")
 
@@ -36,7 +34,7 @@ class UserController:
             return jsonify({"error": "Email already exists"}), 400
 
         try:
-            UserController.validity_check(data)
+            UserService.validity_check(data)
 
             new_user = UserService.create_user(
                 username=data["username"].strip(),
@@ -64,23 +62,3 @@ class UserController:
         if deleted:
             return jsonify({"message": "User deleted"}), 200
         return jsonify({"message": "User not found"}), 404
-
-    def validity_check(data: dict):
-        print(data)
-        required_fields = ["username", "password", "role", "email"]
-
-        for field in required_fields:
-            if not data.get(field) or not str(data[field]).strip():
-                raise ValueError(f"'{field}' is required and cannot be empty.")
-
-        email = data.get("email").strip()
-        if "@" not in email or "." not in email:
-            raise ValueError("Invalid email format.")
-
-        return True
-
-    def generate_random_password(length=12):
-        alphabet = string.ascii_letters + string.digits + string.punctuation
-        password = "".join(secrets.choice(alphabet) for i in range(length))
-        print(password)
-        return password

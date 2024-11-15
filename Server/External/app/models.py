@@ -9,27 +9,25 @@ from uuid import UUID as UUIDType
 
 class UserRole(Enum):
     # Enum for user roles
-    OPERATOR = "operator"
-    MANAGER = "manager"
-    ADMIN = "admin"
-    GUARD = "guard"
+    OPERATOR = "OPERATOR"
+    MANAGER = "MANAGER"
+    ADMIN = "ADMIN"
+    GUARD = "GUARD"
 
 
 class AlarmStatus(Enum):
     # Enum for representing the current status of an alarm.
-    PENDING = "pending"  # Alarm has been triggered, awaiting response
-    NOTIFIED = "notified"  # Alarm has been acknowledged and guard has been notified
-    RESOLVED = "resolved"  # Alarm has been resolved by a guard
-    IGNORED = "ignored"  # Alarm has been ignored by an operator
-    # Old alarms will be archived as either resolved or ignored
+    PENDING = "PENDING"  # Alarm has been triggered, awaiting response
+    NOTIFIED = "NOTIFIED"  # Alarm has been acknowledged and guard has been notified
+    RESOLVED = "RESOLVED"  # Alarm has been resolved by a guard
+    IGNORED = "IGNORED"  # Alarm has been ignored by an operator
 
 
 class CameraControlType(Enum):
     # Enum for camera control settings
-    BRIGHTNESS = "brightness"
-    ACTIVE_STATUS = "active_status"  # For activating or deactivating cameras
-    ZOOM_LEVEL = "zoom_level"
-    # More settings can be added as necessary
+    BRIGHTNESS = "BRIGHTNESS"
+    ACTIVE_STATUS = "ACTIVE_STATUS"  # For activating or deactivating cameras
+    ZOOM_LEVEL = "ZOOM_LEVEL"
 
 
 @dataclass
