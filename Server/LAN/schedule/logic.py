@@ -4,10 +4,8 @@ from datetime import datetime, date
 from collections import namedtuple
 import json
 
-
+# mockdata
 Camera = namedtuple("Camera", ["ip_address", "schedule"])
-
-
 week = {
     "week": {
         "Monday": [
@@ -302,30 +300,7 @@ week2 = {
             0,
         ],
         "Friday": [
-            1,
-            0,
-            1,
-            1,
-            1,
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            1,
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            1,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ],
         "Saturday": [
             0,
@@ -382,40 +357,43 @@ week2 = {
     }
 }
 
-week_str = json.dumps(week)
-
-camera1 = Camera("123", week_str)
+camera1 = Camera("123", json.dumps(week))
 camera2 = Camera("987", json.dumps(week2))
-
 camera_list = [camera1, camera2]
 
 
 def check_schedules():
     current_time = datetime.now().strftime("%H:%M:%S")
-    today = date.today()
     print("Current time:", current_time)
-    weekday_str = today.strftime("%A")
-    print("Weekday (str):", weekday_str)
-
+    
+    today = date.today().strftime("%A")
+    print("Weekday (str):", today)
     for camera in camera_list:
-        # json_object = json.loads(camera.schedule)
-        print(camera.ip_address)
+        schedule = json.loads(camera.schedule)
+        index = datetime.now().hour
+        shedule_today = schedule["week"][today]
+        isSheduled =  shedule_today[index]
+
+        if(isSheduled):
+            print("ACAP should be turned ON for camera ip: " + camera.ip_address)
+        else:
+            print("ACAP should be turned OFF for camera ip " + camera.ip_address)
 
         # print(json_object)
 
 
 schedule.every(1).minute.do(check_schedules)
 
-
-if __name__ == "__main__":
+def shedule():
+    #TODO bug fix: the loop starts at each new minute, but it skips the first minute
     while True:
-        now = datetime.now()
-        seconds_until_next_minute = 60 - now.second
+        seconds_until_next_minute = 60 - datetime.now().second
+        print("Sleeping for: " + str(seconds_until_next_minute))
         time.sleep(
             seconds_until_next_minute
         )  # Wait until the next minute starts (at :00 seconds)
 
-        # Now run the scheduler in sync with the start of each minute
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
+        schedule.run_pending()
+
+if __name__ == "__main__":
+    shedule()
