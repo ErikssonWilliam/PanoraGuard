@@ -3,6 +3,8 @@ import time
 from datetime import datetime, date
 from collections import namedtuple
 import json
+import requests
+from requests.auth import HTTPBasicAuth
 
 # mockdata
 Camera = namedtuple("Camera", ["ip_address", "schedule"])
@@ -303,30 +305,7 @@ week2 = {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ],
         "Saturday": [
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            1,
-            1,
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            1,
-            1,
-            1,
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ],
         "Sunday": [
             1,
@@ -360,26 +339,57 @@ week2 = {
 camera1 = Camera("123", json.dumps(week))
 camera2 = Camera("987", json.dumps(week2))
 camera_list = [camera1, camera2]
+# end of mock data
+#-------------------------------------------------------------------------------------------
+#constants
+acap_name = "alarm_identifier"
 
+#TODO check if toggle_acap work as intended, cameras needed
+def toggle_acap(camera_ip, action):
+    url = f"http://{camera_ip}/axis-cgi/applications/control.cgi?action={action}&package={acap_name}"
+    try:
+        response = requests.post(url, auth=HTTPBasicAuth("root", "secure")) 
+        # response = requests.post(url, data=client_data, auth=HTTPBasicAuth(username, password), stream=True)
+
+        if response.status_code == 200:
+            return True
+        else:
+            print("Request failed: " + response.text)
+            return False
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return False
 
 def check_schedules():
-    current_time = datetime.now().strftime("%H:%M:%S")
-    print("Current time:", current_time)
-    
     today = date.today().strftime("%A")
-    print("Weekday (str):", today)
-    for camera in camera_list:
+    current_time = datetime.now().strftime("%H:%M:%S")
+    print("Weekday:", today, ". Current time:", current_time)
+
+    """  
+    TODO replace camera_list mock data with actual cameras from DB
+    either call the route in external server, but unneccesary to call a route 
+    since we have access to the db?
+    or make a query from DB 
+    
+    TODO add schedule element to camera table in DB
+    """
+
+    for camera in camera_list: 
+
+        if not camera.schedule:
+            print("Camera dosent have a schedule assigned to it")
+            continue
+
         schedule = json.loads(camera.schedule)
         index = datetime.now().hour
         shedule_today = schedule["week"][today]
-        isSheduled =  shedule_today[index]
+        isScheduled =  shedule_today[index]
 
-        if(isSheduled):
-            print("ACAP should be turned ON for camera ip: " + camera.ip_address)
-        else:
-            print("ACAP should be turned OFF for camera ip " + camera.ip_address)
+        state = "ON" if isScheduled else "OFF" # Determine state for logging
+        print(f"ACAP should be turned {state} for camera ip: {camera.ip_address}")
 
-        # print(json_object)
+        action = True if isScheduled else False #TODO what is the action parameter supposed to be in the request?
+        toggle_acap(camera.ip_address, action)
 
 
 schedule.every(1).minute.do(check_schedules)
