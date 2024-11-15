@@ -30,8 +30,7 @@ class AlarmService:
             # Get the 10 most recent alarms with status 'RESOLVED' or 'IGNORED'
             alarms = (
                 Alarm.query.filter(
-                    Alarm.status.in_(
-                        [AlarmStatus.RESOLVED, AlarmStatus.IGNORED])
+                    Alarm.status.in_([AlarmStatus.RESOLVED, AlarmStatus.IGNORED])
                 )
                 .order_by(desc(Alarm.timestamp))
                 .limit(10)
@@ -133,8 +132,7 @@ class AlarmService:
 
             # If the status is "notified", update the guard_id
             if new_status.upper() == "NOTIFIED" and guard_id:
-                guard = User.query.filter_by(
-                    id=guard_id, role=UserRole.GUARD).first()
+                guard = User.query.filter_by(id=guard_id, role=UserRole.GUARD).first()
                 if guard:
                     alarm.guard_id = guard_id
                 else:
