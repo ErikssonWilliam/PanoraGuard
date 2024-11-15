@@ -22,7 +22,8 @@ def api_version():
     client_data = {"context": "my context", "method": "getSupportedVersions"}
 
     # Define the external URL
-    external_url = "http://192.168.1.116/axis-cgi/lightcontrol.cgi"  # Replace with actual external address
+    # Replace with actual external address
+    external_url = "http://192.168.1.116/axis-cgi/lightcontrol.cgi"
 
     # AXIS device credentials
     username = "root"
@@ -56,7 +57,8 @@ def light_control():
     }
 
     # Define the external URL
-    external_url = "http://192.168.1.116/axis-cgi/lightcontrol.cgi"  # Replace with actual external address
+    # Replace with actual external address
+    external_url = "http://192.168.1.116/axis-cgi/lightcontrol.cgi"
 
     # AXIS device credentials
     username = "root"
@@ -82,10 +84,12 @@ def optics_info():
     # Extract JSON data from the incoming request
     # client_data = request.get_json()
 
-    client_data = {"apiVersion": "1.1", "context": "abc", "method": "getOptics"}
+    client_data = {"apiVersion": "1.1",
+                   "context": "abc", "method": "getOptics"}
 
     # Define the external URL
-    external_url = "http://192.168.1.116/axis-cgi/opticscontrol.cgi"  # Replace with actual external address
+    # Replace with actual external address
+    external_url = "http://192.168.1.116/axis-cgi/opticscontrol.cgi"
 
     # AXIS device credentials
     username = "root"
@@ -119,7 +123,8 @@ def set_magnification():
     }
 
     # Define the external URL
-    external_url = "http://192.168.1.116/axis-cgi/opticscontrol.cgi"  # Replace with actual external address
+    # Replace with actual external address
+    external_url = "http://192.168.1.116/axis-cgi/opticscontrol.cgi"
 
     # AXIS device credentials
     username = "root"
@@ -205,9 +210,67 @@ def add_schedule():
         },
     }
 
-    response = requests.post(url, json=data, auth=HTTPBasicAuth(username, password))
+    response = requests.post(
+        url, json=data, auth=HTTPBasicAuth(username, password))
 
     if response.status_code == 200:
         return {"status": "success", "message": "Scheduled event created successfully"}
     else:
         return {"status": "failed", "error": response.text}
+
+
+# Speaker code from Alina
+
+@test_bp.route("/start-speaker", methods=["GET"])
+def start_speaker():
+    # Extract JSON data from the incoming request
+    # client_data = request.get_json()
+    # Define the external URL
+    # Replace with actual external address
+    external_url = "http://192.168.1.108/axis-cgi/playclip.cgi?location=alarm.mp3&repeat=-1&volume=4&audiodeviceid=0&audiooutputid=0"
+
+    # AXIS device credentials
+    username = "root"
+    password = "secure"
+
+    # Send POST request to the external server
+    response = requests.post(
+        external_url, auth=HTTPBasicAuth(username, password)
+    )
+
+    # Handle the response from the external server
+    if response.status_code == 200:
+        return jsonify({"status": "success", "external_response": response.json()}), 200
+    else:
+        return (
+            jsonify({"status": "failed", "error": response.text}
+                    ), response.status_code,
+        )
+
+
+@test_bp.route("/stop-speaker", methods=["GET"])
+def stop_speaker():
+    # Extract JSON data from the incoming request
+    # client_data = request.get_json()
+
+    # Define the external URL
+    # Replace with actual external address
+    external_url = "http://192.168.1.108/axis-cgi/stopclip.cgi"
+
+    # AXIS device credentials
+    username = "root"
+    password = "secure"
+
+    # Send POST request to the external server
+    response = requests.post(
+        external_url, auth=HTTPBasicAuth(username, password)
+    )
+
+    # Handle the response from the external server
+    if response.status_code == 200:
+        return jsonify({"status": "success", "external_response": response.json()}), 200
+    else:
+        return (
+            jsonify({"status": "failed", "error": response.text}
+                    ), response.status_code,
+        )

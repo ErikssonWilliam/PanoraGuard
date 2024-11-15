@@ -30,7 +30,8 @@ class AlarmService:
             # Get the 10 most recent alarms with status 'RESOLVED' or 'IGNORED'
             alarms = (
                 Alarm.query.filter(
-                    Alarm.status.in_([AlarmStatus.RESOLVED, AlarmStatus.IGNORED])
+                    Alarm.status.in_(
+                        [AlarmStatus.RESOLVED, AlarmStatus.IGNORED])
                 )
                 .order_by(desc(Alarm.timestamp))
                 .limit(10)
@@ -81,7 +82,16 @@ class AlarmService:
         db.session.add(new_alarm)
         db.session.commit()
 
-        return {"status": "success", "alarm": new_alarm.to_dict()}
+        # Step 5: get the location
+        camera = Camera.query.filter_by(id=camera_id).first()
+        if not camera:
+            return {"status": "error", "message": "Camera not found"}
+
+        return {
+            "status": "success",
+            "alarm": new_alarm.to_dict(),
+            "camera_location": camera.location,
+        }
 
     def get_alarm_by_id(schedule_id):
         return  # add logic
@@ -123,7 +133,8 @@ class AlarmService:
 
             # If the status is "notified", update the guard_id
             if new_status.upper() == "NOTIFIED" and guard_id:
-                guard = User.query.filter_by(id=guard_id, role=UserRole.GUARD).first()
+                guard = User.query.filter_by(
+                    id=guard_id, role=UserRole.GUARD).first()
                 if guard:
                     alarm.guard_id = guard_id
                 else:
