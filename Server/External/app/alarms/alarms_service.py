@@ -81,7 +81,16 @@ class AlarmService:
         db.session.add(new_alarm)
         db.session.commit()
 
-        return {"status": "success", "alarm": new_alarm.to_dict()}
+        # Step 5: get the location
+        camera = Camera.query.filter_by(id=camera_id).first()
+        if not camera:
+            return {"status": "error", "message": "Camera not found"}
+
+        return {
+            "status": "success",
+            "alarm": new_alarm.to_dict(),
+            "camera_location": camera.location,
+        }
 
     def get_alarm_by_id(schedule_id):
         return  # add logic
