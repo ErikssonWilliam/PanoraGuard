@@ -1,10 +1,13 @@
 import pytest
 from unittest.mock import patch, mock_open
-from app.dataprocessing.dataprocessing_service import DataprocessingService  # Adjust path as needed
+from app.dataprocessing.dataprocessing_service import (
+    DataprocessingService,
+)  # Adjust path as needed
 from config import Config  # Import Config directly
 
 # Since Config.email_pswrd is set to "test_password" when pytest is detected,
 # we don't need to mock Config.email_pswrd separately.
+
 
 @patch("smtplib.SMTP")
 @patch("os.path.exists", return_value=True)
