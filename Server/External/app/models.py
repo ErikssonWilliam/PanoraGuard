@@ -1,10 +1,8 @@
 from enum import Enum
 from datetime import datetime
-from dataclasses import dataclass
 from app.extensions import db
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from uuid import UUID as UUIDType
 
 
 class UserRole(Enum):
@@ -23,19 +21,27 @@ class AlarmStatus(Enum):
     IGNORED = "IGNORED"  # Alarm has been ignored by an operator
 
 
-class CameraControlType(Enum):
-    # Enum for camera control settings
-    BRIGHTNESS = "BRIGHTNESS"
-    ACTIVE_STATUS = "ACTIVE_STATUS"  # For activating or deactivating cameras
-    ZOOM_LEVEL = "ZOOM_LEVEL"
+class AlarmObjectType(Enum):
+    # Enum for user roles
+    HUMAN = "HUMAN"
+    FACE = "FACE"
+    VEHICLE = "VEHICLE"
 
 
-@dataclass
-class JWTToken:
-    # @Gustav Alsenhed, Unsure whether this one is needed /Olof
-    sub: UUIDType  # User's ID
-    role: UserRole  # User's role
-    exp: datetime  # Expiration time
+# probably don't need these
+# class CameraControlType(Enum):
+#     # Enum for camera control settings
+#     BRIGHTNESS = "BRIGHTNESS"
+#     ACTIVE_STATUS = "ACTIVE_STATUS"  # For activating or deactivating cameras
+#     ZOOM_LEVEL = "ZOOM_LEVEL"
+
+
+# @dataclass
+# class JWTToken:
+#     # @Gustav Alsenhed, Unsure whether this one is needed /Olof
+#     sub: UUIDType  # User's ID
+#     role: UserRole  # User's role
+#     exp: datetime  # Expiration time
 
 
 ##################################################
@@ -113,21 +119,24 @@ class Alarm(db.Model):
         }
 
 
-# ToDo: The alarm shoud NOT have video_clip_id and image_snapshot_id as attributes/relationships...?
-# Also: Add type to the alarm; Human, Vehicle, Face, etc.?
+# Todo: apply AlarmObjectType enum to Alarm model, probably needs to change how acap sends requests(not sure)
 
 
-class CameraControlAction(db.Model):
-    # Class for camera control action
-    __tablename__ = "camera_control_actions"
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    camera_id = db.Column(db.String, db.ForeignKey("cameras.id"), nullable=False)
-    initiated_by = db.Column(
-        UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=False
-    )
-    control_type = db.Column(db.Enum(CameraControlType), nullable=False)
-    value = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+# # ToDo: The alarm shoud NOT have video_clip_id and image_snapshot_id as attributes/relationships...?
+# # Also: Add type to the alarm; Human, Vehicle, Face, etc.?
+
+
+# class CameraControlAction(db.Model):
+#     # Class for camera control action
+#     __tablename__ = "camera_control_actions"
+#     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+#     camera_id = db.Column(db.String, db.ForeignKey("cameras.id"), nullable=False)
+#     initiated_by = db.Column(
+#         UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=False
+#     )
+#     control_type = db.Column(db.Enum(CameraControlType), nullable=False)
+#     value = db.Column(db.String, nullable=False)
+#     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 # Schedule model and status TBD at a later stage #

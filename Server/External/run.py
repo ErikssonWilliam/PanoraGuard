@@ -6,6 +6,7 @@ from app.socketio_instance import socketio
 app = create_app()
 if __name__ == "__main__":
     with app.app_context():
+        upgrade()
         migrate()
         upgrade()
         create_mock_data()
