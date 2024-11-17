@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { baseURL } from "../api/axiosConfig"; // Import baseURL from axiosConfig
+import Scheduler from "./scheduler";
 
 const CameraConfig = () => {
   const [confidenceLevel, setConfidenceLevel] = useState(50); // Default confidence level
+  const [brightnessLevel, setBrightnessLevel] = useState(50); // Default brightness level
   const [locations, setLocations] = useState([]); // State to store camera locations
   const [selectedLocation, setSelectedLocation] = useState(""); // Track selected location
 
@@ -127,14 +129,18 @@ const CameraConfig = () => {
         {/* Brightness Level Slider */}
         <div className="pt-4 col-span-2 flex flex-col space-y-10">
           <label htmlFor="brightness-level">Change the brightness level:</label>
-          <input
-            type="range"
-            id="brightness-level"
-            min="0"
-            max="100"
-            step={25}
-            className="w-3/4"
-          />
+          <div className="flex items-center space-x-4">
+            <input
+              type="range"
+              id="brightness-level"
+              min="0"
+              max="100"
+              value={brightnessLevel}
+              onChange={(e) => setBrightnessLevel(e.target.value)}
+              className="w-3/4"
+            />
+            <span>{brightnessLevel}%</span>
+          </div>
           <button className="w-1/5 bg-NavyBlue text-white rounded-lg p-2">
             Update
           </button>
@@ -142,41 +148,14 @@ const CameraConfig = () => {
       </div>
 
       {/* Additional schedule-related fields */}
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid grid-cols-2 gap-8">
         <h2 className="pt-12 font-bold col-span-2 text-left">
           Schedule Cameras
         </h2>
-        <div className="col-span-1 flex flex-col space-y-4">
-          <label htmlFor="start-time">Start Date:</label>
-          <input
-            type="date"
-            id="start-time"
-            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          />
-          <label htmlFor="start-time">Start Time:</label>
-          <input
-            type="time"
-            id="start-time"
-            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          />
+        {/**Calling scheduling componenets */}
+        <div className="col-span-2">
+          <Scheduler />
         </div>
-        <div className="col-span-1 flex flex-col space-y-4">
-          <label htmlFor="end-time">End date:</label>
-          <input
-            type="date"
-            id="end-time"
-            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          />
-          <label htmlFor="end-time">End Time:</label>
-          <input
-            type="time"
-            id="end-time"
-            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          />
-        </div>
-        <button className="w-1/5 bg-NavyBlue text-white rounded-lg p-2">
-          Apply
-        </button>
       </div>
     </div>
   );
