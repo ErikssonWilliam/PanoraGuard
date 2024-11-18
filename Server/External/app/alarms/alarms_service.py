@@ -16,9 +16,14 @@ from email.mime.image import MIMEImage
 
 
 class AlarmService:
-    def get_alarms() -> List[Alarm]:
-        alarms = Alarm.query.all()
-        return [alarm.to_dict() for alarm in alarms]
+    @staticmethod
+    def get_alarms() -> List[dict]:
+        alarms = (
+            db.session.query(Alarm, Camera.location)
+            .join(Camera, Camera.id == Alarm.camera_id)
+            .all()
+        )
+        return [{**alarm.to_dict(), "location": location} for alarm, location in alarms]
 
     def get_active_alarms(alarm_type: str) -> List[dict]:
         if alarm_type.lower() == "new":
@@ -40,6 +45,21 @@ class AlarmService:
             # Default case if `alarm_type` doesn't match 'new' or 'old'
             alarms = []
 
+        return [alarm.to_dict() for alarm in alarms]
+
+    @staticmethod
+    def get_alarm_by_camera(location: str, camera_id: str) -> List[dict]:
+        alarms = (
+            db.session.query(Alarm)
+            .join(Camera, Camera.id == Alarm.camera_id)
+            .filter(Camera.location == location, Alarm.camera_id == camera_id)
+            .all()
+        )
+        return [alarm.to_dict() for alarm in alarms]
+
+    @staticmethod
+    def get_alarm_by_operator(operator) -> List[dict]:
+        alarms = db.session.query(Alarm).filter(Alarm.operator_id == operator).all()
         return [alarm.to_dict() for alarm in alarms]
 
     @staticmethod
