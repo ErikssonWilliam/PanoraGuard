@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { baseURL } from "../api/axiosConfig";
 
 const AddnewUser = () => {
