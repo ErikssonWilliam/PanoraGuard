@@ -40,6 +40,11 @@ def update_confidence(camera_id):
     return CameraController.update_confidence(camera_id)
 
 
+@cameras_bp.route("/<string:camera_id>/location", methods=["PUT"])
+def update_location(camera_id):
+    return CameraController.update_location(camera_id)
+
+
 @cameras_bp.route("/upload/data", methods=["POST"])
 def process_camera_data():
     return CameraController.process_camera_data()
