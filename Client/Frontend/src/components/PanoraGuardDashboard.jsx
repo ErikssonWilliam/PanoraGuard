@@ -1,40 +1,71 @@
-import Header from "./Header";
+import Header from "../components/OperatorHeader";
 import StatisticsForm from "./StatisticsForm";
-import AlertsChart from "./AlertsChart";
-import AlertsDistribution from "./AlertsDistribution";
+import LocationAlarmChart from "./LocationAlarmChart";
+import CameraAlarmChart from "./CameraAlarmChart";
+import AlarmResolutionChart from "./AlarmResolutionChart";
 
 function PanoraGuardDashboard() {
   return (
-    <main className="flex overflow-hidden flex-col pt-2.5 bg-slate-100">
+    <main className="flex flex-col bg-slate-50 min-h-screen">
       <Header />
-      <div className="mt-2.5 w-full border-slate-300 min-h-[2px] max-md:max-w-full" />
-      <div className="w-full max-w-[1224px] max-md:max-w-full">
-        <div className="flex gap-5 max-md:flex-col">
-          <div className="flex flex-col w-[82%] max-md:ml-0 max-md:w-full">
-            <div className="flex flex-wrap grow items-start max-md:mt-3.5">
-              <div className="flex flex-col grow shrink-0 my-auto basis-0 w-fit max-md:max-w-full">
-                <StatisticsForm />
-                <div className="self-start mt-3 ml-14 text-base font-semibold text-center text-white max-md:ml-2.5">
-                  Update Stats
-                </div>
-                <div className="shrink-0 mt-7 h-0 border-slate-300 max-md:max-w-full" />
-                <div className="flex flex-col items-start px-8 mt-5 w-full max-md:px-5 max-md:max-w-full">
-                  <h2 className="text-sm tracking-wide leading-loose text-black max-md:ml-1">
-                    Total alerts
-                  </h2>
-                  <div className="mt-5 text-xl font-medium tracking-wide leading-snug text-sky-900 max-md:ml-1">
-                    210
-                  </div>
-                  <div className="mt-5 text-sm tracking-wide leading-loose text-black">
-                    from 1-12 Dec, 2024
-                  </div>
-                  <AlertsChart />
-                </div>
+
+      <div className="w-full border-t border-slate-300 mt-3" />
+
+      <div className="w-full max-w-[1224px] mx-auto p-6">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Main Content Section */}
+          <div className="flex flex-col w-full lg:w-3/4 bg-white p-6 shadow-lg rounded-lg">
+            {/* Statistics Form */}
+            <div className="mb-6 flex justify-center">
+              <StatisticsForm />
+            </div>
+
+            {/* Statistics Section - Total Alerts and Chart */}
+            <div className="flex flex-col px-6">
+              <h2 className="text-sm text-slate-700 mb-2">Total Alerts</h2>
+              <div className="text-3xl font-semibold text-sky-900 mb-4">
+                210
+              </div>
+              <div className="text-sm text-slate-500 mb-5">
+                from 1-12 Dec, 2024
+              </div>
+
+              {/* Divider */}
+              <div className="h-px bg-slate-300 mb-6" />
+
+              {/* Location Alarm Chart */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-3">
+                  Location-wise Alarm Breakdown
+                </h3>
+                <LocationAlarmChart />
+              </div>
+
+              {/* Camera Alarm Chart */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-3">
+                  Camera-wise Alarm Breakdown
+                </h3>
+                <CameraAlarmChart />
+              </div>
+
+              {/* Alarm Resolution Chart */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-slate-900 mb-3">
+                  Alarm Resolution Over Time
+                </h3>
+                <AlarmResolutionChart />
               </div>
             </div>
           </div>
-          <aside className="flex flex-col ml-5 w-[18%] max-md:ml-0 max-md:w-full">
-            <AlertsDistribution />
+
+          {/* Sidebar Section */}
+          <aside className="flex flex-col w-full lg:w-1/4 bg-white shadow-lg rounded-lg p-6">
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">
+                Alerts Distribution
+              </h3>
+            </div>
           </aside>
         </div>
       </div>
