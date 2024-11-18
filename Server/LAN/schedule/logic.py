@@ -390,7 +390,6 @@ camera_list = [camera1, camera2]
 # constants
 acap_name = "alarm_identifier"
 
-
 # TODO check if toggle_acap work as intended, cameras needed
 def toggle_acap(camera_ip, action):
     url = f"http://{camera_ip}/axis-cgi/applications/control.cgi?action={action}&package={acap_name}"
@@ -432,19 +431,15 @@ def check_schedules():
         schedule_today = schedule["week"][today]
         isScheduled = schedule_today[index]
 
-        # TODO isn't isScheduled an integer, either 1 or 0? Does the if statement work here where it is treated as a boolean?
         state = "ON" if isScheduled else "OFF"  # Determine state for logging
         print(f"ACAP should be turned {state} for camera ip: {camera.ip_address}")
 
-        action = True if isScheduled else False
-        # TODO what is the action parameter supposed to be in the request?
+        action = "start" if isScheduled else "stop"
         # The action parameter should be either "start" or "stop".
 
         # TODO now we are turning on the acap even if it is already on. Should we avoid doing it unnecessarily?
         toggle_acap(camera.ip_address, action)
 
-
-# I realized we do not actually need the schedule library if we are using time.sleep anyway, and with only using time.sleep I fixed the bug that skipped the first minute.
 # TODO Are we going to actually check every minute or only once every hour at minute 00? If we choose the latter, we need to remember to check the schedule of a camera also when that schedule has been changed by the user, so if the user changes the current hour, that change will take effect right away.
 def run_schedule():
     while True:
