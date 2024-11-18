@@ -23,11 +23,11 @@ const CameraAlarmChart = () => {
         <XAxis dataKey="camera" />
         <YAxis />
         <Tooltip />
-        <Legend />
-        <Bar dataKey="addressed" stackId="a" fill="#1E3A8A" />{" "}
-        {/* Dark Blue (bg-sky-900) */}
-        <Bar dataKey="ignored" stackId="a" fill="#E5E7EB" />{" "}
-        {/* Light Gray (bg-gray-200) */}
+        <Legend
+          formatter={(value) => <span className="text-black">{value}</span>} // Make legend text black
+        />
+        <Bar dataKey="addressed" stackId="a" fill="#1E3A8A" /> {/* Dark Blue */}
+        <Bar dataKey="ignored" stackId="a" fill="#E5E7EB" /> {/* Light Gray */}
       </BarChart>
     </ResponsiveContainer>
   );
