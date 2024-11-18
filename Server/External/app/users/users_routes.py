@@ -8,12 +8,8 @@ users_bp = Blueprint("users", __name__)
 
 
 @users_bp.route("/create", methods=["POST"])
-def create_user():
-    return UserController.create_user()
-
-@users_bp.route("/admin_create", methods=["POST"])
 @jwt_required()
-def admin_create_user():
+def create_user():
     return UserController.create_user()
 
 # Added this route to fetch users with the GUARD role

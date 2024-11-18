@@ -23,7 +23,7 @@ const AddnewUser = () => {
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch(`${baseURL}/users/admin_create`, {
+      const response = await fetch(`${baseURL}/users/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

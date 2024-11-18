@@ -51,12 +51,14 @@ const CameraConfig = () => {
   // Handle updating confidence level for the selected camera
   const updateConfidenceLevel = async () => {
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await fetch(
         `${baseURL}/cameras/${selectedLocation}/confidence`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
           },
           body: JSON.stringify({
             confidence: confidenceLevel / 100,
