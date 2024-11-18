@@ -53,13 +53,15 @@ This needs to be done in both the `Server/External` and `Server/LAN` directories
 ```
 DATABASE_URL = postgresql://postgres:PASSWORD@localhost:5432/company3_db
 SECRET_KEY = your_random_secret_text
-email_pswrd = srqe miip ozmo kwhd
+email_pswrd = srqe miip ozmo kwhd # only for External
+CAMERA_USERNAME = root # only for LAN
+CAMERA_PASSWORD = secure # only for LAN
 ```
 3. Replace ```PASSWORD``` in ```DATABASE_URL``` with the password you set during PostgreSQL installation.
 
 ### Run the Application
 ```bash
-python run.python
+python run.py
 ```
 
 ### Important Note

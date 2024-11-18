@@ -38,13 +38,13 @@ const Login = () => {
       localStorage.setItem("userId", user.user_id);
 
       switch (user.role) {
-        case "admin":
+        case "ADMIN":
           navigate("/admin");
           break;
-        case "operator":
+        case "OPERATOR":
           navigate("/operator");
           break;
-        case "manager":
+        case "MANAGER":
           navigate("/dashboard");
           break;
         default:

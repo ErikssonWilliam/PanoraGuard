@@ -30,4 +30,4 @@ Run the following commands in the `Client/Frontend` directory:
 npx eslint .
 npx prettier --write .
 ```
-These commands will check for and fix linting and formatting issues automatically.
+These commands will check for linting issues and fix formatting automatically.
