@@ -48,7 +48,7 @@ const AddnewUser = () => {
       });
 
       console.log("User added successfully:", data);
-      alert(`User ${data.user.username} added successfully`);
+      alert(`User ${data.user.username} added successfully`); //success Message shown here
 
       setErrorMessage("");
     } catch (error) {
@@ -72,7 +72,7 @@ const AddnewUser = () => {
         />
       </div>
       <div className="flex flex-col">
-        <label htmlFor="location" className="text-blue-600">
+        <label htmlFor="email" className="text-blue-600">
           Email:
         </label>
         <input

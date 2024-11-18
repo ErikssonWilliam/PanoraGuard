@@ -22,9 +22,10 @@ def get_guards():
     guards = User.query.filter_by(
         role=UserRole.GUARD
     ).all()  # Query to filter users with the role of GUARD
-    return jsonify(
-        [guard.exposed_fields() for guard in guards]
-    ), 200  # Return the filtered results as JSON
+    return (
+        jsonify([guard.exposed_fields() for guard in guards]),
+        200,
+    )  # Return the filtered results as JSON
 
 
 @users_bp.route("/", methods=["GET"])
