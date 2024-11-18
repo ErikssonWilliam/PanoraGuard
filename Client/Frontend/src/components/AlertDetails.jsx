@@ -4,6 +4,7 @@ import AlarmRow from "./AlarmRow";
 import { io } from "socket.io-client"; // Import the socket.io-client
 import { baseURL } from "../api/axiosConfig";
 
+
 const AlertDetails = () => {
   const [alarms, setAlarms] = useState([]);
   const [error, setError] = useState("");
@@ -21,7 +22,7 @@ const AlertDetails = () => {
 
         // Filters to show pending alarms
         const currentAlarms = allAlarms.filter(
-          (alarm) => alarm.status === "pending" || alarm.status === "notified",
+          (alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED",
         );
         setAlarms(currentAlarms);
       } catch (err) {
