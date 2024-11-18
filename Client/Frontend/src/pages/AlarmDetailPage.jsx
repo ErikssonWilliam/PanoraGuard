@@ -88,7 +88,7 @@ const AlarmDetailPage = () => {
   useEffect(() => {
     if (alarm?.status) {
       const status = formatStatusToSentenceCase(alarm.status);
-      setFormattedStatus(status); 
+      setFormattedStatus(status);
     }
   }, [alarm]);
 
@@ -126,19 +126,19 @@ const AlarmDetailPage = () => {
       switch (newStatus) {
         case "IGNORED":
           window.alert("Alarm dismissed successfully.");
-          navigate("/operator");
+          navigate("/operator"); // Navigate back to the operator page after confirmation
           break;
 
         case "NOTIFIED":
           window.alert(`Alarm status updated to ${formattedStatus}`);
-          navigate("/operator"); // Navigera tillbaka till operatörssidan efter bekräftelse
+          navigate("/operator"); // Navigate back to the operator page after confirmation
           break;
-  
+
         case "RESOLVED":
           window.alert(`Alarm status updated to ${formattedStatus}`);
-          navigate("/operator"); // Navigera tillbaka till operatörssidan efter bekräftelse
+          navigate("/operator"); // Navigate back to the operator page after confirmation
           break;
-  
+
         default:
           console.log("Unknown status:", newStatus);
           break;
@@ -282,7 +282,7 @@ const AlarmDetailPage = () => {
                 </p>
                 <p className="text-lg">Operator ID: {alarm.operator_id}</p>
                 <p className="text-lg">
-                  Status: {formatStatusToSentenceCase(alarm.status)} 
+                  Status: {formatStatusToSentenceCase(alarm.status)}
                 </p>
               </>
             ) : (

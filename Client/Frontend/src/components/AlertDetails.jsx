@@ -4,7 +4,6 @@ import AlarmRow from "./AlarmRow";
 import { io } from "socket.io-client"; // Import the socket.io-client
 import { baseURL } from "../api/axiosConfig";
 
-
 const AlertDetails = () => {
   const [alarms, setAlarms] = useState([]);
   const [error, setError] = useState("");
