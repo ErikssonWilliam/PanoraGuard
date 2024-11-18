@@ -12,6 +12,7 @@ users_bp = Blueprint("users", __name__)
 def create_user():
     return UserController.create_user()
 
+
 # Added this route to fetch users with the GUARD role
 @users_bp.route("/guards", methods=["GET"])  # New route for /users/guards endpoint
 def get_guards():
