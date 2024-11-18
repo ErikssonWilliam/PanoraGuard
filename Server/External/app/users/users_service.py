@@ -32,8 +32,6 @@ class UserService:
             email=email,
         )
         UserService.session.add(new_user)
-        print(new_user.password_hash)
-        print(bcrypt.check_password_hash(new_user.password_hash, password))
         UserService.session.commit()
         return new_user
 

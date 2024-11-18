@@ -3,8 +3,6 @@ from datetime import datetime, timedelta
 from .extensions import db
 from .models import (
     AlarmStatus,
-    CameraControlAction,
-    CameraControlType,
     User,
     UserRole,
     Camera,
@@ -151,16 +149,16 @@ def create_mock_alarm_test(idtest, user, camera, statusState):
     return alarm
 
 
-def create_mock_camera_control_action(camera, user):
-    cca = CameraControlAction(
-        camera_id=camera.id,
-        initiated_by=user.id,
-        control_type=CameraControlType.BRIGHTNESS,
-        value="0.83",
-    )
-    session.add(cca)
-    session.commit()
-    return cca
+# def create_mock_camera_control_action(camera, user):
+#     cca = CameraControlAction(
+#         camera_id=camera.id,
+#         initiated_by=user.id,
+#         control_type=CameraControlType.BRIGHTNESS,
+#         value="0.83",
+#     )
+#     session.add(cca)
+#     session.commit()
+#     return cca
 
 
 def create_mock_data():
@@ -174,7 +172,7 @@ def create_mock_data():
         AlarmStatus.IGNORED,
     )
     create_random_alarms(user1, camera)
-    create_mock_camera_control_action(camera, user1)
+    # create_mock_camera_control_action(camera, user1)
     return "Success"
 
 
