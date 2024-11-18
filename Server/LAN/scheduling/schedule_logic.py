@@ -5,6 +5,7 @@ from collections import namedtuple
 import json
 import requests
 from requests.auth import HTTPBasicAuth
+from app.utils import get_cameras
 
 # mockdata
 Camera = namedtuple("Camera", ["ip_address", "schedule"])
@@ -389,7 +390,7 @@ camera_list = [camera1, camera2]
 # -------------------------------------------------------------------------------------------
 # constants
 acap_name = "alarm_identifier"
-from app.utils import get_cameras
+
 
 # TODO check if toggle_acap work as intended, cameras needed
 def toggle_acap(camera_ip, action):
@@ -442,17 +443,14 @@ def check_schedules():
         # TODO now we are turning on the acap even if it is already on. Should we avoid doing it unnecessarily?
         toggle_acap(camera.ip_address, action)
 
+
 # TODO Are we going to actually check every minute or only once every hour at minute 00? If we choose the latter, we need to remember to check the schedule of a camera also when that schedule has been changed by the user, so if the user changes the current hour, that change will take effect right away.
-def run_schedule():
-    while True:
-        seconds_until_next_minute = 60 - datetime.now().second
-        print("Sleeping for: " + str(seconds_until_next_minute))
-        time.sleep(
-            seconds_until_next_minute
-        )  # Wait until the next minute starts (at :00 seconds)
-        check_schedules()
-
-
-# TODO call run_schedule() in the run.py file and try to access routes on the LAN server while this function is running all the time. Make sure that they actually use different threads.
-if __name__ == "__main__":
-    run_schedule()
+def run_schedule(app):
+    with app.app_context():
+        while True:
+            seconds_until_next_minute = 60 - datetime.now().second
+            print("Sleeping for: " + str(seconds_until_next_minute))
+            time.sleep(
+                seconds_until_next_minute
+            )  # Wait until the next minute starts (at :00 seconds)
+            check_schedules()
