@@ -15,13 +15,14 @@ def create_app():
 
     # Configure JWT & Bcrypt
     app.config["JWT_SECRET_KEY"] = app.config.get("SECRET_KEY")
+
+    # Init extensions
     bcrypt.init_app(app)
+    db.init_app(app)
     migrate.init_app(app, db, directory="app/migrations")
     JWTManager(app)
 
-    # Initialize the database and Flask-Migrate
-    db.init_app(app)
-
+    # Register blueprints
     init_routes(app)
 
     # Attach socketio to the app with CORS settings
