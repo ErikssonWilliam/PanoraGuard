@@ -22,10 +22,12 @@ const AddnewUser = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`${baseURL}/users/create`, {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${baseURL}/users/admin_create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
