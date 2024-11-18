@@ -12,6 +12,11 @@ def get_alarms():
     return AlarmController.get_alarms()
 
 
+@alarms_bp.route("/type/<string:type>", methods=["GET"])
+def get_active_alarms(type):
+    return AlarmController.get_active_alarms(type)
+
+
 @alarms_bp.route("/<string:alarm_ID>/image", methods=["GET"])
 def get_alarm_image(alarm_ID):
     return AlarmController.get_alarm_image(alarm_ID)

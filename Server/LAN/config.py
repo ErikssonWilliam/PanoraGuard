@@ -24,9 +24,13 @@ class Config:
     if is_pytest_running():
         SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
         SECRET_KEY = secrets.token_hex(16)
-        email_pswrd = "test_password"
     else:
-        REQUIRED_ENV_VARS = ["DATABASE_URL", "SECRET_KEY"]
+        REQUIRED_ENV_VARS = [
+            "DATABASE_URL",
+            "SECRET_KEY",
+            "CAMERA_USERNAME",
+            "CAMERA_PASSWORD",
+        ]
 
         missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
         if missing_vars:
@@ -36,5 +40,7 @@ class Config:
             sys.exit(1)
         SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")
         SECRET_KEY = os.getenv("SECRET_KEY")
+        CAMERA_USERNAME = os.getenv("CAMERA_USERNAME")
+        CAMERA_PASSWORD = os.getenv("CAMERA_PASSWORD")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
