@@ -127,3 +127,13 @@ To modify the database structure (e.g., objects or attributes):
 ### Modifying Mock Data
 To adjust the mock data populated in the database on each server start:
 * Modify the file `Server/External/app/mock_data.py`.
+
+### Clearing the database
+
+If you find yourself having problems with the database, you can run the file reset_database.py
+
+```bash
+    python reset_database.py
+```
+
+Then remember to fill it with mock_data by reapplying the commented code in run.py, but please, comment it back when pushing to development.

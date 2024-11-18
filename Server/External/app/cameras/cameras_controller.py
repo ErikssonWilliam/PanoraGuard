@@ -13,6 +13,14 @@ class CameraController:
         return CameraService.add_camera()
 
     @staticmethod
+    def locations():
+        return CameraService.locations()
+
+    @staticmethod
+    def cameraID_by_location(location):
+        return CameraService.cameraID_by_location(location)
+
+    @staticmethod
     def get_camera(camera_id):
         # Call the service to get the camera data
         camera_data = CameraService.get_camera_by_id(camera_id)
