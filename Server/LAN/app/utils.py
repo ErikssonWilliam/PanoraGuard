@@ -33,3 +33,9 @@ def get_camera_ip(camera_id):
     if camera:
         return camera.ip_address
     return None
+
+
+def get_cameras():
+    """Helper function to fetch all cameras from the database."""
+    cameras = Camera.query.all()
+    return [camera.to_dict() for camera in cameras]
