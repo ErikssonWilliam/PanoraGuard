@@ -69,6 +69,31 @@ class CameraService:
             return jsonify({"error": "Failed to update confidence threshold"}), 500
 
     @staticmethod
+    def update_location(camera_id, location):
+        # Fetch the camera object
+        camera = Camera.query.get(camera_id)
+
+        if not camera:
+            return jsonify({"error": "Camera not found"}), 404
+
+        try:
+            # Update the location
+            camera.location = location
+            db.session.commit()  # Commit changes to the database
+
+            # Return a success response
+            return jsonify(
+                {
+                    "message": "Location updated successfully",
+                    "location": camera.location,
+                }
+            ), 200
+        except Exception as e:
+            # Log the exception for debugging
+            print("Error in CameraService.update_location:", e)
+            return jsonify({"error": "Failed to update location"}), 500
+
+    @staticmethod
     def get_confidence_threshold_by_id(camera_id):
         try:
             camera = Camera.query.get(camera_id)

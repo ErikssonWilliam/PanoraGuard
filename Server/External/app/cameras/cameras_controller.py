@@ -54,6 +54,16 @@ class CameraController:
             return jsonify({"error": "Confidence value is required"}), 400
 
     @staticmethod
+    def update_location(camera_id):
+        data = request.json
+        location = data.get("location")
+
+        if not location:
+            return jsonify({"error": "Location value is required"}), 400
+
+        return CameraService.update_location(camera_id, location)
+
+    @staticmethod
     def process_camera_data():
         data = request.json
         topic = data.get("topic")

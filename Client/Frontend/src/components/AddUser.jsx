@@ -1,9 +1,8 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import { useState } from "react";
 import { baseURL } from "../api/axiosConfig";
 
 const AddnewUser = () => {
-  const [errorMessage, setErrorMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -21,6 +20,12 @@ const AddnewUser = () => {
   };
 
   const handleSubmit = async () => {
+    // Validate password length for roles other than "GUARD"
+    if (formData.role !== "GUARD" && formData.password.length <= 7) {
+      setErrorMessage("Password must be longer than 7 characters.");
+      return;
+    }
+
     try {
       const response = await fetch(`${baseURL}/users/create`, {
         method: "POST",
@@ -57,7 +62,7 @@ const AddnewUser = () => {
 
   return (
     <div className="font-poppings text-sm space-y-2">
-      <div className=" flex flex-col">
+      <div className="flex flex-col">
         <label htmlFor="name" className="text-blue-600">
           Name:
         </label>
@@ -81,9 +86,9 @@ const AddnewUser = () => {
           onChange={handleChange}
         />
       </div>
-      {formData.role != "GUARD" && (
+      {formData.role !== "GUARD" && (
         <div className="flex flex-col">
-          <label htmlFor="passwird" className="text-blue-600">
+          <label htmlFor="password" className="text-blue-600">
             Password:
           </label>
           <input
@@ -103,10 +108,10 @@ const AddnewUser = () => {
           id="camera-number"
           name="role"
           className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          value={formData.designation}
+          value={formData.role}
           onChange={handleChange}
         >
-          {/**Add more option */}
+          {/** Add more options */}
           <option value="GUARD">GUARD</option>
           <option value="OPERATOR">OPERATOR</option>
         </select>
