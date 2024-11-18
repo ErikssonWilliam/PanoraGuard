@@ -389,6 +389,7 @@ camera_list = [camera1, camera2]
 # -------------------------------------------------------------------------------------------
 # constants
 acap_name = "alarm_identifier"
+from app.utils import get_cameras
 
 # TODO check if toggle_acap work as intended, cameras needed
 def toggle_acap(camera_ip, action):
@@ -411,7 +412,8 @@ def check_schedules():
     today = date.today().strftime("%A")
     current_time = datetime.now().strftime("%H:%M:%S")
     print("Weekday:", today, ". Current time:", current_time)
-
+    cameras = get_cameras()
+    print(cameras)
     """  
     TODO replace camera_list mock data with actual cameras from DB
     either call the route in external server, but unneccesary to call a route 
