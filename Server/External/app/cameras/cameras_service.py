@@ -3,6 +3,7 @@ from app.extensions import db
 from flask import jsonify
 from app.models import Camera
 from typing import List
+import json
 
 
 class CameraService:
@@ -14,7 +15,24 @@ class CameraService:
     @staticmethod
     def get_cameras() -> List[dict]:
         cameras = Camera.query.all()
-        return [camera.to_dict() for camera in cameras]
+        cameras_list = []
+
+        for camera in cameras:
+            camera_dict = camera.to_dict()
+
+            # Check if 'schedule' is not None and if it can be parsed as JSON
+            if camera_dict["schedule"]:
+                try:
+                    camera_dict["schedule"] = json.loads(camera_dict["schedule"])
+                except json.JSONDecodeError:
+                    # If it's not valid JSON, you can either set it to None or an empty object
+                    camera_dict["schedule"] = {}  # Or [] depending on your use case
+            else:
+                camera_dict["schedule"] = {}
+
+            cameras_list.append(camera_dict)
+
+        return cameras_list
 
     @staticmethod
     def locations() -> List[dict]:
@@ -33,7 +51,9 @@ class CameraService:
         try:
             camera = Camera.query.get(camera_id)
             if camera:
-                return camera.to_dict()
+                camera_dict = camera.to_dict()
+                camera_dict["schedule"] = json.loads(camera_dict["schedule"])
+                return camera_dict
             return None
         except Exception as e:
             print("Error in CameraService.get_camera_by_id:", e)
