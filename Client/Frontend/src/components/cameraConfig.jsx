@@ -33,7 +33,7 @@ const CameraConfig = () => {
         {
           method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         },
       );
@@ -64,7 +64,7 @@ const CameraConfig = () => {
         if (allCameras.length > 0) {
           setSelectedCamera(allCameras[0].id);
           fetchConfidenceThreshold(allCameras[0].id); // Fetch initial confidence for first camera
-          fetchBrightnessLevel(allCameras[0].id)
+          fetchBrightnessLevel(allCameras[0].id);
         }
       } catch (error) {
         console.error("Error fetching camera locations:", error);
@@ -102,22 +102,19 @@ const CameraConfig = () => {
 
   // Handle updating brightness level for the selected camera
   const updateBrightnessLevel = async () => {
-    alert(brightnessLevel)
+    alert(brightnessLevel);
     try {
-      const response = await fetch(
-        `${lanURL}/brightness/set-brightness`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-          body: JSON.stringify({
-            camera_id: selectedCamera,
-            new_brightness: parseInt(brightnessLevel, 10),
-          }),
+      const response = await fetch(`${lanURL}/brightness/set-brightness`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-      );
+        body: JSON.stringify({
+          camera_id: selectedCamera,
+          new_brightness: parseInt(brightnessLevel, 10),
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to update brightness level");
@@ -143,7 +140,7 @@ const CameraConfig = () => {
         {/* Camera Location Dropdown */}
         <div className="col-span-2 flex flex-col">
           <label htmlFor="location" className="text-blue-600">
-            Camera ID:
+            Camera ID and location:
           </label>
           <select
             id="location"
@@ -153,7 +150,7 @@ const CameraConfig = () => {
           >
             {cameras.map((camera) => (
               <option key={camera.id} value={camera.id}>
-                {camera.id}
+                {camera.id + " - " + camera.location}
               </option>
             ))}
           </select>
@@ -213,7 +210,7 @@ const CameraConfig = () => {
         </h2>
         {/**Calling scheduling componenets */}
         <div className="col-span-2">
-          <Scheduler cameraId={selectedLocation} />
+          <Scheduler cameraId={selectedCamera} />
         </div>
       </div>
     </div>
