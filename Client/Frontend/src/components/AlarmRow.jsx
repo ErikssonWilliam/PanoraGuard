@@ -19,11 +19,11 @@ const AlarmRow = ({
   };
 
   const getStatusClass = () => {
-    if (status === "pending") {
+    if (status === "PENDING") {
       return "bg-red-600 hover:bg-red-500";
-    } else if (status === "notified") {
+    } else if (status === "NOTIFIED") {
       return "bg-yellow-500 hover:bg-yellow-400"; // Yellow for notified
-    } else if (status === "resolved") {
+    } else if (status === "RESOLVED") {
       return "bg-green-500 hover:bg-green-400"; // Green for resolved
     }
   };
@@ -67,16 +67,16 @@ const AlarmRow = ({
         <span
           className={`flex items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg shadow transition duration-200`}
           title={
-            status === "pending"
+            status === "PENDING"
               ? "This alarm is currently active"
-              : status === "notified"
+              : status === "NOTIFIED"
                 ? "This alarm is under investigation"
                 : "This alarm has been resolved"
           }
         >
-          {status === "pending"
+          {status === "PENDING"
             ? "Active Alarm"
-            : status === "notified"
+            : status === "NOTIFIED"
               ? "Notified"
               : `Resolved Alarm`}
         </span>

@@ -27,6 +27,12 @@ class AlarmController:
     def get_alarm_image(alarm_ID):
         return AlarmService.get_alarm_image(alarm_ID)
 
+    def get_alarm_by_operator(operator):
+        return AlarmService.get_alarm_by_operator(operator)
+
+    def get_alarm_by_camera(location, camera_ID):
+        return AlarmService.get_alarm_by_camera(location, camera_ID)
+
     # Properly serializes the Alarm object using to_dict() to ensure correct JSON formatting for frontend compatibility
     @staticmethod
     def get_alarm_by_id(alarm_id):

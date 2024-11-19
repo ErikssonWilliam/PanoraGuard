@@ -17,6 +17,18 @@ class CameraService:
         return [camera.to_dict() for camera in cameras]
 
     @staticmethod
+    def locations() -> List[dict]:
+        locations = db.session.query(Camera.location).distinct().all()
+        return [{"location": location[0]} for location in locations]
+
+    @staticmethod
+    def cameraID_by_location(location: str) -> List[dict]:
+        camera_ids = (
+            db.session.query(Camera.id).filter(Camera.location == location).all()
+        )
+        return [{"id": str(camera_id[0])} for camera_id in camera_ids]
+
+    @staticmethod
     def get_camera_by_id(camera_id):
         try:
             camera = Camera.query.get(camera_id)
