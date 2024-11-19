@@ -10,10 +10,12 @@ class AuthService:
     @staticmethod
     def login(username, password):
         user = UserService.get_user_by_username(username)
-        if not user or not bcrypt.check_password_hash(user.password_hash, password):
-            raise Exception(
-                "Invalid username or password."
-            )  # Raise a specific exception
+
+        if not user:
+            raise KeyError("User not found")
+
+        if not AuthService.verify_password(user.password_hash, password):
+            raise ValueError("Invalid password")
 
         # Generate a JWT token
         access_token = create_access_token(
@@ -24,9 +26,12 @@ class AuthService:
         return {
             "access_token": access_token,
             "role": user.role.value,
-            # "refresh_token": refresh_token,
+            "user_id": user.id,
         }  # Return a dictionary
 
     @staticmethod
     def signup(username, password, role):
         return
+
+    def verify_password(password_hash, password):
+        return bcrypt.check_password_hash(password_hash, password)

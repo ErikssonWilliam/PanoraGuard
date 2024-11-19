@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import AlarmRow from "./AlarmRow";
 import { io } from "socket.io-client"; // Import the socket.io-client
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 
 const AlertDetails = () => {
   const [alarms, setAlarms] = useState([]);
@@ -11,29 +11,51 @@ const AlertDetails = () => {
   // Initialize socket connection
   useEffect(() => {
     // Connect to the backend socket server
-    const socket = io(baseURL);
+    const socket = io(externalURL);
 
     // Fetch initial alarms
     const fetchAlarms = async () => {
       try {
-        const response = await axios.get(`${baseURL}/alarms/`);
+        const response = await axios.get(`${externalURL}/alarms/`);
         const allAlarms = response.data;
 
         // Filters to show pending alarms
-        const pendingAlarms = allAlarms.filter(
-          (alarm) => alarm.status === "pending"
+        const currentAlarms = allAlarms.filter(
+          (alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED",
         );
-        setAlarms(pendingAlarms);
+        setAlarms(currentAlarms);
       } catch (err) {
         console.error("Error fetching alarms:", err);
         setError("Failed to load alarms.");
       }
     };
 
+    ///gustav alinas, a function to start the speaker.
+    const startExternalSpeaker = async () => {
+      try {
+        const speakerResponse = await axios.get(
+          `http://127.0.0.1:5100/test/start-speaker`,
+        ); //currently hardcode the lan server
+        if (speakerResponse.status === 200) {
+          console.log(
+            "External speaker triggered successfully:",
+            speakerResponse.data,
+          );
+        } else {
+          console.warn(
+            "Failed to trigger the external speaker:",
+            speakerResponse.data,
+          );
+        }
+      } catch (speakerError) {
+        console.error("Error triggering external speaker:", speakerError);
+      }
+    };
     // Listen for the new_alarm event
     socket.on("new_alarm", (newAlarm) => {
       // Add the new alarm to the existing alarms list
       setAlarms((prevAlarms) => [...prevAlarms, newAlarm]);
+      startExternalSpeaker();
     });
 
     // Call fetchAlarms initially

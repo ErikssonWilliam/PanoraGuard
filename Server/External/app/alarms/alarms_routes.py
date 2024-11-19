@@ -12,9 +12,24 @@ def get_alarms():
     return AlarmController.get_alarms()
 
 
+@alarms_bp.route("/type/<string:type>", methods=["GET"])
+def get_active_alarms(type):
+    return AlarmController.get_active_alarms(type)
+
+
 @alarms_bp.route("/<string:alarm_ID>/image", methods=["GET"])
 def get_alarm_image(alarm_ID):
     return AlarmController.get_alarm_image(alarm_ID)
+
+
+@alarms_bp.route("byoperator/<string:operator>", methods=["GET"])
+def get_alarm_by_operator(operator):
+    return AlarmController.get_alarm_by_operator(operator)
+
+
+@alarms_bp.route("bylocation/<string:location>/<string:camera_ID>", methods=["GET"])
+def get_alarm_by_camera(location, camera_ID):
+    return AlarmController.get_alarm_by_camera(location, camera_ID)
 
 
 @alarms_bp.route("/notify/<string:guard_ID>/<string:alarm_ID>", methods=["POST"])

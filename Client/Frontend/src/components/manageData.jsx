@@ -1,5 +1,3 @@
-import React from "react";
-
 const ManageData = () => {
   return (
     <div className="p-6 text-sm font-poppings">
@@ -29,7 +27,7 @@ const ManageData = () => {
         </div>
 
         <div className="col-span-1 flex flex-col">
-          <label for="fromData">From:</label>
+          <label htmlFor="fromData">From:</label>
           <input
             type="date"
             value=""
@@ -38,7 +36,7 @@ const ManageData = () => {
         </div>
 
         <div className="col-span-1 flex flex-col">
-          <label for="toData">Till:</label>
+          <label htmlFor="toData">Till:</label>
           <input
             type="date"
             value=""
