@@ -11,7 +11,9 @@ const CameraConfig = () => {
   // Fetch the confidence threshold for the selected camera
   const fetchConfidenceThreshold = async (cameraId) => {
     try {
-      const response = await fetch(`${externalURL}/cameras/${cameraId}/confidence`);
+      const response = await fetch(
+        `${externalURL}/cameras/${cameraId}/confidence`,
+      );
       const data = await response.json();
 
       if (data.confidence_threshold) {

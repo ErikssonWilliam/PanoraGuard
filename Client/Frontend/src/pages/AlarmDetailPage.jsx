@@ -56,7 +56,9 @@ const AlarmDetailPage = () => {
 
     const fetchAlarmImage = async () => {
       try {
-        const imageResponse = await axios.get(`${externalURL}/alarms/${id}/image`);
+        const imageResponse = await axios.get(
+          `${externalURL}/alarms/${id}/image`,
+        );
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
           setLiveFootage(`data:image/jpeg;base64,${imageResponse.data.image}`);
@@ -328,7 +330,11 @@ const AlarmDetailPage = () => {
             ) : (
               <div className="flex justify-between w-full">
                 <button
-                    onClick={() => navigate("/live-feed", { state: { id, camera_id:alarm.camera_id } })}
+                  onClick={() =>
+                    navigate("/live-feed", {
+                      state: { id, camera_id: alarm.camera_id },
+                    })
+                  }
                   className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
                 >
                   Look at the live feed

@@ -11,7 +11,7 @@ const LiveFeed = () => {
   const [selectedUserId, setSelectedUserId] = useState("");
   // const [imageSrc, setImageSrc] = useState("");
   const [users, setUsers] = useState([]);
- const id = location.state?.id;
+  const id = location.state?.id;
   const camera_id = location.state?.camera_id;
   useEffect(() => {
     const fetchUsers = async () => {
@@ -48,8 +48,6 @@ const LiveFeed = () => {
 
   //   fetchImage();
   // }, [camera_id, imageSrc]);
-
- 
 
   const updateAlarmStatus = async (newStatus) => {
     const confirmAction = window.confirm(
