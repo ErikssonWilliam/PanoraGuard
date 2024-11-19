@@ -15,7 +15,7 @@ const Scheduler = () => {
   // Create initial state for toggled cells
   // Need to be connected with database then initialization could be updated from the database
   const [schedule, setSchedule] = useState(
-    Array.from({ length: 24 }, () => Array(7).fill(false))
+    Array.from({ length: 24 }, () => Array(7).fill(false)),
   );
 
   // Toggle cell state
