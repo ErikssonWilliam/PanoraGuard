@@ -102,6 +102,28 @@ const AlarmDetailPage = () => {
     }
   }, [location.state]);
 
+  //Gustav and Alinas attempt to do functions to avoid code duplications.
+  const stopExternalSpeaker = async () => {
+    try {
+      const speakerResponse = await axios.get(
+        `http://127.0.0.1:5100/test/stop-speaker`,
+      ); //hard coded server
+      if (speakerResponse.status === 200) {
+        console.log(
+          "External speaker stopped successfully:",
+          speakerResponse.data,
+        );
+      } else {
+        console.warn(
+          "Failed to stop the external speaker:",
+          speakerResponse.data,
+        );
+      }
+    } catch (speakerError) {
+      console.error("Error stopping external speaker:", speakerError);
+    }
+  };
+
   const updateAlarmStatus = async (newStatus, guardID = null) => {
     if (newStatus === "RESOLVED") {
       const confirmResolve = window.confirm(
@@ -127,6 +149,7 @@ const AlarmDetailPage = () => {
         case "IGNORED":
           window.alert("Alarm dismissed successfully.");
           navigate("/operator"); // Navigate back to the operator page after confirmation
+          stopExternalSpeaker();
           break;
 
         case "NOTIFIED":
@@ -137,6 +160,7 @@ const AlarmDetailPage = () => {
         case "RESOLVED":
           window.alert(`Alarm status updated to ${formattedStatus}`);
           navigate("/operator"); // Navigate back to the operator page after confirmation
+          stopExternalSpeaker();
           break;
 
         default:
