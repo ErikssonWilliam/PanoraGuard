@@ -60,7 +60,7 @@ class CameraController:
             return CameraService.update_confidence(camera_id, confidence)
         else:
             return jsonify({"error": "Confidence value is required"}), 400
-        
+
     @staticmethod
     def update_ip(camera_id):
         data = request.json

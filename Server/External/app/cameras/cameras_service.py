@@ -115,7 +115,7 @@ class CameraService:
         except Exception as e:
             print("Error in CameraService.get_confidence_threshold_by_id:", e)
             return None
-        
+
     @staticmethod
     def update_ip(camera_id, ip_address):
         camera = Camera.query.get(camera_id)
