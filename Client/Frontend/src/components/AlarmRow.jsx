@@ -10,16 +10,32 @@ const AlarmRow = ({ id }) => {
   const navigate = useNavigate();
   const [alarm, setAlarm] = useState(null);
 
+  useEffect(() => {
+    // Gets alarm data based on ID 
+    const fetchAlarmDetails = async () => {
+      try {
+        const response = await axios.get(`${externalURL}/alarms/${id}`);
+        setAlarm(response.data);
+      } catch (error) {
+        console.error("Error fetching alarm details:", error);
+      }
+    };
+
+    if (id) {
+      fetchAlarmDetails();
+    }
+  }, [id]); // Runs when ID is changed
+
   const handleDetailsClick = () => {
     navigate("/alert-details", { state: { id } }); // Sends ID as state
   };
 
   const getStatusClass = () => {
-    if (status === "PENDING") {
+    if (alarm.status === "PENDING") {
       return "bg-red-600 hover:bg-red-500";
-    } else if (status === "NOTIFIED") {
+    } else if (alarm.status === "NOTIFIED") {
       return "bg-yellow-500 hover:bg-yellow-400"; // Yellow for notified
-    } else if (status === "RESOLVED") {
+    } else if (alarm.status === "RESOLVED") {
       return "bg-green-500 hover:bg-green-400"; // Green for resolved
     }
   };
@@ -64,16 +80,16 @@ const AlarmRow = ({ id }) => {
         <span
           className={`flex items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg shadow transition duration-200`}
           title={
-            status === "PENDING"
+            alarm.status === "PENDING"
               ? "This alarm is currently active"
-              : status === "NOTIFIED"
+              : alarm.status === "NOTIFIED"
                 ? "This alarm is under investigation"
                 : "This alarm has been resolved"
           }
         >
-          {status === "PENDING"
+          {alarm.status === "PENDING"
             ? "Active Alarm"
-            : status === "NOTIFIED"
+            : alarm.status === "NOTIFIED"
               ? "Notified"
               : `Resolved Alarm`}
         </span>
