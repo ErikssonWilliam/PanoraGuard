@@ -106,3 +106,14 @@ class CameraController:
                 201,
             )
         return (jsonify({"message": "No data received"}),)
+
+    @staticmethod
+    def update_schedule(camera_id):
+        data = request.json
+        schedule = data.get("schedule")
+
+        # If the schedule is None or empty, proceed with the update
+        if schedule is not None:
+            return CameraService.update_schedule(camera_id, schedule)
+        else:
+            return jsonify({"error": "Schedule value is required"}), 400
