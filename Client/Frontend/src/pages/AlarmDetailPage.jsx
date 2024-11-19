@@ -21,12 +21,15 @@ const AlarmDetailPage = () => {
 
   const id = location.state?.id || sessionStorage.getItem("alarmId");
   const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
-  console.log("Fetched operator ID from localStorage:", operatorId);
 
   const fetchOperatorDetails = async (operatorId) => { // Fetches operator details by ID and sets the username or "N/A" on error.
+    const token = localStorage.getItem("accessToken");
     try {
-      const response = await axios.get(`${externalURL}/users/${operatorId}`);
-      console.log("Operator details fetched:", response.data);
+      const response = await axios.get(`${externalURL}/users/${operatorId}`, {
+        headers: {
+          Authorization: `Bearer ${token}` 
+        }
+      });
       setOperatorUsername(response.data.username || "N/A");
     } catch (error) {
       console.error("Error fetching operator details:", error);
@@ -46,9 +49,15 @@ const AlarmDetailPage = () => {
     sessionStorage.removeItem("alarmData");
 
     const fetchAlarmDetails = async () => {
+      const token = localStorage.getItem("accessToken");
       try {
-        const response = await axios.get(`${externalURL}/alarms/${id}`);
+        const response = await axios.get(`${externalURL}/alarms/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}` 
+          }
+        });
         const alarmData = response.data;
+        console.log("Alarm data:", alarmData);
         setAlarm({
           id: alarmData.id || alarmData.alarm_id,
           camera_id: alarmData.camera_id || "N/A",
@@ -61,7 +70,7 @@ const AlarmDetailPage = () => {
         });
 
         if (alarmData.operator_id && alarmData.operator_id !== "N/A") {
-          console.log("Operator ID found:", alarmData.operator_id);
+          console.log("Operator ID found in alarm data:", alarmData.operator_id);
           fetchOperatorDetails(alarmData.operator_id);
         } else {
           console.warn("Operator ID is missing or invalid:", alarmData.operator_id);
