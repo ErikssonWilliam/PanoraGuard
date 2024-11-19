@@ -42,6 +42,12 @@ const useFetchUserInfo = (userId) => {
   return { userInfo, loading, error };
 };
 
+const handleLogout = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("userId");
+  window.location.href = "/";
+};
+
 const ProfilePage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
@@ -210,9 +216,7 @@ const ProfilePage = () => {
       <div className="fixed bottom-4 right-4">
         <button
           onClick={() => {
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userId");
-            window.location.href = "/";
+            handleLogout();
           }}
           className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300"
         >
