@@ -101,19 +101,27 @@ const AlarmDetailPage = () => {
       setManualNotifyVisible(true);
     }
   }, [location.state]);
-   
-//Gustav and Alinas attempt to do functions to avoid code duplications.
-  const stopExternalSpeaker = async (route) => {
+
+  //Gustav and Alinas attempt to do functions to avoid code duplications.
+  const stopExternalSpeaker = async () => {
     try {
-        const speakerResponse = await axios.get(`http://127.0.0.1:5100/test/stop-speaker`); //hard coded server
-        if (speakerResponse.status === 200) {
-          console.log("External speaker stopped successfully:", speakerResponse.data);
-        } else {
-          console.warn("Failed to stop the external speaker:", speakerResponse.data);
-        }
-      } catch (speakerError) {
-        console.error("Error stopping external speaker:", speakerError);
+      const speakerResponse = await axios.get(
+        `http://127.0.0.1:5100/test/stop-speaker`,
+      ); //hard coded server
+      if (speakerResponse.status === 200) {
+        console.log(
+          "External speaker stopped successfully:",
+          speakerResponse.data,
+        );
+      } else {
+        console.warn(
+          "Failed to stop the external speaker:",
+          speakerResponse.data,
+        );
       }
+    } catch (speakerError) {
+      console.error("Error stopping external speaker:", speakerError);
+    }
   };
 
   const updateAlarmStatus = async (newStatus, guardID = null) => {

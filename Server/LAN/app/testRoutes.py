@@ -10,6 +10,7 @@ test_bp = Blueprint("test_api", __name__)
 username = Config.CAMERA_USERNAME
 password = Config.CAMERA_PASSWORD
 
+
 @test_bp.route("/test-supported-api-version", methods=["GET"])
 def api_version():
     # Extract JSON data from the incoming request
