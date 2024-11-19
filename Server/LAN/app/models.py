@@ -97,6 +97,7 @@ class Camera(db.Model):
     location = db.Column(db.String(120), nullable=False)
     schedule = db.Column(db.Text, nullable=True)
 
+
 # The Alarm structure stores metadata about an alarm event and its associations.
 # The operator_id is optional, meaning it will only be populated when an operator responds to the alarm.
 class Alarm(db.Model):

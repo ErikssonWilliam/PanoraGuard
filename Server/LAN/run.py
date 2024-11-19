@@ -10,4 +10,6 @@ if __name__ == "__main__":
     )
     scheduler_thread.start()
 
-    app.run(debug=False, port=5100) #debug False needed or threading will be called multiple times
+    app.run(
+        debug=False, port=5100
+    )  # debug False needed or threading will be called multiple times
