@@ -16,9 +16,21 @@ const AlarmDetailPage = () => {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [manualNotifyVisible, setManualNotifyVisible] = useState(false);
   const [callChecked, setCallChecked] = useState(false);
+  const [operatorUsername, setOperatorUsername] = useState("N/A");
   const [formattedStatus, setFormattedStatus] = useState("");
 
   const id = location.state?.id || sessionStorage.getItem("alarmId");
+  const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
+
+  const fetchOperatorDetails = async (operatorId) => { // Fetches operator details by ID and sets the username or "N/A" on error.
+    try {
+      const response = await axios.get(`${baseURL}/users/${operatorId}`);
+      setOperatorUsername(response.data.username || "N/A");
+    } catch (error) {
+      console.error("Error fetching operator details:", error);
+      setOperatorUsername("N/A");
+    }
+  };
 
   useEffect(() => {
     if (!id) {
@@ -38,12 +50,20 @@ const AlarmDetailPage = () => {
         setAlarm({
           id: alarmData.id || alarmData.alarm_id,
           camera_id: alarmData.camera_id || "N/A",
+          location: location || "N/A",
           type: alarmData.type || "N/A",
           confidence_score: alarmData.confidence_score || 0,
           timestamp: alarmData.timestamp || "N/A",
           operator_id: alarmData.operator_id || "N/A",
           status: alarmData.status || "N/A",
         });
+
+        if (alarmData.operator_id && alarmData.operator_id !== "N/A") {
+          console.log("Operator ID found:", alarmData.operator_id);
+          fetchOperatorDetails(alarmData.operator_id);
+        } else {
+          console.warn("Operator ID is missing or invalid:", alarmData.operator_id);
+        }
       } catch (err) {
         setNotificationMessage(
           err.response && err.response.status === 404
@@ -140,12 +160,15 @@ const AlarmDetailPage = () => {
       const response = await axios.put(`${externalURL}/alarms/${id}/status`, {
         status: newStatus,
         guard_id: guardID, // Include guard_id in the request payload
-        // TODO: send operator_id in the request payload based on the inlogged user
+        operator_id: operatorId // Include operator_id from localStorage
       });
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
         status: response.data.status,
+        operator_id: response.data.operator_id,
       }));
+
+      fetchOperatorDetails(response.data.operator_id);
 
       switch (newStatus) {
         case "IGNORED":
@@ -293,6 +316,7 @@ const AlarmDetailPage = () => {
                   Alert number: {alarm.id || "N/A"}
                 </p>
                 <p className="text-lg">Camera ID: {alarm.camera_id}</p>
+                
                 <p className="text-lg">Type: {alarm.type}</p>
                 <p className="text-lg">
                   Confidence Level:{" "}
