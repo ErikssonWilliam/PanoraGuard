@@ -16,6 +16,16 @@ def add_camera():
     return CameraController.add_camera()
 
 
+@cameras_bp.route("/locations", methods=["GET"])
+def locations():
+    return CameraController.locations()
+
+
+@cameras_bp.route("/locations/<string:location>", methods=["GET"])
+def cameraID_by_location(location):
+    return CameraController.cameraID_by_location(location)
+
+
 @cameras_bp.route("/<string:camera_id>/confidence", methods=["GET"])
 def get_confidence_threshold(camera_id):
     return CameraController.get_confidence_threshold(camera_id)
@@ -42,6 +52,22 @@ def update_confidence(camera_id):
     return CameraController.update_confidence(camera_id)
 
 
+@cameras_bp.route("/<string:camera_id>/location", methods=["PUT"])
+def update_location(camera_id):
+    return CameraController.update_location(camera_id)
+
+
 @cameras_bp.route("/upload/data", methods=["POST"])
 def process_camera_data():
     return CameraController.process_camera_data()
+
+
+@cameras_bp.route("/<string:camera_id>/ip", methods=["PUT"])
+def update_ip(camera_id):
+    return CameraController.update_ip(camera_id)
+
+
+# Routes
+@cameras_bp.route("/<string:camera_id>/schedule", methods=["PUT"])
+def update_schedule(camera_id):
+    return CameraController.update_schedule(camera_id)

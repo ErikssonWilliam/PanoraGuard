@@ -76,6 +76,32 @@ const CameraConfig = () => {
     }
   };
 
+  // Handle updating brightness level for the selected camera
+  const updateBrightnessLevel = async () => {
+    try {
+      const response = await fetch(
+        `${baseURL}/cameras/${selectedLocation}/brightness`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            brightness: brightnessLevel / 100,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update brightness level");
+      }
+
+      alert("Brightness level updated successfully");
+    } catch (error) {
+      console.error("Error updating brightness level:", error);
+    }
+  };
+
   // Handle location selection change and fetch corresponding confidence level
   const handleLocationChange = (e) => {
     const cameraId = e.target.value;
@@ -143,7 +169,10 @@ const CameraConfig = () => {
             />
             <span>{brightnessLevel}%</span>
           </div>
-          <button className="w-1/5 bg-NavyBlue text-white rounded-lg p-2">
+          <button
+            className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
+            onClick={updateBrightnessLevel}
+          >
             Update
           </button>
         </div>

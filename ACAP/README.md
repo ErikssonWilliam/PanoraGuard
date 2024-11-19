@@ -9,23 +9,25 @@ Follow these steps to build and install an ACAP using Docker.
 ## Build and Install
 
 1. **Build the Docker image:**
+
    ```bash
    docker build --tag <Image Name> .
-    ```
+   ```
 
 2. **Create the container and extract build files:**
+
    ```bash
    docker create <Image Name>
    docker cp <Image ID>:/opt/app ./build
-    ```
-   * On **Mac**, you can combine these:
+   ```
+
+   - On **Mac**, you can combine these:
      ```bash
      docker cp $(docker create <APP_IMAGE>):/opt/app ./build
      ```
 
 3. **Install on the camera**:
-    * Copy the ```.eap``` file from ```./build``` and install it on the camera.
-
+   - Copy the `.eap` file from `./build` and install it on the camera.
 
 ## Change the name of the ACAP
 
