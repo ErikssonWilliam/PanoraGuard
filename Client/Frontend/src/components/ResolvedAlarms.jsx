@@ -4,7 +4,7 @@ import useFetchAlarms from "./useFetchAlarms";
 const ResolvedAlarms = () => {
   // Filter criteria for resolved and ignored alarms
   const filterCriteria = (alarm) =>
-    (alarm.status === "resolved" || alarm.status === "IGNORED") &&
+    (alarm.status === "resolved" || alarm.status === "ignored") &&
     alarm.operator_id !== null &&
     alarm.operator_id !== "N/A" &&
     alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b"; // Exclude specific operator ID
