@@ -26,6 +26,22 @@ const AlarmRow = ({ id }) => {
     }
   }, [id]); // Runs when ID is changed
 
+  useEffect(() => {
+    // Gets alarm data based on ID 
+    const fetchAlarmDetails = async () => {
+      try {
+        const response = await axios.get(`${externalURL}/alarms/${id}`);
+        setAlarm(response.data);
+      } catch (error) {
+        console.error("Error fetching alarm details:", error);
+      }
+    };
+
+    if (id) {
+      fetchAlarmDetails();
+    }
+  }, [id]); // Runs when ID is changed
+
   const handleDetailsClick = () => {
     navigate("/alert-details", { state: { id } }); // Sends ID as state
   };
