@@ -1,20 +1,16 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios"; 
 import cameraIcon from "../assets/camera-03.png";
 import locationIcon from "../assets/location-icon.png";
 import detectIcon from "../assets/detect-icon.png";
+import { externalURL } from "../api/axiosConfig"; 
 
-const AlarmRow = ({
-  id,
-  camera_id,
-  confidence_score,
-  status,
-  timestamp,
-  type,
-}) => {
+const AlarmRow = ({ id }) => {
   const navigate = useNavigate();
+  const [alarm, setAlarm] = useState(null);
 
   const handleDetailsClick = () => {
-    console.log(confidence_score, timestamp); // just to resolve eslint errors
     navigate("/alert-details", { state: { id } }); // Sends ID as state
   };
 
@@ -29,6 +25,7 @@ const AlarmRow = ({
   };
 
   return (
+    alarm && (
     <div className="bg-gray-300 p-2 mb-4 rounded-lg shadow-md max-w-5xl mx-auto">
       <div className="flex items-center justify-between space-x-4">
         <span className="flex items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
@@ -38,7 +35,7 @@ const AlarmRow = ({
             className="mr-2 w-4 h-4 object-contain"
           />
           <span className="text-sm font-medium text-gray-700">
-            Camera ID: {camera_id || "Unknown Camera"}
+            Camera ID: {alarm.camera_id || "Unknown Camera"}
           </span>
         </span>
 
@@ -49,7 +46,7 @@ const AlarmRow = ({
             className="mr-2 w-4 h-4 object-contain"
           />
           <span className="text-sm font-medium text-gray-700">
-            Location: {"Unknown Location"}
+          Location: {alarm.camera_location || "Unknown Location"}
           </span>
         </span>
 
@@ -60,7 +57,7 @@ const AlarmRow = ({
             className="mr-2 w-4 h-4 object-contain"
           />
           <span className="text-sm font-medium text-gray-700">
-            Detected: {type}
+          Detected: {alarm.type || "N/A"}
           </span>
         </span>
 
@@ -89,6 +86,7 @@ const AlarmRow = ({
         </button>
       </div>
     </div>
+    )
   );
 };
 
