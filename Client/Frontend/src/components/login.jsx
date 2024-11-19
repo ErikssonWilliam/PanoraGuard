@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 //import mockUsers from '../mockdata/mockUsers';
 
 const Login = () => {
@@ -19,7 +19,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${baseURL}/auth/login`, {
+      const response = await fetch(`${externalURL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

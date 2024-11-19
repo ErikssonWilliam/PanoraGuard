@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 
 const AddnewUser = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -27,7 +27,7 @@ const AddnewUser = () => {
     }
 
     try {
-      const response = await fetch(`${baseURL}/users/create`, {
+      const response = await fetch(`${externalURL}/users/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
