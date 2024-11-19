@@ -21,10 +21,12 @@ const AlarmDetailPage = () => {
 
   const id = location.state?.id || sessionStorage.getItem("alarmId");
   const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
+  console.log("Fetched operator ID from localStorage:", operatorId);
 
   const fetchOperatorDetails = async (operatorId) => { // Fetches operator details by ID and sets the username or "N/A" on error.
     try {
-      const response = await axios.get(`${baseURL}/users/${operatorId}`);
+      const response = await axios.get(`${externalURL}/users/${operatorId}`);
+      console.log("Operator details fetched:", response.data);
       setOperatorUsername(response.data.username || "N/A");
     } catch (error) {
       console.error("Error fetching operator details:", error);
@@ -316,7 +318,6 @@ const AlarmDetailPage = () => {
                   Alert number: {alarm.id || "N/A"}
                 </p>
                 <p className="text-lg">Camera ID: {alarm.camera_id}</p>
-                
                 <p className="text-lg">Type: {alarm.type}</p>
                 <p className="text-lg">
                   Confidence Level:{" "}
@@ -330,7 +331,7 @@ const AlarmDetailPage = () => {
                     ? new Date(alarm.timestamp).toLocaleString()
                     : "N/A"}
                 </p>
-                <p className="text-lg">Operator ID: {alarm.operator_id}</p>
+                <p className="text-lg">Operator: {operatorUsername}</p>
                 <p className="text-lg">
                   Status: {formatStatusToSentenceCase(alarm.status)}
                 </p>
