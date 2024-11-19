@@ -1,6 +1,7 @@
 # CameraController.py
 from flask import request, jsonify, abort
 from .cameras_service import CameraService
+import json 
 
 
 class CameraController:
@@ -111,9 +112,10 @@ class CameraController:
     def update_schedule(camera_id):
         data = request.json
         schedule = data.get("schedule")
-
+    
         # If the schedule is None or empty, proceed with the update
         if schedule is not None:
+            schedule = json.dumps(schedule)
             return CameraService.update_schedule(camera_id, schedule)
         else:
             return jsonify({"error": "Schedule value is required"}), 400
