@@ -4,11 +4,11 @@ import json
 import requests
 from requests.auth import HTTPBasicAuth
 from app.utils import get_cameras
-import os
+from config import Config
 
 #constants
-username = os.getenv("CAMERA_USERNAME")
-password = os.getenv("CAMERA_PASSWORD")
+username = Config.CAMERA_USERNAME
+password = Config.CAMERA_PASSWORD
 acap_name = "alarm_identifier"
 acap_states = {}
 
