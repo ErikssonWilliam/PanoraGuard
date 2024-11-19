@@ -7,8 +7,9 @@ ls_bp = Blueprint("livestream", __name__)
 
 
 def generate_frames(camera_ip):
-    rtsp_url = f"rtsp://{Config.CAMERA_USERNAME}:{Config.CAMERA_PASSWORD}@{camera_ip}/axis-media/media.amp?videocodec=h264&resolution=1920x1080"
+    rtsp_url = f"rtsp://{Config.CAMERA_USERNAME}:{Config.CAMERA_PASSWORD}@{camera_ip}/axis-media/media.amp?videocodec=h264&resolution=800x600"
 
+    print(rtsp_url)
     cap = cv2.VideoCapture(rtsp_url)
     if not cap.isOpened():
         return b""
@@ -34,12 +35,12 @@ def video_feed(camera_id):
     _, role = get_jwt_claims(request)
 
     # Check if the role is "OPERATOR"
-    if role != "OPERATOR":
-        return jsonify(
-            {
-                "error": "Unauthorized access. You need the 'OPERATOR' role to view the stream."
-            }
-        ), 403
+    # if role != "OPERATOR":
+    #     return jsonify(
+    #         {
+    #             "error": "Unauthorized access. You need the 'OPERATOR' role to view the stream."
+    #         }
+    #     ), 403
     camera_ip = get_camera_ip(camera_id)
     if not camera_ip:
         return jsonify({"error": "Camera not found"}), 404
