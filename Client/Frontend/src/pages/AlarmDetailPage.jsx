@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/OperatorHeader";
 import { baseURL } from "../api/axiosConfig";
+import { formatStatusToSentenceCase } from "../utils/formatUtils";
 
 const AlarmDetailPage = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const AlarmDetailPage = () => {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [manualNotifyVisible, setManualNotifyVisible] = useState(false);
   const [callChecked, setCallChecked] = useState(false);
+  const [formattedStatus, setFormattedStatus] = useState("");
 
   const id = location.state?.id || sessionStorage.getItem("alarmId");
 
@@ -22,6 +24,7 @@ const AlarmDetailPage = () => {
     if (!id) {
       setNotificationMessage("Alarm ID is missing.");
       setNotificationType("error");
+      setFormattedStatus("Alarm ID is missing.");
       navigate("/alert-details");
       return;
     }
@@ -83,6 +86,13 @@ const AlarmDetailPage = () => {
   }, [id, navigate]);
 
   useEffect(() => {
+    if (alarm?.status) {
+      const status = formatStatusToSentenceCase(alarm.status);
+      setFormattedStatus(status);
+    }
+  }, [alarm]);
+
+  useEffect(() => {
     if (location.state?.notifyFailed) {
       setNotificationMessage(
         "Notification failed. Call the guard and confirm manual handling.",
@@ -93,7 +103,7 @@ const AlarmDetailPage = () => {
   }, [location.state]);
 
   const updateAlarmStatus = async (newStatus, guardID = null) => {
-    if (newStatus === "resolved") {
+    if (newStatus === "RESOLVED") {
       const confirmResolve = window.confirm(
         "Are you sure you want to resolve the alarm?",
       );
@@ -113,19 +123,25 @@ const AlarmDetailPage = () => {
         status: response.data.status,
       }));
 
-      if (newStatus === "ignored") {
-        window.alert("Alarm dismissed successfully.");
-        navigate("/operator"); // Navigate back to the operator page after confirmation
-      }
+      switch (newStatus) {
+        case "IGNORED":
+          window.alert("Alarm dismissed successfully.");
+          navigate("/operator"); // Navigate back to the operator page after confirmation
+          break;
 
-      if (newStatus === "notified") {
-        window.alert("Alarm status updated to notified");
-        navigate("/operator"); // Navigate back to the operator page after confirmation
-      }
+        case "NOTIFIED":
+          window.alert(`Alarm status updated to ${formattedStatus}`);
+          navigate("/operator"); // Navigate back to the operator page after confirmation
+          break;
 
-      if (newStatus === "resolved") {
-        window.alert("Alarm status updated to resolved");
-        navigate("/operator"); // Navigate back to the operator page after resolving
+        case "RESOLVED":
+          window.alert(`Alarm status updated to ${formattedStatus}`);
+          navigate("/operator"); // Navigate back to the operator page after confirmation
+          break;
+
+        default:
+          console.log("Unknown status:", newStatus);
+          break;
       }
     } catch (err) {
       console.error("Error updating alarm status:", err);
@@ -188,11 +204,11 @@ const AlarmDetailPage = () => {
       setNotificationMessage("");
       const notifySuccess = await notifyGuard(selectedUserId);
       if (notifySuccess) {
-        await updateAlarmStatus("notified", selectedUserId); // Pass the guard ID
+        await updateAlarmStatus("NOTIFIED", selectedUserId); // Pass the guard ID
       } else {
         setAlarm((prevAlarm) => ({
           ...prevAlarm,
-          status: "pending",
+          status: "PENDING",
         }));
         setNotificationMessage(
           "Notification failed. Call the guard immediately to ensure the alert is acknowledged.",
@@ -213,12 +229,12 @@ const AlarmDetailPage = () => {
     if (!confirmDismiss) {
       return;
     }
-    updateAlarmStatus("ignored");
+    updateAlarmStatus("IGNORED");
   };
 
   const handleManualNotifyConfirm = async () => {
     if (callChecked) {
-      await updateAlarmStatus("notified");
+      await updateAlarmStatus("NOTIFIED");
       setNotificationMessage(
         "Manual notification confirmed. Status updated to notified.",
       );
@@ -265,19 +281,21 @@ const AlarmDetailPage = () => {
                     : "N/A"}
                 </p>
                 <p className="text-lg">Operator ID: {alarm.operator_id}</p>
-                <p className="text-lg">Status: {alarm.status}</p>
+                <p className="text-lg">
+                  Status: {formatStatusToSentenceCase(alarm.status)}
+                </p>
               </>
             ) : (
               <p>Loading alarm details...</p>
             )}
           </div>
         </div>
-        {alarm?.status !== "resolved" && (
+        {alarm?.status !== "RESOLVED" && alarm?.status !== "IGNORED" && (
           <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
-            {alarm?.status === "notified" ? (
+            {alarm?.status === "NOTIFIED" ? (
               <div className="flex justify-center w-full">
                 <button
-                  onClick={() => updateAlarmStatus("resolved")}
+                  onClick={() => updateAlarmStatus("RESOLVED")}
                   className="bg-[#EBB305] text-white px-6 py-3 rounded-lg hover:bg-[#FACC14] transition duration-200"
                 >
                   Resolve Alarm
