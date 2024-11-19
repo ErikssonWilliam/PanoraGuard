@@ -15,13 +15,13 @@ const Scheduler = () => {
   // Create initial state for toggled cells
   // Need to be connected with database then initialization could be updated from the database
   const [schedule, setSchedule] = useState(
-    Array.from({ length: 7 }, () => Array(24).fill(false)),
+    Array.from({ length: 24 }, () => Array(7).fill(false)),
   );
 
   // Toggle cell state
-  const toggleCell = (dayIndex, hourIndex) => {
+  const toggleCell = (hourIndex, dayIndex) => {
     const newSchedule = [...schedule];
-    newSchedule[dayIndex][hourIndex] = !newSchedule[dayIndex][hourIndex];
+    newSchedule[hourIndex][dayIndex] = !newSchedule[hourIndex][dayIndex];
     setSchedule(newSchedule);
   };
 
@@ -33,33 +33,33 @@ const Scheduler = () => {
             <tr>
               {/* Empty corner cell */}
               <th className="border border-gray-300 p-2 bg-gray-200"></th>
-              {hours.map((hour) => (
+              {days.map((day) => (
                 <th
-                  key={hour}
+                  key={day}
                   className="border border-gray-300 p-2 bg-gray-200 text-center"
                 >
-                  {hour}
+                  {day}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {days.map((day, dayIndex) => (
-              <tr key={day}>
+            {hours.map((hour, hourIndex) => (
+              <tr key={hour}>
                 {/* Day column */}
                 <td className="border border-gray-300 p-2 bg-gray-200 text-center">
-                  {day}
+                  {hour}
                 </td>
                 {/* Hour columns */}
-                {hours.map((_, hourIndex) => (
+                {days.map((_, dayIndex) => (
                   <td
                     key={hourIndex}
                     className={`border border-gray-300 p-2 text-center cursor-pointer ${
-                      schedule[dayIndex][hourIndex]
+                      schedule[hourIndex][dayIndex]
                         ? "bg-green-600 text-white"
                         : "bg-gray-100"
                     }`}
-                    onClick={() => toggleCell(dayIndex, hourIndex)}
+                    onClick={() => toggleCell(hourIndex, dayIndex)}
                   ></td>
                 ))}
               </tr>

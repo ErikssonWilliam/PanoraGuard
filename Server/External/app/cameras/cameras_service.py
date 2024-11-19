@@ -84,7 +84,7 @@ class CameraService:
         camera = Camera.query.get(camera_id)
 
         if not camera:
-            return jsonify({"error": "Camera not found"}), 404
+            return jsonify({"error": "Camera was not found"}), 404
 
         try:
             # Update and save confidence threshold
