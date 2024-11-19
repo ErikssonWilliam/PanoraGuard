@@ -58,3 +58,8 @@ def update_location(camera_id):
 @cameras_bp.route("/upload/data", methods=["POST"])
 def process_camera_data():
     return CameraController.process_camera_data()
+
+@cameras_bp.route("/<string:camera_id>/ip", methods=["PUT"])
+def update_ip(camera_id):
+    return CameraController.update_ip(camera_id)
+
