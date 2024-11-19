@@ -1,4 +1,5 @@
 # Routes
+from flask_jwt_extended import jwt_required
 from flask import Blueprint
 from .cameras_controller import CameraController
 
@@ -46,6 +47,7 @@ def delete_camera_by_id(camera_id):
 
 
 @cameras_bp.route("/<string:camera_id>/confidence", methods=["PUT"])
+@jwt_required()
 def update_confidence(camera_id):
     return CameraController.update_confidence(camera_id)
 

@@ -14,10 +14,12 @@ const useFetchUserInfo = (userId) => {
       setLoading(true);
       setError(""); // Clear any previous errors
       try {
+        const token = localStorage.getItem("accessToken");
         const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -65,10 +67,12 @@ const ProfilePage = () => {
       setErrorMessage("");
 
       try {
+        const token = localStorage.getItem("accessToken");
         const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ newPassword }),
         });
