@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { baseURL } from "../api/axiosConfig"; // Import baseURL from axiosConfig
+import { externalURL } from "../api/axiosConfig"; // Import baseURL from axiosConfig
 import Scheduler from "./scheduler";
 
 const CameraConfig = () => {
@@ -11,7 +11,7 @@ const CameraConfig = () => {
   // Fetch the confidence threshold for the selected camera
   const fetchConfidenceThreshold = async (cameraId) => {
     try {
-      const response = await fetch(`${baseURL}/cameras/${cameraId}/confidence`);
+      const response = await fetch(`${externalURL}/cameras/${cameraId}/confidence`);
       const data = await response.json();
 
       if (data.confidence_threshold) {
@@ -26,7 +26,7 @@ const CameraConfig = () => {
     // Fetch the list of cameras to get their locations
     const fetchCameraLocations = async () => {
       try {
-        const response = await fetch(`${baseURL}/cameras`);
+        const response = await fetch(`${externalURL}/cameras`);
         const data = await response.json();
 
         const cameraLocations = data.map((camera) => ({
@@ -52,7 +52,7 @@ const CameraConfig = () => {
   const updateConfidenceLevel = async () => {
     try {
       const response = await fetch(
-        `${baseURL}/cameras/${selectedLocation}/confidence`,
+        `${externalURL}/cameras/${selectedLocation}/confidence`,
         {
           method: "PUT",
           headers: {
@@ -78,7 +78,7 @@ const CameraConfig = () => {
   const updateBrightnessLevel = async () => {
     try {
       const response = await fetch(
-        `${baseURL}/cameras/${selectedLocation}/brightness`,
+        `${externalURL}/cameras/${selectedLocation}/brightness`,
         {
           method: "PUT",
           headers: {

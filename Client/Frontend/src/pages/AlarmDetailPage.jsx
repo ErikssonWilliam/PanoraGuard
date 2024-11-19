@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/OperatorHeader";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
 
 const AlarmDetailPage = () => {
@@ -33,7 +33,7 @@ const AlarmDetailPage = () => {
 
     const fetchAlarmDetails = async () => {
       try {
-        const response = await axios.get(`${baseURL}/alarms/${id}`);
+        const response = await axios.get(`${externalURL}/alarms/${id}`);
         const alarmData = response.data;
         setAlarm({
           id: alarmData.id || alarmData.alarm_id,
@@ -56,7 +56,7 @@ const AlarmDetailPage = () => {
 
     const fetchAlarmImage = async () => {
       try {
-        const imageResponse = await axios.get(`${baseURL}/alarms/${id}/image`);
+        const imageResponse = await axios.get(`${externalURL}/alarms/${id}/image`);
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
           setLiveFootage(`data:image/jpeg;base64,${imageResponse.data.image}`);
@@ -70,7 +70,7 @@ const AlarmDetailPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${baseURL}/users/guards`);
+        const response = await axios.get(`${externalURL}/users/guards`);
         setUsers(response.data);
       } catch (err) {
         console.error("Error fetching guards:", err);
@@ -135,7 +135,7 @@ const AlarmDetailPage = () => {
     }
 
     try {
-      const response = await axios.put(`${baseURL}/alarms/${id}/status`, {
+      const response = await axios.put(`${externalURL}/alarms/${id}/status`, {
         status: newStatus,
         guard_id: guardID, // Include guard_id in the request payload
         // TODO: send operator_id in the request payload based on the inlogged user
@@ -181,7 +181,7 @@ const AlarmDetailPage = () => {
 
     try {
       const response = await axios.post(
-        `${baseURL}/alarms/notify/${guardID}/${id}`,
+        `${externalURL}/alarms/notify/${guardID}/${id}`,
         {},
         {
           headers: {
@@ -328,7 +328,7 @@ const AlarmDetailPage = () => {
             ) : (
               <div className="flex justify-between w-full">
                 <button
-                  onClick={() => navigate("/live-feed", { state: { id } })}
+                    onClick={() => navigate("/live-feed", { state: { id, camera_id:alarm.camera_id } })}
                   className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
                 >
                   Look at the live feed

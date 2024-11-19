@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import profileImage from "../assets/C3WBG.png";
 import bellIcon from "../assets/bell-01.png";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 const useFetchUserInfo = (userId) => {
@@ -14,7 +14,7 @@ const useFetchUserInfo = (userId) => {
       setLoading(true);
       setError(""); // Clear any previous errors
       try {
-        const response = await fetch(`${baseURL}/users/${userId}`, {
+        const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -65,7 +65,7 @@ const ProfilePage = () => {
       setErrorMessage("");
 
       try {
-        const response = await fetch(`${baseURL}/users/${userId}`, {
+        const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
