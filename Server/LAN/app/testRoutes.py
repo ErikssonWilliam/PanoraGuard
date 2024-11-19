@@ -2,17 +2,13 @@ from flask import Blueprint, request, jsonify
 import requests
 import jwt
 from requests.auth import HTTPBasicAuth
+from config import Config
 
 test_bp = Blueprint("test_api", __name__)
 
 # AXIS device credentials
-username = "root"
-password = "secure"
-
-# AXIS device credentials
-username = "root"
-password = "secure"
-
+username = Config.CAMERA_USERNAME
+password = Config.CAMERA_PASSWORD
 
 @test_bp.route("/test-supported-api-version", methods=["GET"])
 def api_version():
@@ -24,10 +20,6 @@ def api_version():
     # Define the external URL
     # Replace with actual external address
     external_url = "http://192.168.1.116/axis-cgi/lightcontrol.cgi"
-
-    # AXIS device credentials
-    username = "root"
-    password = "secure"
 
     # Send POST request to the external server
     response = requests.post(
@@ -60,10 +52,6 @@ def light_control():
     # Replace with actual external address
     external_url = "http://192.168.1.116/axis-cgi/lightcontrol.cgi"
 
-    # AXIS device credentials
-    username = "root"
-    password = "secure"
-
     # Send POST request to the external server
     response = requests.post(
         external_url, json=client_data, auth=HTTPBasicAuth(username, password)
@@ -89,10 +77,6 @@ def optics_info():
     # Define the external URL
     # Replace with actual external address
     external_url = "http://192.168.1.116/axis-cgi/opticscontrol.cgi"
-
-    # AXIS device credentials
-    username = "root"
-    password = "secure"
 
     # Send POST request to the external server
     response = requests.post(
@@ -124,10 +108,6 @@ def set_magnification():
     # Define the external URL
     # Replace with actual external address
     external_url = "http://192.168.1.116/axis-cgi/opticscontrol.cgi"
-
-    # AXIS device credentials
-    username = "root"
-    password = "secure"
 
     # Send POST request to the external server
     response = requests.post(
@@ -228,10 +208,6 @@ def start_speaker():
     # Replace with actual external address
     external_url = "http://192.168.1.108/axis-cgi/playclip.cgi?location=alarm.mp3&repeat=-1&volume=4&audiodeviceid=0&audiooutputid=0"
 
-    # AXIS device credentials
-    username = "root"
-    password = "secure"
-
     # Send POST request to the external server
     response = requests.post(external_url, auth=HTTPBasicAuth(username, password))
 
@@ -253,10 +229,6 @@ def stop_speaker():
     # Define the external URL
     # Replace with actual external address
     external_url = "http://192.168.1.108/axis-cgi/stopclip.cgi"
-
-    # AXIS device credentials
-    username = "root"
-    password = "secure"
 
     # Send POST request to the external server
     response = requests.post(external_url, auth=HTTPBasicAuth(username, password))

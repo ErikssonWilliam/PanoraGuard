@@ -30,10 +30,24 @@ const AlertDetails = () => {
       }
     };
 
+    ///gustav alinas, a function to start the speaker.
+    const startExternalSpeaker = async () => {
+      try {
+        const speakerResponse = await axios.get(`http://127.0.0.1:5100/test/start-speaker`); //currently hardcode the lan server
+        if (speakerResponse.status === 200) {
+          console.log("External speaker triggered successfully:", speakerResponse.data);
+        } else {
+          console.warn("Failed to trigger the external speaker:", speakerResponse.data);
+        }
+      } catch (speakerError) {
+        console.error("Error triggering external speaker:", speakerError);
+      }
+    };
     // Listen for the new_alarm event
     socket.on("new_alarm", (newAlarm) => {
       // Add the new alarm to the existing alarms list
       setAlarms((prevAlarms) => [...prevAlarms, newAlarm]);
+      startExternalSpeaker();
     });
 
     // Call fetchAlarms initially
