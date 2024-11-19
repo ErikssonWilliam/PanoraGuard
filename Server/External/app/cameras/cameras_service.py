@@ -115,7 +115,7 @@ class CameraService:
         except Exception as e:
             print("Error in CameraService.get_confidence_threshold_by_id:", e)
             return None
-        
+
     @staticmethod
     def update_ip(camera_id, ip_address):
         camera = Camera.query.get(camera_id)
@@ -137,3 +137,26 @@ class CameraService:
         except Exception as e:
             print("Error in CameraService.update_ip:", e)
             return jsonify({"error": "Failed to update IP address"}), 500
+
+    @staticmethod
+    def update_schedule(camera_id, schedule):
+        # Fetch the camera object by ID
+        camera = Camera.query.get(camera_id)
+
+        if not camera:
+            return jsonify({"error": "Camera not found"}), 404
+
+        try:
+            # Update the schedule attribute (it can be None initially)
+            camera.schedule = schedule
+            db.session.commit()  # Commit changes to the database
+
+            return jsonify(
+                {
+                    "message": "Schedule updated successfully",
+                    "schedule": camera.schedule,
+                }
+            ), 200
+        except Exception as e:
+            print("Error in CameraService.update_schedule:", e)
+            return jsonify({"error": "Failed to update schedule"}), 500
