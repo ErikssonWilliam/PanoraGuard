@@ -15,7 +15,7 @@ const Scheduler = ({ cameraId }) => {
 
   // State for the schedule
   const [schedule, setSchedule] = useState(
-    Array.from({ length: 24 }, () => Array(7).fill(false))
+    Array.from({ length: 24 }, () => Array(7).fill(false)),
   );
 
   const [loading, setLoading] = useState(true);
@@ -38,14 +38,14 @@ const Scheduler = ({ cameraId }) => {
 
         // Ensure the schedule is properly parsed from the JSON structure
         if (data.schedule && data.schedule.week) {
-          const transformedSchedule = Array.from({ length: 24 }, (_, hourIndex) =>
-            days.map((day) => data.schedule.week[day][hourIndex] === 1)
+          const transformedSchedule = Array.from(
+            { length: 24 },
+            (_, hourIndex) =>
+              days.map((day) => data.schedule.week[day][hourIndex] === 1),
           );
           setSchedule(transformedSchedule);
         } else {
-          setSchedule(
-            Array.from({ length: 24 }, () => Array(7).fill(false))
-          );
+          setSchedule(Array.from({ length: 24 }, () => Array(7).fill(false)));
         }
       } catch (err) {
         console.error("Error fetching schedule:", err);
@@ -64,7 +64,6 @@ const Scheduler = ({ cameraId }) => {
     newSchedule[hourIndex][dayIndex] = !newSchedule[hourIndex][dayIndex];
     setSchedule(newSchedule);
   };
-
 
   // Transform schedule state into JSON format for the API
   const transformScheduleToJSON = () => {
@@ -89,13 +88,16 @@ const Scheduler = ({ cameraId }) => {
     console.log("Payload being sent to server:", scheduleJSON);
 
     try {
-      const response = await fetch(`${externalURL}/cameras/${cameraId}/schedule`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${externalURL}/cameras/${cameraId}/schedule`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(scheduleJSON),
         },
-        body: JSON.stringify(scheduleJSON),
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Failed to update schedule");
@@ -151,8 +153,10 @@ const Scheduler = ({ cameraId }) => {
         </table>
       </div>
       <div className="pt-4">
-        <button className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
-        onClick={updateSchedule}>
+        <button
+          className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
+          onClick={updateSchedule}
+        >
           Update
         </button>
       </div>

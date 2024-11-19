@@ -213,7 +213,7 @@ const CameraConfig = () => {
         </h2>
         {/**Calling scheduling componenets */}
         <div className="col-span-2">
-          <Scheduler cameraId={selectedLocation}/>
+          <Scheduler cameraId={selectedLocation} />
         </div>
       </div>
     </div>
