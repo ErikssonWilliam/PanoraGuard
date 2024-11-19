@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 
 const Scheduler = ({ cameraId }) => {
   const days = [
@@ -29,7 +29,7 @@ const Scheduler = ({ cameraId }) => {
       setError(null);
 
       try {
-        const response = await fetch(`${baseURL}/cameras/${cameraId}`);
+        const response = await fetch(`${externalURL}/cameras/${cameraId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch schedule");
         }
@@ -82,11 +82,14 @@ const Scheduler = ({ cameraId }) => {
       return;
     }
 
-    const scheduleJSON = transformScheduleToJSON();
+    const scheduleJSON = {
+      schedule: transformScheduleToJSON(), // Wrap the transformed schedule in "schedule"
+    };
+
     console.log("Payload being sent to server:", scheduleJSON);
-    
+
     try {
-      const response = await fetch(`${baseURL}/cameras/${cameraId}/schedule`, {
+      const response = await fetch(`${externalURL}/cameras/${cameraId}/schedule`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -136,7 +139,7 @@ const Scheduler = ({ cameraId }) => {
                     key={dayIndex}
                     className={`border border-gray-300 p-2 text-center cursor-pointer ${
                       schedule[hourIndex][dayIndex]
-                        ? "bg-green-600 text-white"
+                        ? "bg-blue-600 text-white"
                         : "bg-gray-100"
                     }`}
                     onClick={() => toggleCell(hourIndex, dayIndex)}
