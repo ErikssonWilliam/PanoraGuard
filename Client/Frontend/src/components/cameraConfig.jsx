@@ -9,7 +9,7 @@ const CameraConfig = () => {
   const [cameras, setCameras] = useState([]); // State to store cameras
   const [selectedCamera, setSelectedCamera] = useState(""); // Track selected camera
 
-  // Fetch the confidence threshold for the selected camera 
+  // Fetch the confidence threshold for the selected camera
   const fetchConfidenceThreshold = async (cameraId) => {
     try {
       const response = await fetch(
