@@ -143,7 +143,7 @@ const CameraConfig = () => {
         {/* Camera Location Dropdown */}
         <div className="col-span-2 flex flex-col">
           <label htmlFor="location" className="text-blue-600">
-            Location:
+            Camera ID:
           </label>
           <select
             id="location"
@@ -153,7 +153,7 @@ const CameraConfig = () => {
           >
             {cameras.map((camera) => (
               <option key={camera.id} value={camera.id}>
-                {camera.location}
+                {camera.id}
               </option>
             ))}
           </select>
@@ -213,7 +213,7 @@ const CameraConfig = () => {
         </h2>
         {/**Calling scheduling componenets */}
         <div className="col-span-2">
-          <Scheduler />
+          <Scheduler cameraId={selectedLocation}/>
         </div>
       </div>
     </div>

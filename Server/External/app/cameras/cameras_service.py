@@ -168,6 +168,7 @@ class CameraService:
 
         try:
             # Update the schedule attribute (it can be None initially)
+            print(schedule)
             camera.schedule = schedule
             db.session.commit()  # Commit changes to the database
 
