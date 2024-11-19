@@ -17,6 +17,18 @@ class CameraService:
         return [camera.to_dict() for camera in cameras]
 
     @staticmethod
+    def locations() -> List[dict]:
+        locations = db.session.query(Camera.location).distinct().all()
+        return [{"location": location[0]} for location in locations]
+
+    @staticmethod
+    def cameraID_by_location(location: str) -> List[dict]:
+        camera_ids = (
+            db.session.query(Camera.id).filter(Camera.location == location).all()
+        )
+        return [{"id": str(camera_id[0])} for camera_id in camera_ids]
+
+    @staticmethod
     def get_camera_by_id(camera_id):
         try:
             camera = Camera.query.get(camera_id)
@@ -67,6 +79,31 @@ class CameraService:
         except Exception as e:
             print("Error in CameraService.update_confidence:", e)
             return jsonify({"error": "Failed to update confidence threshold"}), 500
+
+    @staticmethod
+    def update_location(camera_id, location):
+        # Fetch the camera object
+        camera = Camera.query.get(camera_id)
+
+        if not camera:
+            return jsonify({"error": "Camera not found"}), 404
+
+        try:
+            # Update the location
+            camera.location = location
+            db.session.commit()  # Commit changes to the database
+
+            # Return a success response
+            return jsonify(
+                {
+                    "message": "Location updated successfully",
+                    "location": camera.location,
+                }
+            ), 200
+        except Exception as e:
+            # Log the exception for debugging
+            print("Error in CameraService.update_location:", e)
+            return jsonify({"error": "Failed to update location"}), 500
 
     @staticmethod
     def get_confidence_threshold_by_id(camera_id):

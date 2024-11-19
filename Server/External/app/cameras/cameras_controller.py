@@ -13,6 +13,14 @@ class CameraController:
         return CameraService.add_camera()
 
     @staticmethod
+    def locations():
+        return CameraService.locations()
+
+    @staticmethod
+    def cameraID_by_location(location):
+        return CameraService.cameraID_by_location(location)
+
+    @staticmethod
     def get_camera(camera_id):
         # Call the service to get the camera data
         camera_data = CameraService.get_camera_by_id(camera_id)
@@ -52,6 +60,16 @@ class CameraController:
             return CameraService.update_confidence(camera_id, confidence)
         else:
             return jsonify({"error": "Confidence value is required"}), 400
+
+    @staticmethod
+    def update_location(camera_id):
+        data = request.json
+        location = data.get("location")
+
+        if not location:
+            return jsonify({"error": "Location value is required"}), 400
+
+        return CameraService.update_location(camera_id, location)
 
     @staticmethod
     def process_camera_data():

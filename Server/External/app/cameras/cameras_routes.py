@@ -15,6 +15,16 @@ def add_camera():
     return CameraController.add_camera()
 
 
+@cameras_bp.route("/locations", methods=["GET"])
+def locations():
+    return CameraController.locations()
+
+
+@cameras_bp.route("/locations/<string:location>", methods=["GET"])
+def cameraID_by_location(location):
+    return CameraController.cameraID_by_location(location)
+
+
 @cameras_bp.route("/<string:camera_id>/confidence", methods=["GET"])
 def get_confidence_threshold(camera_id):
     return CameraController.get_confidence_threshold(camera_id)
@@ -38,6 +48,11 @@ def delete_camera_by_id(camera_id):
 @cameras_bp.route("/<string:camera_id>/confidence", methods=["PUT"])
 def update_confidence(camera_id):
     return CameraController.update_confidence(camera_id)
+
+
+@cameras_bp.route("/<string:camera_id>/location", methods=["PUT"])
+def update_location(camera_id):
+    return CameraController.update_location(camera_id)
 
 
 @cameras_bp.route("/upload/data", methods=["POST"])

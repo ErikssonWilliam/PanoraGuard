@@ -1,6 +1,6 @@
 import random
 from datetime import datetime, timedelta
-from .extensions import db
+from .extensions import db, bcrypt
 from .models import (
     AlarmStatus,
     User,
@@ -15,40 +15,63 @@ session = db.session
 
 def create_mock_users():
     # Check if users already exist
-    user1 = User.query.filter_by(username="john_doex").first()
-    user2 = User.query.filter_by(username="jane_doeex").first()
-    user3 = User.query.filter_by(username="guardian_of_the_galaxy").first()
+    operator = User.query.filter(
+        (User.username == "operator") | (User.email == "john@examplex.com")
+    ).first()
 
-    if not user1:
-        user1 = User(
-            username="john_doex",
-            password_hash="hashed_password123x",
+    admin = User.query.filter(
+        (User.username == "admin") | (User.email == "jane@examplexxx.com")
+    ).first()
+
+    manager = User.query.filter(
+        (User.username == "manager") | (User.email == "jane@examplexx.com")
+    ).first()
+
+    guardian = User.query.filter(
+        (User.username == "guardian_of_the_galaxy")
+        | (User.email == "sbgubbarna1337@gmail.com")
+    ).first()
+
+    if not operator:
+        operator = User(
+            username="operator",
+            password_hash=bcrypt.generate_password_hash("operator").decode("utf-8"),
             role=UserRole.OPERATOR,
             email="john@examplex.com",
         )
-        session.add(user1)
+        session.add(operator)
 
-    if not user2:
-        user2 = User(
-            username="jane_doeex",
-            password_hash="hashed_password456x",
+    if not manager:
+        manager = User(
+            username="manager",
+            password_hash=bcrypt.generate_password_hash("manager").decode("utf-8"),
             role=UserRole.MANAGER,
-            email="jane@examplex.com",
+            email="jane@examplexx.com",
         )
-        session.add(user2)
+        session.add(manager)
 
-    if not user3:
-        user3 = User(
+    if not admin:
+        admin = User(
+            username="admin",
+            password_hash=bcrypt.generate_password_hash("admin").decode("utf-8"),
+            role=UserRole.ADMIN,
+            email="jane@examplexxx.com",
+        )
+        session.add(admin)
+    if not guardian:
+        guardian = User(
             id=uuid.UUID("35ad0eab-2347-404e-a833-d8b2fb0367ff"),
             username="guardian_of_the_galaxy",
-            password_hash="hashed_password456xx",
+            password_hash=bcrypt.generate_password_hash(
+                "guardian_of_the_galaxy"
+            ).decode("utf-8"),
             role=UserRole.GUARD,
             email="sbgubbarna1337@gmail.com",
         )
-        session.add(user3)
+        session.add(guardian)
 
     session.commit()
-    return user1, user2, user3
+    return operator, manager, admin, guardian
 
 
 def create_mock_camera():
@@ -162,16 +185,16 @@ def create_mock_alarm_test(idtest, user, camera, statusState):
 
 
 def create_mock_data():
-    user1, user2, user3 = create_mock_users()
+    operator, _, _, _ = create_mock_users()
     camera = create_mock_camera()
-    create_mock_alarm(user1, camera, AlarmStatus.RESOLVED)
+    create_mock_alarm(operator, camera, AlarmStatus.RESOLVED)
     create_mock_alarm_test(
         uuid.UUID("cc006a17-0852-4e0e-b13c-36e4092f767d"),
-        user1,
+        operator,
         camera,
         AlarmStatus.IGNORED,
     )
-    create_random_alarms(user1, camera)
+    create_random_alarms(operator, camera)
     # create_mock_camera_control_action(camera, user1)
     return "Success"
 
