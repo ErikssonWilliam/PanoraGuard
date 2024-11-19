@@ -189,12 +189,12 @@ const AlarmDetailPage = () => {
           break;
 
         case "NOTIFIED":
-          window.alert(`Alarm status updated to ${formattedStatus}`);
+          window.alert(`Alarm status updated to Notified`);
           navigate("/operator"); // Navigate back to the operator page after confirmation
           break;
 
         case "RESOLVED":
-          window.alert(`Alarm status updated to ${formattedStatus}`);
+          window.alert(`Alarm status updated to Resolved`);
           navigate("/operator"); // Navigate back to the operator page after confirmation
           stopExternalSpeaker();
           break;

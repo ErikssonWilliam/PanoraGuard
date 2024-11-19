@@ -1,5 +1,6 @@
 from enum import Enum
 from datetime import datetime
+from sqlalchemy.orm import relationship
 from app.extensions import db
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
@@ -104,6 +105,7 @@ class Alarm(db.Model):
         UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True
     )
     guard_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=True)
+    camera = relationship("Camera", backref="alarms")
 
     def to_dict(self):
         return {
@@ -116,6 +118,7 @@ class Alarm(db.Model):
             "status": self.status.value,
             "operator_id": str(self.operator_id) if self.operator_id else None,
             "guard_id": str(self.guard_id) if self.guard_id else None,
+            "camera_location": self.camera.location if self.camera else None,
         }
 
 
