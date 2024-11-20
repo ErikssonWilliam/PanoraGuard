@@ -4,47 +4,62 @@ import axios from "axios";
 import AlarmRow from "./AlarmRow";
 import OldAlarms from "./OldAlarms";
 import ActiveAlarms from "./ActiveAlarms";
-import useFetchAlarms from "./useFetchAlarms";
 import { io } from "socket.io-client";
 import { externalURL } from "../api/axiosConfig";
 
 const AlertDetails = () => {
   const navigate = useNavigate();
-  const [, setAllAlarms] = useState([]);
+  const [activeAlarms, setActiveAlarms] = useState([]);
+  const [oldAlarms, setOldAlarms] = useState([]);
+  const [error, setError] = useState("");
 
-  // Filter criteria for active alarms
-  const activeFilterCriteria = (alarm) =>
-    alarm.status === "PENDING" || alarm.status === "NOTIFIED";
+  const sortByTimestamp = (a, b) => new Date(b.timestamp) - new Date(a.timestamp);
 
-  // Filter criteria for old alarms
-  const oldFilterCriteria = (alarm) =>
-    (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
-    alarm.operator_id !== null &&
-    alarm.operator_id !== "N/A" &&
-    alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b"; // Exclude specific operator ID
-
-  // Use useFetchAlarms hook for active and old alarms
-  const { alarms: activeAlarms, error: activeError } =
-    useFetchAlarms(activeFilterCriteria);
-  const { alarms: oldAlarms, error: oldError } =
-    useFetchAlarms(oldFilterCriteria);
-
-  // Update allAlarms state with fetched alarms initially
   useEffect(() => {
-    setAllAlarms(activeAlarms);
-  }, [activeAlarms]);
+    const fetchAlarms = async () => {
+      try {
+        const response = await axios.get(`${externalURL}/alarms/`);
+        const allAlarms = response.data;
 
-  // Initialize socket connection
-  useEffect(() => {
-    // Connect to the backend socket server
+        // Filter, sort, and set active alarms
+        const active = allAlarms
+          .filter((alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED")
+          .sort(sortByTimestamp);
+        setActiveAlarms(active);
+
+        // Filter, sort, and set old alarms
+        const old = allAlarms
+          .filter(
+            (alarm) =>
+              (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
+              alarm.operator_id !== null &&
+              alarm.operator_id !== "N/A" &&
+              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b"
+          )
+          .sort(sortByTimestamp)
+          .slice(0, 10);
+        setOldAlarms(old);
+
+        // Log results for debugging
+        console.log("Active alarms after filtering:", active);
+        console.log("Old alarms after filtering:", old);
+      } catch (err) {
+        console.error("Error fetching alarms:", err);
+        setError("Failed to load alarms.");
+      }
+    };
+
+    fetchAlarms();
+
+    // Socket connection for new alarms
     const socket = io(externalURL);
 
-    // Function to start the external speaker
+    ///gustav alinas, a function to start the speaker.
     const startExternalSpeaker = async () => {
       try {
         const speakerResponse = await axios.get(
           `http://127.0.0.1:5100/test/start-speaker`,
-        );
+        ); //currently hardcode the lan server
         if (speakerResponse.status === 200) {
           console.log(
             "External speaker triggered successfully:",
@@ -60,39 +75,33 @@ const AlertDetails = () => {
         console.error("Error triggering external speaker:", speakerError);
       }
     };
-
     // Listen for the new_alarm event
     socket.on("new_alarm", (newAlarm) => {
       // Add the new alarm to the existing alarms list
-      setAllAlarms((prevAlarms) => [...prevAlarms, newAlarm]);
+      setActiveAlarms((prevAlarms) => [...prevAlarms, newAlarm]);
       startExternalSpeaker();
     });
 
-    // Cleanup the socket connection on component unmount
     return () => {
       socket.off("new_alarm");
       socket.disconnect();
     };
-  }, []); // Runs only when mounted
+  }, []);
 
-  if (activeError || oldError) {
-    return <div>{activeError || oldError}</div>;
+  if (error) {
+    return <div>{error}</div>;
   }
 
   return (
     <div className="p-4 flex flex-col space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
-          Active Alarms:
-        </h2>
+        <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">Active Alarms:</h2>
         {activeAlarms.length >= 3 ? (
           <ActiveAlarms alarms={activeAlarms} />
         ) : (
           <div className="min-h-[100px] space-y-6 border-b border-gray-300 pb-4">
-            {Array.isArray(activeAlarms) && activeAlarms.length > 0 ? (
-              activeAlarms.map((alarm) => (
-                <AlarmRow key={alarm.id} {...alarm} />
-              ))
+            {activeAlarms.length > 0 ? (
+              activeAlarms.map((alarm) => <AlarmRow key={alarm.id} {...alarm} />)
             ) : (
               <p>No active alarms found.</p>
             )}
@@ -101,13 +110,12 @@ const AlertDetails = () => {
       </div>
       {activeAlarms.length <= 2 ? (
         <div>
-          <h2 className="text-2xl font-semibold mt-1 mb-4 text-[#2E5984]">
-            Old Alarms:
-          </h2>
-          <OldAlarms
-            oldAlarms={oldAlarms}
-            activeAlarmCount={activeAlarms.length}
-          />
+          <h2 className="text-2xl font-semibold mt-1 mb-4 text-[#2E5984]">Old Alarms:</h2>
+          {oldAlarms.length > 0 ? (
+            <OldAlarms oldAlarms={oldAlarms} activeAlarmCount={activeAlarms.length} />
+          ) : (
+            <p>No old alarms found.</p>
+          )}
         </div>
       ) : (
         <div className="flex justify-center mt-4">
