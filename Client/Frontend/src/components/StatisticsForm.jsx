@@ -1,6 +1,75 @@
-function StatisticsForm() {
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
+function StatisticsForm({ onSubmit }) {
+  const [locations, setLocations] = useState([]);
+  const [cameras, setCameras] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedCamera, setSelectedCamera] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [tillDate, setTillDate] = useState("");
+
+  // Fetch locations when component mounts
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:5000/cameras/locations")
+      .then((response) => {
+        // Ensure the response is an array and contains objects with a 'location' key
+        if (Array.isArray(response.data)) {
+          setLocations(response.data);
+        } else {
+          console.error(
+            "Expected an array for locations, but got:",
+            response.data
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching locations:", error);
+      });
+  }, []);
+
+  // Fetch cameras when a location is selected
+  useEffect(() => {
+    if (selectedLocation) {
+      axios
+        .get(`http://127.0.0.1:5000/cameras/locations/${selectedLocation}`)
+        .then((response) => {
+          // Ensure the response is an array and contains camera IDs
+          if (Array.isArray(response.data)) {
+            setCameras(response.data);
+          } else {
+            console.error(
+              "Expected an array for cameras, but got:",
+              response.data
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching cameras:", error);
+        });
+    } else {
+      // Clear camera list if no location is selected
+      setCameras([]);
+      setSelectedCamera(""); // Reset the selected camera
+    }
+  }, [selectedLocation]);
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({
+      location: selectedLocation,
+      camera: selectedCamera,
+      fromDate,
+      tillDate,
+    });
+  };
+
   return (
-    <form className="flex flex-col max-w-full w-[773px] mx-auto px-6 py-6 bg-white shadow-lg rounded-lg">
+    <form
+      onSubmit={handleFormSubmit}
+      className="flex flex-col max-w-full w-[773px] mx-auto px-6 py-6 bg-white shadow-lg rounded-lg"
+    >
       {/* First Row - Location and Camera Number */}
       <div className="flex gap-8 text-sm leading-none text-cyan-700 flex-wrap mb-6">
         {/* Location Dropdown */}
@@ -16,13 +85,15 @@ function StatisticsForm() {
               id="location"
               className="w-full bg-transparent border-none focus:outline-none text-slate-900"
               aria-label="Location"
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
             >
-              <option value="" disabled selected>
+              <option value="" disabled>
                 Select a Location
               </option>
-              {Array.from({ length: 10 }, (_, i) => (
-                <option key={`location-${i + 1}`} value={`Location ${i + 1}`}>
-                  Location {i + 1}
+              {locations.map((locationObj, index) => (
+                <option key={index} value={locationObj.location}>
+                  {locationObj.location}
                 </option>
               ))}
             </select>
@@ -42,13 +113,16 @@ function StatisticsForm() {
               id="cameraNumber"
               className="w-full bg-transparent border-none focus:outline-none text-slate-900"
               aria-label="Camera Number"
+              value={selectedCamera}
+              onChange={(e) => setSelectedCamera(e.target.value)}
+              disabled={!selectedLocation} // Disable camera dropdown if no location selected
             >
-              <option value="" disabled selected>
+              <option value="" disabled>
                 Select a Camera
               </option>
-              {Array.from({ length: 10 }, (_, i) => (
-                <option key={`camera-${i + 1}`} value={`Camera ${i + 1}`}>
-                  Camera {i + 1}
+              {cameras.map((cameraObj, index) => (
+                <option key={index} value={cameraObj.id}>
+                  {cameraObj.id} {/* Render the camera ID */}
                 </option>
               ))}
             </select>
@@ -72,6 +146,8 @@ function StatisticsForm() {
               id="fromDate"
               className="w-full bg-transparent border-none focus:outline-none text-slate-900"
               aria-label="From Date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
             />
           </div>
         </div>
@@ -90,6 +166,8 @@ function StatisticsForm() {
               id="tillDate"
               className="w-full bg-transparent border-none focus:outline-none text-slate-900"
               aria-label="Till Date"
+              value={tillDate}
+              onChange={(e) => setTillDate(e.target.value)}
             />
           </div>
         </div>
