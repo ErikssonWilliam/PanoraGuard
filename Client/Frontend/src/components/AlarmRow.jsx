@@ -53,6 +53,8 @@ const AlarmRow = ({ id }) => {
       return "bg-yellow-500 hover:bg-yellow-400"; // Yellow for notified
     } else if (alarm.status === "RESOLVED") {
       return "bg-green-500 hover:bg-green-400"; // Green for resolved
+    } else if (alarm.status === "IGNORED") {
+      return "bg-gray-700 hover:bg-gray-600"; // Dark gray for ignored
     }
   };
 
@@ -94,21 +96,29 @@ const AlarmRow = ({ id }) => {
         </span>
 
         <span
-          className={`flex items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg shadow transition duration-200`}
-          title={
-            alarm.status === "PENDING"
-              ? "This alarm is currently active"
-              : alarm.status === "NOTIFIED"
-                ? "This alarm is under investigation"
-                : "This alarm has been resolved"
-          }
-        >
-          {alarm.status === "PENDING"
-            ? "Active Alarm"
-            : alarm.status === "NOTIFIED"
-              ? "Notified"
-              : `Resolved Alarm`}
-        </span>
+  className={`flex items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg shadow transition duration-200`}
+  title={
+    alarm.status === "PENDING"
+      ? "This alarm is currently active"
+      : alarm.status === "NOTIFIED"
+        ? "This alarm is under investigation"
+        : alarm.status === "RESOLVED"
+          ? "This alarm has been resolved"
+          : alarm.status === "IGNORED"
+            ? "This alarm has been ignored"
+            : "Unknown status"
+  }
+>
+  {alarm.status === "PENDING"
+    ? "Active Alarm"
+    : alarm.status === "NOTIFIED"
+      ? "Notified"
+      : alarm.status === "RESOLVED"
+        ? "Resolved Alarm"
+        : alarm.status === "IGNORED"
+          ? "Ignored"
+          : "Unknown"}
+</span>
 
         <button
           onClick={handleDetailsClick}
