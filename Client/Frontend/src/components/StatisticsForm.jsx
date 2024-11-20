@@ -1,103 +1,184 @@
-function StatisticsForm() {
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+function StatisticsForm({ onSubmit }) {
+  const [locations, setLocations] = useState([]);
+  const [cameras, setCameras] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedCamera, setSelectedCamera] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [tillDate, setTillDate] = useState("");
+
+  // Fetch locations when component mounts
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:5000/cameras/locations")
+      .then((response) => {
+        // Ensure the response is an array and contains objects with a 'location' key
+        if (Array.isArray(response.data)) {
+          setLocations(response.data);
+        } else {
+          console.error(
+            "Expected an array for locations, but got:",
+            response.data,
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching locations:", error);
+      });
+  }, []);
+
+  // Fetch cameras when a location is selected
+  useEffect(() => {
+    if (selectedLocation) {
+      axios
+        .get(`http://127.0.0.1:5000/cameras/locations/${selectedLocation}`)
+        .then((response) => {
+          // Ensure the response is an array and contains camera IDs
+          if (Array.isArray(response.data)) {
+            setCameras(response.data);
+          } else {
+            console.error(
+              "Expected an array for cameras, but got:",
+              response.data,
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching cameras:", error);
+        });
+    } else {
+      // Clear camera list if no location is selected
+      setCameras([]);
+      setSelectedCamera(""); // Reset the selected camera
+    }
+  }, [selectedLocation]);
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    onSubmit({
+      location: selectedLocation,
+      camera: selectedCamera,
+      fromDate,
+      tillDate,
+    });
+  };
+
   return (
-    <form className="flex flex-col ml-6 max-w-full w-[773px]">
-      <div className="flex flex-wrap gap-10 text-sm leading-none text-cyan-700 max-md:mr-1 max-md:max-w-full">
-        <div className="flex flex-col flex-1 grow shrink-0 pb-3 whitespace-nowrap basis-0 w-fit">
-          <div className="flex flex-col w-full">
-            <label htmlFor="location" className="sr-only">
-              Location
-            </label>
-            <div className="flex gap-3 py-3 mt-1 w-full bg-white rounded-lg border border-blue-700 border-solid min-h-[48px]">
-              <input
-                type="text"
-                id="location"
-                className="w-full bg-transparent border-none focus:outline-none"
-                aria-label="Location"
-              />
-            </div>
+    <form
+      onSubmit={handleFormSubmit}
+      className="flex flex-col max-w-full w-[773px] mx-auto px-6 py-6 bg-white shadow-lg rounded-lg"
+    >
+      {/* First Row - Location and Camera Number */}
+      <div className="flex gap-8 text-sm leading-none text-cyan-700 flex-wrap mb-6">
+        {/* Location Dropdown */}
+        <div className="flex flex-col flex-1">
+          <label
+            htmlFor="location"
+            className="text-sm font-medium text-slate-800 mb-2"
+          >
+            Location
+          </label>
+          <div className="flex items-center gap-3 py-3 px-4 w-full bg-white rounded-lg border border-slate-300 shadow-sm">
+            <select
+              id="location"
+              className="w-full bg-transparent border-none focus:outline-none text-slate-900"
+              aria-label="Location"
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a Location
+              </option>
+              {locations.map((locationObj, index) => (
+                <option key={index} value={locationObj.location}>
+                  {locationObj.location}
+                </option>
+              ))}
+            </select>
           </div>
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/745f4a325798408d80543bbacf1852135593f5c0514bd614a697a7386fbb93c1?apiKey=b098bcbfae4a413cac7bdf6cae526d40&"
-            alt=""
-            className="object-contain z-10 self-end -mt-9 w-6 aspect-square max-md:mr-2.5"
-          />
         </div>
-        <div className="flex flex-col flex-1 grow shrink-0 pb-3 basis-0 w-fit">
-          <div className="flex flex-col w-full">
-            <label htmlFor="cameraNumber" className="sr-only">
-              Camera Number
-            </label>
-            <div className="flex gap-3 py-3 mt-1 w-full bg-white rounded-lg border border-blue-700 border-solid min-h-[48px]">
-              <input
-                type="text"
-                id="cameraNumber"
-                className="w-full bg-transparent border-none focus:outline-none"
-                aria-label="Camera Number"
-              />
-            </div>
+
+        {/* Camera Number Dropdown */}
+        <div className="flex flex-col flex-1">
+          <label
+            htmlFor="cameraNumber"
+            className="text-sm font-medium text-slate-800 mb-2"
+          >
+            Camera Number
+          </label>
+          <div className="flex items-center gap-3 py-3 px-4 w-full bg-white rounded-lg border border-slate-300 shadow-sm">
+            <select
+              id="cameraNumber"
+              className="w-full bg-transparent border-none focus:outline-none text-slate-900"
+              aria-label="Camera Number"
+              value={selectedCamera}
+              onChange={(e) => setSelectedCamera(e.target.value)}
+              disabled={!selectedLocation} // Disable camera dropdown if no location selected
+            >
+              <option value="" disabled>
+                Select a Camera
+              </option>
+              {cameras.map((cameraObj, index) => (
+                <option key={index} value={cameraObj.id}>
+                  {cameraObj.id} {/* Render the camera ID */}
+                </option>
+              ))}
+            </select>
           </div>
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/745f4a325798408d80543bbacf1852135593f5c0514bd614a697a7386fbb93c1?apiKey=b098bcbfae4a413cac7bdf6cae526d40&"
-            alt=""
-            className="object-contain z-10 self-end -mt-9 w-6 aspect-square max-md:mr-1.5"
-          />
         </div>
       </div>
-      <div className="flex flex-wrap gap-10 mt-6 max-md:max-w-full">
-        <div className="flex flex-col flex-1 grow shrink-0 pb-3 basis-0 w-fit">
-          <div className="flex flex-col w-full">
-            <label
-              htmlFor="fromDate"
-              className="text-sm leading-none text-cyan-700"
-            >
-              From
-            </label>
+
+      {/* Second Row - From and Till Dates */}
+      <div className="flex gap-8 text-sm leading-none text-cyan-700 flex-wrap mb-6">
+        {/* From Date Input */}
+        <div className="flex flex-col flex-1">
+          <label
+            htmlFor="fromDate"
+            className="text-sm font-medium text-slate-800 mb-2"
+          >
+            From
+          </label>
+          <div className="flex items-center gap-3 py-3 px-4 w-full bg-white rounded-lg border border-slate-300 shadow-sm">
             <input
-              type="text"
+              type="date"
               id="fromDate"
-              className="overflow-hidden flex-1 shrink gap-3 self-stretch px-4 py-3 mt-1 w-full text-base bg-white rounded-lg border border-blue-700 border-solid text-slate-900"
-              value="1 / Dec / 2024"
-              readOnly
+              className="w-full bg-transparent border-none focus:outline-none text-slate-900"
+              aria-label="From Date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
             />
           </div>
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/745f4a325798408d80543bbacf1852135593f5c0514bd614a697a7386fbb93c1?apiKey=b098bcbfae4a413cac7bdf6cae526d40&"
-            alt=""
-            className="object-contain z-10 self-end -mt-9 w-6 aspect-square max-md:mr-2.5"
-          />
         </div>
-        <div className="flex flex-col flex-1 grow shrink-0 pb-3 basis-0 w-fit">
-          <div className="flex flex-col w-full">
-            <label
-              htmlFor="tillDate"
-              className="text-sm leading-none text-cyan-700"
-            >
-              Till
-            </label>
+
+        {/* Till Date Input */}
+        <div className="flex flex-col flex-1">
+          <label
+            htmlFor="tillDate"
+            className="text-sm font-medium text-slate-800 mb-2"
+          >
+            Till
+          </label>
+          <div className="flex items-center gap-3 py-3 px-4 w-full bg-white rounded-lg border border-slate-300 shadow-sm">
             <input
-              type="text"
+              type="date"
               id="tillDate"
-              className="overflow-hidden flex-1 shrink gap-3 self-stretch px-4 py-3 mt-1 w-full text-base bg-white rounded-lg border border-blue-700 border-solid text-slate-900"
-              value="12 / Dec / 2024"
-              readOnly
+              className="w-full bg-transparent border-none focus:outline-none text-slate-900"
+              aria-label="Till Date"
+              value={tillDate}
+              onChange={(e) => setTillDate(e.target.value)}
             />
           </div>
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/745f4a325798408d80543bbacf1852135593f5c0514bd614a697a7386fbb93c1?apiKey=b098bcbfae4a413cac7bdf6cae526d40&"
-            alt=""
-            className="object-contain z-10 self-end -mt-9 mr-6 w-6 aspect-square max-md:mr-2.5"
-          />
         </div>
       </div>
+
+      {/* Submit Button */}
       <button
         type="submit"
-        className="overflow-hidden gap-1 self-center px-6 py-4 mt-16 text-base font-semibold text-white bg-cyan-700 rounded-lg max-md:px-5 max-md:mt-10"
+        className="px-6 py-3 mt-6 text-base font-semibold text-white bg-cyan-700 rounded-lg hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-600"
       >
-        See stats
+        See Stats
       </button>
     </form>
   );
