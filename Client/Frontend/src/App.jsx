@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import OperatorPage from "./pages/OperatorPage";
 import AlarmDetailPage from "./pages/AlarmDetailPage";
 import LiveFeedPage from "./pages/LiveFeedPage";
+import OldAlarmsPage from "./pages/OldAlarmsPage";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/operator" element={<OperatorPage />} />
         <Route path="/alert-details" element={<AlarmDetailPage />} />
         <Route path="/live-feed" element={<LiveFeedPage />} />
+        <Route path="/old-alarms" element={<OldAlarmsPage />} />
       </Routes>
     </BrowserRouter>
   );
