@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/OperatorHeader";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
+import { formatStatusToSentenceCase } from "../utils/formatUtils";
 
 const AlarmDetailPage = () => {
   const navigate = useNavigate();
@@ -15,13 +16,33 @@ const AlarmDetailPage = () => {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [manualNotifyVisible, setManualNotifyVisible] = useState(false);
   const [callChecked, setCallChecked] = useState(false);
+  const [operatorUsername, setOperatorUsername] = useState("N/A");
+  const [, setFormattedStatus] = useState("");
 
   const id = location.state?.id || sessionStorage.getItem("alarmId");
+  const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
+
+  const fetchOperatorDetails = async (operatorId) => {
+    // Fetches operator details by ID and sets the username or "N/A" on error.
+    const token = localStorage.getItem("accessToken");
+    try {
+      const response = await axios.get(`${externalURL}/users/${operatorId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOperatorUsername(response.data.username || "N/A");
+    } catch (error) {
+      console.error("Error fetching operator details:", error);
+      setOperatorUsername("N/A");
+    }
+  };
 
   useEffect(() => {
     if (!id) {
       setNotificationMessage("Alarm ID is missing.");
       setNotificationType("error");
+      setFormattedStatus("Alarm ID is missing.");
       navigate("/alert-details");
       return;
     }
@@ -29,18 +50,38 @@ const AlarmDetailPage = () => {
     sessionStorage.removeItem("alarmData");
 
     const fetchAlarmDetails = async () => {
+      const token = localStorage.getItem("accessToken");
       try {
-        const response = await axios.get(`${baseURL}/alarms/${id}`);
+        const response = await axios.get(`${externalURL}/alarms/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const alarmData = response.data;
+        console.log("Alarm data:", alarmData);
         setAlarm({
           id: alarmData.id || alarmData.alarm_id,
           camera_id: alarmData.camera_id || "N/A",
+          location: location || "N/A",
           type: alarmData.type || "N/A",
           confidence_score: alarmData.confidence_score || 0,
           timestamp: alarmData.timestamp || "N/A",
           operator_id: alarmData.operator_id || "N/A",
           status: alarmData.status || "N/A",
         });
+
+        if (alarmData.operator_id && alarmData.operator_id !== "N/A") {
+          console.log(
+            "Operator ID found in alarm data:",
+            alarmData.operator_id,
+          );
+          fetchOperatorDetails(alarmData.operator_id);
+        } else {
+          console.warn(
+            "Operator ID is missing or invalid:",
+            alarmData.operator_id,
+          );
+        }
       } catch (err) {
         setNotificationMessage(
           err.response && err.response.status === 404
@@ -53,7 +94,9 @@ const AlarmDetailPage = () => {
 
     const fetchAlarmImage = async () => {
       try {
-        const imageResponse = await axios.get(`${baseURL}/alarms/${id}/image`);
+        const imageResponse = await axios.get(
+          `${externalURL}/alarms/${id}/image`,
+        );
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
           setLiveFootage(`data:image/jpeg;base64,${imageResponse.data.image}`);
@@ -67,7 +110,7 @@ const AlarmDetailPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${baseURL}/users/guards`);
+        const response = await axios.get(`${externalURL}/users/guards`);
         setUsers(response.data);
       } catch (err) {
         console.error("Error fetching guards:", err);
@@ -80,7 +123,14 @@ const AlarmDetailPage = () => {
     fetchAlarmDetails();
     fetchAlarmImage();
     fetchUsers();
-  }, [id, navigate]);
+  }, [id, navigate, location]);
+
+  useEffect(() => {
+    if (alarm?.status) {
+      const status = formatStatusToSentenceCase(alarm.status);
+      setFormattedStatus(status);
+    }
+  }, [alarm]);
 
   useEffect(() => {
     if (location.state?.notifyFailed) {
@@ -92,8 +142,30 @@ const AlarmDetailPage = () => {
     }
   }, [location.state]);
 
+  //Gustav and Alinas attempt to do functions to avoid code duplications.
+  const stopExternalSpeaker = async () => {
+    try {
+      const speakerResponse = await axios.get(
+        `http://127.0.0.1:5100/test/stop-speaker`,
+      ); //hard coded server
+      if (speakerResponse.status === 200) {
+        console.log(
+          "External speaker stopped successfully:",
+          speakerResponse.data,
+        );
+      } else {
+        console.warn(
+          "Failed to stop the external speaker:",
+          speakerResponse.data,
+        );
+      }
+    } catch (speakerError) {
+      console.error("Error stopping external speaker:", speakerError);
+    }
+  };
+
   const updateAlarmStatus = async (newStatus, guardID = null) => {
-    if (newStatus === "resolved") {
+    if (newStatus === "RESOLVED") {
       const confirmResolve = window.confirm(
         "Are you sure you want to resolve the alarm?",
       );
@@ -103,29 +175,40 @@ const AlarmDetailPage = () => {
     }
 
     try {
-      const response = await axios.put(`${baseURL}/alarms/${id}/status`, {
+      const response = await axios.put(`${externalURL}/alarms/${id}/status`, {
         status: newStatus,
         guard_id: guardID, // Include guard_id in the request payload
-        // TODO: send operator_id in the request payload based on the inlogged user
+        operator_id: operatorId, // Include operator_id from localStorage
       });
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
         status: response.data.status,
+        operator_id: response.data.operator_id,
       }));
 
-      if (newStatus === "ignored") {
-        window.alert("Alarm dismissed successfully.");
-        navigate("/operator"); // Navigate back to the operator page after confirmation
-      }
+      fetchOperatorDetails(response.data.operator_id);
 
-      if (newStatus === "notified") {
-        window.alert("Alarm status updated to notified");
-        navigate("/operator"); // Navigate back to the operator page after confirmation
-      }
+      switch (newStatus) {
+        case "IGNORED":
+          window.alert("Alarm dismissed successfully.");
+          navigate("/operator"); // Navigate back to the operator page after confirmation
+          stopExternalSpeaker();
+          break;
 
-      if (newStatus === "resolved") {
-        window.alert("Alarm status updated to resolved");
-        navigate("/operator"); // Navigate back to the operator page after resolving
+        case "NOTIFIED":
+          window.alert(`Alarm status updated to Notified`);
+          navigate("/operator"); // Navigate back to the operator page after confirmation
+          break;
+
+        case "RESOLVED":
+          window.alert(`Alarm status updated to Resolved`);
+          navigate("/operator"); // Navigate back to the operator page after confirmation
+          stopExternalSpeaker();
+          break;
+
+        default:
+          console.log("Unknown status:", newStatus);
+          break;
       }
     } catch (err) {
       console.error("Error updating alarm status:", err);
@@ -141,7 +224,7 @@ const AlarmDetailPage = () => {
 
     try {
       const response = await axios.post(
-        `${baseURL}/alarms/notify/${guardID}/${id}`,
+        `${externalURL}/alarms/notify/${guardID}/${id}`,
         {},
         {
           headers: {
@@ -188,11 +271,11 @@ const AlarmDetailPage = () => {
       setNotificationMessage("");
       const notifySuccess = await notifyGuard(selectedUserId);
       if (notifySuccess) {
-        await updateAlarmStatus("notified", selectedUserId); // Pass the guard ID
+        await updateAlarmStatus("NOTIFIED", selectedUserId); // Pass the guard ID
       } else {
         setAlarm((prevAlarm) => ({
           ...prevAlarm,
-          status: "pending",
+          status: "PENDING",
         }));
         setNotificationMessage(
           "Notification failed. Call the guard immediately to ensure the alert is acknowledged.",
@@ -213,12 +296,12 @@ const AlarmDetailPage = () => {
     if (!confirmDismiss) {
       return;
     }
-    updateAlarmStatus("ignored");
+    updateAlarmStatus("IGNORED");
   };
 
   const handleManualNotifyConfirm = async () => {
     if (callChecked) {
-      await updateAlarmStatus("notified");
+      await updateAlarmStatus("NOTIFIED");
       setNotificationMessage(
         "Manual notification confirmed. Status updated to notified.",
       );
@@ -264,20 +347,22 @@ const AlarmDetailPage = () => {
                     ? new Date(alarm.timestamp).toLocaleString()
                     : "N/A"}
                 </p>
-                <p className="text-lg">Operator ID: {alarm.operator_id}</p>
-                <p className="text-lg">Status: {alarm.status}</p>
+                <p className="text-lg">Operator: {operatorUsername}</p>
+                <p className="text-lg">
+                  Status: {formatStatusToSentenceCase(alarm.status)}
+                </p>
               </>
             ) : (
               <p>Loading alarm details...</p>
             )}
           </div>
         </div>
-        {alarm?.status !== "resolved" && (
+        {alarm?.status !== "RESOLVED" && alarm?.status !== "IGNORED" && (
           <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
-            {alarm?.status === "notified" ? (
+            {alarm?.status === "NOTIFIED" ? (
               <div className="flex justify-center w-full">
                 <button
-                  onClick={() => updateAlarmStatus("resolved")}
+                  onClick={() => updateAlarmStatus("RESOLVED")}
                   className="bg-[#EBB305] text-white px-6 py-3 rounded-lg hover:bg-[#FACC14] transition duration-200"
                 >
                   Resolve Alarm
@@ -286,7 +371,11 @@ const AlarmDetailPage = () => {
             ) : (
               <div className="flex justify-between w-full">
                 <button
-                  onClick={() => navigate("/live-feed", { state: { id } })}
+                  onClick={() =>
+                    navigate("/live-feed", {
+                      state: { id, camera_id: alarm.camera_id },
+                    })
+                  }
                   className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
                 >
                   Look at the live feed

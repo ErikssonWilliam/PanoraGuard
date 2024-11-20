@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 
 const AddnewUser = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -27,10 +27,12 @@ const AddnewUser = () => {
     }
 
     try {
-      const response = await fetch(`${baseURL}/users/create`, {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${externalURL}/users/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });

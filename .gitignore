@@ -10,3 +10,5 @@ bin/
 .ruff_cache
 
 .pytest_cache
+
+venv/

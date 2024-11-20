@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import profileImage from "../assets/C3WBG.png";
 import bellIcon from "../assets/bell-01.png";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 const useFetchUserInfo = (userId) => {
@@ -14,10 +14,12 @@ const useFetchUserInfo = (userId) => {
       setLoading(true);
       setError(""); // Clear any previous errors
       try {
-        const response = await fetch(`${baseURL}/users/${userId}`, {
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -38,6 +40,12 @@ const useFetchUserInfo = (userId) => {
   }, [userId]);
 
   return { userInfo, loading, error };
+};
+
+const handleLogout = () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("userId");
+  window.location.href = "/";
 };
 
 const ProfilePage = () => {
@@ -65,10 +73,12 @@ const ProfilePage = () => {
       setErrorMessage("");
 
       try {
-        const response = await fetch(`${baseURL}/users/${userId}`, {
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ newPassword }),
         });
@@ -206,9 +216,7 @@ const ProfilePage = () => {
       <div className="fixed bottom-4 right-4">
         <button
           onClick={() => {
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userId");
-            window.location.href = "/";
+            handleLogout();
           }}
           className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300"
         >

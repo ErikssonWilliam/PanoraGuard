@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import liveFootage from "../assets/live-footage.png";
-import { baseURL } from "../api/axiosConfig";
+import { externalURL, lanURL } from "../api/axiosConfig";
 
 const LiveFeed = () => {
   const location = useLocation();
@@ -10,12 +9,14 @@ const LiveFeed = () => {
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
+  // const [imageSrc, setImageSrc] = useState("");
   const [users, setUsers] = useState([]);
-
+  const id = location.state?.id;
+  const camera_id = location.state?.camera_id;
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${baseURL}/users/guards/`);
+        const response = await axios.get(`${externalURL}/users/guards`);
         setUsers(response.data);
       } catch (err) {
         console.error("Error fetching guards:", err);
@@ -24,8 +25,29 @@ const LiveFeed = () => {
     };
     fetchUsers();
   }, []);
+  // useEffect(() => {
+  //   // Fetch the image with axios
+  //   const fetchImage = async () => {
+  //     try {
+  //       const response = await axios.get(`${lanURL}/livestream/${camera_id}`, {
+  //         headers: {
+  //           'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+  //         },
+  //         responseType: 'blob', // Important to get the image as a Blob
+  //       });
 
-  const id = location.state?.id;
+  //       // Create a URL for the image blob
+  //       const imageObjectURL = URL.createObjectURL(response.data);
+
+  //       // Set the image source
+  //       setImageSrc(imageObjectURL);
+  //     } catch (error) {
+  //       console.error('Error loading live feed:', error);
+  //     }
+  //   };
+
+  //   fetchImage();
+  // }, [camera_id, imageSrc]);
 
   const updateAlarmStatus = async (newStatus) => {
     const confirmAction = window.confirm(
@@ -34,7 +56,7 @@ const LiveFeed = () => {
     if (!confirmAction) return;
 
     try {
-      const response = await axios.put(`${baseURL}/alarms/${id}/status`, {
+      const response = await axios.put(`${externalURL}/alarms/${id}/status`, {
         status: newStatus,
       });
       console.log(`Alarm status updated to ${newStatus}:`, response.data);
@@ -62,7 +84,7 @@ const LiveFeed = () => {
 
     try {
       const response = await axios.post(
-        `${baseURL}/alarms/notify/${selectedUserId}/${id}`,
+        `${externalURL}/alarms/notify/${selectedUserId}/${id}`,
       );
       console.log("Guard notified successfully:", response.data);
       setNotificationMessage("Notification sent successfully.");
@@ -84,7 +106,7 @@ const LiveFeed = () => {
       </h2>
       <div className="relative w-full max-w-2xl" style={{ height: "65vh" }}>
         <img
-          src={liveFootage}
+          src={`${lanURL}/livestream/${camera_id}`}
           alt="Live feed"
           className="w-full h-full object-contain rounded-lg"
         />

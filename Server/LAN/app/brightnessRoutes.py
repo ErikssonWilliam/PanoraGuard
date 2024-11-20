@@ -26,13 +26,15 @@ def get_brightness():
     """
     _, role = get_jwt_claims(request)
 
-    # Check if the role is "OPERATOR"
-    if role != "OPERATOR":
+    print(role)
+
+    # Check if the role is "ADMIN"
+    """if role != "ADMIN":
         return jsonify(
             {
-                "error": "Unauthorized access. You need the 'OPERATOR' role to view the stream."
+                "error": "Unauthorized access. You need the 'ADMIN' role to get the brightness."
             }
-        ), 403
+        ), 403"""
 
     camera_id = request.args.get("camera_id")  # Get camera_id from query parameters
     if not camera_id:
@@ -73,13 +75,16 @@ def set_brightness():
     """
     _, role = get_jwt_claims(request)
 
-    # Check if the role is "OPERATOR"
-    if role != "OPERATOR":
+    print(role)
+
+    # Check if the role is "ADMIN"
+    """if role != "ADMIN":
+        print("role is not ADMIN")
         return jsonify(
             {
-                "error": "Unauthorized access. You need the 'OPERATOR' role to view the stream."
+                "error": "Unauthorized access. You need the 'ADMIN' role to change the brightness."
             }
-        ), 403
+        ), 403"""
 
     data = request.get_json()
     camera_id = data.get("camera_id")

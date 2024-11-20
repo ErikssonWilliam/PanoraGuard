@@ -1,6 +1,7 @@
 # CameraController.py
 from flask import request, jsonify, abort
 from .cameras_service import CameraService
+import json
 
 
 class CameraController:
@@ -62,6 +63,17 @@ class CameraController:
             return jsonify({"error": "Confidence value is required"}), 400
 
     @staticmethod
+    def update_ip(camera_id):
+        data = request.json
+        ip_address = data.get("ip_address")
+
+        # Validate the input
+        if ip_address is not None:
+            return CameraService.update_ip(camera_id, ip_address)
+        else:
+            return jsonify({"error": "IP address is required"}), 400
+
+    @staticmethod
     def update_location(camera_id):
         data = request.json
         location = data.get("location")
@@ -95,3 +107,15 @@ class CameraController:
                 201,
             )
         return (jsonify({"message": "No data received"}),)
+
+    @staticmethod
+    def update_schedule(camera_id):
+        data = request.json
+        schedule = data.get("schedule")
+
+        # If the schedule is None or empty, proceed with the update
+        if schedule is not None:
+            schedule = json.dumps(schedule)
+            return CameraService.update_schedule(camera_id, schedule)
+        else:
+            return jsonify({"error": "Schedule value is required"}), 400
