@@ -1,6 +1,6 @@
 [format]
 # Use `\n` line endings for all files
-line-ending = "lf"
+line-ending = "cr-lf"
 exclude = ["Server/External/app/migrations/*.py"]
 [lint]
 exclude = ["Server/External/app/migrations/*.py"]
