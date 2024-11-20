@@ -98,9 +98,9 @@ const AlertDetails = () => {
 
   return (
     <div className="p-4 flex flex-col space-y-6">
-      <div>
+      <div className="ml-10"> {/* Added ml-10 to push Active Alarms to the right */}
         <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
-          Active Alarms:
+          Active Alarms
         </h2>
         {activeAlarms.length >= 3 ? (
           <ActiveAlarms alarms={activeAlarms} />
@@ -117,9 +117,9 @@ const AlertDetails = () => {
         )}
       </div>
       {activeAlarms.length <= 2 ? (
-        <div>
+        <div className="ml-10"> {/* Added ml-10 to push Old Alarms to the right */}
           <h2 className="text-2xl font-semibold mt-1 mb-4 text-[#2E5984]">
-            Old Alarms:
+            Old Alarms
           </h2>
           {oldAlarms.length > 0 ? (
             <OldAlarms
