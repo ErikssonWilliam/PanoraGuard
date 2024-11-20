@@ -1,4 +1,4 @@
-from flask_migrate import upgrade, init,migrate
+from flask_migrate import upgrade, init, migrate
 from app import create_app
 from app.socketio_instance import socketio
 from app.mock_data import create_mock_data
@@ -8,7 +8,7 @@ if __name__ == "__main__":
     with app.app_context():
         try:
             init()
-        except SystemExit as e:
+        except SystemExit:
             pass
         migrate()
         upgrade()
