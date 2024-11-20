@@ -1,6 +1,3 @@
-[format]
-# Use `\n` line endings for all files
-line-ending = "lf"
 exclude = ["app/migrations/*.py"]
 [lint]
 exclude = ["app/migrations/*.py"]
