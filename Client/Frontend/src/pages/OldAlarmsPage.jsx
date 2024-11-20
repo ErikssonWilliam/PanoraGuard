@@ -9,7 +9,9 @@ const OldAlarmsPage = () => {
     <div className="bg-custom-bg min-h-screen">
       <Header />
       <div className="p-4">
-        <h1 className="text-2xl font-semibold mb-4 text-[#2E5984]">Old Alarms</h1>
+        <h1 className="text-2xl font-semibold mb-4 text-[#2E5984]">
+          Old Alarms
+        </h1>
         <ResolvedAlarms />
         <div className="flex justify-center mt-4">
           <button

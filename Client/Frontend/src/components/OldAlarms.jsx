@@ -1,7 +1,7 @@
 import AlarmRow from "./AlarmRow";
 
 const OldAlarms = ({ oldAlarms, activeAlarmCount }) => {
-  // Dynamically changes scroll height based on number of alarms 
+  // Dynamically changes scroll height based on number of alarms
   const getHeightClass = () => {
     if (activeAlarmCount >= 2) {
       return "h-36"; // Height for 2 alarms
@@ -13,7 +13,9 @@ const OldAlarms = ({ oldAlarms, activeAlarmCount }) => {
   };
 
   return (
-    <div className={`space-y-5 overflow-y-auto border-gray-300 pt-4 ${getHeightClass()}`}>
+    <div
+      className={`space-y-5 overflow-y-auto border-gray-300 pt-4 ${getHeightClass()}`}
+    >
       {Array.isArray(oldAlarms) && oldAlarms.length > 0 ? (
         oldAlarms.map((alarm) => (
           <AlarmRow

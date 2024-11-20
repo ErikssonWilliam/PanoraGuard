@@ -17,18 +17,19 @@ const AlarmDetailPage = () => {
   const [manualNotifyVisible, setManualNotifyVisible] = useState(false);
   const [callChecked, setCallChecked] = useState(false);
   const [operatorUsername, setOperatorUsername] = useState("N/A");
-  const [formattedStatus, setFormattedStatus] = useState("");
+  const [, setFormattedStatus] = useState("");
 
   const id = location.state?.id || sessionStorage.getItem("alarmId");
   const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
 
-  const fetchOperatorDetails = async (operatorId) => { // Fetches operator details by ID and sets the username or "N/A" on error.
+  const fetchOperatorDetails = async (operatorId) => {
+    // Fetches operator details by ID and sets the username or "N/A" on error.
     const token = localStorage.getItem("accessToken");
     try {
       const response = await axios.get(`${externalURL}/users/${operatorId}`, {
         headers: {
-          Authorization: `Bearer ${token}` 
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       setOperatorUsername(response.data.username || "N/A");
     } catch (error) {
@@ -53,8 +54,8 @@ const AlarmDetailPage = () => {
       try {
         const response = await axios.get(`${externalURL}/alarms/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}` 
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         const alarmData = response.data;
         console.log("Alarm data:", alarmData);
@@ -70,10 +71,16 @@ const AlarmDetailPage = () => {
         });
 
         if (alarmData.operator_id && alarmData.operator_id !== "N/A") {
-          console.log("Operator ID found in alarm data:", alarmData.operator_id);
+          console.log(
+            "Operator ID found in alarm data:",
+            alarmData.operator_id,
+          );
           fetchOperatorDetails(alarmData.operator_id);
         } else {
-          console.warn("Operator ID is missing or invalid:", alarmData.operator_id);
+          console.warn(
+            "Operator ID is missing or invalid:",
+            alarmData.operator_id,
+          );
         }
       } catch (err) {
         setNotificationMessage(
@@ -116,7 +123,7 @@ const AlarmDetailPage = () => {
     fetchAlarmDetails();
     fetchAlarmImage();
     fetchUsers();
-  }, [id, navigate]);
+  }, [id, navigate, location]);
 
   useEffect(() => {
     if (alarm?.status) {
@@ -171,7 +178,7 @@ const AlarmDetailPage = () => {
       const response = await axios.put(`${externalURL}/alarms/${id}/status`, {
         status: newStatus,
         guard_id: guardID, // Include guard_id in the request payload
-        operator_id: operatorId // Include operator_id from localStorage
+        operator_id: operatorId, // Include operator_id from localStorage
       });
       setAlarm((prevAlarm) => ({
         ...prevAlarm,

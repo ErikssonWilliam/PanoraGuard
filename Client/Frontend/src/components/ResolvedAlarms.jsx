@@ -1,5 +1,5 @@
 import AlarmRow from "./AlarmRow";
-import useFetchAlarms from "./useFetchAlarms"; 
+import useFetchAlarms from "./useFetchAlarms";
 
 const ResolvedAlarms = () => {
   // Filter criteria for resolved and ignored alarms

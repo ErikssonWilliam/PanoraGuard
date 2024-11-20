@@ -4,7 +4,7 @@ import { externalURL } from "../api/axiosConfig";
 
 const useFetchAlarms = (
   filterCriteria,
-  sortCriteria = (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+  sortCriteria = (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
 ) => {
   const [alarms, setAlarms] = useState([]);
   const [error, setError] = useState("");
