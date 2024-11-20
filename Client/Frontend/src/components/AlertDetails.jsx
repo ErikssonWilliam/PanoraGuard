@@ -25,8 +25,7 @@ const AlertDetails = () => {
         // Filter, sort, and set active alarms
         const active = allAlarms
           .filter(
-            (alarm) =>
-              alarm.status === "PENDING" || alarm.status === "NOTIFIED",
+            (alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED"
           )
           .sort(sortByTimestamp);
         setActiveAlarms(active);
@@ -38,7 +37,7 @@ const AlertDetails = () => {
               (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
               alarm.operator_id !== null &&
               alarm.operator_id !== "N/A" &&
-              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b",
+              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b"
           )
           .sort(sortByTimestamp)
           .slice(0, 10);
@@ -62,17 +61,17 @@ const AlertDetails = () => {
     const startExternalSpeaker = async () => {
       try {
         const speakerResponse = await axios.get(
-          `http://127.0.0.1:5100/test/start-speaker`,
+          `http://127.0.0.1:5100/test/start-speaker`
         ); //currently hardcode the lan server
         if (speakerResponse.status === 200) {
           console.log(
             "External speaker triggered successfully:",
-            speakerResponse.data,
+            speakerResponse.data
           );
         } else {
           console.warn(
             "Failed to trigger the external speaker:",
-            speakerResponse.data,
+            speakerResponse.data
           );
         }
       } catch (speakerError) {
@@ -98,7 +97,9 @@ const AlertDetails = () => {
 
   return (
     <div className="p-4 flex flex-col space-y-6">
-      <div className="ml-10"> {/* Added ml-10 to push Active Alarms to the right */}
+      <div className="ml-10">
+        {" "}
+        {/* Added ml-10 to push Active Alarms to the right */}
         <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
           Active Alarms
         </h2>
@@ -117,7 +118,9 @@ const AlertDetails = () => {
         )}
       </div>
       {activeAlarms.length <= 2 ? (
-        <div className="ml-10"> {/* Added ml-10 to push Old Alarms to the right */}
+        <div className="ml-10">
+          {" "}
+          {/* Added ml-10 to push Old Alarms to the right */}
           <h2 className="text-2xl font-semibold mt-1 mb-4 text-[#2E5984]">
             Old Alarms
           </h2>

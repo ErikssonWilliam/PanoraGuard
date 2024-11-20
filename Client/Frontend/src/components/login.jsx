@@ -130,11 +130,7 @@ const Login = () => {
             <p className="text-sm text-gray-500">
               Company 3 in collaboration with
             </p>
-            <img
-              src = {axisLogo} 
-              alt="Secure"
-              className="h-3 w-8"
-            />
+            <img src={axisLogo} alt="Secure" className="h-3 w-8" />
           </div>
         </div>
       </div>

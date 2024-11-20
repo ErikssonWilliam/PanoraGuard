@@ -109,7 +109,6 @@ const ProfilePage = () => {
     return <div>No user data found.</div>;
   }
 
-
   return (
     <div className="profilePage flex flex-col min-h-screen">
       {/* Top Navigation Bar */}
@@ -125,7 +124,6 @@ const ProfilePage = () => {
         </button>
       </header> */}
       <Header userInfo={userInfo} setErrorMessage={setErrorMessage} />
-
 
       {/* Main Content Area */}
       <div className="mainContent flex flex-1 p-4">
