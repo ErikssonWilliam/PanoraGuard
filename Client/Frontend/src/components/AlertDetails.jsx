@@ -13,7 +13,8 @@ const AlertDetails = () => {
   const [oldAlarms, setOldAlarms] = useState([]);
   const [error, setError] = useState("");
 
-  const sortByTimestamp = (a, b) => new Date(b.timestamp) - new Date(a.timestamp);
+  const sortByTimestamp = (a, b) =>
+    new Date(b.timestamp) - new Date(a.timestamp);
 
   useEffect(() => {
     const fetchAlarms = async () => {
@@ -23,7 +24,10 @@ const AlertDetails = () => {
 
         // Filter, sort, and set active alarms
         const active = allAlarms
-          .filter((alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED")
+          .filter(
+            (alarm) =>
+              alarm.status === "PENDING" || alarm.status === "NOTIFIED",
+          )
           .sort(sortByTimestamp);
         setActiveAlarms(active);
 
@@ -34,7 +38,7 @@ const AlertDetails = () => {
               (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
               alarm.operator_id !== null &&
               alarm.operator_id !== "N/A" &&
-              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b"
+              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b",
           )
           .sort(sortByTimestamp)
           .slice(0, 10);
@@ -95,13 +99,17 @@ const AlertDetails = () => {
   return (
     <div className="p-4 flex flex-col space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">Active Alarms:</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
+          Active Alarms:
+        </h2>
         {activeAlarms.length >= 3 ? (
           <ActiveAlarms alarms={activeAlarms} />
         ) : (
           <div className="min-h-[100px] space-y-6 border-b border-gray-300 pb-4">
             {activeAlarms.length > 0 ? (
-              activeAlarms.map((alarm) => <AlarmRow key={alarm.id} {...alarm} />)
+              activeAlarms.map((alarm) => (
+                <AlarmRow key={alarm.id} {...alarm} />
+              ))
             ) : (
               <p>No active alarms found.</p>
             )}
@@ -110,9 +118,14 @@ const AlertDetails = () => {
       </div>
       {activeAlarms.length <= 2 ? (
         <div>
-          <h2 className="text-2xl font-semibold mt-1 mb-4 text-[#2E5984]">Old Alarms:</h2>
+          <h2 className="text-2xl font-semibold mt-1 mb-4 text-[#2E5984]">
+            Old Alarms:
+          </h2>
           {oldAlarms.length > 0 ? (
-            <OldAlarms oldAlarms={oldAlarms} activeAlarmCount={activeAlarms.length} />
+            <OldAlarms
+              oldAlarms={oldAlarms}
+              activeAlarmCount={activeAlarms.length}
+            />
           ) : (
             <p>No old alarms found.</p>
           )}
