@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import StatisticsForm from "./StatisticsForm";
 import CameraAlarmChart from "./CameraAlarmChart";
@@ -96,7 +96,7 @@ function PanoraGuardDashboard() {
                   Total Alerts
                 </h2>
                 <div className="text-4xl font-bold text-sky-900 mb-4">
-                  {getTotalAlerts()}
+                  {loading ? "Loading..." : getTotalAlerts()}
                 </div>
                 <div className="text-sm text-slate-500">
                   from {filters.fromDate} to {filters.tillDate}

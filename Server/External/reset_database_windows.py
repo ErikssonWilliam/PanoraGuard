@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, MetaData
 from config import Config
 import subprocess
 
+
 def reset_database():
     print("Initializing database reset...")
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
@@ -24,11 +25,14 @@ def reset_database():
 
     try:
         subprocess.run(["flask", "db", "init"], check=True)
-        subprocess.run(["flask", "db", "migrate", "-m", "Initial migration"], check=True)
+        subprocess.run(
+            ["flask", "db", "migrate", "-m", "Initial migration"], check=True
+        )
         subprocess.run(["flask", "db", "upgrade"], check=True)
         print("Database has been reset and migrations reapplied.")
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
+
 
 if __name__ == "__main__":
     reset_database()
