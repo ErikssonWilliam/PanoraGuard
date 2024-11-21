@@ -74,3 +74,26 @@ def test_update_confidence_camera_not_found():
 
     assert status_code == 404
     assert response.json["error"] == "Camera was not found"
+
+
+def test_get_confidence_threshold_by_id_success(session):
+    camera = Camera(
+        id="camera_1",
+        ip_address="192.168.1.1",
+        location="Test Location",
+        confidence_threshold=85.0,
+    )
+    session.add(camera)
+    session.commit()
+
+    result = CameraService.get_confidence_threshold_by_id(camera.id)
+
+    assert result == 85.0
+
+    session.delete(camera)
+    session.commit()
+
+
+def test_get_confidence_threshold_by_id_camera_not_found():
+    result = CameraService.get_confidence_threshold_by_id(9999)
+    assert result is None
