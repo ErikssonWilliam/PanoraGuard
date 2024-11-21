@@ -18,7 +18,7 @@ def sample_camera(session):
     return camera
 
 
-def test_get_alarm_image_success(session, sample_camera):
+def test_set_confidence_success(session, sample_camera):
     assert sample_camera.confidence_threshold == 85.0
 
     response = CameraService.set_confidence(sample_camera.id, 95.0)
@@ -29,7 +29,7 @@ def test_get_alarm_image_success(session, sample_camera):
     session.commit()
 
 
-def test_get_alarm_image_no_camera(session, sample_camera):
+def test_set_confidence_no_camera(session, sample_camera):
     response, status_code = CameraService.set_confidence("10101", 95.0)
 
     assert status_code == 404
