@@ -2,6 +2,7 @@ import pytest
 from app.models import Camera
 from app.cameras.cameras_service import CameraService
 
+
 def test_get_cameras(session):
 
     cameras1 = Camera(
