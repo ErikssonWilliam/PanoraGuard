@@ -5,9 +5,16 @@ import userIcon from "../assets/user-01.png";
 
 const Header = () => {
   return (
-    <header className="flex justify-between items-center p-4 bg-[#F5F7FA] border-b">
-      <img src={logo} alt="PanoraGuard logo" className="h-5" />
-      <div className="flex space-x-4">
+    <header className="relative flex items-center p-4 bg-[#F5F7FA] border-b">
+      {/* Centered Logo */}
+      <img
+        src={logo}
+        alt="PanoraGuard logo"
+        className="absolute left-1/2 transform -translate-x-1/2 h-5"
+      />
+
+      {/* Right Icons (Notification and User) */}
+      <div className="ml-auto flex space-x-4">
         <Link to="/operator">
           <img
             src={bellIcon}

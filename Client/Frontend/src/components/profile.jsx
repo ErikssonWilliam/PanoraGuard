@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import profileImage from "../assets/C3WBG.png";
-import bellIcon from "../assets/bell-01.png";
 import { externalURL } from "../api/axiosConfig";
-import { useNavigate } from "react-router-dom";
+import Header from "./ProfileHeader.jsx";
 
 const useFetchUserInfo = (userId) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -54,7 +53,6 @@ const ProfilePage = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const userId = localStorage.getItem("userId");
-  const navigate = useNavigate();
 
   const { userInfo, loading, error } = useFetchUserInfo(userId);
 
@@ -110,26 +108,11 @@ const ProfilePage = () => {
   if (!userInfo) {
     return <div>No user data found.</div>;
   }
-  const navigateToHome = () => {
-    switch (userInfo.role.toLowerCase()) {
-      case "admin":
-        navigate("/admin");
-        break;
-      case "operator":
-        navigate("/operator");
-        break;
-      case "manager":
-        navigate("/dashboard");
-        break;
-      default:
-        setErrorMessage("Unknown role");
-    }
-  };
 
   return (
     <div className="profilePage flex flex-col min-h-screen">
       {/* Top Navigation Bar */}
-      <header className="navBar bg-BG text-white p-6 flex justify-between items-center">
+      {/* <header className="navBar bg-BG text-white p-6 flex justify-between items-center">
         <h1 className="companyName text-3xl font-bold text-ButtonsBlue mx-auto">
           panoraGuard
         </h1>
@@ -139,7 +122,8 @@ const ProfilePage = () => {
         >
           <img src={bellIcon} alt="Home" className="w-6 h-6" />
         </button>
-      </header>
+      </header> */}
+      <Header userInfo={userInfo} setErrorMessage={setErrorMessage} />
 
       {/* Main Content Area */}
       <div className="mainContent flex flex-1 p-4">
@@ -159,7 +143,7 @@ const ProfilePage = () => {
           {/* Right Side - White Part of User Info */}
           <div className="whiteSection w-3/4 bg-LightGray p-6 flex flex-col relative rounded-tr-lg rounded-br-lg">
             <div className="greeting absolute top-6 left-6">
-              <h2 className="text-3xl font-bold text-blue-600">
+              <h2 className="text-3xl font-bold text-NavyBlue">
                 Hello {userInfo.username},
               </h2>
             </div>
@@ -185,7 +169,7 @@ const ProfilePage = () => {
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-4 py-2 border border-[#237F94] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Enter new password"
               />
             </div>
@@ -195,7 +179,7 @@ const ProfilePage = () => {
                 type="password"
                 value={repeatPassword}
                 onChange={(e) => setRepeatPassword(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-4 py-2 border border-[#237F94] rounded-md shadow-sm focus:ring-blue-500"
                 placeholder="Repeat new password"
               />
             </div>
@@ -204,7 +188,7 @@ const ProfilePage = () => {
             )}
             <button
               type="submit"
-              className="submitButton mt-4 bg-blue-600 text-white rounded-lg p-2 w-full"
+              className="submitButton mt-4 bg-[#237F94] hover:bg-[#1E6D7C] text-white rounded-lg p-2 w-full"
             >
               Submit
             </button>
