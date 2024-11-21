@@ -7,7 +7,6 @@ import user from "../assets/user.svg";
 import AddnewUser from "../components/AddUser";
 import { Link } from "react-router-dom";
 import AlertDetails from "../components/AlertDetails";
-import PanoraGuardDashboard from "../components/PanoraGuardDashboard";
 
 const Admin = () => {
   // Step 1: Set up state to manage selected component
@@ -44,11 +43,8 @@ const Admin = () => {
   */
       case "ManageData":
         return (
-          <div className="p-12">
+          <div className="p-8">
             <ManageData />
-            <div className="flex flex-col">
-              <PanoraGuardDashboard />
-            </div>
           </div>
         );
       default:

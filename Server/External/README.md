@@ -117,9 +117,9 @@ ruff format       # Format the code'
 
 4. Automate Formatting and Linting with **Pre-Commit**:
    `bash
- pip install pre-commit
- pre-commit install 
- `
+pip install pre-commit
+pre-commit install 
+`
    With Pre-Commit installed, it will **automatically format and lint** your code before each commit.
 
 ## 4. Database Management
