@@ -50,7 +50,7 @@ def test_get_alarm_image_success(session, sample_alarm):
     session.commit()
 
 
-def test_get_alarm_image_not_found():
+def test_get_alarm_image_alarm_not_found():
     response, status_code = AlarmService.get_alarm_image(uuid.uuid4())
     assert status_code == 404
 
