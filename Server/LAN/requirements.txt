@@ -2,6 +2,7 @@ psycopg2-binary
 python-dotenv
 flask
 flask-sqlalchemy
+flask-cors
 requests
 pyjwt
 pre-commit
