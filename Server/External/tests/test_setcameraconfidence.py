@@ -40,3 +40,37 @@ def test_set_confidence_no_camera(session, sample_camera):
 
     session.delete(sample_camera)
     session.commit()
+
+
+def test_update_confidence_success(session):
+    camera = Camera(
+        id="camera_1",
+        ip_address="192.168.1.1",
+        location="Test Location",
+        confidence_threshold=85.0,
+    )
+    session.add(camera)
+    session.commit()
+
+    new_confidence = 90.0
+    response, status_code = CameraService.update_confidence(camera.id, new_confidence)
+
+    assert status_code == 200
+    assert response.json["message"] == "Confidence threshold updated successfully"
+    assert response.json["confidence_threshold"] == new_confidence
+
+    updated_camera = Camera.query.get(camera.id)
+    assert updated_camera.confidence_threshold == new_confidence
+
+    session.delete(camera)
+    session.commit()
+
+
+def test_update_confidence_camera_not_found():
+    camera_id = 9999
+    confidence = 85.0
+
+    response, status_code = CameraService.update_confidence(camera_id, confidence)
+
+    assert status_code == 404
+    assert response.json["error"] == "Camera was not found"
