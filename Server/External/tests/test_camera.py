@@ -3,7 +3,6 @@ from app.cameras.cameras_service import CameraService
 
 
 def test_get_cameras(session):
-
     cameras1 = Camera(
         id="2001",
         ip_address="192.168.1.1",
