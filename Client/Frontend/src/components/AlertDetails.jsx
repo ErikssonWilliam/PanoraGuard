@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import AlarmRow from "./AlarmRow";
 import OldAlarms from "./OldAlarms";
 import ActiveAlarms from "./ActiveAlarms";
 import { io } from "socket.io-client";
 import { externalURL } from "../api/axiosConfig";
 
 const AlertDetails = () => {
-  const navigate = useNavigate();
   const [activeAlarms, setActiveAlarms] = useState([]);
   const [oldAlarms, setOldAlarms] = useState([]);
   const [error, setError] = useState("");

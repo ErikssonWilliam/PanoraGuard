@@ -12,7 +12,7 @@ const ActiveAlarms = ({ activeAlarms }) => {
   return (
     <div
       className={`overflow-y-auto p-4 sd:p-3 hd:p-1 fhd:p-1 ${calculateHeightClass(
-        activeAlarms.length
+        activeAlarms.length,
       )}`}
     >
       {activeAlarms.length > 0 ? (
