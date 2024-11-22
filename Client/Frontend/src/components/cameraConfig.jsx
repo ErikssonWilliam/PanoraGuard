@@ -104,7 +104,6 @@ const CameraConfig = () => {
 
   // Handle updating brightness level for the selected camera
   const updateBrightnessLevel = async () => {
-    alert(brightnessLevel);
     try {
       const response = await fetch(`${lanURL}/brightness/set-brightness`, {
         method: "PUT",

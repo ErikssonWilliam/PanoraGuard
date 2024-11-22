@@ -15,8 +15,11 @@ def get_jwt_claims(request):
             # Decode the token using your secret key and algorithm
             decoded_token = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])
 
-            user_id = decoded_token.get("user_id")  # example field
-            role = decoded_token.get("role")  # example field
+            # Access the role inside the 'sub' object
+            user_id = decoded_token.get("sub", {}).get(
+                "user_id"
+            )  # Get user_id from 'sub'
+            role = decoded_token.get("sub", {}).get("role")  # Get role from 'sub'
 
             return user_id, role  # or whatever data you need
         except jwt.ExpiredSignatureError:
