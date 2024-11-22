@@ -2,6 +2,12 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    screens: {
+      sd: '1024px',    // Large screens: standard laptops and smaller desktops
+      hd: '1280px',    // Extra-large screens: wider desktops
+      fhd: '1920px', // Full HD 
+      wuxga: { raw: '(min-width: 1920px) and (min-height: 1200px)' }, //WUXGA
+    },
     extend: {
       fontFamily: {
         poppings: ["poppings", "sans-serif"],
