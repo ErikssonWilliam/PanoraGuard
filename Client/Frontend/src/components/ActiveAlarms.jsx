@@ -2,9 +2,9 @@ import AlarmRow from "./AlarmRow";
 
 const calculateHeightClass = (alarmCount) => {
   if (alarmCount >= 3)
-    return "max-h-[32vh] sd:h-[40vh] hd:h-[20vh] fhd:h-[33vh] wuxga:h-[20vh]";
+    return "max-h-[31vh] sd:h-[25vh] hd:h-[21vh] fhd:h-[22vh] wuxga:h-[20vh]";
   if (alarmCount === 2)
-    return "max-h-[30vh] sd:max-h-[25vh] hd:max-h-[30vh] fhd:max-h-[22vh]";
+    return "max-h-[30vh] sd:max-h-[35vh] hd:max-h-[30vh] fhd:max-h-[22vh]";
   return "max-h-auto";
 };
 
