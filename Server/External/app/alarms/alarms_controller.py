@@ -9,6 +9,9 @@ class AlarmController:
     def get_alarms():
         return jsonify(AlarmService.get_alarms()), 200
 
+    def get_active_alarms(type):
+        return jsonify(AlarmService.get_active_alarms(type)), 200
+
     @staticmethod
     def add_alarm():
         alarm_data = request.get_json()
@@ -23,6 +26,12 @@ class AlarmController:
 
     def get_alarm_image(alarm_ID):
         return AlarmService.get_alarm_image(alarm_ID)
+
+    def get_alarm_by_operator(operator):
+        return AlarmService.get_alarm_by_operator(operator)
+
+    def get_alarm_by_camera(location, camera_ID):
+        return AlarmService.get_alarm_by_camera(location, camera_ID)
 
     # Properly serializes the Alarm object using to_dict() to ensure correct JSON formatting for frontend compatibility
     @staticmethod
@@ -41,40 +50,22 @@ class AlarmController:
     def notify_guard(guard_ID, alarm_ID):
         return AlarmService.notify_guard(guard_ID, alarm_ID)
 
-    # @staticmethod
-    # def notify_new_alarm(alarm):
-    #     socketio.emit("new_alarm", alarm)
-
     def update_alarm_status(alarm_id):
         alarm_data = request.get_json()
         if not alarm_data or "status" not in alarm_data:
             return jsonify({"message": "Status is required"}), 400
 
-        updated_alarm = AlarmService.update_alarm_status(alarm_id, alarm_data["status"])
+        # Get guard_id from the request data
+        guard_id = alarm_data.get("guard_id")
+        operator_id = alarm_data.get(
+            "operator_id"
+        )  # Get operator_id from the request data
+        updated_alarm = AlarmService.update_alarm_status(
+            alarm_id, alarm_data["status"], guard_id, operator_id
+        )
         if updated_alarm:
             return jsonify(updated_alarm), 200
         else:
-            return jsonify({"message": "Alarm not found"}), 404
-
-
-# Frontend Logic:
-# import io from 'socket.io-client';
-
-# // Connect to the backend WebSocket server
-# const socket = io('http://your-backend-server-url');
-
-# // Listen for the 'new_alarm' event
-# socket.on('new_alarm', (alarm) => {
-#     console.log('New alarm received:', alarm);
-#     // Update the UI or notify the user about the new alarm
-#     displayNewAlarm(alarm);
-# });
-
-# function displayNewAlarm(alarm) {
-#     // Implement your logic to update the UI with the new alarm
-#     // For example, you can add the new alarm to a list of alarms
-#     const alarmList = document.getElementById('alarm-list');
-#     const alarmItem = document.createElement('li');
-#     alarmItem.textContent = `Alarm ID: ${alarm.id}, Confidence Score: ${alarm.confidence_score}`;
-#     alarmList.appendChild(alarmItem);
-# }
+            return jsonify(
+                {"message": "Alarm not found or invalid guard/operator ID"}
+            ), 404

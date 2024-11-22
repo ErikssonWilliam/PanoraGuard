@@ -1,42 +1,133 @@
-import React from "react";
-import Header from "./Header";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import StatisticsForm from "./StatisticsForm";
-import AlertsChart from "./AlertsChart";
-import AlertsDistribution from "./AlertsDistribution";
-
+import CameraAlarmChart from "./CameraAlarmChart";
+import AlarmResolutionChart from "./AlarmResolutionChart";
+import Header from "./ManagerHeader";
 function PanoraGuardDashboard() {
+  const [alertData, setAlertData] = useState({
+    alarms: [], // Store all alarms in a single array
+  });
+
+  const [filters, setFilters] = useState({
+    location: "A-huset", // Example location
+    camera: "B8A44F9EEE36", // Example camera ID
+    fromDate: "", // User-defined start date
+    tillDate: "", // User-defined end date
+  });
+
+  const [loading, setLoading] = useState(false); // Track loading state
+
+  // Fetch alarm data whenever filters change (location, camera, fromDate, tillDate)
+  useEffect(() => {
+    const fetchAlarmData = async () => {
+      setLoading(true); // Set loading to true when data fetching starts
+
+      try {
+        // Fetch alarm data using a single API with dynamic location and camera
+        const response = await axios.get(
+          `http://127.0.0.1:5000/alarms/bylocation/${filters.location}/${filters.camera}`,
+        );
+        console.log("Fetched alarms:", response.data);
+
+        // Store the fetched alarms in the state
+        setAlertData({
+          alarms: response.data, // Assuming response.data is an array of alarms
+        });
+      } catch (error) {
+        console.error("Error fetching alert data:", error);
+        alert(
+          "There was an error fetching the data. Please check the console for details.",
+        );
+      } finally {
+        setLoading(false); // Set loading to false when data fetching is complete
+      }
+    };
+
+    // Call the fetch function only when filters are valid
+    if (filters.location && filters.camera) {
+      fetchAlarmData();
+    }
+  }, [filters.location, filters.camera, filters.fromDate, filters.tillDate]); // Re-run the effect if any of the filters change
+
+  // Calculate the total number of alarms after filtering by date
+  const getTotalAlerts = () => {
+    const filteredAlarms = filterAlarms();
+    return filteredAlarms.length;
+  };
+
+  // Filter alarms by resolution or any other criteria, specifically by date range
+  const filterAlarms = () => {
+    const { alarms } = alertData;
+    const { fromDate, tillDate } = filters;
+
+    if (!alarms || alarms.length === 0) return [];
+
+    // Convert fromDate and tillDate to Date objects for comparison
+    const from = fromDate ? new Date(fromDate) : null;
+    const till = tillDate ? new Date(tillDate) : null;
+
+    return alarms.filter((alarm) => {
+      const alarmDate = new Date(alarm.timestamp); // Assuming timestamp exists in the alarm
+      // Check if alarm is within the date range
+      return (!from || alarmDate >= from) && (!till || alarmDate <= till);
+    });
+  };
+
+  const handleFormSubmit = (filters) => {
+    setFilters(filters); // Update filters and trigger useEffect to fetch data
+  };
+
   return (
-    <main className="flex overflow-hidden flex-col pt-2.5 bg-slate-100">
+    <main className="flex flex-col bg-slate-50 min-h-screen">
       <Header />
-      <div className="mt-2.5 w-full border-slate-300 min-h-[2px] max-md:max-w-full" />
-      <div className="w-full max-w-[1224px] max-md:max-w-full">
-        <div className="flex gap-5 max-md:flex-col">
-          <div className="flex flex-col w-[82%] max-md:ml-0 max-md:w-full">
-            <div className="flex flex-wrap grow items-start max-md:mt-3.5">
-              <div className="flex flex-col grow shrink-0 my-auto basis-0 w-fit max-md:max-w-full">
-                <StatisticsForm />
-                <div className="self-start mt-3 ml-14 text-base font-semibold text-center text-white max-md:ml-2.5">
-                  Update Stats
+      <div className="w-full border-t border-slate-300 mt-3" />
+
+      <div className="w-full max-w-[1224px] mx-auto p-6">
+        <div className="flex flex-col items-center gap-8">
+          <div className="flex flex-col w-full lg:w-3/4 bg-white p-6 shadow-lg rounded-lg">
+            <div className="mb-8">
+              <StatisticsForm onSubmit={handleFormSubmit} />
+            </div>
+
+            <section className="flex flex-col space-y-6">
+              <div className="text-center">
+                <h2 className="text-xl font-semibold text-slate-700 mb-2 uppercase tracking-wide">
+                  Total Alerts
+                </h2>
+                <div className="text-4xl font-bold text-sky-900 mb-4">
+                  {loading ? "Loading..." : getTotalAlerts()}
                 </div>
-                <div className="shrink-0 mt-7 h-0 border-slate-300 max-md:max-w-full" />
-                <div className="flex flex-col items-start px-8 mt-5 w-full max-md:px-5 max-md:max-w-full">
-                  <h2 className="text-sm tracking-wide leading-loose text-black max-md:ml-1">
-                    Total alerts
-                  </h2>
-                  <div className="mt-5 text-xl font-medium tracking-wide leading-snug text-sky-900 max-md:ml-1">
-                    210
-                  </div>
-                  <div className="mt-5 text-sm tracking-wide leading-loose text-black">
-                    from 1-12 Dec, 2024
-                  </div>
-                  <AlertsChart />
+                <div className="text-sm text-slate-500">
+                  from {filters.fromDate} to {filters.tillDate}
                 </div>
               </div>
-            </div>
+
+              <div className="h-px bg-slate-300 mb-6" />
+
+              <div>
+                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                  Camera-wise Alarm Breakdown
+                </h3>
+                <CameraAlarmChart
+                  selectedLocation={filters.location}
+                  selectedCamera={filters.camera}
+                />
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                  Alarm Resolution Over Time
+                </h3>
+                <AlarmResolutionChart
+                  selectedLocation={filters.location}
+                  selectedCamera={filters.camera}
+                  fromDate={filters.fromDate}
+                  tillDate={filters.tillDate}
+                />
+              </div>
+            </section>
           </div>
-          <aside className="flex flex-col ml-5 w-[18%] max-md:ml-0 max-md:w-full">
-            <AlertsDistribution />
-          </aside>
         </div>
       </div>
     </main>

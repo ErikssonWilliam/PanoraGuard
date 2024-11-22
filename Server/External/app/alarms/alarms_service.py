@@ -1,8 +1,9 @@
 # This file contains the service layer for the alarms module
 
-from app.models import Alarm, AlarmStatus, User, Camera
+from app.models import Alarm, AlarmStatus, User, UserRole, Camera
 from typing import List
 from flask import jsonify
+from sqlalchemy import desc
 from app.extensions import db  # Import the database instance
 
 # To send email
@@ -15,8 +16,50 @@ from email.mime.image import MIMEImage
 
 
 class AlarmService:
-    def get_alarms() -> List[Alarm]:
-        alarms = Alarm.query.all()
+    @staticmethod
+    def get_alarms() -> List[dict]:
+        alarms = (
+            db.session.query(Alarm, Camera.location)
+            .join(Camera, Camera.id == Alarm.camera_id)
+            .all()
+        )
+        return [{**alarm.to_dict(), "location": location} for alarm, location in alarms]
+
+    def get_active_alarms(alarm_type: str) -> List[dict]:
+        if alarm_type.lower() == "new":
+            # Get all alarms with status 'PENDING' or 'NOTIFIED'
+            alarms = Alarm.query.filter(
+                Alarm.status.in_([AlarmStatus.PENDING, AlarmStatus.NOTIFIED])
+            ).all()
+        elif alarm_type.lower() == "old":
+            # Get the 10 most recent alarms with status 'RESOLVED' or 'IGNORED'
+            alarms = (
+                Alarm.query.filter(
+                    Alarm.status.in_([AlarmStatus.RESOLVED, AlarmStatus.IGNORED])
+                )
+                .order_by(desc(Alarm.timestamp))
+                .limit(10)
+                .all()
+            )
+        else:
+            # Default case if `alarm_type` doesn't match 'new' or 'old'
+            alarms = []
+
+        return [alarm.to_dict() for alarm in alarms]
+
+    @staticmethod
+    def get_alarm_by_camera(location: str, camera_id: str) -> List[dict]:
+        alarms = (
+            db.session.query(Alarm)
+            .join(Camera, Camera.id == Alarm.camera_id)
+            .filter(Camera.location == location, Alarm.camera_id == camera_id)
+            .all()
+        )
+        return [alarm.to_dict() for alarm in alarms]
+
+    @staticmethod
+    def get_alarm_by_operator(operator) -> List[dict]:
+        alarms = db.session.query(Alarm).filter(Alarm.operator_id == operator).all()
         return [alarm.to_dict() for alarm in alarms]
 
     @staticmethod
@@ -32,12 +75,16 @@ class AlarmService:
         if not camera:
             return {"status": "error", "message": "Camera not found"}
 
-        # Step 3: Check if there is any active alarm with status PENDING for the given camera_id
-        active_alarm = Alarm.query.filter_by(
-            camera_id=camera_id, status=AlarmStatus.PENDING
+        # Step 3: Check if there is any active alarm with status PENDING or NOTIFIED for the given camera_id
+        active_alarm = Alarm.query.filter(
+            Alarm.camera_id == camera_id,
+            Alarm.status.in_([AlarmStatus.PENDING, AlarmStatus.NOTIFIED]),
         ).first()
         if active_alarm:
-            return {"status": "error", "message": "Already alarm active"}
+            return {
+                "status": "error",
+                "message": "Already alarm active: " + str(active_alarm.status.value),
+            }
 
         # Step 4: Check if confidence_score meets the threshold
         if confidence_score < camera.confidence_threshold:
@@ -54,7 +101,16 @@ class AlarmService:
         db.session.add(new_alarm)
         db.session.commit()
 
-        return {"status": "success", "alarm": new_alarm.to_dict()}
+        # Step 5: get the location
+        camera = Camera.query.filter_by(id=camera_id).first()
+        if not camera:
+            return {"status": "error", "message": "Camera not found"}
+
+        return {
+            "status": "success",
+            "alarm": new_alarm.to_dict(),
+            "camera_location": camera.location,
+        }
 
     def get_alarm_by_id(schedule_id):
         return  # add logic
@@ -79,7 +135,7 @@ class AlarmService:
             print(f"Failed to decode image. Error: {e}")
             return jsonify({"status": "Failed to decode image"}), 500
 
-    def update_alarm_status(alarm_id, new_status):
+    def update_alarm_status(alarm_id, new_status, guard_id=None, operator_id=None):
         # Find the alarm by ID
         alarm = Alarm.query.get(alarm_id)
         if alarm:
@@ -87,9 +143,32 @@ class AlarmService:
             if new_status not in [status.value for status in AlarmStatus]:
                 return None  # Invalid status
 
-            # Update the alarm status
-            # Convert string to enum
+            # Update the alarm status by converting the string to an AlarmStatus enum
             alarm.status = AlarmStatus[new_status.upper()]
+
+            # If the status is changed to IGNORED, delete the image attribute
+            if new_status.upper() == "IGNORED":
+                alarm.image_base64 = None
+
+            # If the status is "notified", update the guard_id
+            if new_status.upper() == "NOTIFIED" and guard_id:
+                guard = User.query.filter_by(id=guard_id, role=UserRole.GUARD).first()
+                if guard:
+                    alarm.guard_id = guard_id
+                else:
+                    return None  # Invalid guard_id
+
+            # Update the operator_id if provided
+            if operator_id:
+                operator = User.query.filter_by(
+                    id=operator_id, role=UserRole.OPERATOR
+                ).first()
+                if operator:
+                    alarm.operator_id = operator_id
+                else:
+                    return None  # Invalid operator_id
+
+            # Commit the changes to the database
             db.session.commit()
             return alarm.to_dict()  # Return the updated alarm as a dictionary
         return None  # Alarm not found

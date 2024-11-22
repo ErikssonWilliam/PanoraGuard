@@ -4,3 +4,5 @@ flask
 flask-sqlalchemy
 requests
 pyjwt
+pre-commit
+opencv-python
