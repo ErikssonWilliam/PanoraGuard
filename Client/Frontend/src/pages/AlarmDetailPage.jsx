@@ -221,21 +221,19 @@ const AlarmDetailPage = () => {
     try {
       const response = await axios.post(
         `${externalURL}/alarms/notify/${guardID}/${id}`,
-        {}, // Body can be empty since the backend is handling data from URL parameters
+        {},
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Include access token for authorization
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         },
       );
 
-      // Extract the guard name based on the ID for feedback
       const guardName =
         users.find((user) => user.id === guardID)?.username || "the guard";
       console.log(`Guard ${guardName} notified successfully:`, response.data);
 
-      // Set notification message on success
       setNotificationMessage(`Notification sent to ${guardName}.`);
       setNotificationType("success");
       setManualNotifyVisible(false);
