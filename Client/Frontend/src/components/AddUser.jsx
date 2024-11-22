@@ -1,13 +1,13 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
-import { baseURL } from "../api/axiosConfig"; 
+import { useState } from "react";
+import { externalURL } from "../api/axiosConfig";
 
 const AddnewUser = () => {
+  const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
-    role: "None",
+    role: "GUARD",
   });
 
   const handleChange = (e) => {
@@ -20,39 +20,51 @@ const AddnewUser = () => {
   };
 
   const handleSubmit = async () => {
-    try {
-      const response = await fetch(
-        `${baseURL}/users/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+    // Validate password length for roles other than "GUARD"
+    if (formData.role !== "GUARD" && formData.password.length <= 7) {
+      setErrorMessage("Password must be longer than 7 characters.");
+      return;
+    }
 
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await fetch(`${externalURL}/users/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      // If response is not ok, handle the error
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Something went wrong"); // Display error message from response
       }
 
       const data = await response.json();
-      console.log("User added successfully:", data);
-      // Optionally clear form after successful submission
+
       setFormData({
         username: "",
         email: "",
         password: "",
-        role: "None",
+        role: "GUARD",
       });
+
+      console.log("User added successfully:", data);
+      alert(`User ${data.user.username} added successfully`); //success Message shown here
+
+      setErrorMessage("");
     } catch (error) {
-      console.error("Error adding user:", error);
+      console.error("Error adding user", error);
+      setErrorMessage(error.message);
     }
   };
 
   return (
     <div className="font-poppings text-sm space-y-2">
-      <div className=" flex flex-col">
+      <div className="flex flex-col">
         <label htmlFor="name" className="text-blue-600">
           Name:
         </label>
@@ -65,7 +77,7 @@ const AddnewUser = () => {
         />
       </div>
       <div className="flex flex-col">
-        <label htmlFor="location" className="text-blue-600">
+        <label htmlFor="email" className="text-blue-600">
           Email:
         </label>
         <input
@@ -76,18 +88,20 @@ const AddnewUser = () => {
           onChange={handleChange}
         />
       </div>
-      <div className="flex flex-col">
-        <label htmlFor="passwird" className="text-blue-600">
-          Password:
-        </label>
-        <input
-          type="password"
-          name="password"
-          className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          value={formData.password}
-          onChange={handleChange}
-        />
-      </div>
+      {formData.role !== "GUARD" && (
+        <div className="flex flex-col">
+          <label htmlFor="password" className="text-blue-600">
+            Password:
+          </label>
+          <input
+            type="password"
+            name="password"
+            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
+            value={formData.password}
+            onChange={handleChange}
+          />
+        </div>
+      )}
       <div className="col-span-1 flex flex-col">
         <label htmlFor="camera-number" className="text-blue-600">
           Designation:
@@ -96,11 +110,10 @@ const AddnewUser = () => {
           id="camera-number"
           name="role"
           className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          value={formData.designation}
+          value={formData.role}
           onChange={handleChange}
         >
-          {/**Add more option */}
-          <option value="None">None</option>
+          {/** Add more options */}
           <option value="GUARD">GUARD</option>
           <option value="OPERATOR">OPERATOR</option>
         </select>
@@ -111,6 +124,12 @@ const AddnewUser = () => {
       >
         Submit
       </button>
+      {errorMessage && (
+        <div style={{ color: "red", marginTop: "10px" }}>
+          <strong>Error: </strong>
+          {errorMessage}
+        </div>
+      )}
     </div>
   );
 };

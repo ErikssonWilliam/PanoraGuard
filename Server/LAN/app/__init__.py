@@ -1,12 +1,14 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from .database import db
-from .models import *
+from .testRoutes import test_bp
+from .brightnessRoutes import br_bp
+from .livestream import ls_bp
 
 
 def create_app():
     app = Flask(__name__)
-
+    CORS(app)
     # Load config from config.py
     app.config.from_object("config.Config")
 
@@ -18,8 +20,9 @@ def create_app():
         db.create_all()
 
     # Import and register routes
-    from .testRoutes import api
 
-    app.register_blueprint(api)
+    app.register_blueprint(test_bp, url_prefix="/test")
+    app.register_blueprint(br_bp, url_prefix="/brightness")
+    app.register_blueprint(ls_bp, url_prefix="/livestream")
 
     return app

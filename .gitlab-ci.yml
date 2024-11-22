@@ -1,7 +1,10 @@
 ---
 stages:
   - external-lint
+  - lan-lint
+  - front-end-lint
   - external-test
+  - lan-test
   - deploy
 
 variables:
@@ -61,22 +64,50 @@ status:
 
 external-lint:
   stage: external-lint
-  image: python:3.10  
+  image: python:3.10
   before_script:
-    - cd Server/External 
-    - pip install ruff 
+    - cd Server/External
+    - pip install ruff
   script:
     - ruff check
     - ruff format --check
 
 external-test:
   stage: external-test
-  image: python:3.10 
+  image: python:3.10
   before_script:
-    - cd Server/External  
-    - pip install -r requirements.txt  
-    - pip install pytest  
+    - cd Server/External
+    - pip install -r requirements.txt
+    - pip install pytest
   script:
     - pytest --maxfail=1
-  variables:
-    TESTING: "true"
+
+lan-lint:
+  stage: lan-lint
+  image: python:3.10
+  before_script:
+    - cd Server/LAN
+    - pip install ruff
+  script:
+    - ruff check
+    - ruff format --check
+
+lan-test:
+  stage: lan-test
+  image: python:3.10
+  before_script:
+    - cd Server/LAN
+    - pip install -r requirements.txt
+    - pip install pytest
+  script:
+    - pytest --maxfail=1
+
+front-end-lint:
+  stage: front-end-lint
+  image: node:20
+  before_script:
+    - cd Client/Frontend
+    - npm install
+  script:
+    - npx prettier --check .
+    - npx eslint .

@@ -1,4 +1,7 @@
 # move logic here
+import re
+import secrets
+import string
 from typing import List, Union
 from app.models import User, UserRole
 from ..extensions import db
@@ -18,6 +21,9 @@ class UserService:
     def get_user_by_username(user_name: str) -> Union[User, None]:
         return User.query.filter_by(username=user_name).first()
 
+    def get_user_by_email(email: str):
+        return User.query.filter_by(email=email).first()
+
     def create_user(username: str, password: str, role: UserRole, email: str) -> User:
         new_user = User(
             username=username,
@@ -26,8 +32,6 @@ class UserService:
             email=email,
         )
         UserService.session.add(new_user)
-        print(new_user.password_hash)
-        print(bcrypt.check_password_hash(new_user.password_hash, password))
         UserService.session.commit()
         return new_user
 
@@ -38,6 +42,10 @@ class UserService:
             user.email = data.get("email")
         if data.get("role"):
             user.role = data.get("role")
+        if data.get("newPassword"):
+            user.password_hash = bcrypt.generate_password_hash(
+                data.get("newPassword")
+            ).decode("utf-8")
         UserService.session.commit()
         return user
 
@@ -48,3 +56,28 @@ class UserService:
             UserService.session.commit()
             return True
         return False
+
+    def validity_check(data: dict):
+        required_fields = ["username", "password", "role", "email"]
+
+        for field in required_fields:
+            if not data.get(field) or not str(data[field]).strip():
+                raise ValueError(f"'{field}' is required and cannot be empty.")
+
+        role = data.get("role")
+        if role not in ["GUARD", "OPERATOR"]:
+            raise ValueError("Invalid role.")
+        email = data.get("email").strip()
+        is_valid_email = (
+            re.match(r"^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$", email) is not None
+        )
+        if not is_valid_email:
+            raise ValueError("Invalid email format.")
+
+        return True
+
+    def generate_random_password(length=12):
+        alphabet = string.ascii_letters + string.digits + string.punctuation
+        password = "".join(secrets.choice(alphabet) for i in range(length))
+        print(password)
+        return password
