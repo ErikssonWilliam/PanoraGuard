@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from .database import db
 from .testRoutes import test_bp
-from .brightnessRoutes import br_bp
+from .brightness import br_bp
 from .livestream import ls_bp
 
 
