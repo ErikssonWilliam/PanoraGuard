@@ -2,7 +2,7 @@ import AlarmRow from "./AlarmRow";
 
 const calculateHeightClass = (alarmCount) => {
   if (alarmCount >= 3)
-    return "max-h-[40vh] sd:h-[[35vh] hd:h-[38vh] fhd:h-[23vh] wuxga:h-[20vh]";
+    return "max-h-[32vh] sd:h-[40vh] hd:h-[20vh] fhd:h-[33vh] wuxga:h-[20vh]";
   if (alarmCount === 2)
     return "max-h-[30vh] sd:max-h-[25vh] hd:max-h-[30vh] fhd:max-h-[22vh]";
   return "max-h-auto";
@@ -11,7 +11,7 @@ const calculateHeightClass = (alarmCount) => {
 const ActiveAlarms = ({ activeAlarms }) => {
   return (
     <div
-      className={`overflow-y-auto p-4 tablet:p-3 laptop:p-1 desktop:p-1 ${calculateHeightClass(
+      className={`overflow-y-auto p-4 sd:p-3 hd:p-1 fhd:p-1 ${calculateHeightClass(
         activeAlarms.length
       )}`}
     >
