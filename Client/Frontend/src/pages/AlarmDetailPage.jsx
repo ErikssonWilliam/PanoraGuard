@@ -218,10 +218,6 @@ const AlarmDetailPage = () => {
   };
 
   const notifyGuard = async (guardID) => {
-    const username = "root"; // Replace with your username
-    const password = "secure"; // Replace with your password
-    const auth = "Basic " + btoa(`${username}:${password}`);
-
     try {
       const response = await axios.post(
         `${externalURL}/alarms/notify/${guardID}/${id}`,
@@ -229,7 +225,7 @@ const AlarmDetailPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: auth,
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         },
       );
@@ -237,18 +233,23 @@ const AlarmDetailPage = () => {
       const guardName =
         users.find((user) => user.id === guardID)?.username || "the guard";
       console.log(`Guard ${guardName} notified successfully:`, response.data);
+
       setNotificationMessage(`Notification sent to ${guardName}.`);
       setNotificationType("success");
       setManualNotifyVisible(false);
+
       return true; // Notification succeeded
     } catch (err) {
       console.error(
         "Error notifying the guard:",
         err.response ? err.response.data : err.message,
       );
+
+      // Set notification message on failure
       setNotificationMessage("Failed to notify the guard.");
       setNotificationType("error");
       setManualNotifyVisible(true);
+
       return false; // Notification failed
     }
   };
@@ -263,15 +264,13 @@ const AlarmDetailPage = () => {
     const confirmNotify = window.confirm(
       "Are you sure you want to notify the guard?",
     );
-    if (!confirmNotify) {
-      return;
-    }
+    if (!confirmNotify) return;
 
     try {
       setNotificationMessage("");
       const notifySuccess = await notifyGuard(selectedUserId);
       if (notifySuccess) {
-        await updateAlarmStatus("NOTIFIED", selectedUserId); // Pass the guard ID
+        await updateAlarmStatus("NOTIFIED", selectedUserId);
       } else {
         setAlarm((prevAlarm) => ({
           ...prevAlarm,
