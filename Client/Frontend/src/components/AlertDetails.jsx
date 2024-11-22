@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import AlarmRow from "./AlarmRow";
 import OldAlarms from "./OldAlarms";
 import ActiveAlarms from "./ActiveAlarms";
 import { io } from "socket.io-client";
 import { externalURL } from "../api/axiosConfig";
 
 const AlertDetails = () => {
-  const navigate = useNavigate();
   const [activeAlarms, setActiveAlarms] = useState([]);
   const [oldAlarms, setOldAlarms] = useState([]);
   const [error, setError] = useState("");
@@ -99,51 +96,25 @@ const AlertDetails = () => {
   return (
     <div className="p-4 flex flex-col space-y-6">
       <div className="ml-10">
-        {" "}
-        {/* Added ml-10 to push Active Alarms to the right */}
-        <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
-          Active Alarms
-        </h2>
-        {activeAlarms.length >= 3 ? (
-          <ActiveAlarms alarms={activeAlarms} />
-        ) : (
-          <div className="min-h-[100px] space-y-6 border-b border-gray-300 pb-4">
-            {activeAlarms.length > 0 ? (
-              activeAlarms.map((alarm) => (
-                <AlarmRow key={alarm.id} {...alarm} />
-              ))
-            ) : (
-              <p>No active alarms found.</p>
-            )}
-          </div>
-        )}
-      </div>
-      {activeAlarms.length <= 2 ? (
-        <div className="ml-10">
-          {" "}
-          {/* Added ml-10 to push Old Alarms to the right */}
-          <h2 className="text-2xl font-semibold mt-1 mb-4 text-[#2E5984]">
-            Old Alarms
+        <section>
+          <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
+            Active Alarms:
           </h2>
-          {oldAlarms.length > 0 ? (
-            <OldAlarms
-              oldAlarms={oldAlarms}
-              activeAlarmCount={activeAlarms.length}
-            />
-          ) : (
-            <p>No old alarms found.</p>
-          )}
-        </div>
-      ) : (
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => navigate("/old-alarms")}
-            className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-          >
-            View Old Alarms
-          </button>
-        </div>
-      )}
+          <ActiveAlarms activeAlarms={activeAlarms} />
+        </section>
+      </div>
+
+      <div className="ml-10">
+        <section>
+          <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#2E5984]">
+            Old Alarms:
+          </h2>
+          <OldAlarms
+            oldAlarms={oldAlarms}
+            activeAlarmCount={activeAlarms.length}
+          />
+        </section>
+      </div>
     </div>
   );
 };
