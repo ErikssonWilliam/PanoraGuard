@@ -1,0 +1,126 @@
+import pytest
+from app.models import Camera
+from app.cameras.cameras_service import CameraService
+import uuid
+
+
+@pytest.fixture
+def sample_camera(session):
+    session.query(Camera).delete()
+    session.commit()
+    camera = Camera(
+        id="camera_1",
+        ip_address="192.168.1.1",
+        location="Test Location",
+        confidence_threshold=0.85,
+        schedule="[]",
+    )
+    session.add(camera)
+    session.commit()
+    return camera
+
+
+def test_get_cameras_success(session, sample_camera):
+    cameras = CameraService.get_cameras()
+    assert len(cameras) > 0
+    assert cameras[0]["id"] == sample_camera.id
+    assert cameras[0]["location"] == sample_camera.location
+    assert cameras[0]["confidence_threshold"] == sample_camera.confidence_threshold
+
+
+def test_locations_success(session, sample_camera):
+    locations = CameraService.locations()
+    assert len(locations) > 0
+    assert locations[0]["location"] == sample_camera.location
+
+
+def test_cameraID_by_location_success(session, sample_camera):
+    camera_ids = CameraService.cameraID_by_location(sample_camera.location)
+    assert len(camera_ids) > 0
+    assert camera_ids[0]["id"] == sample_camera.id
+
+
+def test_get_camera_by_id_success(session, sample_camera):
+    camera = CameraService.get_camera_by_id(sample_camera.id)
+    assert camera is not None
+    assert camera["id"] == sample_camera.id
+    assert camera["location"] == sample_camera.location
+    assert camera["confidence_threshold"] == sample_camera.confidence_threshold
+
+
+def test_get_camera_by_id_not_found(session):
+    camera = CameraService.get_camera_by_id(uuid.uuid4())
+    assert camera is None
+
+
+def test_set_confidence_success(session, sample_camera):
+    response, status_code = CameraService.set_confidence(
+        sample_camera.id, 0.95
+    )
+    assert status_code == 200
+    assert response.get_json()["confidence_threshold"] == 0.95
+
+    updated_camera = Camera.query.get(sample_camera.id)
+    assert updated_camera.confidence_threshold == 0.95
+
+
+def test_set_confidence_camera_not_found(session):
+    response, status_code = CameraService.set_confidence(uuid.uuid4(), 0.95)
+    assert status_code == 404
+    assert response.get_json()["status"] == "No camera found"
+
+
+def test_update_location_success(session, sample_camera):
+    new_location = "New Location"
+    response, status_code = CameraService.update_location(
+        sample_camera.id, new_location
+    )
+    assert status_code == 200
+    assert response.get_json()["location"] == new_location
+
+    updated_camera = Camera.query.get(sample_camera.id)
+    assert updated_camera.location == new_location
+
+
+def test_update_location_camera_not_found(session):
+    response, status_code = CameraService.update_location(
+        uuid.uuid4(), "New Location"
+    )
+    assert status_code == 404
+    assert response.get_json()["error"] == "Camera not found"
+
+
+def test_update_ip_success(session, sample_camera):
+    new_ip = "192.168.1.100"
+    response, status_code = CameraService.update_ip(sample_camera.id, new_ip)
+    assert status_code == 200
+    assert response.get_json()["ip_address"] == new_ip
+
+    updated_camera = Camera.query.get(sample_camera.id)
+    assert updated_camera.ip_address == new_ip
+
+
+def test_update_ip_camera_not_found(session):
+    response, status_code = CameraService.update_ip(uuid.uuid4(), "192.168.1.100")
+    assert status_code == 404
+    assert response.get_json()["error"] == "Camera not found"
+
+
+def test_update_schedule_success(session, sample_camera):
+    new_schedule = '{"monday": "09:00-17:00"}'
+    response, status_code = CameraService.update_schedule(
+        sample_camera.id, new_schedule
+    )
+    assert status_code == 200
+    assert response.get_json()["schedule"] == new_schedule
+
+    updated_camera = Camera.query.get(sample_camera.id)
+    assert updated_camera.schedule == new_schedule
+
+
+def test_update_schedule_camera_not_found(session):
+    response, status_code = CameraService.update_schedule(
+        uuid.uuid4(), '{"monday": "09:00-17:00"}'
+    )
+    assert status_code == 404
+    assert response.get_json()["error"] == "Camera not found"
