@@ -227,31 +227,31 @@ const AlarmDetailPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // Include access token for authorization
           },
-        }
+        },
       );
-  
+
       // Extract the guard name based on the ID for feedback
       const guardName =
         users.find((user) => user.id === guardID)?.username || "the guard";
       console.log(`Guard ${guardName} notified successfully:`, response.data);
-      
+
       // Set notification message on success
       setNotificationMessage(`Notification sent to ${guardName}.`);
       setNotificationType("success");
       setManualNotifyVisible(false);
-  
+
       return true; // Notification succeeded
     } catch (err) {
       console.error(
         "Error notifying the guard:",
-        err.response ? err.response.data : err.message
+        err.response ? err.response.data : err.message,
       );
-  
+
       // Set notification message on failure
       setNotificationMessage("Failed to notify the guard.");
       setNotificationType("error");
       setManualNotifyVisible(true);
-  
+
       return false; // Notification failed
     }
   };
@@ -264,7 +264,7 @@ const AlarmDetailPage = () => {
     }
 
     const confirmNotify = window.confirm(
-      "Are you sure you want to notify the guard?"
+      "Are you sure you want to notify the guard?",
     );
     if (!confirmNotify) return;
 
@@ -279,7 +279,7 @@ const AlarmDetailPage = () => {
           status: "PENDING",
         }));
         setNotificationMessage(
-          "Notification failed. Call the guard immediately to ensure the alert is acknowledged."
+          "Notification failed. Call the guard immediately to ensure the alert is acknowledged.",
         );
         setNotificationType("error");
       }
