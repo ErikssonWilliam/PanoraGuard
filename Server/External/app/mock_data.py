@@ -168,10 +168,9 @@ def create_mock_alarm_test(idtest, user, camera, statusState):
             operator_id=user.id,
         )
 
-
-#     session.add(alarm)
-#     session.commit()
-#     return alarm
+        session.add(alarm)
+        session.commit()
+        return alarm
 
 
 # def create_mock_camera_control_action(camera, user):
@@ -201,5 +200,5 @@ def create_mock_data():
     return "Success"
 
 
-# def get_mock_user(user_id):
-#     return session.query(User).filter_by(id=user_id).first()
+def get_mock_user(user_id):
+    return session.query(User).filter_by(id=user_id).first()
