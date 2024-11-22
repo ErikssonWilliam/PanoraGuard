@@ -78,7 +78,6 @@ def test_cameraID_by_location_success(session):
     assert {"id": "1003"} in response
     assert {"id": "1001"} not in response
 
-    # Cleanup: Remove the test cameras
     session.delete(camera1)
     session.delete(camera2)
     session.delete(camera3)

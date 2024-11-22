@@ -160,3 +160,23 @@ def test_get_user_by_username(session):
 
     session.delete(user)
     session.commit()
+
+
+def test_get_user_by_email(session):
+    user = User(
+        username="testuser2",
+        password_hash="hashed_password2",
+        role=UserRole.ADMIN,
+        email="testuser2@example.com",
+    )
+    session.add(user)
+    session.commit()
+
+    retrieved_user = UserService.get_user_by_email("testuser2@example.com")
+    assert retrieved_user is not None
+    assert retrieved_user.username == "testuser2"
+    assert retrieved_user.email == "testuser2@example.com"
+    assert retrieved_user.role == UserRole.ADMIN
+
+    session.delete(user)
+    session.commit()
