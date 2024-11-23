@@ -1,5 +1,6 @@
 from flask import Blueprint
 from .alarms_controller import AlarmController
+from flask_jwt_extended import jwt_required
 
 alarms_bp = Blueprint("alarms", __name__)
 
@@ -8,6 +9,7 @@ alarms_bp = Blueprint("alarms", __name__)
 
 
 @alarms_bp.route("/", methods=["GET"])
+#@jwt_required()
 def get_alarms():
     return AlarmController.get_alarms()
 

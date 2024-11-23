@@ -29,7 +29,15 @@ const Scheduler = ({ cameraId }) => {
       setError(null);
 
       try {
-        const response = await fetch(`${externalURL}/cameras/${cameraId}`);
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch(`${externalURL}/cameras/${cameraId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         if (!response.ok) {
           throw new Error("Failed to fetch schedule");
         }
@@ -88,12 +96,14 @@ const Scheduler = ({ cameraId }) => {
     console.log("Payload being sent to server:", scheduleJSON);
 
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await fetch(
         `${externalURL}/cameras/${cameraId}/schedule`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(scheduleJSON),
         },
