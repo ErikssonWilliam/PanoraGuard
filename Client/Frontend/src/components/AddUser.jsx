@@ -40,7 +40,7 @@ const AddnewUser = () => {
       // If response is not ok, handle the error
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Something went wrong"); // Display error message from response
+        throw new Error(errorData.error || "Something went wrong");
       }
 
       const data = await response.json();
@@ -53,8 +53,7 @@ const AddnewUser = () => {
       });
 
       console.log("User added successfully:", data);
-      alert(`User ${data.user.username} added successfully`); //success Message shown here
-
+      alert(`User ${data.user.username} added successfully`);
       setErrorMessage("");
     } catch (error) {
       console.error("Error adding user", error);
@@ -63,73 +62,85 @@ const AddnewUser = () => {
   };
 
   return (
-    <div className="font-poppings text-sm space-y-2">
-      <div className="flex flex-col">
-        <label htmlFor="name" className="text-blue-600">
-          Name:
-        </label>
-        <input
-          type="text"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-        />
-      </div>
-      <div className="flex flex-col">
-        <label htmlFor="email" className="text-blue-600">
-          Email:
-        </label>
-        <input
-          type="email"
-          name="email"
-          className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          value={formData.email}
-          onChange={handleChange}
-        />
-      </div>
-      {formData.role !== "GUARD" && (
-        <div className="flex flex-col">
-          <label htmlFor="password" className="text-blue-600">
-            Password:
+    <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-lg mx-auto mt-10">
+      <h2 className="text-2xl font-semibold text-center text-NavyBlue mb-6">
+        Add New User
+      </h2>
+      <div className="flex flex-col space-y-4">
+        <div>
+          <label htmlFor="name" className="block text-gray-700 font-medium">
+            Name
           </label>
           <input
-            type="password"
-            name="password"
-            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-            value={formData.password}
+            type="text"
+            name="username"
+            value={formData.username}
             onChange={handleChange}
+            placeholder="Enter user name"
+            className="mt-1 w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-NavyBlue focus:outline-none"
           />
         </div>
-      )}
-      <div className="col-span-1 flex flex-col">
-        <label htmlFor="camera-number" className="text-blue-600">
-          Designation:
-        </label>
-        <select
-          id="camera-number"
-          name="role"
-          className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          value={formData.role}
-          onChange={handleChange}
-        >
-          {/** Add more options */}
-          <option value="GUARD">GUARD</option>
-          <option value="OPERATOR">OPERATOR</option>
-        </select>
-      </div>
-      <button
-        className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
-        onClick={handleSubmit}
-      >
-        Submit
-      </button>
-      {errorMessage && (
-        <div style={{ color: "red", marginTop: "10px" }}>
-          <strong>Error: </strong>
-          {errorMessage}
+        <div>
+          <label htmlFor="email" className="block text-gray-700 font-medium">
+            Email
+          </label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter email address"
+            className="mt-1 w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-NavyBlue focus:outline-none"
+          />
         </div>
-      )}
+        {formData.role !== "GUARD" && (
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-gray-700 font-medium"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter password"
+              className="mt-1 w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-NavyBlue focus:outline-none"
+            />
+          </div>
+        )}
+        <div>
+          <label
+            htmlFor="designation"
+            className="block text-gray-700 font-medium"
+          >
+            Designation
+          </label>
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="mt-1 w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-NavyBlue focus:outline-none bg-white"
+          >
+            {/** Add more options */}
+            <option value="GUARD">GUARD</option>
+            <option value="OPERATOR">OPERATOR</option>
+          </select>
+        </div>
+        <button
+          className="submitButton mt-4 bg-[#237F94] hover:bg-[#1E6D7C] text-white rounded-lg p-2 w-full"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
+        {errorMessage && (
+          <div className="text-red-600 text-sm font-medium mt-2">
+            <strong>Error:</strong> {errorMessage}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
