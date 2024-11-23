@@ -58,7 +58,7 @@ const AlarmDetailPage = () => {
           },
         });
         const alarmData = response.data;
-        const location = response.data.camera_location; 
+        const location = response.data.camera_location;
         console.log("Alarm data:", alarmData);
         setAlarm({
           id: alarmData.id || alarmData.alarm_id,
