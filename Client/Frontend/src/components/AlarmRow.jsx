@@ -68,8 +68,8 @@ const AlarmRow = ({ id }) => {
               alt="Camera icon"
               className="mr-2 w-4 h-4 object-contain"
             />
-            <span className="text-sm font-medium text-gray-700">
-              Camera: {alarm.camera_id || "Unknown Camera"}
+            <span className="text-sm font-medium text-gray-700"> 
+              Camera: {alarm.camera_id || "Unknown Camera"}  {/* Camera = Camera ID */}
             </span>
           </span>
 
