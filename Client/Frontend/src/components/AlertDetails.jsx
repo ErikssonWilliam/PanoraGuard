@@ -13,6 +13,15 @@ const AlertDetails = () => {
   const sortByTimestamp = (a, b) =>
     new Date(b.timestamp) - new Date(a.timestamp);
 
+  const sortByStatusAndTimestamp = (a, b) => {
+    // Sort notified alarms before active alarms
+    if (a.status === "NOTIFIED" && b.status === "PENDING") return -1;
+    if (a.status === "PENDING" && b.status === "NOTIFIED") return 1;
+  
+    // If status is the same, sort by timestamp (latest first) 
+    return new Date(b.timestamp) - new Date(a.timestamp);
+  };
+
   useEffect(() => {
     const fetchAlarms = async () => {
       try {
@@ -25,7 +34,7 @@ const AlertDetails = () => {
             (alarm) =>
               alarm.status === "PENDING" || alarm.status === "NOTIFIED",
           )
-          .sort(sortByTimestamp);
+          .sort(sortByStatusAndTimestamp);
         setActiveAlarms(active);
 
         // Filter, sort, and set old alarms
