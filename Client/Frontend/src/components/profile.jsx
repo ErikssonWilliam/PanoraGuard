@@ -111,18 +111,6 @@ const ProfilePage = () => {
 
   return (
     <div className="profilePage flex flex-col min-h-screen">
-      {/* Top Navigation Bar */}
-      {/* <header className="navBar bg-BG text-white p-6 flex justify-between items-center">
-        <h1 className="companyName text-3xl font-bold text-ButtonsBlue mx-auto">
-          panoraGuard
-        </h1>
-        <button
-          className="homeButton bg-white text-blue-600 font-semibold py-2 px-4 rounded"
-          onClick={navigateToHome}
-        >
-          <img src={bellIcon} alt="Home" className="w-6 h-6" />
-        </button>
-      </header> */}
       <Header userInfo={userInfo} setErrorMessage={setErrorMessage} />
 
       {/* Main Content Area */}
