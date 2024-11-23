@@ -3,7 +3,7 @@ import AlarmRow from "./AlarmRow";
 const OldAlarms = ({ oldAlarms, activeAlarmCount }) => {
   const getHeightClass = () => {
     if (activeAlarmCount >= 3)
-      return "h-[50vh] sd:h-[30vh] hd:h-[45vh] fhd:h-[53.5vh] wuxga:h-[55vh]";
+      return "h-[50vh] sd:h-[30.5vh] hd:h-[45vh] fhd:h-[53.5vh] wuxga:h-[55vh]";
     if (activeAlarmCount === 2)
       return "h-[55vh] sd:h-[25.5vh] hd:h-[44vh] fhd:h-[60.5vh] wuxga:h-[61.5vh] ";
     if (activeAlarmCount === 1)
