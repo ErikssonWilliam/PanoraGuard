@@ -17,8 +17,8 @@ const AlertDetails = () => {
     // Sort notified alarms before active alarms
     if (a.status === "NOTIFIED" && b.status === "PENDING") return -1;
     if (a.status === "PENDING" && b.status === "NOTIFIED") return 1;
-  
-    // If status is the same, sort by timestamp (latest first) 
+
+    // If status is the same, sort by timestamp (latest first)
     return new Date(b.timestamp) - new Date(a.timestamp);
   };
 
