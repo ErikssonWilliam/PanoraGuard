@@ -198,6 +198,21 @@ static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb,
 // Function to enable the best snapshot feature by sending an HTTP request (using Basic Authentication)
 static void enable_best_snapshot(void)
 {
+    GDBusConnection *connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+    GVariant *username = g_variant_new("(s)", "testuser");
+
+    GVariant *credentials = g_dbus_connection_call_sync (connection,
+                                                 "com.axis.HTTPConf1",
+                                                 "/com/axis/HTTPConf1/VAPIXServiceAccounts1",
+                                                 "com.axis.HTTPConf1.VAPIXServiceAccounts1",
+                                                 "GetCredentials",
+                                                 username,
+                                                 NULL,
+                                                 G_DBUS_CALL_FLAGS_NONE,
+                                                 -1,
+                                                 NULL,
+                                                 &error);
+
     const char *data = "{\"data\":true}"; // JSON payload to enable best snapshot
     CURL *curl;
     CURLcode res;
@@ -208,10 +223,9 @@ static void enable_best_snapshot(void)
         headers = curl_slist_append(headers, "Accept: application/json");
         headers = curl_slist_append(headers, "Content-Type: application/json");
 
-        // Set Basic Authentication (instead of Digest)
+        // Set Basic Authentication
         curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_easy_setopt(curl, CURLOPT_USERNAME, "root");   // Replace with your username
-        curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); // Replace with your password
+        curl_easy_setopt(curl, CURLOPT_USERPWD, credentials);
 
         curl_easy_setopt(curl, CURLOPT_URL, ENABLE_SNAPSHOT_URL);
         curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT"); // Use PUT as per the documentation
