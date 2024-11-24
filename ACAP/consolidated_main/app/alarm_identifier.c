@@ -252,7 +252,6 @@ static char* retrieve_vapix_credentials(const char* username) {
 static void enable_best_snapshot(void)
 {
     char* credentials = retrieve_vapix_credentials("user");
-    syslog(LOG_INFO, "Retrieved credentials: %s", credentials);
     const char *data = "{\"data\":true}"; // JSON payload to enable best snapshot
     CURL *curl;
     CURLcode res;
