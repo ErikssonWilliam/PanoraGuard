@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { externalURL } from "../api/axiosConfig";
-import axisLogo from "../assets/axisLogo.png";
+import axisLogo from "../assets/AxisLogo.png";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
