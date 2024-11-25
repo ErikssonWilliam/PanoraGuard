@@ -30,6 +30,7 @@ def get_alarm_by_operator(operator):
 
 
 @alarms_bp.route("bylocation/<string:location>/<string:camera_ID>", methods=["GET"])
+@jwt_required()
 def get_alarm_by_camera(location, camera_ID):
     return AlarmController.get_alarm_by_camera(location, camera_ID)
 

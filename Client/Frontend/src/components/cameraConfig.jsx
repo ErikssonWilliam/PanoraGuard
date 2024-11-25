@@ -13,17 +13,20 @@ const CameraConfig = () => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${externalURL}/cameras/${cameraId}/confidence`,{
+        `${externalURL}/cameras/${cameraId}/confidence`,
+        {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (!response.ok) {
-        throw new Error (`Failed to fetch confidence threshold: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch confidence threshold: ${response.statusText}`,
+        );
       }
 
       const data = await response.json();
@@ -58,6 +61,28 @@ const CameraConfig = () => {
       console.error("Error fetching brightness level:", error);
     }
   };
+
+  // // Fetch the brightness level of the selected camera
+  // const fetchBrightnessLevel = async (cameraId) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${lanURL}/brightness/get-brightness?camera_id=${cameraId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  //       },
+  //     });
+  //     const data = response.data;
+
+  //     if (data.brightness_level) {
+  //       setBrightnessLevel(data.brightness_level);
+  //     } else {
+  //       console.warn("Brightness level not found in the response data.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching brightness level:", error);
+  //   }
+  // };
 
   useEffect(() => {
     // Fetch the list of cameras to get their locations

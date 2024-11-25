@@ -15,7 +15,7 @@ const AlarmRow = ({ id }) => {
     const fetchAlarmDetails = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await axios.get(`${externalURL}/alarms/${id}`,{
+        const response = await axios.get(`${externalURL}/alarms/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -36,7 +36,7 @@ const AlarmRow = ({ id }) => {
     const fetchAlarmDetails = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await axios.get(`${externalURL}/alarms/${id}`,{
+        const response = await axios.get(`${externalURL}/alarms/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

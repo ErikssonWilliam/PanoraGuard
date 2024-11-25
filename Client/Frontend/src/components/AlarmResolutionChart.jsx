@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { externalURL } from "../api/axiosConfig";
 
 const AlarmResolutionChart = ({
   selectedLocation,
@@ -23,17 +24,23 @@ const AlarmResolutionChart = ({
 
   useEffect(() => {
     if (selectedLocation && selectedCamera && fromDate && tillDate) {
-      setLoading(true);
-      setError(null); // Reset error state on each fetch
+      const fetchAlarms = async () => {
+        setLoading(true);
+        setError(null); // Reset error state on each fetch
 
-      // Fetch alarms data
-      axios
-        .get(
-          `http://127.0.0.1:5000/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
-        )
-        .then((response) => {
+        try {
+          const token = localStorage.getItem("accessToken");
+          const response = await axios.get(
+            `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+
           const alarms = response.data;
-          console.log("Fetched alarms:", alarms); // Log for debugging
+          console.log("Fetched alarms:", alarms);
 
           // Filter alarms based on the selected date range
           const filteredAlarms = alarms.filter((alarm) => {
@@ -43,7 +50,7 @@ const AlarmResolutionChart = ({
             );
           });
 
-          console.log("Filtered alarms:", filteredAlarms); // Log filtered alarms for debugging
+          console.log("Filtered alarms:", filteredAlarms);
 
           // Create an array of all dates from fromDate to tillDate
           const dateRange = generateDateRange(
@@ -71,13 +78,15 @@ const AlarmResolutionChart = ({
           });
 
           setData(chartData); // Set the prepared data to the state
+        } catch (error) {
+          console.error("Error fetching alarms:", error);
+          setError("Failed to fetch alarms.");
+        } finally {
           setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching alarm data:", error);
-          setError("Failed to load data");
-          setLoading(false);
-        });
+        }
+      };
+
+      fetchAlarms();
     }
   }, [selectedLocation, selectedCamera, fromDate, tillDate]);
 

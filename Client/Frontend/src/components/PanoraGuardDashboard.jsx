@@ -6,6 +6,8 @@ import AlarmResolutionChart from "./AlarmResolutionChart";
 import Header from "./ManagerHeader";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "./Notification.jsx";
+import { externalURL } from "../api/axiosConfig";
+
 function PanoraGuardDashboard() {
   const [alertData, setAlertData] = useState({
     alarms: [], // Store all alarms in a single array
@@ -27,8 +29,14 @@ function PanoraGuardDashboard() {
 
       try {
         // Fetch alarm data using a single API with dynamic location and camera
+        const token = localStorage.getItem("accessToken");
         const response = await axios.get(
-          `http://127.0.0.1:5000/alarms/bylocation/${filters.location}/${filters.camera}`,
+          `${externalURL}/alarms/bylocation/${filters.location}/${filters.camera}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
         console.log("Fetched alarms:", response.data);
 

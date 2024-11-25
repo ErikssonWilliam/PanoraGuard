@@ -25,8 +25,8 @@ const AlertDetails = () => {
   useEffect(() => {
     const fetchAlarms = async () => {
       try {
-        const token = localStorage.getItem("accessToken")
-        const response = await axios.get(`${externalURL}/alarms/`,{
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(`${externalURL}/alarms/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
