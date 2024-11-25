@@ -12,12 +12,13 @@
 // Code ------------------------------------
 #include <jansson.h>   // For JSON handling
 #include <curl/curl.h> // For HTTP requests
+#include <gio/gio.h>   // For Dbus credentials
 
 // Define constants
 #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera ip 121
 // #define CAMERA_ID "B8A44F9EEFE0" //Serial nummber for camera ip 116
 #define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add"                             // For external server
-#define ENABLE_SNAPSHOT_URL "http://192.168.1.121/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
+#define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
 
 // -----------------------------------------
 
@@ -195,9 +196,62 @@ static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb,
     return total_size;
 }
 
-// Function to enable the best snapshot feature by sending an HTTP request (using Basic Authentication)
+static char* parse_credentials(GVariant* result) {
+    char* credentials_string = NULL;
+    char* id                 = NULL;
+    char* password           = NULL;
+
+    g_variant_get(result, "(&s)", &credentials_string);
+    char id_buffer[256], password_buffer[256];
+    if (sscanf(credentials_string, "%255[^:]:%255s", id_buffer, password_buffer) != 2) {
+        syslog(LOG_ERR, "Error parsing credential string '%s'", credentials_string);
+        return NULL;
+    }
+    id = strdup(id_buffer);
+    password = strdup(password_buffer);
+    char* credentials = g_strdup_printf("%s:%s", id, password);
+
+    free(id);
+    free(password);
+    return credentials;
+}
+
+static char* retrieve_vapix_credentials(const char* username) {
+    GError* error               = NULL;
+    GDBusConnection* connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+    if (!connection){
+        syslog(LOG_ERR, "Error connecting to D-Bus: %s", error->message);
+        return NULL;
+    }
+    const char* bus_name       = "com.axis.HTTPConf1";
+    const char* object_path    = "/com/axis/HTTPConf1/VAPIXServiceAccounts1";
+    const char* interface_name = "com.axis.HTTPConf1.VAPIXServiceAccounts1";
+    const char* method_name    = "GetCredentials";
+
+    GVariant* result = g_dbus_connection_call_sync(connection,
+                                                   bus_name,
+                                                   object_path,
+                                                   interface_name,
+                                                   method_name,
+                                                   g_variant_new("(s)", username),
+                                                   NULL,
+                                                   G_DBUS_CALL_FLAGS_NONE,
+                                                   -1,
+                                                   NULL,
+                                                   &error);
+    if (!result)
+        syslog(LOG_ERR, "Error invoking D-Bus method: %s", error->message);
+
+    char* credentials = parse_credentials(result);
+
+    g_variant_unref(result);
+    g_object_unref(connection);
+    return credentials;
+}
+
 static void enable_best_snapshot(void)
 {
+    char* credentials = retrieve_vapix_credentials("user");
     const char *data = "{\"data\":true}"; // JSON payload to enable best snapshot
     CURL *curl;
     CURLcode res;
@@ -208,13 +262,12 @@ static void enable_best_snapshot(void)
         headers = curl_slist_append(headers, "Accept: application/json");
         headers = curl_slist_append(headers, "Content-Type: application/json");
 
-        // Set Basic Authentication (instead of Digest)
-        curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_easy_setopt(curl, CURLOPT_USERNAME, "root");   // Replace with your username
-        curl_easy_setopt(curl, CURLOPT_PASSWORD, "secure"); // Replace with your password
+        // Set Basic Authentication
+        curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_easy_setopt(curl, CURLOPT_USERPWD, credentials);
 
         curl_easy_setopt(curl, CURLOPT_URL, ENABLE_SNAPSHOT_URL);
-        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT"); // Use PUT as per the documentation
+        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
@@ -235,6 +288,7 @@ static void enable_best_snapshot(void)
 
         curl_easy_cleanup(curl);
     }
+    free(credentials);
 }
 
 // ------------------------------------------------------------------

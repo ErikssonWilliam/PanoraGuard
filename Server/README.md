@@ -56,7 +56,7 @@ This needs to be done in both the `Server/External` and `Server/LAN` directories
 1. Create a `.env` file in each directory.
 2. Add the following environment variables:
 
-```
+```bash
 DATABASE_URL = postgresql://postgres:PASSWORD@localhost:5432/company3_db
 SECRET_KEY = your_random_secret_text
 email_pswrd = srqe miip ozmo kwhd # only for External
@@ -74,20 +74,23 @@ python run.py
 
 ### Important Note
 
-After the server is running, **you need to create a user to log in.**
+When the external server starts, **it creates mock data to fill up the database.**  
+This means that you can log in from the start using the following credentials:
 
-1. Open **Postman** and create a POST request:
-   - **URL:** `http://127.0.0.1:5000/users/create`
-   - **Body (raw JSON):**
-   ```json
-   {
-     "username": "admin",
-     "password": "admin",
-     "role": "ADMIN",
-     "email": "admin@gmail.com"
-   }
-   ```
-2. Send the request. You can now log in with the credentials `admin` / `admin`.
+- `admin` - `admin` (username - password for ADMIN)  
+- `operator` - `operator` (username - password for OPERATOR)  
+- `manager` - `manager` (username - password for MANAGER)
+
+The mock data also fills the database with alarms in order to view alarm history and manage data as the manager.  
+
+This process repeats each time you restart the external server. If you don’t want too many alarms, **comment out line 15** in `Server/External/run.py` (`#create_mock_data()`) after starting the server for the first time.
+
+### Important Note 2
+
+Debug mode is set to `False`. This means that any code changes require restarting the server for those changes to apply.  
+
+This applies to both the **External server** and the **LAN server**.
+
 
 ## 3. LINTING AND FORMATTING
 
@@ -116,10 +119,10 @@ ruff format       # Format the code'
 - Avoid using `import *`. Instead, use explicit imports by naming the modules or objects.
 
 4. Automate Formatting and Linting with **Pre-Commit**:
-   `bash
+   ```bash
     pip install pre-commit
     pre-commit install 
-    `
+   ```
    With Pre-Commit installed, it will **automatically format and lint** your code before each commit.
 
 ## 4. Database Management
@@ -137,7 +140,8 @@ To view the tables in **pgAdmin4**:
 
 To modify the database structure (e.g., objects or attributes):
 
-- Write SQL queries directly in **pgAdmin4**.
+- Edit each cell directly in pgAdmin4, like in excel.
+- Write SQL queries directly in pgAdmin4.
 - Send requests using **Postman** to the routes defined in the server source code.
 
 ### Modifying Mock Data
@@ -145,3 +149,19 @@ To modify the database structure (e.g., objects or attributes):
 To adjust the mock data populated in the database on each server start:
 
 - Modify the file `Server/External/app/mock_data.py`.
+
+### Resetting the Database
+
+If changes occur that affect your local database and errors arise, try resetting it using one of the following scripts:
+
+- `Server/External/reset_database.py`  
+- `Server/External/reset_database_windows.py`  
+
+To reset, navigate to the `Server/External/` directory and run:
+
+```bash
+python reset_database.py # for macOS
+python reset_database_windows.py # for Windows
+````
+
+This should resolve any issues related to the database.
