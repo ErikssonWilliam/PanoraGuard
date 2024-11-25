@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { externalURL } from "../api/axiosConfig"; // Import externalURL from axiosConfig
-import { lanURL } from "../api/axiosConfig"; // Import lanURL from axiosConfig
+import { externalURL, lanURL } from "../api/axiosConfig"; // Consolidated imports
 import Scheduler from "./scheduler";
 
 const CameraConfig = () => {
@@ -88,7 +87,7 @@ const CameraConfig = () => {
         // Set the first camera as the default selection
         if (allCameras.length > 0) {
           setSelectedCamera(allCameras[0].id);
-          fetchConfidenceThreshold(allCameras[0].id); // Fetch initial confidence for first camera
+          fetchConfidenceThreshold(allCameras[0].id);
           fetchBrightnessLevel(allCameras[0].id);
         }
       } catch (error) {
@@ -97,7 +96,7 @@ const CameraConfig = () => {
     };
 
     fetchCameras();
-  }, []); // Empty dependency array ensures this runs only once after initial render
+  }, []);
 
   // Handle updating confidence level for the selected camera
   const updateConfidenceLevel = async () => {
@@ -129,7 +128,6 @@ const CameraConfig = () => {
 
   // Handle updating brightness level for the selected camera
   const updateBrightnessLevel = async () => {
-    alert(brightnessLevel);
     try {
       const response = await fetch(`${lanURL}/brightness/set-brightness`, {
         method: "PUT",
@@ -162,83 +160,93 @@ const CameraConfig = () => {
   };
 
   return (
-    <div className="font-poppings text-sm">
-      <div className="grid grid-cols-2 gap-8">
-        {/* Camera Location Dropdown */}
-        <div className="col-span-2 flex flex-col">
-          <label htmlFor="location" className="text-blue-600">
-            Camera ID and location:
-          </label>
-          <select
-            id="location"
-            value={selectedCamera}
-            onChange={handleCameraChange}
-            className="p-2 rounded-lg w-3/4 ring-1 ring-blue-900"
-          >
-            {cameras.map((camera) => (
-              <option key={camera.id} value={camera.id}>
-                {camera.id + " - " + camera.location}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-10 space-y-8">
+      <h2 className="text-2xl font-semibold text-center text-NavyBlue">
+        Camera Configuration
+      </h2>
 
-        {/* Confidence Level Slider for */}
-        <div className="col-span-2 pt-4 flex flex-col space-y-2">
-          <label htmlFor="confidence-level">Change the confidence level:</label>
-          <div className="flex items-center space-x-4">
-            <input
-              type="range"
-              id="confidence-level"
-              min="0"
-              max="100"
-              value={confidenceLevel}
-              onChange={(e) => setConfidenceLevel(e.target.value)}
-              className="w-3/4"
-            />
-            <span>{confidenceLevel}%</span>
-          </div>
-          <button
-            className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
-            onClick={updateConfidenceLevel}
-          >
-            Update
-          </button>
-        </div>
-
-        {/* Brightness Level Slider */}
-        <div className="pt-4 col-span-2 flex flex-col space-y-10">
-          <label htmlFor="brightness-level">Change the brightness level:</label>
-          <div className="flex items-center space-x-4">
-            <input
-              type="range"
-              id="brightness-level"
-              min="0"
-              max="100"
-              value={brightnessLevel}
-              onChange={(e) => setBrightnessLevel(e.target.value)}
-              className="w-3/4"
-            />
-            <span>{brightnessLevel}%</span>
-          </div>
-          <button
-            className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
-            onClick={updateBrightnessLevel}
-          >
-            Update
-          </button>
-        </div>
+      {/* Camera Selection */}
+      <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
+        <label
+          htmlFor="location"
+          className="block text-gray-700 font-medium text-lg"
+        >
+          Camera ID and Location
+        </label>
+        <select
+          id="location"
+          value={selectedCamera}
+          onChange={handleCameraChange}
+          className="w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-NavyBlue focus:outline-none bg-white"
+        >
+          {cameras.map((camera) => (
+            <option key={camera.id} value={camera.id}>
+              {camera.id + " - " + camera.location}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Additional schedule-related fields */}
-      <div className="grid grid-cols-2 gap-8">
-        <h2 className="pt-12 font-bold col-span-2 text-left">
-          Schedule Cameras
-        </h2>
-        {/**Calling scheduling componenets */}
-        <div className="col-span-2">
-          <Scheduler cameraId={selectedCamera} />
+      {/* Confidence Level */}
+      <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
+        <label
+          htmlFor="confidence-level"
+          className="block text-gray-700 font-medium text-lg"
+        >
+          Confidence Level
+        </label>
+        <div className="flex items-center space-x-4">
+          <input
+            type="range"
+            id="confidence-level"
+            min="0"
+            max="100"
+            value={confidenceLevel}
+            onChange={(e) => setConfidenceLevel(e.target.value)}
+            className="w-full"
+          />
+          <span className="text-gray-600">{confidenceLevel}%</span>
         </div>
+        <button
+          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          onClick={updateConfidenceLevel}
+        >
+          Update Confidence
+        </button>
+      </div>
+
+      {/* Brightness Level */}
+      <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
+        <label
+          htmlFor="brightness-level"
+          className="block text-gray-700 font-medium text-lg"
+        >
+          Brightness Level
+        </label>
+        <div className="flex items-center space-x-4">
+          <input
+            type="range"
+            id="brightness-level"
+            min="0"
+            max="100"
+            value={brightnessLevel}
+            onChange={(e) => setBrightnessLevel(e.target.value)}
+            className="w-full"
+          />
+          <span className="text-gray-600">{brightnessLevel}%</span>
+        </div>
+        <button
+          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          onClick={updateBrightnessLevel}
+        >
+          Update Brightness
+        </button>
+      </div>
+
+      {/* Scheduler */}
+      <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
+        <h3 className="text-lg font-medium text-gray-700">Schedule Cameras</h3>
+        <Scheduler cameraId={selectedCamera} />
       </div>
     </div>
   );

@@ -1,16 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { externalURL } from "../api/axiosConfig";
 
 const Scheduler = ({ cameraId }) => {
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
+  const days = useMemo(
+    () => [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday",
+    ],
+    [],
+  );
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
   // State for the schedule
@@ -64,7 +67,7 @@ const Scheduler = ({ cameraId }) => {
     };
 
     fetchSchedule();
-  }, [cameraId]);
+  }, [cameraId, days]);
 
   // Toggle cell state
   const toggleCell = (hourIndex, dayIndex) => {

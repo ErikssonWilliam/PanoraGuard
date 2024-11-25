@@ -1,30 +1,30 @@
-PROG1	= alarm_identifier
-OBJS1	= $(PROG1).c
-PROGS	= $(PROG1)
+PROG1   = alarm_identifier
+OBJS1   = $(PROG1).c
+PROGS   = $(PROG1)
 DEBUG_DIR = debug
 
-# Add jansson to the PKGS list
-PKGS = mdb jansson
+# Add necessary libraries to PKGS
+PKGS = mdb jansson glib-2.0 gio-2.0
 
 CFLAGS += $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --cflags $(PKGS))
 LDLIBS += $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --libs $(PKGS))
 
-# If pkg-config doesn't work for jansson, you can add it manually like this:
-# LDLIBS += -ljansson
+# If pkg-config doesn't work for a library, add it manually
 LDLIBS += -lcurl
 
+# Compiler flags
 CFLAGS += \
-					-Wall \
-					-Wextra \
-					-Wpedantic \
-					-Wmissing-prototypes \
-					-Wstrict-prototypes \
-					-Wfloat-equal \
-					-Winline \
-					-Wbad-function-cast \
-					-Wstack-protector \
-					-Wpointer-arith \
-					-Werror
+    -Wall \
+    -Wextra \
+    -Wpedantic \
+    -Wmissing-prototypes \
+    -Wstrict-prototypes \
+    -Wfloat-equal \
+    -Winline \
+    -Wbad-function-cast \
+    -Wstack-protector \
+    -Wpointer-arith \
+    -Werror
 
 CFLAGS_DEBUG = -g3 -O0
 
