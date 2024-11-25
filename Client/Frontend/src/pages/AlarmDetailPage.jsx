@@ -58,6 +58,7 @@ const AlarmDetailPage = () => {
           },
         });
         const alarmData = response.data;
+        const location = response.data.camera_location;
         console.log("Alarm data:", alarmData);
         setAlarm({
           id: alarmData.id || alarmData.alarm_id,
@@ -333,6 +334,7 @@ const AlarmDetailPage = () => {
                   Alert number: {alarm.id || "N/A"}
                 </p>
                 <p className="text-lg">Camera ID: {alarm.camera_id}</p>
+                <p className="text-lg">Location: {alarm.location}</p>
                 <p className="text-lg">Type: {alarm.type}</p>
                 <p className="text-lg">
                   Confidence Level:{" "}
