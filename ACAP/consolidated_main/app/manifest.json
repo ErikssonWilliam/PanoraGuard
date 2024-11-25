@@ -9,5 +9,12 @@
       "runMode": "never",
       "version": "1.0.0"
     }
+  },
+  "resources": {
+        "dbus": {
+            "requiredMethods": [
+                "com.axis.HTTPConf1.VAPIXServiceAccounts1.GetCredentials"
+            ]
+        }
   }
 }
