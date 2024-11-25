@@ -9,7 +9,7 @@ alarms_bp = Blueprint("alarms", __name__)
 
 
 @alarms_bp.route("/", methods=["GET"])
-#@jwt_required()
+@jwt_required()
 def get_alarms():
     return AlarmController.get_alarms()
 
@@ -58,6 +58,7 @@ def add_alarm():
 
 
 @alarms_bp.route("/<string:alarm_id>", methods=["GET"])
+@jwt_required()
 def get_alarm_by_id(alarm_id):
     return AlarmController.get_alarm_by_id(alarm_id)
 

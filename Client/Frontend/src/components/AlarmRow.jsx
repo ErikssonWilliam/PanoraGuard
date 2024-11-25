@@ -14,7 +14,12 @@ const AlarmRow = ({ id }) => {
     // Gets alarm data based on ID
     const fetchAlarmDetails = async () => {
       try {
-        const response = await axios.get(`${externalURL}/alarms/${id}`);
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(`${externalURL}/alarms/${id}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setAlarm(response.data);
       } catch (error) {
         console.error("Error fetching alarm details:", error);
@@ -30,7 +35,12 @@ const AlarmRow = ({ id }) => {
     // Gets alarm data based on ID
     const fetchAlarmDetails = async () => {
       try {
-        const response = await axios.get(`${externalURL}/alarms/${id}`);
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(`${externalURL}/alarms/${id}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setAlarm(response.data);
       } catch (error) {
         console.error("Error fetching alarm details:", error);
