@@ -4,6 +4,8 @@ import StatisticsForm from "./StatisticsForm";
 import CameraAlarmChart from "./CameraAlarmChart";
 import AlarmResolutionChart from "./AlarmResolutionChart";
 import Header from "./ManagerHeader";
+import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
+import Notification from "./Notification.jsx";
 function PanoraGuardDashboard() {
   const [alertData, setAlertData] = useState({
     alarms: [], // Store all alarms in a single array
@@ -77,7 +79,15 @@ function PanoraGuardDashboard() {
   const handleFormSubmit = (filters) => {
     setFilters(filters); // Update filters and trigger useEffect to fetch data
   };
-
+  if (!isUserLoggedInWithRole("MANAGER")) {
+    return (
+      <Notification
+        message={
+          "You do not have access to this page. Please log in with the correct credentials."
+        }
+      />
+    );
+  }
   return (
     <main className="flex flex-col bg-slate-50 min-h-screen">
       <Header />
