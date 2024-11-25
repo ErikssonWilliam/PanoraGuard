@@ -7,6 +7,7 @@ const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,6 +18,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${externalURL}/auth/login`, {
@@ -52,7 +54,9 @@ const Login = () => {
           setErrorMessage("Unknown role");
       }
       setErrorMessage("");
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error logging in", error);
       setErrorMessage(error.message);
     }
@@ -124,6 +128,12 @@ const Login = () => {
             >
               Submit
             </button>
+
+            {isLoading && (
+              <div className="flex justify-center items-bottom h-5 mt-4">
+                <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+              </div>
+            )}
           </form>
 
           {/* collabration text*/}
