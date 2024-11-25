@@ -14,11 +14,21 @@ import { Link } from "react-router-dom";
 import AlertDetails from "../components/AlertDetails";
 import userIcon from "../assets/user-01.png";
 import logo from "../assets/logo.png";
+import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
+import Notification from "../components/Notification.jsx";
 
 const Admin = () => {
   const [selectedComponent, setSelectedComponent] = useState("Camera");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Manage sidebar visibility
-
+  if (!isUserLoggedInWithRole("ADMIN")) {
+    return (
+      <Notification
+        message={
+          "You do not have access to this page. Please log in with the correct credentials."
+        }
+      />
+    );
+  }
   const renderContent = () => {
     switch (selectedComponent) {
       case "AddUser":

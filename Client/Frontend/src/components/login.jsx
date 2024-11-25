@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { externalURL } from "../api/axiosConfig";
-import axisLogo from "../assets/axisLogo.png";
+import axisLogo from "../assets/AxisLogo.png";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -36,6 +36,7 @@ const Login = () => {
 
       localStorage.setItem("accessToken", user.access_token);
       localStorage.setItem("userId", user.user_id);
+      localStorage.setItem("userRole", user.role);
 
       switch (user.role) {
         case "ADMIN":

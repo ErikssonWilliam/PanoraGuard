@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import profileImage from "../assets/C3WBG.png";
 import { externalURL } from "../api/axiosConfig";
 import Header from "./ProfileHeader.jsx";
+import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
+import Notification from "./Notification.jsx";
 
 const useFetchUserInfo = (userId) => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   useEffect(() => {
     const fetchUserInfo = async () => {
       setLoading(true);
@@ -92,7 +93,15 @@ const ProfilePage = () => {
       }
     }
   };
-
+  if (!isUserLoggedInWithRole("ANY")) {
+    return (
+      <Notification
+        message={
+          "You do not have access to this page. Please log in with the correct credentials."
+        }
+      />
+    );
+  }
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
