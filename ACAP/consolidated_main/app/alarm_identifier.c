@@ -1,11 +1,3 @@
-/*
-This file provides the implementation of how the camera sends information to the rest of the system,
-this is done thorugh a subscriber to an MDB-based message broker. 
-It listens data recieved from the camera, processes received messages, and posts alarm data 
-to an external server if certain conditions are met. Additionally, it configures and interacts 
-with the camera for best snapshot functionality via HTTP requests.
-*/
-
 #include <signal.h>
 #include <stdio.h>
 #include <string.h>
@@ -32,23 +24,13 @@ with the camera for best snapshot functionality via HTTP requests.
 
 // -----------------------------------------
 
-/*
-Structure to hold channel topic and source info.
-*/
+// Structure to hold channel topic and source info
 typedef struct channel_identifier
 {
     char *topic;
     char *source;
 } channel_identifier_t;
 
-/*
-Function to handle MDB connection errors.
-Logs the error message and aborts execution.
-
-Parameters:
-    error (mdb_error_t*): The error object received.
-    user_data (void*): User-defined data, not used in this function.
-*/
 static void on_connection_error(mdb_error_t *error, void *user_data)
 {
     (void)user_data;
@@ -56,21 +38,7 @@ static void on_connection_error(mdb_error_t *error, void *user_data)
     abort();
 }
 
-// ------------------------------------------------------------------
-
-/*
-Callback function for processing HTTP responses.
-Logs the response received from the camera.
-
-Parameters:
-    contents (void*): Data buffer received in the response.
-    size (size_t): Size of each data block.
-    nmemb (size_t): Number of data blocks.
-    userp (void*): User-defined data, not used in this function.
-
-Returns:
-    size_t: Total size of the processed data.
-*/
+// Code ------------------------------------------------------------------
 static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp)
 {
     (void)userp;
@@ -80,12 +48,6 @@ static size_t write_callback(void *contents, size_t size, size_t nmemb, void *us
     return total_size;
 }
 
-/*
-Function to send alarm data to an external server.
-
-Parameters:
-    data (const char*): JSON-formatted string containing the alarm data.
-*/
 static void post_to_external(const char *data)
 {
     CURL *curl;
@@ -110,17 +72,6 @@ static void post_to_external(const char *data)
     }
 }
 
-/*
-Function to parse class data from the JSON payload.
-
-Parameters:
-    first_class (const json_t*): JSON object containing class data.
-    type_value (char**): Pointer to store the parsed type.
-    score_value (double*): Pointer to store the parsed score.
-
-Returns:
-    bool: True if parsing succeeds, false otherwise.
-*/
 static bool parse_class_data(const json_t *first_class, char **type_value, double *score_value)
 {
     json_t *score = json_object_get(first_class, "score");
@@ -141,16 +92,6 @@ static bool parse_class_data(const json_t *first_class, char **type_value, doubl
     return true;
 }
 
-/*
-Function to parse image data from the JSON payload.
-
-Parameters:
-    image (const json_t*): JSON object containing image data.
-    image_value (char**): Pointer to store the parsed image data.
-
-Returns:
-    bool: True if parsing succeeds, false otherwise.
-*/
 static bool parse_image_data(const json_t *image, char **image_value)
 {
     json_t *data = json_object_get(image, "data");
@@ -165,18 +106,6 @@ static bool parse_image_data(const json_t *image, char **image_value)
     return true;
 }
 
-/*
-Function to parse the JSON payload from the MDB message.
-
-Parameters:
-    payload (const mdb_message_payload_t*): Payload containing the raw JSON data.
-    type_value (char**): Pointer to store the parsed object type.
-    score_value (double*): Pointer to store the parsed confidence score.
-    image_value (char**): Pointer to store the parsed image data.
-
-Returns:
-    bool: True if parsing succeeds, false otherwise.
-*/
 static bool parse_json_payload(const mdb_message_payload_t *payload, char **type_value, double *score_value, char **image_value)
 {
     json_error_t error;
@@ -212,4 +141,223 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
 
     json_decref(root);
     return true;
+}
+
+static void on_message(const mdb_message_t *message, void *user_data)
+{
+    const mdb_message_payload_t *payload = mdb_message_get_payload(message);
+    channel_identifier_t *channel_identifier = (channel_identifier_t *)user_data;
+
+    // Variables for parsed data
+    char *type_value = NULL;
+    double score_value = 0.0;
+    char *image_value = NULL;
+
+    if (!parse_json_payload(payload, &type_value, &score_value, &image_value))
+    {
+        return;
+    }
+
+    if (strcmp(type_value, "Face") != 0 && strcmp(type_value, "Human") != 0)
+    {
+        syslog(LOG_INFO, "Detected object of type: %s, no alarm will be raised", type_value);
+        free(type_value);
+        free(image_value);
+        return;
+    }
+    // Log the detected object information
+    syslog(LOG_INFO,
+           "Detected object - Topic: %s, Source: %s, Type: %s, Score: %.4f, Image Data: %s, Camera ID: %s",
+           channel_identifier->topic,
+           channel_identifier->source,
+           type_value,
+           score_value,
+           image_value,
+           CAMERA_ID);
+
+    json_t *json_data = json_pack("{s:f, s:s, s:s, s:s}",
+                                  "confidence_score", score_value,
+                                  "image_base64", image_value,
+                                  "camera_id", CAMERA_ID,
+                                  "type", type_value);
+
+    char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
+    post_to_external(json_str);
+    free(json_str);
+    json_decref(json_data);
+    free(type_value);
+    free(image_value);
+}
+
+static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    (void)userp;
+
+    size_t total_size = size * nmemb;
+    syslog(LOG_INFO, "Response from camera: %.*s", (int)total_size, (char *)contents);
+    return total_size;
+}
+
+static char* parse_credentials(GVariant* result) {
+    char* credentials_string = NULL;
+    char* id                 = NULL;
+    char* password           = NULL;
+
+    g_variant_get(result, "(&s)", &credentials_string);
+    char id_buffer[256], password_buffer[256];
+    if (sscanf(credentials_string, "%255[^:]:%255s", id_buffer, password_buffer) != 2) {
+        syslog(LOG_ERR, "Error parsing credential string '%s'", credentials_string);
+        return NULL;
+    }
+    id = strdup(id_buffer);
+    password = strdup(password_buffer);
+    char* credentials = g_strdup_printf("%s:%s", id, password);
+
+    free(id);
+    free(password);
+    return credentials;
+}
+
+static char* retrieve_vapix_credentials(const char* username) {
+    GError* error               = NULL;
+    GDBusConnection* connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+    if (!connection){
+        syslog(LOG_ERR, "Error connecting to D-Bus: %s", error->message);
+        return NULL;
+    }
+    const char* bus_name       = "com.axis.HTTPConf1";
+    const char* object_path    = "/com/axis/HTTPConf1/VAPIXServiceAccounts1";
+    const char* interface_name = "com.axis.HTTPConf1.VAPIXServiceAccounts1";
+    const char* method_name    = "GetCredentials";
+
+    GVariant* result = g_dbus_connection_call_sync(connection,
+                                                   bus_name,
+                                                   object_path,
+                                                   interface_name,
+                                                   method_name,
+                                                   g_variant_new("(s)", username),
+                                                   NULL,
+                                                   G_DBUS_CALL_FLAGS_NONE,
+                                                   -1,
+                                                   NULL,
+                                                   &error);
+    if (!result)
+        syslog(LOG_ERR, "Error invoking D-Bus method: %s", error->message);
+
+    char* credentials = parse_credentials(result);
+
+    g_variant_unref(result);
+    g_object_unref(connection);
+    return credentials;
+}
+
+static void enable_best_snapshot(void)
+{
+    char* credentials = retrieve_vapix_credentials("user");
+    const char *data = "{\"data\":true}"; // JSON payload to enable best snapshot
+    CURL *curl;
+    CURLcode res;
+    curl = curl_easy_init();
+    if (curl)
+    {
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Accept: application/json");
+        headers = curl_slist_append(headers, "Content-Type: application/json");
+
+        // Set Basic Authentication
+        curl_easy_setopt(curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+        curl_easy_setopt(curl, CURLOPT_USERPWD, credentials);
+
+        curl_easy_setopt(curl, CURLOPT_URL, ENABLE_SNAPSHOT_URL);
+        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // Capture the response data
+        char response_data[1024]; // Buffer to hold response
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback_snapshot);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, response_data);
+
+        res = curl_easy_perform(curl);
+        if (res != CURLE_OK)
+        {
+            syslog(LOG_ERR, "Failed to enable best snapshot: %s", curl_easy_strerror(res));
+        }
+        else
+        {
+            syslog(LOG_INFO, "Response from camera: %s", response_data);
+        }
+
+        curl_easy_cleanup(curl);
+    }
+    free(credentials);
+}
+
+// ------------------------------------------------------------------
+
+static void on_done_subscriber_create(const mdb_error_t *error, void *user_data)
+{
+    if (error != NULL)
+    {
+        syslog(LOG_ERR, "Got subscription error: %s, Aborting...", error->message);
+        abort();
+    }
+    channel_identifier_t *channel_identifier = (channel_identifier_t *)user_data;
+    syslog(LOG_INFO, "Subscribed to %s (%s)...", channel_identifier->topic, channel_identifier->source);
+}
+
+static void sig_handler(int signum)
+{
+    (void)signum;
+}
+
+int main(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    curl_global_init(CURL_GLOBAL_ALL);
+    syslog(LOG_INFO, "Subscriber started...");
+
+    // source corresponds to the video channel number, should be 1
+    channel_identifier_t channel_identifier = {
+        .topic = "com.axis.consolidated_track.v1.beta",
+        .source = "1"};
+
+    mdb_error_t *error = NULL;
+    mdb_subscriber_config_t *subscriber_config = NULL;
+    mdb_subscriber_t *subscriber = NULL;
+
+    mdb_connection_t *connection = mdb_connection_create(on_connection_error, NULL, &error);
+    if (error != NULL)
+        goto end;
+
+    subscriber_config = mdb_subscriber_config_create(channel_identifier.topic,
+                                                     channel_identifier.source,
+                                                     on_message,
+                                                     &channel_identifier,
+                                                     &error);
+    if (error != NULL)
+        goto end;
+
+    subscriber = mdb_subscriber_create_async(connection, subscriber_config, on_done_subscriber_create, &channel_identifier, &error);
+    if (error != NULL)
+        goto end;
+    enable_best_snapshot();
+    signal(SIGTERM, sig_handler);
+    pause();
+
+end:
+    if (error != NULL)
+        syslog(LOG_ERR, "%s", error->message);
+
+    mdb_error_destroy(&error);
+    mdb_subscriber_config_destroy(&subscriber_config);
+    mdb_subscriber_destroy(&subscriber);
+    mdb_connection_destroy(&connection);
+
+    syslog(LOG_INFO, "Subscriber closed...");
+    curl_global_cleanup();
+
+    return 0;
 }
