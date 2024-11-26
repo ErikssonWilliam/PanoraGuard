@@ -22,7 +22,9 @@ def test_get_cameras(session):
     cameras = CameraService.get_cameras()
     if isinstance(cameras, str):  # If `get_cameras` returns a JSON string
         cameras = json.loads(cameras)
-    elif hasattr(cameras, 'get_data'):  # If `get_cameras` returns a Flask Response object
+    elif hasattr(
+        cameras, "get_data"
+    ):  # If `get_cameras` returns a Flask Response object
         cameras = json.loads(cameras.get_data(as_text=True))
     assert isinstance(cameras, list)
     assert len(cameras) == 2
