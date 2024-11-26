@@ -63,15 +63,15 @@ const Login = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex w-full h-screen">
       {/* Left Panel */}
       <div className="leftPanel flex flex-1 justify-center items-center bg-gray-100">
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center lg:w-full sm:w-4/5">
           <form
             onSubmit={handleSubmit}
             className="bg-LightGray p-8 rounded-lg shadow-md"
           >
-            <h2 className="text-xl font-bold text-NavyBlue mb-6">
+            <h2 className="lg:text-xl  font-bold text-NavyBlue mb-6">
               <div className="max-w-xs text-center">
                 Enter your username and password
               </div>
@@ -147,7 +147,7 @@ const Login = () => {
       </div>
 
       {/* Right Panel */}
-      <div className="rightPanel flex flex-1 justify-center items-center bg-NavyBlue bg-opacity-80 text-white text-6xl font-bold">
+      <div className=" hidden rightPanel sm:flex sm:flex-1 sm:justify-center sm:items-center bg-NavyBlue bg-opacity-80 text-white lg:text-6xl sm:text-5xl font-bold ">
         <div className="max-w-xs text-center">
           All-Around Awareness Anytime Anywhere
         </div>
