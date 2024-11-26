@@ -169,9 +169,9 @@ def create_mock_alarm_test(idtest, user, camera, statusState):
             operator_id=user.id,
         )
 
-    session.add(alarm)
-    session.commit()
-    return alarm
+        session.add(alarm)
+        session.commit()
+        return alarm
 
 
 # def create_mock_camera_control_action(camera, user):
