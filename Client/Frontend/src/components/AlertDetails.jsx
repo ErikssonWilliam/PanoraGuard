@@ -31,7 +31,8 @@ const AlertDetails = () => {
         // Filter, sort, and set active alarms
         const active = allAlarms
           .filter(
-            (alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED"
+            (alarm) =>
+              alarm.status === "PENDING" || alarm.status === "NOTIFIED",
           )
           .sort(sortByStatusAndTimestamp);
         setActiveAlarms(active);
@@ -43,7 +44,7 @@ const AlertDetails = () => {
               (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
               alarm.operator_id !== null &&
               alarm.operator_id !== "N/A" &&
-              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b"
+              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b",
           )
           .sort(sortByTimestamp)
           .slice(0, 10);
@@ -70,12 +71,12 @@ const AlertDetails = () => {
         if (speakerResponse.status === 200) {
           console.log(
             "External speaker triggered successfully:",
-            speakerResponse.data
+            speakerResponse.data,
           );
         } else {
           console.warn(
             "Failed to trigger the external speaker:",
-            speakerResponse.data
+            speakerResponse.data,
           );
         }
       } catch (speakerError) {

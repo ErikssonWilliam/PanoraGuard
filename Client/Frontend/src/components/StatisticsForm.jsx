@@ -21,7 +21,7 @@ function StatisticsForm({ onSubmit }) {
         } else {
           console.error(
             "Expected an array for locations, but got:",
-            response.data
+            response.data,
           );
         }
       })
@@ -42,7 +42,7 @@ function StatisticsForm({ onSubmit }) {
           } else {
             console.error(
               "Expected an array for cameras, but got:",
-              response.data
+              response.data,
             );
           }
         })
