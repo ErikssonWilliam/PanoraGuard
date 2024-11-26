@@ -17,8 +17,10 @@
 // Define constants
 #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera ip 121
 // #define CAMERA_ID "B8A44F9EEFE0" //Serial nummber for camera ip 116
-#define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add"                             // For external server
-#define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // For camera api endpoint
+// #define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add" // For local external server
+#define EXTERNAL_URL "https://company3-externalserver.azurewebsites.net/alarms/add" // cloud external server
+
+#define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // For enable snapshot endpoint
 
 // -----------------------------------------
 
