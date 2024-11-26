@@ -38,6 +38,7 @@ def get_alarm_by_camera(location, camera_ID):
 @alarms_bp.route("/notify/<string:guard_ID>/<string:alarm_ID>", methods=["POST"])
 # Notify guard, works with guard id = 35ad0eab-2347-404e-a833-d8b2fb0367ff,
 # alarm id = cc006a17-0852-4e0e-b13c-36e4092f767d
+@jwt_required()
 def notify_guard(guard_ID, alarm_ID):
     return AlarmController.notify_guard(guard_ID, alarm_ID)
 
@@ -74,6 +75,7 @@ def delete_alarm_by_id(alarm_id):
 
 # Update alarm status by id
 @alarms_bp.route("/<string:alarm_id>/status", methods=["PUT"])
+@jwt_required()
 def update_alarm_status(alarm_id):
     # ToDO: Extract operator id from frontend token request, and update operate_id in the alarm
     return AlarmController.update_alarm_status(alarm_id)

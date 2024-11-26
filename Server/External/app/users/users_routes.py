@@ -15,6 +15,7 @@ def create_user():
 
 # Added this route to fetch users with the GUARD role
 @users_bp.route("/guards", methods=["GET"])  # New route for /users/guards endpoint
+@jwt_required()
 def get_guards():
     guards = User.query.filter_by(
         role=UserRole.GUARD
