@@ -2,7 +2,7 @@
 import axios from "axios";
 
 //const baseURL = "https://company3-externalserver.azurewebsites.net"; // URL to Azure Cloud Server
-const externalURL = "http://127.0.0.1:5000"; // URL to local server
+const externalURL = "https://company3-externalserver.azurewebsites.net"; // URL to local server
 const lanURL = "http://127.0.0.1:5100";
 
 const axiosInstance = axios.create({

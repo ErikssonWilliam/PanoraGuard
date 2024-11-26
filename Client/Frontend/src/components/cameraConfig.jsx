@@ -9,13 +9,20 @@ const CameraConfig = () => {
   const [selectedCameraID, setSelectedCameraID] = useState(""); // Track selected camera
 
   // Fetch the confidence threshold for the selected camera
-  // const fetchConfidenceThreshold = async (cameraId) => {
-  //   try {
-  //     const response = await fetch(
-  //       `${externalURL}/cameras/${cameraId}/confidence`,
-  //     );
-  //     const data = await response.json();
+  // // const fetchConfidenceThreshold = async (cameraId) => {
+  // //   try {
+  // //     const response = await fetch(
+  // //       `${externalURL}/cameras/${cameraId}/confidence`,
+  // //     );
+  // //     const data = await response.json();
 
+  //     if (data.confidence_threshold) {
+  //       setConfidenceLevel(data.confidence_threshold * 100);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching confidence threshold:", error);
+  //   }
+  // };
   //     if (data.confidence_threshold) {
   //       setConfidenceLevel(data.confidence_threshold * 100);
   //     }
@@ -50,10 +57,11 @@ const CameraConfig = () => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
       try {
-        const response = await fetch(`${externalURL}/cameras`, {
+        const response = await fetch(`${externalURL}/cameras/`, {
           method: "GET",
         });
         const data = await response.json();
+        console.log(data);
         console.log(data);
         const allCameras = data.map((camera) => ({
           id: camera.id,
@@ -81,6 +89,7 @@ const CameraConfig = () => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
+        `${externalURL}/cameras/${selectedCameraID}/confidence`,
         `${externalURL}/cameras/${selectedCameraID}/confidence`,
         {
           method: "PUT",
@@ -229,6 +238,7 @@ const CameraConfig = () => {
       {/* Scheduler */}
       <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
         <h3 className="text-lg font-medium text-gray-700">Schedule Cameras</h3>
+        <Scheduler cameraId={selectedCameraID} />
         <Scheduler cameraId={selectedCameraID} />
       </div>
     </div>
