@@ -1,49 +1,13 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import cameraIcon from "../assets/camera-03.png";
 import locationIcon from "../assets/location-icon.png";
 import detectIcon from "../assets/detect-icon.png";
-import { externalURL } from "../api/axiosConfig";
 
-const AlarmRow = ({ id }) => {
+const AlarmRow = ({ alarm }) => {
   const navigate = useNavigate();
-  const [alarm, setAlarm] = useState(null);
-
-  useEffect(() => {
-    // Gets alarm data based on ID
-    const fetchAlarmDetails = async () => {
-      try {
-        const response = await axios.get(`${externalURL}/alarms/${id}`);
-        setAlarm(response.data);
-      } catch (error) {
-        console.error("Error fetching alarm details:", error);
-      }
-    };
-
-    if (id) {
-      fetchAlarmDetails();
-    }
-  }, [id]); // Runs when ID is changed
-
-  useEffect(() => {
-    // Gets alarm data based on ID
-    const fetchAlarmDetails = async () => {
-      try {
-        const response = await axios.get(`${externalURL}/alarms/${id}`);
-        setAlarm(response.data);
-      } catch (error) {
-        console.error("Error fetching alarm details:", error);
-      }
-    };
-
-    if (id) {
-      fetchAlarmDetails();
-    }
-  }, [id]); // Runs when ID is changed
 
   const handleDetailsClick = () => {
-    navigate("/alert-details", { state: { id } }); // Sends ID as state
+    navigate("/alert-details", { state: { id: alarm.id } });
   };
 
   const getStatusClass = () => {

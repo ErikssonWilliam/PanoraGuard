@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/OperatorHeader";
-import { externalURL } from "../api/axiosConfig";
+import { externalURL, lanURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
 
 const AlarmDetailPage = () => {
@@ -146,9 +146,7 @@ const AlarmDetailPage = () => {
   //Gustav and Alinas attempt to do functions to avoid code duplications.
   const stopExternalSpeaker = async () => {
     try {
-      const speakerResponse = await axios.get(
-        `http://127.0.0.1:5100/test/stop-speaker`,
-      ); //hard coded server
+      const speakerResponse = await axios.get(`${lanURL}/test/stop-speaker`); //hard coded server
       if (speakerResponse.status === 200) {
         console.log(
           "External speaker stopped successfully:",
