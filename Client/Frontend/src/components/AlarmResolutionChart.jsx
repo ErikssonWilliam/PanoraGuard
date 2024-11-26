@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { externalURL } from "../api/axiosConfig";
 
 const AlarmResolutionChart = ({
   selectedLocation,
@@ -29,7 +30,7 @@ const AlarmResolutionChart = ({
       // Fetch alarms data
       axios
         .get(
-          `http://127.0.0.1:5000/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
+          `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
         )
         .then((response) => {
           const alarms = response.data;
