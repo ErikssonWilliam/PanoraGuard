@@ -1,3 +1,4 @@
+import json
 from app.models import Camera
 from app.cameras.cameras_service import CameraService
 
@@ -19,7 +20,10 @@ def test_get_cameras(session):
     session.add(cameras2)
     session.commit()
     cameras = CameraService.get_cameras()
-
+    if isinstance(cameras, str):  # If `get_cameras` returns a JSON string
+        cameras = json.loads(cameras)
+    elif hasattr(cameras, 'get_data'):  # If `get_cameras` returns a Flask Response object
+        cameras = json.loads(cameras.get_data(as_text=True))
     assert isinstance(cameras, list)
     assert len(cameras) == 2
     assert cameras[0]["id"] == "2001"
