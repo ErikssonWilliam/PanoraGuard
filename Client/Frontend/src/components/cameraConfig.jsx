@@ -50,7 +50,7 @@ const CameraConfig = () => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
       try {
-        const response = await fetch(`${externalURL}/cameras`, {
+        const response = await fetch(`${externalURL}/cameras/`, {
           method: "GET",
         });
         const data = await response.json();
