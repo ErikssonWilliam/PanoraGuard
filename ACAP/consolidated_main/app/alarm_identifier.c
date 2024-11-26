@@ -18,7 +18,8 @@
 #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera ip 121
 // #define CAMERA_ID "B8A44F9EEFE0" //Serial nummber for camera ip 116
 // #define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add" // For local external server
-#define EXTERNAL_URL "https://company3-externalserver.azurewebsites.net/alarms/add" // cloud external server
+ #define EXTERNAL_URL "https://company3-externalserver.azurewebsites.net/alarms/add" // cloud external server
+//#define EXTERNAL_URL "https://13.69.228.9/alarms/add" // cloud external as ip adress
 
 #define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // For enable snapshot endpoint
 
@@ -63,6 +64,7 @@ static void post_to_external(const char *data)
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
+        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
@@ -172,7 +174,7 @@ static void on_message(const mdb_message_t *message, void *user_data)
            channel_identifier->source,
            type_value,
            score_value,
-           image_value,
+           (strlen(image_value) > 0) ? "true" : "false",
            CAMERA_ID);
 
     json_t *json_data = json_pack("{s:f, s:s, s:s, s:s}",
