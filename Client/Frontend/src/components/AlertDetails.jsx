@@ -3,7 +3,7 @@ import axios from "axios";
 import OldAlarms from "./OldAlarms";
 import ActiveAlarms from "./ActiveAlarms";
 import { io } from "socket.io-client";
-import { externalURL } from "../api/axiosConfig";
+import { externalURL, lanURL } from "../api/axiosConfig";
 
 const AlertDetails = () => {
   const [activeAlarms, setActiveAlarms] = useState([]);
@@ -67,9 +67,7 @@ const AlertDetails = () => {
     ///gustav alinas, a function to start the speaker.
     const startExternalSpeaker = async () => {
       try {
-        const speakerResponse = await axios.get(
-          `http://127.0.0.1:5100/test/start-speaker`,
-        ); //currently hardcode the lan server
+        const speakerResponse = await axios.get(`${lanURL}/test/start-speaker`); //currently hardcode the lan server
         if (speakerResponse.status === 200) {
           console.log(
             "External speaker triggered successfully:",
