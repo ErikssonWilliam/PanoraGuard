@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { externalURL } from "../api/axiosConfig";
 
 function StatisticsForm({ onSubmit }) {
   const [locations, setLocations] = useState([]);
@@ -12,7 +13,7 @@ function StatisticsForm({ onSubmit }) {
   // Fetch locations when component mounts
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/cameras/locations")
+      .get(`${externalURL}/cameras/locations`)
       .then((response) => {
         // Ensure the response is an array and contains objects with a 'location' key
         if (Array.isArray(response.data)) {
@@ -20,7 +21,7 @@ function StatisticsForm({ onSubmit }) {
         } else {
           console.error(
             "Expected an array for locations, but got:",
-            response.data,
+            response.data
           );
         }
       })
@@ -33,7 +34,7 @@ function StatisticsForm({ onSubmit }) {
   useEffect(() => {
     if (selectedLocation) {
       axios
-        .get(`http://127.0.0.1:5000/cameras/locations/${selectedLocation}`)
+        .get(`${externalURL}/cameras/locations/${selectedLocation}`)
         .then((response) => {
           // Ensure the response is an array and contains camera IDs
           if (Array.isArray(response.data)) {
@@ -41,7 +42,7 @@ function StatisticsForm({ onSubmit }) {
           } else {
             console.error(
               "Expected an array for cameras, but got:",
-              response.data,
+              response.data
             );
           }
         })

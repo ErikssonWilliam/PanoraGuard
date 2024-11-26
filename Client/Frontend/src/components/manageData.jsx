@@ -3,6 +3,7 @@ import axios from "axios";
 import StatisticsForm from "./StatisticsForm";
 import CameraAlarmChart from "./CameraAlarmChart";
 import AlarmResolutionChart from "./AlarmResolutionChart";
+import { externalURL } from "../api/axiosConfig";
 const ManageData = () => {
   const [alertData, setAlertData] = useState({
     alarms: [], // Store all alarms in a single array
@@ -25,7 +26,7 @@ const ManageData = () => {
       try {
         // Fetch alarm data using a single API with dynamic location and camera
         const response = await axios.get(
-          `http://127.0.0.1:5000/alarms/bylocation/${filters.location}/${filters.camera}`,
+          `${externalURL}/alarms/bylocation/${filters.location}/${filters.camera}`
         );
         console.log("Fetched alarms:", response.data);
 
@@ -36,7 +37,7 @@ const ManageData = () => {
       } catch (error) {
         console.error("Error fetching alert data:", error);
         alert(
-          "There was an error fetching the data. Please check the console for details.",
+          "There was an error fetching the data. Please check the console for details."
         );
       } finally {
         setLoading(false); // Set loading to false when data fetching is complete
