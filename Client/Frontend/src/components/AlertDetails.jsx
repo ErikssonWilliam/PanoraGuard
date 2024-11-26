@@ -1,102 +1,101 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import OldAlarms from "./OldAlarms";
 import ActiveAlarms from "./ActiveAlarms";
-import { io } from "socket.io-client";
-import { externalURL } from "../api/axiosConfig";
+import socket from "../utils/socket";
+import { externalURL, lanURL } from "../api/axiosConfig";
 
 const AlertDetails = () => {
   const [activeAlarms, setActiveAlarms] = useState([]);
   const [oldAlarms, setOldAlarms] = useState([]);
   const [error, setError] = useState("");
 
-  const sortByTimestamp = (a, b) =>
-    new Date(b.timestamp) - new Date(a.timestamp);
+  const sortByTimestamp = useCallback(
+    (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+    [],
+  );
 
-  const sortByStatusAndTimestamp = (a, b) => {
-    // Sort notified alarms before active alarms
+  // Sort by status and timestamp
+  const sortByStatusAndTimestamp = useCallback((a, b) => {
     if (a.status === "NOTIFIED" && b.status === "PENDING") return -1;
     if (a.status === "PENDING" && b.status === "NOTIFIED") return 1;
-
-    // If status is the same, sort by timestamp (latest first)
     return new Date(b.timestamp) - new Date(a.timestamp);
-  };
+  }, []);
 
-  useEffect(() => {
-    const fetchAlarms = async () => {
-      try {
-        const response = await axios.get(`${externalURL}/alarms/`);
-        const allAlarms = response.data;
+  // Fetch alarms from the server
+  const fetchAlarms = useCallback(async () => {
+    try {
+      const response = await axios.get(`${externalURL}/alarms/`);
+      const allAlarms = response.data;
 
-        // Filter, sort, and set active alarms
-        const active = allAlarms
-          .filter(
-            (alarm) =>
-              alarm.status === "PENDING" || alarm.status === "NOTIFIED",
-          )
-          .sort(sortByStatusAndTimestamp);
-        setActiveAlarms(active);
+      // Process active alarms
+      const active = allAlarms
+        .filter(
+          (alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED",
+        )
+        .sort(sortByStatusAndTimestamp);
+      setActiveAlarms(active);
 
-        // Filter, sort, and set old alarms
-        const old = allAlarms
-          .filter(
-            (alarm) =>
-              (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
-              alarm.operator_id !== null &&
-              alarm.operator_id !== "N/A" &&
-              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b",
-          )
-          .sort(sortByTimestamp)
-          .slice(0, 10);
-        setOldAlarms(old);
+      // Process old alarms
+      const old = allAlarms
+        .filter(
+          (alarm) =>
+            (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
+            alarm.operator_id !== null &&
+            alarm.operator_id !== "N/A" &&
+            alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b",
+        )
+        .sort(sortByTimestamp)
+        .slice(0, 10);
+      setOldAlarms(old);
 
-        // Log results for debugging
-        console.log("Active alarms after filtering:", active);
-        console.log("Old alarms after filtering:", old);
-      } catch (err) {
-        console.error("Error fetching alarms:", err);
-        setError("Failed to load alarms.");
+      console.log("Active alarms after filtering:", active);
+      console.log("Old alarms after filtering:", old);
+    } catch (err) {
+      console.error("Error fetching alarms:", err);
+      setError("Failed to load alarms.");
+    }
+  }, [sortByStatusAndTimestamp, sortByTimestamp]);
+
+  // Start external speaker
+  const startExternalSpeaker = useCallback(async () => {
+    try {
+      const response = await axios.get(`${lanURL}/test/start-speaker`);
+      if (response.status === 200) {
+        console.log("External speaker triggered successfully:", response.data);
+      } else {
+        console.warn("Failed to trigger the external speaker:", response.data);
       }
-    };
+    } catch (error) {
+      console.error("Error triggering external speaker:", error);
+    }
+  }, []);
 
+  // Handle new alarms from the socket
+  const handleNewAlarm = useCallback(
+    (newAlarm) => {
+      setActiveAlarms((prevAlarms) => {
+        const isDuplicate = prevAlarms.some(
+          (alarm) => alarm.id === newAlarm.id,
+        );
+        return isDuplicate ? prevAlarms : [...prevAlarms, newAlarm];
+      });
+      startExternalSpeaker();
+    },
+    [startExternalSpeaker],
+  );
+
+  // Initialize the component
+  useEffect(() => {
     fetchAlarms();
 
-    // Socket connection for new alarms
-    const socket = io(externalURL);
-
-    ///gustav alinas, a function to start the speaker.
-    const startExternalSpeaker = async () => {
-      try {
-        const speakerResponse = await axios.get(
-          `http://127.0.0.1:5100/test/start-speaker`,
-        ); //currently hardcode the lan server
-        if (speakerResponse.status === 200) {
-          console.log(
-            "External speaker triggered successfully:",
-            speakerResponse.data,
-          );
-        } else {
-          console.warn(
-            "Failed to trigger the external speaker:",
-            speakerResponse.data,
-          );
-        }
-      } catch (speakerError) {
-        console.error("Error triggering external speaker:", speakerError);
-      }
-    };
-    // Listen for the new_alarm event
-    socket.on("new_alarm", (newAlarm) => {
-      // Add the new alarm to the existing alarms list
-      setActiveAlarms((prevAlarms) => [...prevAlarms, newAlarm]);
-      startExternalSpeaker();
-    });
+    // Listen for socket events
+    socket.on("new_alarm", handleNewAlarm);
 
     return () => {
-      socket.off("new_alarm");
-      socket.disconnect();
+      socket.off("new_alarm", handleNewAlarm);
     };
-  }, []);
+  }, [fetchAlarms, handleNewAlarm]);
 
   if (error) {
     return <div>{error}</div>;
