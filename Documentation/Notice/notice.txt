@@ -1,0 +1,12 @@
+PanoraGuard
+Copyright 2024 Company3
+
+This product includes software developed by Company3.
+
+----------------
+This software includes the following third-party components:
+
+Axis Communications
+Copyright 2024 Axis Communications
+Licensed under the Apache License, Version 2.0
+https://www.axis.com

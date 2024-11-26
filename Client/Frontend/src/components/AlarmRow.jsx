@@ -50,11 +50,11 @@ const AlarmRow = ({ id }) => {
     if (alarm.status === "PENDING") {
       return "bg-red-600 hover:bg-red-500";
     } else if (alarm.status === "NOTIFIED") {
-      return "bg-yellow-500 hover:bg-yellow-400"; // Yellow for notified
+      return "bg-[#7E8736] hover:bg-[#575F1D]"; // Yellow for notified
     } else if (alarm.status === "RESOLVED") {
-      return "bg-green-500 hover:bg-green-400"; // Green for resolved
+      return "bg-[#216657] hover:bg-[#12493D]"; // Green for resolved
     } else if (alarm.status === "IGNORED") {
-      return "bg-gray-700 hover:bg-gray-600"; // Dark gray for ignored
+      return "bg-[#788D8E] hover:bg-[#5F6C6C]"; // Dark gray for ignored
     }
   };
 
@@ -69,7 +69,8 @@ const AlarmRow = ({ id }) => {
               className="mr-2 w-4 h-4 object-contain"
             />
             <span className="text-sm font-medium text-gray-700">
-              Camera ID: {alarm.camera_id || "Unknown Camera"}
+              Camera: {alarm.camera_id || "Unknown Camera"}{" "}
+              {/* Camera = Camera ID */}
             </span>
           </span>
 
