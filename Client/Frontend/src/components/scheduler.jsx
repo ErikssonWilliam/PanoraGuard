@@ -64,6 +64,16 @@ const Scheduler = ({ cameraId }) => {
     setSchedule(newSchedule);
   };
 
+  const toggleDay = (dayIndex) => {
+    const allSelected = schedule.every((hour) => hour[dayIndex]); // Check if all hours are selected for the day
+    const newSchedule = schedule.map((hour) => {
+      const updatedHour = [...hour];
+      updatedHour[dayIndex] = !allSelected; // Toggle all hours in the column
+      return updatedHour;
+    });
+    setSchedule(newSchedule);
+  };
+
   const transformScheduleToJSON = () => {
     const weekSchedule = {};
     days.forEach((day, dayIndex) => {
@@ -125,12 +135,20 @@ const Scheduler = ({ cameraId }) => {
           <thead>
             <tr>
               <th className="border border-gray-300 p-2 bg-gray-200"></th>
-              {days.map((day) => (
+              {days.map((day, dayIndex) => (
                 <th
                   key={day}
                   className="border border-gray-300 p-2 bg-gray-200 text-center"
                 >
-                  {day}
+                  <div className="flex flex-col items-center">
+                    {day}
+                    <button
+                      className="mt-2 w-4/5 bg-NavyBlue text-white rounded-lg px-0.5 py-0.5"
+                      onClick={() => toggleDay(dayIndex)}
+                    >
+                      Select All
+                    </button>
+                  </div>
                 </th>
               ))}
             </tr>
