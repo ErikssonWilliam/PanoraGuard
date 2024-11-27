@@ -12,10 +12,8 @@ This file contains the core functionality of the ACAP and is where you will make
 
 The ACAP must be installed on each camera, with the **following modifications** made to the code file for each camera:
 
-   1. `CAMERA_ID`:  Update this to the appropriate ID for the camera on which the ACAP will be installed.
-   2. `EXTERNAL_URL`: Update this to the IP address of the server where the system will send the data.
-
-
+1.  `CAMERA_ID`: Update this to the appropriate ID for the camera on which the ACAP will be installed.
+2.  `EXTERNAL_URL`: Update this to the IP address of the server where the system will send the data.
 
 ## Prerequisites
 
@@ -26,56 +24,62 @@ The ACAP must be installed on each camera, with the **following modifications** 
 Follow these steps to build and install an ACAP using Docker.
 
 ### Step 1: Code Modifications
-1. Open the main  code file: 
+
+1. Open the main code file:
    `/ACAP/consolidated_main/app/alarm_identifier.c`.
 
 2. Update the following lines (line 17-20):
+
    ```c
    // Define constants
    #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera ip 121
    // #define CAMERA_ID "B8A44F9EEFE0" //Serial nummber for camera ip 116
-   #define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add" 
+   #define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add"
    ```
+
    - `CAMERA_ID`: Set to the correct camera serial number.
    - `EXTERNAL_URL`: Change `192.168.1.145:5000` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
 
 3. To find the local server's IP:
+
    - Be on the same network as the camera.
    - Start the external server as described in `/Server/README`.
    - Use the displayed IP address.
 
 4. For the cloud server:
    - Set `EXTERNAL_URL` to:
-   `https://company3-externalserver.azurewebsites.net/alarms/add`.
-
+     `https://company3-externalserver.azurewebsites.net/alarms/add`.
 
 ### Step 2: Build the Docker Image
+
 1. Navigate to the `consolidated_main` folder:
+
    ```bash
    cd consolidated_main
    ```
 
 2. Build the Docker image:
    ```bash
-   docker build --tag <Image Name> . 
+   docker build --tag <Image Name> .
    ```
    Replace `<Image Name> with name of your choice.
- 
 
 ### Step 3: Create Container and Extract Build Files
 
-   - **Windows**:
-   ```bash
-   docker create <Image Name>
-   docker cp <Image ID>:/opt/app ./build
-   ```
+- **Windows**:
 
-   - **Mac/Linux**:
-     ```bash
-     docker cp $(docker create <Image Name>):/opt/app ./build
-     ```
+```bash
+docker create <Image Name>
+docker cp <Image ID>:/opt/app ./build
+```
+
+- **Mac/Linux**:
+  ```bash
+  docker cp $(docker create <Image Name>):/opt/app ./build
+  ```
 
 ### Step 4: Install on the camera:
+
 1. Locate the `.eap` file from the `./build` directory that just got created in `/consolidated_main`.
 
 2. Head to the camera's interface by writing the IP adress for this specific camera in a browser. Note that your computer must be on the same network as the camera all the time.
@@ -87,7 +91,6 @@ Follow these steps to build and install an ACAP using Docker.
 5. Add the new ACAP by clicking **Add app** and drag the `.eap` file to the box, and click on **install**.
 
 6. Turn on the ACAP, and you're good to go.
-
 
 ## Change the name of the ACAP
 

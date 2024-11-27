@@ -132,7 +132,7 @@ const ProfilePage = () => {
               <img
                 src={profileImage}
                 alt="Profile"
-                className="w-full h-full object-cover" 
+                className="w-full h-full object-cover"
               />
             </div>
           </div>
