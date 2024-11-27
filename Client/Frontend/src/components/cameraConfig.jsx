@@ -239,7 +239,6 @@ const CameraConfig = () => {
       <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
         <h3 className="text-lg font-medium text-gray-700">Schedule Cameras</h3>
         <Scheduler cameraId={selectedCameraID} />
-        <Scheduler cameraId={selectedCameraID} />
       </div>
     </div>
   );

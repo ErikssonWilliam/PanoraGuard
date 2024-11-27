@@ -16,7 +16,6 @@ const Scheduler = ({ cameraId }) => {
   );
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
-  // State for the schedule
   const [schedule, setSchedule] = useState(
     Array.from({ length: 24 }, () => Array(7).fill(false)),
   );
@@ -24,10 +23,9 @@ const Scheduler = ({ cameraId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch schedule from the backend
   useEffect(() => {
     const fetchSchedule = async () => {
-      if (!cameraId) return; // Avoid fetching if cameraId is not set
+      if (!cameraId) return;
       setLoading(true);
       setError(null);
 
@@ -39,7 +37,6 @@ const Scheduler = ({ cameraId }) => {
 
         const data = await response.json();
 
-        // Ensure the schedule is properly parsed from the JSON structure
         if (data.schedule && data.schedule.week) {
           const transformedSchedule = Array.from(
             { length: 24 },
@@ -61,14 +58,12 @@ const Scheduler = ({ cameraId }) => {
     fetchSchedule();
   }, [cameraId, days]);
 
-  // Toggle cell state
   const toggleCell = (hourIndex, dayIndex) => {
     const newSchedule = [...schedule];
     newSchedule[hourIndex][dayIndex] = !newSchedule[hourIndex][dayIndex];
     setSchedule(newSchedule);
   };
 
-  // Transform schedule state into JSON format for the API
   const transformScheduleToJSON = () => {
     const weekSchedule = {};
     days.forEach((day, dayIndex) => {
@@ -77,7 +72,6 @@ const Scheduler = ({ cameraId }) => {
     return { week: weekSchedule };
   };
 
-  // Handle PUT request to update schedule
   const updateSchedule = async () => {
     if (!cameraId) {
       alert("No camera selected");
@@ -85,7 +79,7 @@ const Scheduler = ({ cameraId }) => {
     }
 
     const scheduleJSON = {
-      schedule: transformScheduleToJSON(), // Wrap the transformed schedule in "schedule"
+      schedule: transformScheduleToJSON(),
     };
 
     console.log("Payload being sent to server:", scheduleJSON);
@@ -118,7 +112,15 @@ const Scheduler = ({ cameraId }) => {
 
   return (
     <div className="pt-4 bg-gray-100 min-h-screen">
-      <div className="overflow-auto">
+      <div className="pt-4">
+        <button
+          className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
+          onClick={updateSchedule}
+        >
+          Update
+        </button>
+      </div>
+      <div className="overflow-auto mt-4">
         <table className="table-auto text-sm border-collapse border border-gray-300 w-full">
           <thead>
             <tr>
@@ -154,14 +156,6 @@ const Scheduler = ({ cameraId }) => {
             ))}
           </tbody>
         </table>
-      </div>
-      <div className="pt-4">
-        <button
-          className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
-          onClick={updateSchedule}
-        >
-          Update
-        </button>
       </div>
     </div>
   );
