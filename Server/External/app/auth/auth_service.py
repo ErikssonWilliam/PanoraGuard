@@ -19,9 +19,10 @@ class AuthService:
 
         # Generate a JWT token
         access_token = create_access_token(
-            identity={"user_id": user.id, "role": user.role.value},
+            identity=str(user.id),  # Pass the user_id as a string
             expires_delta=timedelta(hours=12),
         )
+
 
         return {
             "access_token": access_token,
