@@ -23,7 +23,6 @@ class AuthService:
             expires_delta=timedelta(hours=12),
         )
 
-
         return {
             "access_token": access_token,
             "role": user.role.value,
