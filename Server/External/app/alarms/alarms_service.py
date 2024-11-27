@@ -157,6 +157,7 @@ class AlarmService:
             dict: The updated alarm details, or None if the operation failed.
         """
         alarm = Alarm.query.get(alarm_id)
+        new_status = new_status.upper()
         if alarm:
             if new_status not in [status.value for status in AlarmStatus]:
                 return None  # Invalid status
@@ -165,11 +166,11 @@ class AlarmService:
             alarm.status = AlarmStatus[new_status.upper()]
 
             # If the status is changed to IGNORED, delete the image attribute
-            if new_status.upper() == "IGNORED":
+            if new_status == "IGNORED":
                 alarm.image_base64 = None
 
             # If the status is "notified", update the guard_id
-            if new_status.upper() == "NOTIFIED" and guard_id:
+            if new_status == "NOTIFIED" and guard_id:
                 guard = User.query.filter_by(id=guard_id, role=UserRole.GUARD).first()
                 if guard:
                     alarm.guard_id = guard_id

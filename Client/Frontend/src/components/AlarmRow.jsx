@@ -7,7 +7,7 @@ const AlarmRow = ({ alarm }) => {
   const navigate = useNavigate();
 
   const handleDetailsClick = () => {
-    navigate("/alert-details", { state: { id: alarm.id } });
+    navigate("/alert-details", { state: { alarm: alarm } });
   };
 
   const getStatusClass = () => {
