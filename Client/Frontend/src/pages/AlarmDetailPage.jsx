@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/OperatorHeader";
-import { externalURL } from "../api/axiosConfig";
+import { externalURL, lanURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
 
 const AlarmDetailPage = () => {
@@ -19,7 +19,8 @@ const AlarmDetailPage = () => {
   const [operatorUsername, setOperatorUsername] = useState("N/A");
   const [, setFormattedStatus] = useState("");
 
-  const id = location.state?.id || sessionStorage.getItem("alarmId");
+  const alarm_state =
+    location.state?.alarm || sessionStorage.getItem("alarmId");
   const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
 
   const fetchOperatorDetails = async (operatorId) => {
@@ -39,64 +40,64 @@ const AlarmDetailPage = () => {
   };
 
   useEffect(() => {
-    if (!id) {
-      setNotificationMessage("Alarm ID is missing.");
-      setNotificationType("error");
-      setFormattedStatus("Alarm ID is missing.");
-      navigate("/alert-details");
-      return;
-    }
+    // if (!id) {
+    //   setNotificationMessage("Alarm ID is missing.");
+    //   setNotificationType("error");
+    //   setFormattedStatus("Alarm ID is missing.");
+    //   navigate("/alert-details");
+    //   return;
+    // }
 
-    sessionStorage.removeItem("alarmData");
+    // sessionStorage.removeItem("alarmData");
 
-    const fetchAlarmDetails = async () => {
-      const token = localStorage.getItem("accessToken");
-      try {
-        const response = await axios.get(`${externalURL}/alarms/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const alarmData = response.data;
-        const location = response.data.camera_location;
-        console.log("Alarm data:", alarmData);
-        setAlarm({
-          id: alarmData.id || alarmData.alarm_id,
-          camera_id: alarmData.camera_id || "N/A",
-          location: location || "N/A",
-          type: alarmData.type || "N/A",
-          confidence_score: alarmData.confidence_score || 0,
-          timestamp: alarmData.timestamp || "N/A",
-          operator_id: alarmData.operator_id || "N/A",
-          status: alarmData.status || "N/A",
-        });
+    // const fetchAlarmDetails = async () => {
+    //   const token = localStorage.getItem("accessToken");
+    //   try {
+    //     const response = await axios.get(`${externalURL}/alarms/${id}`, {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     });
+    //     const alarmData = response.data;
+    //     const location = response.data.camera_location;
+    //     console.log("Alarm data:", alarmData);
+    //     setAlarm({
+    //       id: alarmData.id || alarmData.alarm_id,
+    //       camera_id: alarmData.camera_id || "N/A",
+    //       location: location || "N/A",
+    //       type: alarmData.type || "N/A",
+    //       confidence_score: alarmData.confidence_score || 0,
+    //       timestamp: alarmData.timestamp || "N/A",
+    //       operator_id: alarmData.operator_id || "N/A",
+    //       status: alarmData.status || "N/A",
+    //     });
 
-        if (alarmData.operator_id && alarmData.operator_id !== "N/A") {
-          console.log(
-            "Operator ID found in alarm data:",
-            alarmData.operator_id,
-          );
-          fetchOperatorDetails(alarmData.operator_id);
-        } else {
-          console.warn(
-            "Operator ID is missing or invalid:",
-            alarmData.operator_id,
-          );
-        }
-      } catch (err) {
-        setNotificationMessage(
-          err.response && err.response.status === 404
-            ? "Alarm not found."
-            : "Failed to load alarm details.",
-        );
-        setNotificationType("error");
-      }
-    };
+    //     if (alarmData.operator_id && alarmData.operator_id !== "N/A") {
+    //       console.log(
+    //         "Operator ID found in alarm data:",
+    //         alarmData.operator_id,
+    //       );
+    //       fetchOperatorDetails(alarmData.operator_id);
+    //     } else {
+    //       console.warn(
+    //         "Operator ID is missing or invalid:",
+    //         alarmData.operator_id,
+    //       );
+    //     }
+    //   } catch (err) {
+    //     setNotificationMessage(
+    //       err.response && err.response.status === 404
+    //         ? "Alarm not found."
+    //         : "Failed to load alarm details.",
+    //     );
+    //     setNotificationType("error");
+    //   }
+    // };
 
     const fetchAlarmImage = async () => {
       try {
         const imageResponse = await axios.get(
-          `${externalURL}/alarms/${id}/image`,
+          `${externalURL}/alarms/${alarm_state.id}/image`,
         );
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
@@ -121,10 +122,11 @@ const AlarmDetailPage = () => {
     };
 
     // Call all functions when component loads
-    fetchAlarmDetails();
+    // fetchAlarmDetails();
     fetchAlarmImage();
     fetchUsers();
-  }, [id, navigate, location]);
+    setAlarm(alarm_state);
+  }, [navigate, location, alarm_state]);
 
   useEffect(() => {
     if (alarm?.status) {
@@ -146,9 +148,7 @@ const AlarmDetailPage = () => {
   //Gustav and Alinas attempt to do functions to avoid code duplications.
   const stopExternalSpeaker = async () => {
     try {
-      const speakerResponse = await axios.get(
-        `http://127.0.0.1:5100/test/stop-speaker`,
-      ); //hard coded server
+      const speakerResponse = await axios.get(`${lanURL}/test/stop-speaker`); //hard coded server
       if (speakerResponse.status === 200) {
         console.log(
           "External speaker stopped successfully:",
@@ -176,11 +176,14 @@ const AlarmDetailPage = () => {
     }
 
     try {
-      const response = await axios.put(`${externalURL}/alarms/${id}/status`, {
-        status: newStatus,
-        guard_id: guardID, // Include guard_id in the request payload
-        operator_id: operatorId, // Include operator_id from localStorage
-      });
+      const response = await axios.put(
+        `${externalURL}/alarms/${alarm.id}/status`,
+        {
+          status: newStatus,
+          guard_id: guardID, // Include guard_id in the request payload
+          operator_id: operatorId, // Include operator_id from localStorage
+        },
+      );
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
         status: response.data.status,
@@ -221,7 +224,7 @@ const AlarmDetailPage = () => {
   const notifyGuard = async (guardID) => {
     try {
       const response = await axios.post(
-        `${externalURL}/alarms/notify/${guardID}/${id}`,
+        `${externalURL}/alarms/notify/${guardID}/${alarm.id}`,
         {},
         {
           headers: {
@@ -374,7 +377,7 @@ const AlarmDetailPage = () => {
                 <button
                   onClick={() =>
                     navigate("/live-feed", {
-                      state: { id, camera_id: alarm.camera_id },
+                      state: { id: alarm.id, camera_id: alarm.camera_id },
                     })
                   }
                   className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
