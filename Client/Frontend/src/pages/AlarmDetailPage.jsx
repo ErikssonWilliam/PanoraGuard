@@ -362,90 +362,101 @@ const AlarmDetailPage = () => {
           </div>
         </div>
         {alarm?.status !== "RESOLVED" && alarm?.status !== "IGNORED" && (
-          <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
-            {alarm?.status === "NOTIFIED" ? (
-              <div className="flex justify-center w-full">
-                <button
-                  onClick={() => updateAlarmStatus("RESOLVED")}
-                  className="bg-[#EBB305] text-white px-6 py-3 rounded-lg hover:bg-[#FACC14] transition duration-200"
-                >
-                  Resolve Alarm
-                </button>
-              </div>
-            ) : (
-              <div className="flex justify-between w-full">
-                <button
-                  onClick={() =>
-                    navigate("/live-feed", {
-                      state: { id: alarm.id, camera_id: alarm.camera_id },
-                    })
-                  }
-                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-                >
-                  Look at the live feed
-                </button>
-                <div>
-                  <select
-                    value={selectedUserId}
-                    onChange={(e) => setSelectedUserId(e.target.value)}
-                    className="border p-2 rounded-md"
-                  >
-                    <option value="">Select a guard</option>
-                    {users.map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.username}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={handleNotifyAndUpdate}
-                    className="ml-2 bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-                  >
-                    Notify the Guard
-                  </button>
-                </div>
-                <button
-                  onClick={handleDismissAlert}
-                  className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
-                >
-                  Dismiss the alert
-                </button>
-              </div>
-            )}
-            <div className="mt-2 h-20 flex flex-col items-center">
-              {notificationMessage && (
-                <p
-                  className={`text-center ${
-                    notificationType === "success"
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {notificationMessage}
-                </p>
-              )}
-              {manualNotifyVisible && (
-                <div className="mt-2 flex space-x-2 items-center">
-                  <label className="flex items-center space-x-1">
-                    <input
-                      type="checkbox"
-                      checked={callChecked}
-                      onChange={() => setCallChecked(!callChecked)}
-                      className="form-checkbox"
-                    />
-                    <span>Confirm call and manual alert handling.</span>
-                  </label>
-                  <button
-                    onClick={handleManualNotifyConfirm}
-                    className="bg-[#237F94] text-white px-2 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-                  >
-                    Confirm
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+  <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
+    {alarm?.status === "NOTIFIED" ? (
+      // Layout for "NOTIFIED" status
+      <div className="flex justify-center w-full space-x-4">
+        <button
+          onClick={() =>
+            navigate("/live-feed", {
+              state: { id: alarm.id, alarm_state, camera_id: alarm.camera_id },
+            })
+          }
+          className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+        >
+          Look at the live feed
+        </button>
+        <button
+          onClick={() => updateAlarmStatus("RESOLVED")}
+          className="bg-[#EBB305] text-white px-6 py-3 rounded-lg hover:bg-[#FACC14] transition duration-200"
+        >
+          Resolve Alarm
+        </button>
+      </div>
+    ) : (
+      // Layout for "PENDING" och other statuses
+      <div className="flex justify-between w-full">
+        <button
+          onClick={() =>
+            navigate("/live-feed", {
+              state: { id: alarm.id, camera_id: alarm.camera_id },
+            })
+          }
+          className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+        >
+          Look at the live feed
+        </button>
+        <div>
+          <select
+            value={selectedUserId}
+            onChange={(e) => setSelectedUserId(e.target.value)}
+            className="border p-2 rounded-md"
+          >
+            <option value="">Select a guard</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.username}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={handleNotifyAndUpdate}
+            className="ml-2 bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+          >
+            Notify the Guard
+          </button>
+        </div>
+        <button
+          onClick={handleDismissAlert}
+          className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
+        >
+          Dismiss the alert
+        </button>
+      </div>
+    )}
+    {/* Notification Message and Manual Notify */}
+    <div className="mt-2 h-20 flex flex-col items-center">
+      {notificationMessage && (
+        <p
+          className={`text-center ${
+            notificationType === "success" ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {notificationMessage}
+        </p>
+      )}
+      {manualNotifyVisible && (
+        <div className="mt-2 flex space-x-2 items-center">
+          <label className="flex items-center space-x-1">
+            <input
+              type="checkbox"
+              checked={callChecked}
+              onChange={() => setCallChecked(!callChecked)}
+              className="form-checkbox"
+            />
+            <span>Confirm call and manual alert handling.</span>
+          </label>
+          <button
+            onClick={handleManualNotifyConfirm}
+            className="bg-[#237F94] text-white px-2 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+          >
+            Confirm
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+)}
       </div>
     </div>
   );
