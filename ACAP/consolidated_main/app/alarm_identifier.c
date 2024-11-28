@@ -195,7 +195,7 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
     json_t *classes = json_object_get(root, "classes");
     if (!json_is_array(classes) || json_array_size(classes) == 0)
     {
-        syslog(LOG_ERR, "JSON parsing error: No classes object in alarm data");
+        syslog(LOG_INFO, "No classes object in alarm data");
         json_decref(root);
         return false;
     }
@@ -286,8 +286,6 @@ static void on_message(const mdb_message_t *message, void *user_data)
 /**
  * Callback for writing HTTP response data from snapshot-related requests.
  *
- * Logs the HTTP response received from the camera.
- *
  * Parameters:
  *   contents (void*): Response data buffer.
  *   size (size_t): Size of each data element.
@@ -301,7 +299,6 @@ static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb,
 {
     (void)userp;
     size_t total_size = size * nmemb;
-    syslog(LOG_INFO, "Response from camera: %.*s", (int)total_size, (char *)contents);
     return total_size;
 }
 
