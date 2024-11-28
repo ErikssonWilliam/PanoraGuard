@@ -15,6 +15,11 @@ const Header = () => {
 
       {/* Right Icons (Notification and User) */}
       <div className="ml-auto flex space-x-4">
+      <Link to="/select-live-feed">
+          <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200">
+            Live Feed
+          </button>
+        </Link>
         <Link to="/operator">
           <img
             src={bellIcon}

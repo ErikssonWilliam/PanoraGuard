@@ -8,6 +8,7 @@ import AlarmDetailPage from "./pages/AlarmDetailPage";
 import LiveFeedPage from "./pages/LiveFeedPage";
 import OldAlarmsPage from "./pages/OldAlarmsPage";
 import ChangeUser from "./components/ChangeUser"; // Import the new component
+import SelectLiveFeedPage from "./pages/SelectLiveFeedPage";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/live-feed" element={<LiveFeedPage />} />
         <Route path="/old-alarms" element={<OldAlarmsPage />} />
         <Route path="/change-user" element={<ChangeUser />} /> {/* New Route */}
+        <Route path="/select-live-feed" element={<SelectLiveFeedPage />} />
       </Routes>
     </BrowserRouter>
   );
