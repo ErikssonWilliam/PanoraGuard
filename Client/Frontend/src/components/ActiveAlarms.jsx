@@ -16,7 +16,7 @@ const ActiveAlarms = ({ activeAlarms }) => {
       )}`}
     >
       {activeAlarms.length > 0 ? (
-        activeAlarms.map((alarm) => <AlarmRow key={alarm.id} id={alarm.id} />)
+        activeAlarms.map((alarm) => <AlarmRow key={alarm.id} alarm={alarm} />)
       ) : (
         <p className="text-gray-500 text-center">No active alarms found.</p>
       )}

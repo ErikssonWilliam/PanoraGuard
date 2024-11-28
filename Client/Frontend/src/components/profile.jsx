@@ -158,7 +158,9 @@ const ProfilePage = () => {
 
         {/* Change Password Section */}
         <div className="changePasswordSection w-1/3 bg-BG rounded-lg p-6 mx-10 mt-4">
-          <h2 className="text-lg font-semibold">Change Password</h2>
+          <h2 className="text-lg font-semibold text-NavyBlue">
+            Change Password
+          </h2>{" "}
           <form onSubmit={handlePasschangeSubmit}>
             <div className="mt-2">
               <label className="block text-gray-700">New Password</label>
@@ -185,24 +187,23 @@ const ProfilePage = () => {
             )}
             <button
               type="submit"
-              className="submitButton mt-4 bg-[#237F94] hover:bg-[#1E6D7C] text-white rounded-lg p-2 w-full"
+              className="submitButton mt-4 text-white bg-cyan-700 rounded-lg hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-600 p-2 w-full mb-4"
             >
               Submit
             </button>
           </form>
+          {/* Log Out Button */}
+          <div className="logoutButtonContainer mt-auto">
+            <button
+              onClick={() => {
+                handleLogout();
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold p-2 rounded-lg shadow-lg transition duration-300 w-full"
+            >
+              Log Out
+            </button>
+          </div>
         </div>
-      </div>
-
-      {/* Log Out Button */}
-      <div className="fixed bottom-4 right-4">
-        <button
-          onClick={() => {
-            handleLogout();
-          }}
-          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300"
-        >
-          Log Out
-        </button>
       </div>
     </div>
   );

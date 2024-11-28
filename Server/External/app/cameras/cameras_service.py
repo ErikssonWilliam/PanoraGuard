@@ -32,7 +32,7 @@ class CameraService:
 
             cameras_list.append(camera_dict)
 
-        return cameras_list
+        return jsonify(cameras_list)
 
     @staticmethod
     def locations() -> List[dict]:

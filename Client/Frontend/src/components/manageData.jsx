@@ -42,6 +42,9 @@ const ManageData = () => {
         });
       } catch (error) {
         console.error("Error fetching alert data:", error);
+         alert(
+          "There was an error fetching the data. Please check the console for details.",
+        );
       } finally {
         setLoading(false); // Set loading to false when data fetching is complete
       }

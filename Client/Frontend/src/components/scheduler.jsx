@@ -16,7 +16,6 @@ const Scheduler = ({ cameraId }) => {
   );
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
-  // State for the schedule
   const [schedule, setSchedule] = useState(
     Array.from({ length: 24 }, () => Array(7).fill(false)),
   );
@@ -24,10 +23,9 @@ const Scheduler = ({ cameraId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch schedule from the backend
   useEffect(() => {
     const fetchSchedule = async () => {
-      if (!cameraId) return; // Avoid fetching if cameraId is not set
+      if (!cameraId) return;
       setLoading(true);
       setError(null);
 
@@ -47,7 +45,6 @@ const Scheduler = ({ cameraId }) => {
 
         const data = await response.json();
 
-        // Ensure the schedule is properly parsed from the JSON structure
         if (data.schedule && data.schedule.week) {
           const transformedSchedule = Array.from(
             { length: 24 },
@@ -69,14 +66,22 @@ const Scheduler = ({ cameraId }) => {
     fetchSchedule();
   }, [cameraId, days]);
 
-  // Toggle cell state
   const toggleCell = (hourIndex, dayIndex) => {
     const newSchedule = [...schedule];
     newSchedule[hourIndex][dayIndex] = !newSchedule[hourIndex][dayIndex];
     setSchedule(newSchedule);
   };
 
-  // Transform schedule state into JSON format for the API
+  const toggleDay = (dayIndex) => {
+    const allSelected = schedule.every((hour) => hour[dayIndex]); // Check if all hours are selected for the day
+    const newSchedule = schedule.map((hour) => {
+      const updatedHour = [...hour];
+      updatedHour[dayIndex] = !allSelected; // Toggle all hours in the column
+      return updatedHour;
+    });
+    setSchedule(newSchedule);
+  };
+
   const transformScheduleToJSON = () => {
     const weekSchedule = {};
     days.forEach((day, dayIndex) => {
@@ -85,7 +90,6 @@ const Scheduler = ({ cameraId }) => {
     return { week: weekSchedule };
   };
 
-  // Handle PUT request to update schedule
   const updateSchedule = async () => {
     if (!cameraId) {
       alert("No camera selected");
@@ -93,7 +97,7 @@ const Scheduler = ({ cameraId }) => {
     }
 
     const scheduleJSON = {
-      schedule: transformScheduleToJSON(), // Wrap the transformed schedule in "schedule"
+      schedule: transformScheduleToJSON(),
     };
 
     console.log("Payload being sent to server:", scheduleJSON);
@@ -128,17 +132,33 @@ const Scheduler = ({ cameraId }) => {
 
   return (
     <div className="pt-4 bg-gray-100 min-h-screen">
-      <div className="overflow-auto">
+      <div className="pt-4">
+        <button
+          className="w-1/5 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg p-2"
+          onClick={updateSchedule}
+        >
+          Update
+        </button>
+      </div>
+      <div className="overflow-auto mt-4">
         <table className="table-auto text-sm border-collapse border border-gray-300 w-full">
           <thead>
             <tr>
               <th className="border border-gray-300 p-2 bg-gray-200"></th>
-              {days.map((day) => (
+              {days.map((day, dayIndex) => (
                 <th
                   key={day}
                   className="border border-gray-300 p-2 bg-gray-200 text-center"
                 >
-                  {day}
+                  <div className="flex flex-col items-center">
+                    {day}
+                    <button
+                      className="mt-2 w-4/5 bg-cyan-800 hover:bg-cyan-900 text-white rounded-sm px-0.5 py-0.5 font-normal"
+                      onClick={() => toggleDay(dayIndex)}
+                    >
+                      Select All
+                    </button>
+                  </div>
                 </th>
               ))}
             </tr>
@@ -154,7 +174,7 @@ const Scheduler = ({ cameraId }) => {
                     key={dayIndex}
                     className={`border border-gray-300 p-2 text-center cursor-pointer ${
                       schedule[hourIndex][dayIndex]
-                        ? "bg-blue-600 text-white"
+                        ? "bg-cyan-600 text-white"
                         : "bg-gray-100"
                     }`}
                     onClick={() => toggleCell(hourIndex, dayIndex)}
@@ -164,14 +184,6 @@ const Scheduler = ({ cameraId }) => {
             ))}
           </tbody>
         </table>
-      </div>
-      <div className="pt-4">
-        <button
-          className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
-          onClick={updateSchedule}
-        >
-          Update
-        </button>
       </div>
     </div>
   );
