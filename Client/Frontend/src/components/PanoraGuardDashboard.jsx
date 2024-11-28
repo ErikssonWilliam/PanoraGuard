@@ -103,13 +103,13 @@ function PanoraGuardDashboard() {
 
             <section className="flex flex-col space-y-6">
               <div className="text-center">
-                <h2 className="text-xl font-semibold text-slate-700 mb-2 uppercase tracking-wide">
+                <h2 className="text-xl font-semibold text-NavyBlue mb-2 uppercase tracking-wide">
                   Total Alerts
                 </h2>
-                <div className="text-4xl font-bold text-sky-900 mb-4">
+                <div className="text-4xl font-bold text-NavyBlue mb-4">
                   {loading ? "Loading..." : getTotalAlerts()}
                 </div>
-                <div className="text-sm text-slate-500">
+                <div className="text-sm text-NavyBlue">
                   from {filters.fromDate} to {filters.tillDate}
                 </div>
               </div>
@@ -117,7 +117,7 @@ function PanoraGuardDashboard() {
               <div className="h-px bg-slate-300 mb-6" />
 
               <div>
-                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                <h3 className="text-2xl font-semibold text-NavyBlue mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
                   Camera-wise Alarm Breakdown
                 </h3>
                 <CameraAlarmChart
@@ -127,8 +127,8 @@ function PanoraGuardDashboard() {
               </div>
 
               <div>
-                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
-                  Alarm Resolution Over Time
+                <h3 className="text-2xl font-semibold text-NavyBlue mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                  Day-wise Alarm Breakdown
                 </h3>
                 <AlarmResolutionChart
                   selectedLocation={filters.location}
