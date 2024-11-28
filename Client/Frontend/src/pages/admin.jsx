@@ -6,12 +6,14 @@ import {
   FaVideo,
   FaBell,
   FaDatabase,
+  FaUserEdit, // Add Change User icon
 } from "react-icons/fa"; // Import modern icons
 import CameraConfig from "../components/cameraConfig";
 import ManageData from "../components/manageData";
 import AddnewUser from "../components/AddUser";
 import { Link } from "react-router-dom";
 import AlertDetails from "../components/AlertDetails";
+import ChangeUser from "../components/ChangeUser"; // Import the ChangeUser component
 import userIcon from "../assets/user-01.png";
 import logo from "../assets/logo.png";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
@@ -20,6 +22,7 @@ import Notification from "../components/Notification.jsx";
 const Admin = () => {
   const [selectedComponent, setSelectedComponent] = useState("Camera");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Manage sidebar visibility
+
   if (!isUserLoggedInWithRole("ADMIN")) {
     return (
       <Notification
@@ -29,6 +32,7 @@ const Admin = () => {
       />
     );
   }
+
   const renderContent = () => {
     switch (selectedComponent) {
       case "AddUser":
@@ -53,6 +57,12 @@ const Admin = () => {
         return (
           <div className="md:p-8 xs:p-4">
             <ManageData />
+          </div>
+        );
+      case "ChangeUser":
+        return (
+          <div className="md:p-8 xs:p-4">
+            <ChangeUser />
           </div>
         );
       default:
@@ -153,6 +163,18 @@ const Admin = () => {
           >
             <FaDatabase className="text-lg" />
             <span>Manage Data</span>
+          </button>
+          <button
+            onClick={() => {
+              setSelectedComponent("ChangeUser");
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center gap-4 w-full px-4 py-2 rounded-lg hover:bg-gray-700 transition ${
+              selectedComponent === "ChangeUser" ? "bg-gray-700" : ""
+            }`}
+          >
+            <FaUserEdit className="text-lg" />
+            <span>Change User</span>
           </button>
         </div>
       </div>
