@@ -127,6 +127,7 @@ const AddnewUser = () => {
             {/** Add more options */}
             <option value="GUARD">GUARD</option>
             <option value="OPERATOR">OPERATOR</option>
+            <option value="MANAGER">MANAGER</option>
           </select>
         </div>
         <button

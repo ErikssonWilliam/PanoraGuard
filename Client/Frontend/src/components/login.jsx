@@ -112,7 +112,7 @@ const Login = () => {
                 onChange={handleChange}
                 placeholder="Please enter your password"
                 className="mt-1 block w-full px-4 py-2 pr-10 border border-ButtonsBlue rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
+              />
               <span
                 className="absolute right-4 top-9 text-gray-500 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
