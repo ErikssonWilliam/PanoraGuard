@@ -32,7 +32,6 @@
 #define LAN_URL "http://192.168.1.104:5100/alarms/redirect"
 
 #define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // Endpoint for enabling snapshots
-// -----------------------------------------
 
 /**
  * Structure to hold channel topic and source information.
@@ -104,7 +103,7 @@ static void post_to_external(const char *data)
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // detailed logging
+        //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // detailed logging
 
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
@@ -437,9 +436,6 @@ static void enable_best_snapshot(void)
     }
     free(credentials);
 }
-
-
-// ------------------------------------------------------------------
 
 static void on_done_subscriber_create(const mdb_error_t *error, void *user_data)
 {
