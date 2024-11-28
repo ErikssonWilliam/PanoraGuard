@@ -107,14 +107,14 @@ const AlarmResolutionChart = ({
         <Area
           type="monotone"
           dataKey="resolved"
-          stroke="#155E75" // Dark cyan for resolved
-          fill="#155E75"
+          stroke="#003249" // Dark cyan for resolved
+          fill="#003249"
         />
         <Area
           type="monotone"
           dataKey="unresolved"
-          stroke="#38B2AC" // Vibrant cyan for unresolved
-          fill="#38B2AC"
+          stroke="#007ea7" // Vibrant cyan for unresolved
+          fill="#007ea7"
         />
       </AreaChart>
     </ResponsiveContainer>

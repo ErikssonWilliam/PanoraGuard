@@ -124,7 +124,7 @@ const Scheduler = ({ cameraId }) => {
     <div className="pt-4 bg-gray-100 min-h-screen">
       <div className="pt-4">
         <button
-          className="w-1/5 bg-NavyBlue text-white rounded-lg p-2"
+          className="w-1/5 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg p-2"
           onClick={updateSchedule}
         >
           Update
@@ -143,7 +143,7 @@ const Scheduler = ({ cameraId }) => {
                   <div className="flex flex-col items-center">
                     {day}
                     <button
-                      className="mt-2 w-4/5 bg-NavyBlue text-white rounded-lg px-0.5 py-0.5"
+                      className="mt-2 w-4/5 bg-cyan-800 hover:bg-cyan-900 text-white rounded-sm px-0.5 py-0.5 font-normal"
                       onClick={() => toggleDay(dayIndex)}
                     >
                       Select All
@@ -164,7 +164,7 @@ const Scheduler = ({ cameraId }) => {
                     key={dayIndex}
                     className={`border border-gray-300 p-2 text-center cursor-pointer ${
                       schedule[hourIndex][dayIndex]
-                        ? "bg-blue-600 text-white"
+                        ? "bg-cyan-600 text-white"
                         : "bg-gray-100"
                     }`}
                     onClick={() => toggleCell(hourIndex, dayIndex)}

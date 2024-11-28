@@ -73,7 +73,7 @@ const Login = () => {
           >
             <h2 className="text-xl font-bold text-NavyBlue mb-6">
               <div className="max-w-xs text-center">
-                Enter your username and password
+                Please enter your login details
               </div>
             </h2>
 
@@ -124,7 +124,7 @@ const Login = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-ButtonsBlue text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+              className="w-full bg-cyan-700 text-white py-2 px-4 rounded-md hover:bg-cyan-800 transition-colors"
             >
               Submit
             </button>

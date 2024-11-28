@@ -195,12 +195,12 @@ const CameraConfig = () => {
             max="100"
             value={confidenceLevel}
             onChange={(e) => setConfidenceLevel(e.target.value)}
-            className="w-full"
+            className="w-full accent-cyan-700"
           />
           <span className="text-gray-600">{confidenceLevel}%</span>
         </div>
         <button
-          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-2 rounded-md transition"
           onClick={updateConfidenceLevel}
         >
           Update Confidence
@@ -223,12 +223,12 @@ const CameraConfig = () => {
             max="100"
             value={brightnessLevel}
             onChange={(e) => setBrightnessLevel(e.target.value)}
-            className="w-full"
+            className="w-full accent-cyan-700"
           />
           <span className="text-gray-600">{brightnessLevel}%</span>
         </div>
         <button
-          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-2 rounded-md transition"
           onClick={updateBrightnessLevel}
         >
           Update Brightness
