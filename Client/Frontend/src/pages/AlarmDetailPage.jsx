@@ -190,7 +190,7 @@ const AlarmDetailPage = () => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.put(
-        `${externalURL}/alarms/${id}/status`,
+        `${externalURL}/alarms/${alarm.id}/status`,
         {
           status: newStatus,
           guard_id: guardID, // Include guard_id in the request payload
