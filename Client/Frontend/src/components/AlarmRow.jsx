@@ -66,23 +66,23 @@ const AlarmRow = ({ alarm }) => {
               alarm.status === "PENDING"
                 ? "This alarm is currently active"
                 : alarm.status === "NOTIFIED"
-                ? "This alarm is under investigation"
-                : alarm.status === "RESOLVED"
-                ? "This alarm has been resolved"
-                : alarm.status === "IGNORED"
-                ? "This alarm has been ignored"
-                : "Unknown status"
+                  ? "This alarm is under investigation"
+                  : alarm.status === "RESOLVED"
+                    ? "This alarm has been resolved"
+                    : alarm.status === "IGNORED"
+                      ? "This alarm has been ignored"
+                      : "Unknown status"
             }
           >
             {alarm.status === "PENDING"
               ? "Active Alarm"
               : alarm.status === "NOTIFIED"
-              ? "Notified"
-              : alarm.status === "RESOLVED"
-              ? "Resolved Alarm"
-              : alarm.status === "IGNORED"
-              ? "Ignored"
-              : "Unknown"}
+                ? "Notified"
+                : alarm.status === "RESOLVED"
+                  ? "Resolved Alarm"
+                  : alarm.status === "IGNORED"
+                    ? "Ignored"
+                    : "Unknown"}
           </span>
 
           <button

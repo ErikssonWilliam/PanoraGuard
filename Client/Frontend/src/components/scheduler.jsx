@@ -12,12 +12,12 @@ const Scheduler = ({ cameraId }) => {
       "Saturday",
       "Sunday",
     ],
-    []
+    [],
   );
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
 
   const [schedule, setSchedule] = useState(
-    Array.from({ length: 24 }, () => Array(7).fill(false))
+    Array.from({ length: 24 }, () => Array(7).fill(false)),
   );
 
   const [loading, setLoading] = useState(true);
@@ -41,7 +41,7 @@ const Scheduler = ({ cameraId }) => {
           const transformedSchedule = Array.from(
             { length: 24 },
             (_, hourIndex) =>
-              days.map((day) => data.schedule.week[day][hourIndex] === 1)
+              days.map((day) => data.schedule.week[day][hourIndex] === 1),
           );
           setSchedule(transformedSchedule);
         } else {
@@ -103,7 +103,7 @@ const Scheduler = ({ cameraId }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(scheduleJSON),
-        }
+        },
       );
 
       if (!response.ok) {

@@ -41,7 +41,7 @@ const CameraConfig = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
-        }
+        },
       );
       const data = await response.json();
 
@@ -100,14 +100,14 @@ const CameraConfig = () => {
           body: JSON.stringify({
             confidence: confidenceLevel / 100,
           }),
-        }
+        },
       );
 
       if (!response.ok) {
         throw new Error("Failed to update confidence level");
       }
       cameras.filter(
-        (camera) => camera.id === selectedCameraID
+        (camera) => camera.id === selectedCameraID,
       )[0].condidence_threshold = confidenceLevel / 100;
       alert("Confidence level updated successfully");
     } catch (error) {
@@ -146,7 +146,7 @@ const CameraConfig = () => {
     setSelectedCameraID(cameraId);
     setConfidenceLevel(
       cameras.filter((camera) => camera.id === cameraId)[0]
-        .condidence_threshold * 100
+        .condidence_threshold * 100,
     );
     fetchBrightnessLevel(cameraId);
   };

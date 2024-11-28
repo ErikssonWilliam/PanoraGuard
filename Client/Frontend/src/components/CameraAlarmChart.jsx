@@ -25,7 +25,7 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
 
       axios
         .get(
-          `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`
+          `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
         )
         .then((response) => {
           const alarms = response.data;
@@ -34,10 +34,10 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
           // Ensure alarms data is present and process it
           if (alarms && alarms.length > 0) {
             const addressed = alarms.filter(
-              (alarm) => alarm.status === "RESOLVED"
+              (alarm) => alarm.status === "RESOLVED",
             ).length;
             const ignored = alarms.filter(
-              (alarm) => alarm.status === "IGNORED"
+              (alarm) => alarm.status === "IGNORED",
             ).length;
 
             // Prepare data for the chart
