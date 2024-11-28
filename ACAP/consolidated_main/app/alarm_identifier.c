@@ -88,7 +88,7 @@ static size_t write_callback(void *contents, size_t size, size_t nmemb, void *us
  * Parameters:
  *   data (const char*): JSON-formatted data to send.
  */
-static void post_to_external(const char *data)
+static void post_alarms(const char *data)
 {
     CURL *curl;
     CURLcode res;
@@ -273,7 +273,7 @@ static void on_message(const mdb_message_t *message, void *user_data)
 
     // Convert JSON object to string
     char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
-    post_to_external(json_str);
+    post_alarms(json_str);
 
     // Free allocated resources
     free(json_str);
