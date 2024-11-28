@@ -24,8 +24,8 @@ const AlarmDetailPage = () => {
 
   const fetchOperatorDetails = async (operatorId) => {
     // Fetches operator details by ID and sets the username or "N/A" on error.
-    const token = localStorage.getItem("accessToken");
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await axios.get(`${externalURL}/users/${operatorId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,8 +50,8 @@ const AlarmDetailPage = () => {
     sessionStorage.removeItem("alarmData");
 
     const fetchAlarmDetails = async () => {
-      const token = localStorage.getItem("accessToken");
       try {
+        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${externalURL}/alarms/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -95,8 +95,14 @@ const AlarmDetailPage = () => {
 
     const fetchAlarmImage = async () => {
       try {
+        const token = localStorage.getItem("accessToken");
         const imageResponse = await axios.get(
           `${externalURL}/alarms/${id}/image`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
@@ -111,7 +117,12 @@ const AlarmDetailPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${externalURL}/users/guards`);
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(`${externalURL}/users/guards`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setUsers(response.data);
       } catch (err) {
         console.error("Error fetching guards:", err);
@@ -143,6 +154,7 @@ const AlarmDetailPage = () => {
     }
   }, [location.state]);
 
+  //I didnt touch this since I did not know if it should be included - Gustav A
   //Gustav and Alinas attempt to do functions to avoid code duplications.
   const stopExternalSpeaker = async () => {
     try {
@@ -176,11 +188,21 @@ const AlarmDetailPage = () => {
     }
 
     try {
-      const response = await axios.put(`${externalURL}/alarms/${id}/status`, {
-        status: newStatus,
-        guard_id: guardID, // Include guard_id in the request payload
-        operator_id: operatorId, // Include operator_id from localStorage
-      });
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        `${externalURL}/alarms/${id}/status`,
+        {
+          status: newStatus,
+          guard_id: guardID, // Include guard_id in the request payload
+          operator_id: operatorId, // Include operator_id from localStorage
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
         status: response.data.status,
@@ -220,13 +242,14 @@ const AlarmDetailPage = () => {
 
   const notifyGuard = async (guardID) => {
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${externalURL}/alarms/notify/${guardID}/${id}`,
         {},
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );

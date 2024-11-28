@@ -15,16 +15,19 @@ def get_alarms():
 
 
 @alarms_bp.route("/type/<string:type>", methods=["GET"])
+@jwt_required()
 def get_active_alarms(type):
     return AlarmController.get_active_alarms(type)
 
 
 @alarms_bp.route("/<string:alarm_ID>/image", methods=["GET"])
+@jwt_required()
 def get_alarm_image(alarm_ID):
     return AlarmController.get_alarm_image(alarm_ID)
 
 
 @alarms_bp.route("byoperator/<string:operator>", methods=["GET"])
+@jwt_required()
 def get_alarm_by_operator(operator):
     return AlarmController.get_alarm_by_operator(operator)
 
@@ -52,6 +55,7 @@ def notify_guard(guard_ID, alarm_ID):
 
 
 @alarms_bp.route("/add", methods=["POST"])
+@jwt_required()
 def add_alarm():
     return AlarmController.add_alarm()
 
@@ -69,6 +73,7 @@ def get_alarm_by_id(alarm_id):
 
 
 @alarms_bp.route("/<string:alarm_id>", methods=["DELETE"])
+@jwt_required()
 def delete_alarm_by_id(alarm_id):
     return AlarmController.delete_alarm_by_id(alarm_id)
 
