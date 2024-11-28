@@ -33,25 +33,25 @@ const Admin = () => {
     switch (selectedComponent) {
       case "AddUser":
         return (
-          <div className="p-8">
+          <div className="md:p-8 xs:p-4">
             <AddnewUser />
           </div>
         );
       case "Camera":
         return (
-          <div className="p-8">
+          <div className="md:p-8 xs:p-4">
             <CameraConfig />
           </div>
         );
       case "OperatorView":
         return (
-          <div className="p-8">
+          <div className="md:p-8 xs:p-4">
             <AlertDetails />
           </div>
         );
       case "ManageData":
         return (
-          <div className="p-8">
+          <div className="md:p-8 xs:p-4">
             <ManageData />
           </div>
         );
@@ -70,6 +70,7 @@ const Admin = () => {
         >
           <FaBars />
         </button>
+
         {/* Centered Logo */}
         <img
           src={logo}
@@ -89,22 +90,11 @@ const Admin = () => {
         </div>
       </header>
 
-      {/* <div className="bg-NavyBlue text-white p-4 flex justify-between items-center shadow-md">
-
-        <a href="/" className="font-poppins text-xl font-semibold">
-          panoraGuard
-        </a>
-        <Link to="/profile">
-          <img src={user} alt="userlogo" className="h-8 w-8 rounded-full" />
-        </Link>
-      </div> */}
-
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-NavyBlue text-white p-6 z-10 transition-transform transform ${
+        className={`fixed md:top-0 xs:inset-0 xs:w-full md:w-[280px] left-0 xs:h-auto bg-NavyBlue text-white p-6 z-10 md:transition-transform md:transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } shadow-lg`}
-        style={{ width: "280px" }}
       >
         {/* Close Icon */}
         <div className="flex justify-between items-center mb-6">

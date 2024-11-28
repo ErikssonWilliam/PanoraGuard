@@ -77,20 +77,19 @@ python run.py
 When the external server starts, **it creates mock data to fill up the database.**  
 This means that you can log in from the start using the following credentials:
 
-- `admin` - `admin` (username - password for ADMIN)  
-- `operator` - `operator` (username - password for OPERATOR)  
+- `admin` - `admin` (username - password for ADMIN)
+- `operator` - `operator` (username - password for OPERATOR)
 - `manager` - `manager` (username - password for MANAGER)
 
-The mock data also fills the database with alarms in order to view alarm history and manage data as the manager.  
+The mock data also fills the database with alarms in order to view alarm history and manage data as the manager.
 
 This process repeats each time you restart the external server. If you don’t want too many alarms, **comment out line 15** in `Server/External/run.py` (`#create_mock_data()`) after starting the server for the first time.
 
 ### Important Note 2
 
-Debug mode is set to `False`. This means that any code changes require restarting the server for those changes to apply.  
+Debug mode is set to `False`. This means that any code changes require restarting the server for those changes to apply.
 
 This applies to both the **External server** and the **LAN server**.
-
 
 ## 3. LINTING AND FORMATTING
 
@@ -121,7 +120,7 @@ ruff format       # Format the code'
 4. Automate Formatting and Linting with **Pre-Commit**:
    ```bash
     pip install pre-commit
-    pre-commit install 
+    pre-commit install
    ```
    With Pre-Commit installed, it will **automatically format and lint** your code before each commit.
 
@@ -154,14 +153,14 @@ To adjust the mock data populated in the database on each server start:
 
 If changes occur that affect your local database and errors arise, try resetting it using one of the following scripts:
 
-- `Server/External/reset_database.py`  
-- `Server/External/reset_database_windows.py`  
+- `Server/External/reset_database.py`
+- `Server/External/reset_database_windows.py`
 
 To reset, navigate to the `Server/External/` directory and run:
 
 ```bash
 python reset_database.py # for macOS
 python reset_database_windows.py # for Windows
-````
+```
 
 This should resolve any issues related to the database.
