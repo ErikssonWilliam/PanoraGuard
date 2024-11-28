@@ -34,7 +34,7 @@ const ChangeUser = () => {
                 headers: {
                   Authorization: `Bearer ${accessToken}`,
                 },
-              }
+              },
             );
 
             return {
@@ -52,7 +52,7 @@ const ChangeUser = () => {
               role: "Unknown", // Fallback if role fetch fails
             };
           }
-        })
+        }),
       );
 
       setUsers(userWithRoles);
@@ -66,7 +66,7 @@ const ChangeUser = () => {
   // Delete user by ID
   const handleDelete = async (userId) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this user?",
     );
     if (!confirmDelete) return;
 
@@ -110,13 +110,15 @@ const ChangeUser = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`, // Pass token in Authorization header
           },
-        }
+        },
       );
 
       if (response.status === 200) {
-        setUsers(users.map((user) => 
-          user.id === userId ? { ...user, role: newRole } : user
-        )); // Update the user role in the local state
+        setUsers(
+          users.map((user) =>
+            user.id === userId ? { ...user, role: newRole } : user,
+          ),
+        ); // Update the user role in the local state
         alert("Role updated successfully.");
       }
     } catch (error) {
@@ -154,10 +156,12 @@ const ChangeUser = () => {
                     <strong>Email:</strong> {user.email}
                   </p>
                   <p className="text-sm text-gray-600">
-                    <strong>Role:</strong> 
+                    <strong>Role:</strong>
                     <select
                       value={user.role}
-                      onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                      onChange={(e) =>
+                        handleRoleChange(user.id, e.target.value)
+                      }
                       className="ml-2 px-2 py-1 border rounded-md"
                     >
                       <option value="OPERATOR">Operator</option>
