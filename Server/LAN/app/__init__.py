@@ -4,6 +4,7 @@ from .database import db
 from .testRoutes import test_bp
 from .brightness import br_bp
 from .livestream import ls_bp
+from .alarms import al_bp
 
 
 def create_app():
@@ -24,6 +25,6 @@ def create_app():
     app.register_blueprint(test_bp, url_prefix="/test")
     app.register_blueprint(br_bp, url_prefix="/brightness")
     app.register_blueprint(ls_bp, url_prefix="/livestream")
-    app.register_blueprint(ls_bp, url_prefix="/alarms")
+    app.register_blueprint(al_bp, url_prefix="/alarms")
 
     return app

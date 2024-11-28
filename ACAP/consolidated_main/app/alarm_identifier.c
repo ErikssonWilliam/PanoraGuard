@@ -29,9 +29,7 @@
 // Define constants
 #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
 // #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
-// #define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add" // Local external server
-//#define EXTERNAL_URL "https://company3-externalserver.azurewebsites.net/alarms/add" // Cloud external server
-#define EXTERNAL_URL "https://13.69.228.9/alarms/add" // cloud external as ip adress
+#define LAN_URL "http://192.168.1.104:5100/alarms/redirect"
 
 #define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // Endpoint for enabling snapshots
 // -----------------------------------------
@@ -101,15 +99,12 @@ static void post_to_external(const char *data)
         struct curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "Accept: application/json");
         headers = curl_slist_append(headers, "Content-Type: application/json");
-        headers = curl_slist_append(headers, "Host: company3-externalserver.azurewebsites.net"); // clarify host for deployed ip adress
 
-        curl_easy_setopt(curl, CURLOPT_URL, EXTERNAL_URL);
+        curl_easy_setopt(curl, CURLOPT_URL, LAN_URL);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // detailed logging
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); // --insecure option
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L); // --insecure option
 
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)

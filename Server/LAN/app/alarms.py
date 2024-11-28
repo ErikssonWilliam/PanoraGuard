@@ -2,9 +2,9 @@ from flask import Blueprint, request, jsonify
 import requests
 from requests.auth import HTTPBasicAuth
 
-br_bp = Blueprint("alarms", __name__)
+al_bp = Blueprint("alarms", __name__)
 
-@br_bp.route("/redirect", methods=["POST"])
+@al_bp.route("/redirect", methods=["POST"])
 def redirect_alarm():
     alarm_data = request.get_json()
     if not alarm_data:
