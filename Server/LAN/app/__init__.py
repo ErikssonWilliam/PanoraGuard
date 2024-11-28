@@ -24,5 +24,6 @@ def create_app():
     app.register_blueprint(test_bp, url_prefix="/test")
     app.register_blueprint(br_bp, url_prefix="/brightness")
     app.register_blueprint(ls_bp, url_prefix="/livestream")
+    app.register_blueprint(ls_bp, url_prefix="/alarms")
 
     return app
