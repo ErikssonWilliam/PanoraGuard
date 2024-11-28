@@ -75,8 +75,8 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
         <Legend
           formatter={(value) => <span className="text-black">{value}</span>}
         />
-        <Bar dataKey="addressed" stackId="a" fill="#155E75" />
-        <Bar dataKey="ignored" stackId="a" fill="#38B2AC" />
+        <Bar dataKey="addressed" stackId="a" fill="#003249" />
+        <Bar dataKey="ignored" stackId="a" fill="#007ea7" />
       </BarChart>
     </ResponsiveContainer>
   );

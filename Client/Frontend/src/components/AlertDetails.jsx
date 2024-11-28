@@ -105,7 +105,7 @@ const AlertDetails = () => {
     <div className="p-4 flex flex-col space-y-6">
       <div className="ml-10">
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
+          <h2 className="text-2xl font-semibold mb-4 text-NavyBlue">
             Active Alarms:
           </h2>
           <ActiveAlarms activeAlarms={activeAlarms} />
@@ -114,7 +114,7 @@ const AlertDetails = () => {
 
       <div className="ml-10">
         <section>
-          <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#2E5984]">
+          <h2 className="text-2xl font-semibold mt-6 mb-4 text-NavyBlue">
             Old Alarms:
           </h2>
           <OldAlarms

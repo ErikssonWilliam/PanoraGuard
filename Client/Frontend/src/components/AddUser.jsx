@@ -131,7 +131,7 @@ const AddnewUser = () => {
           </select>
         </div>
         <button
-          className="submitButton mt-4 bg-[#237F94] hover:bg-[#1E6D7C] text-white rounded-lg p-2 w-full"
+          className="submitButton mt-4 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg p-2 w-full"
           onClick={handleSubmit}
         >
           Submit
