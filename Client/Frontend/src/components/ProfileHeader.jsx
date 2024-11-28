@@ -24,15 +24,18 @@ const Header = ({ userInfo, setErrorMessage }) => {
 
   return (
     <header className="relative flex items-center p-4 bg-[#F5F7FA] border-b">
-      {/* Centered Logo */}
+      {/* Left Spacer */}
+      <div className="w-6"></div>
+
+      {/* Centered Logo with Manual Left Shift */}
       <img
         src={logo}
         alt="PanoraGuard logo"
-        className="absolute left-1/2 transform -translate-x-1/2 h-5"
+        className="absolute left-1/2 transform -translate-x-[56%] h-5"
       />
 
       {/* Right Notification Icon */}
-      <div className="ml-auto">
+      <div className="ml-auto w-6 flex justify-end">
         <button onClick={navigateToHome}>
           <img
             src={bellIcon}
