@@ -125,9 +125,9 @@ const ProfilePage = () => {
       {/* Main Content Area */}
       <div className="mainContent grid lg:grid-cols-5  p-4 pt-10 ">
         {/* User Information Section */}
-        <div className="userInfoSection lg:col-span-3 xs:grid-cols-3 grid  bg-white rounded-lg lg:h-[80vh] xs:h-auto">
+        <div className="userInfoSection lg:col-span-3 xs:flex-row flex  bg-white rounded-lg lg:h-[80vh] xs:h-auto">
           {/* Left Side - Blue Part of User Info */}
-          <div className="blueSection xs:col-span-1 bg-NavyBlue p-2 justify-center items-start relative rounded-tl-lg rounded-bl-lg">
+          <div className="blueSection xs:flex-initial w-52 bg-NavyBlue p-2 justify-center items-start relative rounded-tl-lg rounded-bl-lg">
             <div className="profilePicture w-48 h-48 bg-gray-300 rounded-full overflow-hidden absolute top-1/2 transform -translate-y-1/2">
               <img
                 src={profileImage}
@@ -138,7 +138,7 @@ const ProfilePage = () => {
           </div>
 
           {/* Right Side - White Part of User Info */}
-          <div className="whiteSection xs:col-span-2 bg-LightGray p-6 relative rounded-tr-lg rounded-br-lg">
+          <div className="whiteSection xs:flex-1 bg-LightGray p-6 relative rounded-tr-lg rounded-br-lg">
             <div className="greeting absolute top-6 left-6">
               <h2 className="text-3xl font-bold text-NavyBlue">
                 Hello {userInfo.username},
