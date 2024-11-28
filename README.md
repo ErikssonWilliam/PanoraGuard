@@ -5,8 +5,9 @@ Welcome to **PanoraGuard**, a security surveillance system developed by **Compan
 ---
 
 ## Who are we?
-Check in our company website: 
-https://company-members-rajag969-b760ce3a61d886c9508e8e542a6936a0f6ede1.gitlab-pages.liu.se/ 
+
+Check in our company website:
+https://company-members-rajag969-b760ce3a61d886c9508e8e542a6936a0f6ede1.gitlab-pages.liu.se/
 
 ---
 
@@ -15,6 +16,7 @@ https://company-members-rajag969-b760ce3a61d886c9508e8e542a6936a0f6ede1.gitlab-p
 PanoraGuard is an advanced security surveillance solution combining **hardware** and **software** to provide automated alarms and detailed monitoring. It is designed to enhance security during periods of low activity or restricted access.
 
 ### Main Features:
+
 - **Automated Alarms**: Triggers alerts when specific objects are identified with a set confidence level.
 - **Operator Notifications**: Displays a snapshot of the object, alarm details, and a live camera feed for real-time decision-making.
 - **Alarm Actions**: Allows operators to either dismiss false alarms or notify guards for intervention.
@@ -30,11 +32,13 @@ PanoraGuard is an advanced security surveillance solution combining **hardware**
 PanoraGuard integrates both **hardware** and **software** components:
 
 ### Hardware:
+
 - **AXIS Cameras**: Object detection and alarm triggering.
 - **Speaker System**: For audible warnings.
 - **LAN Server (Raspberry Pi)**: Local management of cameras and system configurations.
 
 ### Software:
+
 1. **ACAP**: Custom-built applications on AXIS cameras for object detection.
 2. **Client**: A GUI for operators, admin and managers to monitor and manage alarms.
 3. **External Server**: Cloud-based system for alarm handling, business logic, and database management.
@@ -45,6 +49,7 @@ PanoraGuard integrates both **hardware** and **software** components:
 ## How to Run the System
 
 ### Running Locally
+
 1. **Clone the Repository** and follow setup instructions in `/Client` and `/Server` directories.
 2. Connect hardware:
    - Cameras and speakers to a network switch.
@@ -56,6 +61,7 @@ PanoraGuard integrates both **hardware** and **software** components:
 6. Open the client application in your browser to monitor the system.
 
 ### Running in the Cloud
+
 1. Set up cameras and speakers on the same network as the **LAN Server** running on a Raspberry Pi.
 2. Install the ACAP with the cloud server's endpoint (see `/ACAP` README).
 3. Start the LAN Server on the Raspberry Pi.
@@ -65,6 +71,7 @@ PanoraGuard integrates both **hardware** and **software** components:
 ---
 
 ## Additional Information
+
 - Detailed setup instructions for each component are available in their respective `/README` files:
   - `/ACAP`
   - `/Client`

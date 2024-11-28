@@ -119,15 +119,15 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="profilePage flex flex-col min-h-screen">
+    <div className="profilePage w-full h-screen">
       <Header userInfo={userInfo} setErrorMessage={setErrorMessage} />
 
       {/* Main Content Area */}
-      <div className="mainContent flex flex-1 p-4">
+      <div className="mainContent grid lg:grid-cols-5  p-4 pt-10 ">
         {/* User Information Section */}
-        <div className="userInfoSection flex-1 flex bg-white rounded-lg mx-10 mt-4 relative">
+        <div className="userInfoSection lg:col-span-3 xs:grid-cols-3 grid  bg-white rounded-lg lg:h-[80vh] xs:h-auto">
           {/* Left Side - Blue Part of User Info */}
-          <div className="blueSection w-1/4 bg-NavyBlue p-2 flex flex-col justify-center items-start relative rounded-tl-lg rounded-bl-lg">
+          <div className="blueSection xs:col-span-1 bg-NavyBlue p-2 justify-center items-start relative rounded-tl-lg rounded-bl-lg">
             <div className="profilePicture w-48 h-48 bg-gray-300 rounded-full overflow-hidden absolute top-1/2 transform -translate-y-1/2">
               <img
                 src={profileImage}
@@ -138,7 +138,7 @@ const ProfilePage = () => {
           </div>
 
           {/* Right Side - White Part of User Info */}
-          <div className="whiteSection w-3/4 bg-LightGray p-6 flex flex-col relative rounded-tr-lg rounded-br-lg">
+          <div className="whiteSection xs:col-span-2 bg-LightGray p-6 relative rounded-tr-lg rounded-br-lg">
             <div className="greeting absolute top-6 left-6">
               <h2 className="text-3xl font-bold text-NavyBlue">
                 Hello {userInfo.username},
@@ -157,10 +157,8 @@ const ProfilePage = () => {
         </div>
 
         {/* Change Password Section */}
-        <div className="changePasswordSection w-1/3 bg-BG rounded-lg p-6 mx-10 mt-4">
-          <h2 className="text-lg font-semibold text-NavyBlue">
-            Change Password
-          </h2>{" "}
+        <div className="changePasswordSection lg:col-span-2 xs:row-span-1 pt-20 bg-BG rounded-lg p-6 mx-10 mt-4">
+          <h2 className="text-lg font-semibold">Change Password</h2>
           <form onSubmit={handlePasschangeSubmit}>
             <div className="mt-2">
               <label className="block text-gray-700">New Password</label>
