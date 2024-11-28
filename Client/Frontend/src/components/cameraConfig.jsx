@@ -90,7 +90,6 @@ const CameraConfig = () => {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
         `${externalURL}/cameras/${selectedCameraID}/confidence`,
-        `${externalURL}/cameras/${selectedCameraID}/confidence`,
         {
           method: "PUT",
           headers: {
