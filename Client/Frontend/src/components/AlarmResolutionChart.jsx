@@ -30,7 +30,7 @@ const AlarmResolutionChart = ({
       // Fetch alarms data
       axios
         .get(
-          `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
+          `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`
         )
         .then((response) => {
           const alarms = response.data;
@@ -49,7 +49,7 @@ const AlarmResolutionChart = ({
           // Create an array of all dates from fromDate to tillDate
           const dateRange = generateDateRange(
             new Date(fromDate),
-            new Date(tillDate),
+            new Date(tillDate)
           );
 
           // Prepare data structure with 0 for resolved and unresolved alarms for each date
@@ -58,14 +58,14 @@ const AlarmResolutionChart = ({
             const dayAlarms = filteredAlarms.filter(
               (alarm) =>
                 new Date(alarm.timestamp).toISOString().split("T")[0] ===
-                dateStr,
+                dateStr
             );
 
             const resolved = dayAlarms.filter(
-              (alarm) => alarm.status === "RESOLVED",
+              (alarm) => alarm.status === "RESOLVED"
             ).length;
             const unresolved = dayAlarms.filter(
-              (alarm) => alarm.status !== "RESOLVED",
+              (alarm) => alarm.status !== "RESOLVED"
             ).length;
 
             return { date: dateStr, resolved, unresolved };
@@ -107,14 +107,14 @@ const AlarmResolutionChart = ({
         <Area
           type="monotone"
           dataKey="resolved"
-          stroke="#155E75" // Dark cyan for resolved
-          fill="#155E75"
+          stroke="#003249" // Dark cyan for resolved
+          fill="#003249"
         />
         <Area
           type="monotone"
           dataKey="unresolved"
-          stroke="#38B2AC" // Vibrant cyan for unresolved
-          fill="#38B2AC"
+          stroke="#007ea7" // Vibrant cyan for unresolved
+          fill="#007ea7"
         />
       </AreaChart>
     </ResponsiveContainer>

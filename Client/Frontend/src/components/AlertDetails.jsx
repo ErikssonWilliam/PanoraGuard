@@ -12,7 +12,7 @@ const AlertDetails = () => {
 
   const sortByTimestamp = useCallback(
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
-    [],
+    []
   );
 
   // Sort by status and timestamp
@@ -31,7 +31,7 @@ const AlertDetails = () => {
       // Process active alarms
       const active = allAlarms
         .filter(
-          (alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED",
+          (alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED"
         )
         .sort(sortByStatusAndTimestamp);
       setActiveAlarms(active);
@@ -43,7 +43,7 @@ const AlertDetails = () => {
             (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
             alarm.operator_id !== null &&
             alarm.operator_id !== "N/A" &&
-            alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b",
+            alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b"
         )
         .sort(sortByTimestamp)
         .slice(0, 10);
@@ -76,13 +76,13 @@ const AlertDetails = () => {
     (newAlarm) => {
       setActiveAlarms((prevAlarms) => {
         const isDuplicate = prevAlarms.some(
-          (alarm) => alarm.id === newAlarm.id,
+          (alarm) => alarm.id === newAlarm.id
         );
         return isDuplicate ? prevAlarms : [...prevAlarms, newAlarm];
       });
       startExternalSpeaker();
     },
-    [startExternalSpeaker],
+    [startExternalSpeaker]
   );
 
   // Initialize the component
@@ -105,7 +105,7 @@ const AlertDetails = () => {
     <div className="p-4 flex flex-col space-y-6">
       <div className="ml-10">
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
+          <h2 className="text-2xl font-semibold mb-4 text-NavyBlue">
             Active Alarms:
           </h2>
           <ActiveAlarms activeAlarms={activeAlarms} />
@@ -114,7 +114,7 @@ const AlertDetails = () => {
 
       <div className="ml-10">
         <section>
-          <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#2E5984]">
+          <h2 className="text-2xl font-semibold mt-6 mb-4 text-NavyBlue">
             Old Alarms:
           </h2>
           <OldAlarms

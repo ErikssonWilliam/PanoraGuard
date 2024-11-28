@@ -66,28 +66,28 @@ const AlarmRow = ({ alarm }) => {
               alarm.status === "PENDING"
                 ? "This alarm is currently active"
                 : alarm.status === "NOTIFIED"
-                  ? "This alarm is under investigation"
-                  : alarm.status === "RESOLVED"
-                    ? "This alarm has been resolved"
-                    : alarm.status === "IGNORED"
-                      ? "This alarm has been ignored"
-                      : "Unknown status"
+                ? "This alarm is under investigation"
+                : alarm.status === "RESOLVED"
+                ? "This alarm has been resolved"
+                : alarm.status === "IGNORED"
+                ? "This alarm has been ignored"
+                : "Unknown status"
             }
           >
             {alarm.status === "PENDING"
               ? "Active Alarm"
               : alarm.status === "NOTIFIED"
-                ? "Notified"
-                : alarm.status === "RESOLVED"
-                  ? "Resolved Alarm"
-                  : alarm.status === "IGNORED"
-                    ? "Ignored"
-                    : "Unknown"}
+              ? "Notified"
+              : alarm.status === "RESOLVED"
+              ? "Resolved Alarm"
+              : alarm.status === "IGNORED"
+              ? "Ignored"
+              : "Unknown"}
           </span>
 
           <button
             onClick={handleDetailsClick}
-            className="bg-[#237F94] text-white px-4 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200 min-w-[130px]"
+            className=" bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200 min-w-[130px]"
           >
             Details
           </button>

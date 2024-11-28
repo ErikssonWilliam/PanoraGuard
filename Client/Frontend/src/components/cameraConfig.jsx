@@ -41,7 +41,7 @@ const CameraConfig = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
-        },
+        }
       );
       const data = await response.json();
 
@@ -100,14 +100,14 @@ const CameraConfig = () => {
           body: JSON.stringify({
             confidence: confidenceLevel / 100,
           }),
-        },
+        }
       );
 
       if (!response.ok) {
         throw new Error("Failed to update confidence level");
       }
       cameras.filter(
-        (camera) => camera.id === selectedCameraID,
+        (camera) => camera.id === selectedCameraID
       )[0].condidence_threshold = confidenceLevel / 100;
       alert("Confidence level updated successfully");
     } catch (error) {
@@ -146,7 +146,7 @@ const CameraConfig = () => {
     setSelectedCameraID(cameraId);
     setConfidenceLevel(
       cameras.filter((camera) => camera.id === cameraId)[0]
-        .condidence_threshold * 100,
+        .condidence_threshold * 100
     );
     fetchBrightnessLevel(cameraId);
   };
@@ -195,12 +195,12 @@ const CameraConfig = () => {
             max="100"
             value={confidenceLevel}
             onChange={(e) => setConfidenceLevel(e.target.value)}
-            className="w-full"
+            className="w-full accent-cyan-700"
           />
           <span className="text-gray-600">{confidenceLevel}%</span>
         </div>
         <button
-          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-2 rounded-md transition"
           onClick={updateConfidenceLevel}
         >
           Update Confidence
@@ -223,12 +223,12 @@ const CameraConfig = () => {
             max="100"
             value={brightnessLevel}
             onChange={(e) => setBrightnessLevel(e.target.value)}
-            className="w-full"
+            className="w-full accent-cyan-700"
           />
           <span className="text-gray-600">{brightnessLevel}%</span>
         </div>
         <button
-          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-2 rounded-md transition"
           onClick={updateBrightnessLevel}
         >
           Update Brightness
