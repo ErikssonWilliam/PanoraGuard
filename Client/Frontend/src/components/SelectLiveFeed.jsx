@@ -9,8 +9,13 @@ const SelectLiveFeed = () => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
       try {
+        const token = localStorage.getItem("accessToken");
         const response = await fetch(`${externalURL}/cameras/`, {
           method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = await response.json();
         console.log(data);
