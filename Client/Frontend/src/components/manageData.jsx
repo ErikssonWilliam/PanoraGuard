@@ -4,6 +4,7 @@ import StatisticsForm from "./StatisticsForm";
 import CameraAlarmChart from "./CameraAlarmChart";
 import AlarmResolutionChart from "./AlarmResolutionChart";
 import { externalURL } from "../api/axiosConfig";
+
 const ManageData = () => {
   const [alertData, setAlertData] = useState({
     alarms: [], // Store all alarms in a single array
@@ -22,11 +23,16 @@ const ManageData = () => {
   useEffect(() => {
     const fetchAlarmData = async () => {
       setLoading(true); // Set loading to true when data fetching starts
-
       try {
+        const token = localStorage.getItem("accessToken");
         // Fetch alarm data using a single API with dynamic location and camera
         const response = await axios.get(
           `${externalURL}/alarms/bylocation/${filters.location}/${filters.camera}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
         console.log("Fetched alarms:", response.data);
 

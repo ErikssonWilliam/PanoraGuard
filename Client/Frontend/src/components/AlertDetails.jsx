@@ -25,7 +25,12 @@ const AlertDetails = () => {
   // Fetch alarms from the server
   const fetchAlarms = useCallback(async () => {
     try {
-      const response = await axios.get(`${externalURL}/alarms/`);
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(`${externalURL}/alarms/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const allAlarms = response.data;
 
       // Process active alarms
