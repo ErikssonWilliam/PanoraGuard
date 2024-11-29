@@ -72,8 +72,7 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen relative bg-gray-100">
-      {/* Header with Hamburger Menu */}
-      <header className="relative flex items-center justify-between p-4 bg-[#F5F7FA] border-b">
+      <header className="fixed top-0 left-0 w-full z-20 flex items-center justify-between p-4 bg-[#F5F7FA] border-b shadow-md">
         {/* Sidebar Toggle Button */}
         <button
           className="text-2xl w-6 h-6 flex items-center justify-center"
@@ -98,6 +97,7 @@ const Admin = () => {
           </Link>
         </div>
       </header>
+
 
       {/* Sidebar */}
       <div
