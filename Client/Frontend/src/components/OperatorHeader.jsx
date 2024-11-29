@@ -15,14 +15,14 @@ const Header = () => {
 
       {/* Right Icons (Notification and User) */}
       <div className="ml-auto flex space-x-4">
-      <Link to="/select-live-feed">
+        <Link to="/select-live-feed">
           <HiOutlineVideoCamera
             className="w-6 h-6 text-gray-800 hover:scale-110 transition-transform duration-200"
             style={{
               filter: "blur(0.3px)",
             }}
           />
-      </Link>
+        </Link>
         <Link to="/profile">
           <img
             src={userIcon}
