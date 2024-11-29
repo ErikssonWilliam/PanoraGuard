@@ -4,6 +4,7 @@ import StatisticsForm from "./StatisticsForm";
 import CameraAlarmChart from "./CameraAlarmChart";
 import AlarmResolutionChart from "./AlarmResolutionChart";
 import { externalURL } from "../api/axiosConfig";
+import CameraAlarmPieChart from "./CameraAlarmPieChart"; // Import CameraAlarmPieChart
 
 const ManageData = () => {
   const [alertData, setAlertData] = useState({
@@ -32,7 +33,7 @@ const ManageData = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         console.log("Fetched alarms:", response.data);
 
@@ -43,7 +44,7 @@ const ManageData = () => {
       } catch (error) {
         console.error("Error fetching alert data:", error);
         alert(
-          "There was an error fetching the data. Please check the console for details.",
+          "There was an error fetching the data. Please check the console for details."
         );
       } finally {
         setLoading(false); // Set loading to false when data fetching is complete
@@ -72,6 +73,8 @@ const ManageData = () => {
     // Convert fromDate and tillDate to Date objects for comparison
     const from = fromDate ? new Date(fromDate) : null;
     const till = tillDate ? new Date(tillDate) : null;
+    console.log("Alarm data:", alertData.alarms);
+
 
     return alarms.filter((alarm) => {
       const alarmDate = new Date(alarm.timestamp); // Assuming timestamp exists in the alarm
@@ -86,7 +89,6 @@ const ManageData = () => {
 
   return (
     <div className="p-6 text-sm font-poppings">
-      {/** */}
       <div className="w-full max-w-[1224px] mx-auto p-6">
         <div className="flex flex-col items-center gap-8">
           <div className="flex flex-col w-full lg:w-3/4 bg-white p-6 shadow-lg rounded-lg">
@@ -110,7 +112,8 @@ const ManageData = () => {
               <div className="h-px bg-slate-300 mb-6" />
 
               <div>
-                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                {/* Title and line: Left aligned */}
+                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight text-left">
                   Camera-wise Alarm Breakdown
                 </h3>
                 <CameraAlarmChart
@@ -119,8 +122,20 @@ const ManageData = () => {
                 />
               </div>
 
+              {/* Title and pie chart: Left-aligned title and centered pie chart */}
+              <div className="flex flex-col">
+                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight text-left">
+                  Camera-wise Alarm Distribution (Pie Chart)
+                </h3>
+                <div className="flex justify-center">
+                  <div className="w-4/5 lg:w-2/5"> {/* Adjust the width here as needed */}
+                    <CameraAlarmPieChart alarms={alertData.alarms} />
+                  </div>
+                </div>
+              </div>
+
               <div>
-                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight text-left">
                   Alarm Resolution Over Time
                 </h3>
                 <AlarmResolutionChart
