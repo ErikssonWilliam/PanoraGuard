@@ -4,7 +4,7 @@ import userIcon from "../assets/user-01.png";
 
 const Header = () => {
   return (
-    <header className="flex justify-between items-center p-4 bg-[#F5F7FA] border-b">
+    <header className="fixed top-0 left-0 w-full z-20 flex justify-between items-center p-4 bg-[#F5F7FA] border-b shadow-md">
       <img src={logo} alt="PanoraGuard logo" className="h-5" />
       <div className="flex space-x-4">
         <Link to="/profile">
