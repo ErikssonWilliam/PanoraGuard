@@ -13,7 +13,7 @@ const AlarmRow = ({ alarm }) => {
   const getStatusClass = () => {
     if (alarm.status === "PENDING") {
       return "bg-red-600 hover:bg-red-500";
-    } else if (alarm.status === "NOTIFIED") { 
+    } else if (alarm.status === "NOTIFIED") {
       return "bg-[#7E8736] hover:bg-[#575F1D]"; // Yellow for notified
     } else if (alarm.status === "RESOLVED") {
       return "bg-[#216657] hover:bg-[#12493D]"; // Green for resolved
@@ -33,7 +33,7 @@ const AlarmRow = ({ alarm }) => {
               className="mr-2 w-4 h-4 object-contain"
             />
             <span className="text-sm font-medium text-gray-700">
-              Camera: {alarm.camera_id || "Unknown Camera"}{" "} 
+              Camera: {alarm.camera_id || "Unknown Camera"}{" "}
               {/* Camera = Camera ID */}
             </span>
           </span>

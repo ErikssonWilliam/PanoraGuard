@@ -14,7 +14,7 @@ const LiveFeed = () => {
   const [users, setUsers] = useState([]);
   const id = location.state?.id;
   const camera_id = location.state?.camera_id;
-  const alarmState = location.state?.alarm_state; 
+  const alarmState = location.state?.alarm_state;
   const isNotified = alarmState?.status === "NOTIFIED";
   useEffect(() => {
     const fetchUsers = async () => {
