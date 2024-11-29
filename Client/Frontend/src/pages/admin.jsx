@@ -6,12 +6,14 @@ import {
   FaVideo,
   FaBell,
   FaDatabase,
+  FaUserEdit, // Add Change User icon
 } from "react-icons/fa"; // Import modern icons
 import CameraConfig from "../components/cameraConfig";
 import ManageData from "../components/manageData";
 import AddnewUser from "../components/AddUser";
 import { Link } from "react-router-dom";
 import AlertDetails from "../components/AlertDetails";
+import ChangeUser from "../components/ChangeUser"; // Import the ChangeUser component
 import userIcon from "../assets/user-01.png";
 import logo from "../assets/logo.png";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
@@ -20,6 +22,7 @@ import Notification from "../components/Notification.jsx";
 const Admin = () => {
   const [selectedComponent, setSelectedComponent] = useState("Camera");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Manage sidebar visibility
+
   if (!isUserLoggedInWithRole("ADMIN")) {
     return (
       <Notification
@@ -29,30 +32,37 @@ const Admin = () => {
       />
     );
   }
+
   const renderContent = () => {
     switch (selectedComponent) {
       case "AddUser":
         return (
-          <div className="p-8">
+          <div className="md:p-8 xs:p-4">
             <AddnewUser />
           </div>
         );
       case "Camera":
         return (
-          <div className="p-8">
+          <div className="md:p-8 xs:p-4">
             <CameraConfig />
           </div>
         );
       case "OperatorView":
         return (
-          <div className="p-8">
+          <div className="md:p-8 xs:p-4">
             <AlertDetails />
           </div>
         );
       case "ManageData":
         return (
-          <div className="p-8">
+          <div className="md:p-8 xs:p-4">
             <ManageData />
+          </div>
+        );
+      case "ChangeUser":
+        return (
+          <div className="md:p-8 xs:p-4">
+            <ChangeUser />
           </div>
         );
       default:
@@ -62,23 +72,22 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen relative bg-gray-100">
-      {/* Header with Hamburger Menu */}
-      <header className="relative flex items-center p-4 bg-[#F5F7FA] border-b">
+      <header className="fixed top-0 left-0 w-full z-20 flex items-center justify-between p-4 bg-[#F5F7FA] border-b shadow-md">
+        {/* Sidebar Toggle Button */}
         <button
-          className="text-2xl"
+          className="text-2xl w-6 h-6 flex items-center justify-center"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
           <FaBars />
         </button>
-        {/* Centered Logo */}
-        <img
-          src={logo}
-          alt="PanoraGuard logo"
-          className="absolute left-1/2 transform -translate-x-1/2 h-5"
-        />
 
-        {/* Right Icons (Notification and User) */}
-        <div className="ml-auto flex space-x-4">
+        {/* Centered Logo */}
+        <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+          <img src={logo} alt="PanoraGuard logo" className="h-5" />
+        </div>
+
+        {/* Right Icons */}
+        <div className="w-6 flex justify-end">
           <Link to="/profile">
             <img
               src={userIcon}
@@ -89,26 +98,15 @@ const Admin = () => {
         </div>
       </header>
 
-      {/* <div className="bg-NavyBlue text-white p-4 flex justify-between items-center shadow-md">
-
-        <a href="/" className="font-poppins text-xl font-semibold">
-          panoraGuard
-        </a>
-        <Link to="/profile">
-          <img src={user} alt="userlogo" className="h-8 w-8 rounded-full" />
-        </Link>
-      </div> */}
-
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-NavyBlue text-white p-6 z-10 transition-transform transform ${
+        className={`fixed md:top-0 xs:inset-0 xs:w-full md:w-[280px] left-0 xs:h-auto bg-NavyBlue text-white p-6 z-10 md:transition-transform md:transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } shadow-lg`}
-        style={{ width: "280px" }}
       >
         {/* Close Icon */}
         <div className="flex justify-between items-center mb-6">
-          <span className="text-lg font-semibold">Navigation</span>
+          {/* <span className="text-lg font-semibold">Navigation</span> */}
           <button className="text-xl" onClick={() => setIsSidebarOpen(false)}>
             <FaTimes />
           </button>
@@ -163,6 +161,18 @@ const Admin = () => {
           >
             <FaDatabase className="text-lg" />
             <span>Manage Data</span>
+          </button>
+          <button
+            onClick={() => {
+              setSelectedComponent("ChangeUser");
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center gap-4 w-full px-4 py-2 rounded-lg hover:bg-gray-700 transition ${
+              selectedComponent === "ChangeUser" ? "bg-gray-700" : ""
+            }`}
+          >
+            <FaUserEdit className="text-lg" />
+            <span>Change User</span>
           </button>
         </div>
       </div>

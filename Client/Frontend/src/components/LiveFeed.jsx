@@ -19,7 +19,12 @@ const LiveFeed = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${externalURL}/users/guards`);
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(`${externalURL}/users/guards`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setUsers(response.data);
       } catch (err) {
         console.error("Error fetching guards:", err);
@@ -28,6 +33,7 @@ const LiveFeed = () => {
     };
     fetchUsers();
   }, []);
+
   // useEffect(() => {
   //   // Fetch the image with axios
   //   const fetchImage = async () => {
@@ -59,9 +65,19 @@ const LiveFeed = () => {
     if (!confirmAction) return;
 
     try {
-      const response = await axios.put(`${externalURL}/alarms/${id}/status`, {
-        status: newStatus,
-      });
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        `${externalURL}/alarms/${id}/status`,
+        {
+          status: newStatus,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
       console.log(`Alarm status updated to ${newStatus}:`, response.data);
       if (newStatus === "RESOLVED") {
         window.alert("Alarm resolved successfully.");
@@ -89,8 +105,15 @@ const LiveFeed = () => {
     if (!confirmNotify) return;
 
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${externalURL}/alarms/notify/${selectedUserId}/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
       console.log("Guard notified successfully:", response.data);
       setNotificationMessage("Notification sent successfully.");

@@ -15,6 +15,7 @@ def create_user():
 
 # Added this route to fetch users with the GUARD role
 @users_bp.route("/guards", methods=["GET"])  # New route for /users/guards endpoint
+@jwt_required()
 def get_guards():
     guards = User.query.filter_by(
         role=UserRole.GUARD
@@ -26,6 +27,7 @@ def get_guards():
 
 
 @users_bp.route("/", methods=["GET"])
+@jwt_required()
 def get_users():
     return UserController.get_users()
 
@@ -38,6 +40,7 @@ def update_user(user_id):
 
 # Does not work if the user has a foreign key in another table
 @users_bp.route("/<uuid:user_id>", methods=["DELETE"])
+@jwt_required()
 def delete_user(user_id):
     return UserController.delete_user(user_id)
 

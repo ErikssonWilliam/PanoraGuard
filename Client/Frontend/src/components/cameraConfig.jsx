@@ -8,13 +8,28 @@ const CameraConfig = () => {
   const [cameras, setCameras] = useState([]); // State to store cameras
   const [selectedCameraID, setSelectedCameraID] = useState(""); // Track selected camera
 
-  // Fetch the confidence threshold for the selected camera
-  // // const fetchConfidenceThreshold = async (cameraId) => {
-  // //   try {
-  // //     const response = await fetch(
-  // //       `${externalURL}/cameras/${cameraId}/confidence`,
-  // //     );
-  // //     const data = await response.json();
+  // // Fetch the confidence threshold for the selected camera
+  // const fetchConfidenceThreshold = async (cameraId) => {
+  //   try {
+  //     const token = localStorage.getItem("accessToken");
+  //     const response = await fetch(
+  //       `${externalURL}/cameras/${cameraId}/confidence`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       },
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         `Failed to fetch confidence threshold: ${response.statusText}`,
+  //       );
+  //     }
+
+  //     const data = await response.json();
 
   //     if (data.confidence_threshold) {
   //       setConfidenceLevel(data.confidence_threshold * 100);
@@ -57,9 +72,19 @@ const CameraConfig = () => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
       try {
+        const token = localStorage.getItem("accessToken");
         const response = await fetch(`${externalURL}/cameras/`, {
           method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch cameras");
+        }
+
         const data = await response.json();
         console.log(data);
         console.log(data);
@@ -89,7 +114,6 @@ const CameraConfig = () => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await fetch(
-        `${externalURL}/cameras/${selectedCameraID}/confidence`,
         `${externalURL}/cameras/${selectedCameraID}/confidence`,
         {
           method: "PUT",
@@ -152,13 +176,13 @@ const CameraConfig = () => {
   };
 
   return (
-    <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-10 space-y-8">
-      <h2 className="text-2xl font-semibold text-center text-NavyBlue">
+    <div className="font-poppins bg-gray-300 md:p-6 xs:p-2 rounded-lg shadow-lg max-w-4xl mx-auto mt-10 space-y-8 ">
+      <h2 className="md:text-2xl xs:text-xl font-semibold text-center text-NavyBlue">
         Camera Configuration
       </h2>
 
       {/* Camera Selection */}
-      <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
+      <div className="space-y-4 p-6  border border-gray-300 bg-BG rounded-lg">
         <label
           htmlFor="location"
           className="block text-gray-700 font-medium text-lg"
@@ -183,11 +207,11 @@ const CameraConfig = () => {
       <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
         <label
           htmlFor="confidence-level"
-          className="block text-gray-700 font-medium text-lg"
+          className="block text-gray-700 md:font-medium xs:font-extralight text-lg"
         >
           Confidence Level
         </label>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center ">
           <input
             type="range"
             id="confidence-level"
@@ -195,12 +219,12 @@ const CameraConfig = () => {
             max="100"
             value={confidenceLevel}
             onChange={(e) => setConfidenceLevel(e.target.value)}
-            className="w-full"
+            className="w-full accent-cyan-700"
           />
           <span className="text-gray-600">{confidenceLevel}%</span>
         </div>
         <button
-          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-2 rounded-md transition"
           onClick={updateConfidenceLevel}
         >
           Update Confidence
@@ -215,7 +239,7 @@ const CameraConfig = () => {
         >
           Brightness Level
         </label>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center">
           <input
             type="range"
             id="brightness-level"
@@ -223,12 +247,12 @@ const CameraConfig = () => {
             max="100"
             value={brightnessLevel}
             onChange={(e) => setBrightnessLevel(e.target.value)}
-            className="w-full"
+            className="w-full accent-cyan-700"
           />
           <span className="text-gray-600">{brightnessLevel}%</span>
         </div>
         <button
-          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-2 rounded-md transition"
           onClick={updateBrightnessLevel}
         >
           Update Brightness

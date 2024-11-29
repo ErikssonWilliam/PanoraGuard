@@ -7,9 +7,10 @@ When writing code in C, developers should adhere to these documentation standard
 At the top of a file, above any #include statements, provide a concise description of the application's purpose.
 
 ### Example File Header:
+
 ```c
 /**
- * Application for performing data processing tasks. This application processes incoming data streams, 
+ * Application for performing data processing tasks. This application processes incoming data streams,
  * applies transformation rules, and outputs the results to the designated output location.
  */
 ```
@@ -19,14 +20,15 @@ At the top of a file, above any #include statements, provide a concise descripti
 Above each function, provide a description of its purpose, parameters, returns and any important details.
 
 ### Example Function Description:
+
 ```c
 /**
  * Function that computes the sum of two integers.
- * 
+ *
  * Parameters:
  *   a (int): The first integer.
  *   b (int): The second integer.
- * 
+ *
  * Returns:
  *   int: The sum of a and b.
  */

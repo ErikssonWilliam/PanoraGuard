@@ -10,6 +10,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { externalURL } from "../api/axiosConfig";
 
 const LocationAlarmChart = ({ selectedLocation }) => {
   const [data, setData] = useState([]);
@@ -17,40 +18,53 @@ const LocationAlarmChart = ({ selectedLocation }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (selectedLocation) {
+    const fetchAlarmData = async () => {
       setLoading(true);
-      axios
-        .get(`http://192.168.0.3:5000/alarms/bylocation/${selectedLocation}`)
-        .then((response) => {
-          const cameras = {};
-          response.data.forEach((alarm) => {
-            const camera = alarm.camera_id;
-            if (!cameras[camera]) {
-              cameras[camera] = { addressed: 0, ignored: 0 };
-            }
-            if (alarm.status === "RESOLVED") {
-              cameras[camera].addressed++;
-            } else if (alarm.status === "IGNORED") {
-              cameras[camera].ignored++;
-            }
-          });
+      setError(null);
 
-          const chartData = Object.keys(cameras).map((camera) => ({
-            location: selectedLocation,
-            camera,
-            addressed: cameras[camera].addressed,
-            ignored: cameras[camera].ignored,
-          }));
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${externalURL}/alarms/bylocation/${selectedLocation}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include JWT token
+            },
+          },
+        );
 
-          console.log("Aggregated alarm data:", chartData); // Debugging log
-          setData(chartData);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching alarm data:", error);
-          setError("Failed to load data");
-          setLoading(false);
+        const cameras = {};
+        response.data.forEach((alarm) => {
+          const camera = alarm.camera_id;
+          if (!cameras[camera]) {
+            cameras[camera] = { addressed: 0, ignored: 0 };
+          }
+          if (alarm.status === "RESOLVED") {
+            cameras[camera].addressed++;
+          } else if (alarm.status === "IGNORED") {
+            cameras[camera].ignored++;
+          }
         });
+
+        const chartData = Object.keys(cameras).map((camera) => ({
+          location: selectedLocation,
+          camera,
+          addressed: cameras[camera].addressed,
+          ignored: cameras[camera].ignored,
+        }));
+
+        console.log("Aggregated alarm data:", chartData); // Debugging log
+        setData(chartData);
+      } catch (error) {
+        console.error("Error fetching alarm data:", error);
+        setError("Failed to load data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (selectedLocation) {
+      fetchAlarmData();
     }
   }, [selectedLocation]);
 

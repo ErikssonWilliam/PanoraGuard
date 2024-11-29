@@ -87,7 +87,7 @@ const AlarmRow = ({ alarm }) => {
 
           <button
             onClick={handleDetailsClick}
-            className="bg-[#237F94] text-white px-4 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200 min-w-[130px]"
+            className=" bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200 min-w-[130px]"
           >
             Details
           </button>

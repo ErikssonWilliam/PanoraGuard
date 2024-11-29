@@ -25,7 +25,12 @@ const AlertDetails = () => {
   // Fetch alarms from the server
   const fetchAlarms = useCallback(async () => {
     try {
-      const response = await axios.get(`${externalURL}/alarms/`);
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(`${externalURL}/alarms/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const allAlarms = response.data;
 
       // Process active alarms
@@ -105,7 +110,7 @@ const AlertDetails = () => {
     <div className="p-4 flex flex-col space-y-6">
       <div className="ml-10">
         <section>
-          <h2 className="text-2xl font-semibold mb-4 text-[#2E5984]">
+          <h2 className="text-2xl font-semibold mb-4 text-NavyBlue">
             Active Alarms:
           </h2>
           <ActiveAlarms activeAlarms={activeAlarms} />
@@ -114,7 +119,7 @@ const AlertDetails = () => {
 
       <div className="ml-10">
         <section>
-          <h2 className="text-2xl font-semibold mt-6 mb-4 text-[#2E5984]">
+          <h2 className="text-2xl font-semibold mt-6 mb-4 text-NavyBlue">
             Old Alarms:
           </h2>
           <OldAlarms

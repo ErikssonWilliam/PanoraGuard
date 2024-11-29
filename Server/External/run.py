@@ -2,6 +2,7 @@ from flask_migrate import upgrade, init, migrate
 from app import create_app
 from app.socketio_instance import socketio
 from app.mock_data import create_mock_data
+from db_cleanup import clean
 
 app = create_app()
 if __name__ == "__main__":
@@ -10,7 +11,8 @@ if __name__ == "__main__":
             init()
         except SystemExit:
             pass
-        migrate()
-        upgrade()
-        create_mock_data()
+            migrate()
+            upgrade()
+            create_mock_data()
+            clean()
     socketio.run(app, host="0.0.0.0", port=5000)
