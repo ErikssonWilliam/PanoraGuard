@@ -50,10 +50,24 @@ class AlarmController:
             # Notify frontend about the new alarm
             socketio.emit("new_alarm", new_alarm["alarm"])
             # Turning on speaker through LAN-Server
-            response = requests.get("http://127.0.0.1:5100/speaker/start-speaker")
+            AlarmController.__start_speaker()
             return jsonify(new_alarm), 201
         else:
             return jsonify({"message": new_alarm["message"]}), 400
+
+    @staticmethod
+    def __start_speaker():
+        # Private static method to turn on speakers
+        try:
+            # response = requests.post("https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker") #LAN-ServerURL
+            response = requests.post("http://127.0.0.1:5100/speaker/start-speaker")
+
+            # Handle the response from the LAN server
+            response.raise_for_status()  # Raise an exception for HTTP errors
+            return response.json()
+        except requests.RequestException as e:
+            print(f"Failed to start speaker: {e}")
+            return None
 
     def get_alarm_image(alarm_ID):
         return AlarmService.get_alarm_image(alarm_ID)
