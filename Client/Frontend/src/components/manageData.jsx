@@ -33,7 +33,7 @@ const ManageData = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         console.log("Fetched alarms:", response.data);
 
@@ -44,7 +44,7 @@ const ManageData = () => {
       } catch (error) {
         console.error("Error fetching alert data:", error);
         alert(
-          "There was an error fetching the data. Please check the console for details."
+          "There was an error fetching the data. Please check the console for details.",
         );
       } finally {
         setLoading(false); // Set loading to false when data fetching is complete
@@ -74,7 +74,6 @@ const ManageData = () => {
     const from = fromDate ? new Date(fromDate) : null;
     const till = tillDate ? new Date(tillDate) : null;
     console.log("Alarm data:", alertData.alarms);
-
 
     return alarms.filter((alarm) => {
       const alarmDate = new Date(alarm.timestamp); // Assuming timestamp exists in the alarm
@@ -128,7 +127,9 @@ const ManageData = () => {
                   Camera-wise Alarm Distribution (Pie Chart)
                 </h3>
                 <div className="flex justify-center">
-                  <div className="w-4/5 lg:w-2/5"> {/* Adjust the width here as needed */}
+                  <div className="w-4/5 lg:w-2/5">
+                    {" "}
+                    {/* Adjust the width here as needed */}
                     <CameraAlarmPieChart alarms={alertData.alarms} />
                   </div>
                 </div>
