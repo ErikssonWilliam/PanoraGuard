@@ -98,7 +98,6 @@ const Admin = () => {
         </div>
       </header>
 
-
       {/* Sidebar */}
       <div
         className={`fixed md:top-0 xs:inset-0 xs:w-full md:w-[280px] left-0 xs:h-auto bg-NavyBlue text-white p-6 z-10 md:transition-transform md:transform ${
