@@ -39,6 +39,19 @@ const AlarmDetailPage = () => {
     }
   };
 
+   // Function to fetch operator details only if status is not 'PENDING' and operator ID is valid
+   const fetchOperatorDetailsIfNeeded = async (alarm) => {
+    if (alarm?.status !== "PENDING" && alarm?.operator_id && alarm.operator_id !== "N/A") {
+      await fetchOperatorDetails(alarm.operator_id);
+    }
+  };
+
+  useEffect(() => {
+    if (alarm) {
+      fetchOperatorDetailsIfNeeded(alarm);
+    }
+  }, [alarm]);
+
   useEffect(() => {
     // if (!id) {
     //   setNotificationMessage("Alarm ID is missing.");
@@ -207,6 +220,8 @@ const AlarmDetailPage = () => {
         status: response.data.status,
         operator_id: response.data.operator_id,
       }));
+
+    
 
       fetchOperatorDetails(response.data.operator_id);
 
