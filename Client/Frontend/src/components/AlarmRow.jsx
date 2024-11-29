@@ -45,7 +45,7 @@ const AlarmRow = ({ alarm }) => {
               className="mr-2 w-4 h-4 object-contain"
             />
             <span className="text-sm font-medium text-gray-700">
-              Location: {alarm.camera_location || "Unknown Location"}
+              Location: {alarm.location || "Unknown Location"}
             </span>
           </span>
 

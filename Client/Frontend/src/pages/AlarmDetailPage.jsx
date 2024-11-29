@@ -40,6 +40,22 @@ const AlarmDetailPage = () => {
   };
 
   useEffect(() => {
+    const fetchOperatorDetailsIfNeeded = async (alarm) => {
+      if (
+        alarm?.status !== "PENDING" &&
+        alarm?.operator_id &&
+        alarm.operator_id !== "N/A"
+      ) {
+        await fetchOperatorDetails(alarm.operator_id);
+      }
+    };
+
+    if (alarm) {
+      fetchOperatorDetailsIfNeeded(alarm);
+    }
+  }, [alarm]);
+
+  useEffect(() => {
     // if (!id) {
     //   setNotificationMessage("Alarm ID is missing.");
     //   setNotificationType("error");
@@ -385,7 +401,22 @@ const AlarmDetailPage = () => {
         {alarm?.status !== "RESOLVED" && alarm?.status !== "IGNORED" && (
           <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
             {alarm?.status === "NOTIFIED" ? (
-              <div className="flex justify-center w-full">
+              // Layout for "NOTIFIED" status
+              <div className="flex justify-center w-full space-x-4">
+                <button
+                  onClick={() =>
+                    navigate("/live-feed", {
+                      state: {
+                        id: alarm.id,
+                        alarm_state,
+                        camera_id: alarm.camera_id,
+                      },
+                    })
+                  }
+                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+                >
+                  Look at the live feed
+                </button>
                 <button
                   onClick={() => updateAlarmStatus("RESOLVED")}
                   className="bg-[#EBB305] text-white px-6 py-3 rounded-lg hover:bg-[#FACC14] transition duration-200"
@@ -394,6 +425,7 @@ const AlarmDetailPage = () => {
                 </button>
               </div>
             ) : (
+              // Layout for "PENDING" och other statuses
               <div className="flex justify-between w-full">
                 <button
                   onClick={() =>
@@ -433,6 +465,7 @@ const AlarmDetailPage = () => {
                 </button>
               </div>
             )}
+            {/* Notification Message and Manual Notify */}
             <div className="mt-2 h-20 flex flex-col items-center">
               {notificationMessage && (
                 <p
