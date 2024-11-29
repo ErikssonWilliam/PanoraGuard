@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
+import bellIcon from "../assets/bell-01.png";
 import userIcon from "../assets/user-01.png";
-import { HiOutlineVideoCamera } from "react-icons/hi2";
 
 const Header = () => {
   return (
-    <header className="relative flex items-center p-4 bg-[#F5F7FA] border-b">
+    <header className="relative flex items-center p-4 bg-[#F5F7FA] border-b -mb-6">
       {/* Centered Logo */}
       <img
         src={logo}
@@ -15,12 +15,11 @@ const Header = () => {
 
       {/* Right Icons (Notification and User) */}
       <div className="ml-auto flex space-x-4">
-        <Link to="/select-live-feed">
-          <HiOutlineVideoCamera
-            className="w-6 h-6 text-gray-800 hover:scale-110 transition-transform duration-200"
-            style={{
-              filter: "blur(0.3px)",
-            }}
+        <Link to="/operator">
+          <img
+            src={bellIcon}
+            alt="Notification icon"
+            className="w-6 h-6 hover:scale-110 transition-transform duration-200"
           />
         </Link>
         <Link to="/profile">

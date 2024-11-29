@@ -75,22 +75,35 @@ def create_mock_users():
     return operator, manager, admin, guardian
 
 
-def create_mock_camera():
+def create_mock_cameras():
     # Check if camera already exists
-    camera = Camera.query.filter_by(id="B8A44F9EEE36").first()
+    camera1 = Camera.query.filter_by(id="B8A44F9EEE36").first()
 
-    if not camera:
-        camera = Camera(
+    if not camera1:
+        camera1 = Camera(
             id="B8A44F9EEE36",  # Camera ID for camera 121
             ip_address="192.168.1.121",
             location="A-huset",
             confidence_threshold=0.5,
             schedule='{"week": {"Monday": [1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0], "Tuesday": [0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1], "Wednesday": [1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1], "Thursday": [0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0], "Friday": [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1], "Saturday": [0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0], "Sunday": [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1]}}',
         )
-        session.add(camera)
+        session.add(camera1)
+
+    # Check if camera already exists
+    camera2 = Camera.query.filter_by(id="B8A44F9EEFE0").first()
+
+    if not camera2:
+        camera2 = Camera(
+            id="B8A44F9EEFE0",  # Camera ID for camera 116
+            ip_address="192.168.1.116",
+            location="C-huset",
+            confidence_threshold=0.5,
+            schedule='{"week": {"Monday": [1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0], "Tuesday": [0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1], "Wednesday": [1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1], "Thursday": [0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0], "Friday": [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1], "Saturday": [0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0], "Sunday": [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1]}}',
+        )
+        session.add(camera2)
 
     session.commit()
-    return camera
+    return [camera1, camera2]
 
 
 def create_mock_alarm(user, camera, statusState):
@@ -188,7 +201,8 @@ def create_mock_alarm_test(idtest, user, camera, statusState):
 
 def create_mock_data():
     operator, _, _, _ = create_mock_users()
-    camera = create_mock_camera()
+    cameras = create_mock_cameras()  # This returns a list of the cameras
+    camera = cameras[0]  # Get the first camera in the list
     create_mock_alarm(operator, camera, AlarmStatus.RESOLVED)
     create_mock_alarm_test(
         uuid.UUID("cc006a17-0852-4e0e-b13c-36e4092f767d"),
