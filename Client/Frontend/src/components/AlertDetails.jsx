@@ -3,7 +3,7 @@ import axios from "axios";
 import OldAlarms from "./OldAlarms";
 import ActiveAlarms from "./ActiveAlarms";
 import socket from "../utils/socket";
-import { externalURL, lanURL } from "../api/axiosConfig";
+import { externalURL } from "../api/axiosConfig";
 
 const AlertDetails = () => {
   const [activeAlarms, setActiveAlarms] = useState([]);
@@ -62,33 +62,13 @@ const AlertDetails = () => {
     }
   }, [sortByStatusAndTimestamp, sortByTimestamp]);
 
-  // Start external speaker
-  const startExternalSpeaker = useCallback(async () => {
-    try {
-      const response = await axios.get(`${lanURL}/test/start-speaker`);
-      if (response.status === 200) {
-        console.log("External speaker triggered successfully:", response.data);
-      } else {
-        console.warn("Failed to trigger the external speaker:", response.data);
-      }
-    } catch (error) {
-      console.error("Error triggering external speaker:", error);
-    }
-  }, []);
-
   // Handle new alarms from the socket
-  const handleNewAlarm = useCallback(
-    (newAlarm) => {
-      setActiveAlarms((prevAlarms) => {
-        const isDuplicate = prevAlarms.some(
-          (alarm) => alarm.id === newAlarm.id,
-        );
-        return isDuplicate ? prevAlarms : [...prevAlarms, newAlarm];
-      });
-      startExternalSpeaker();
-    },
-    [startExternalSpeaker],
-  );
+  const handleNewAlarm = useCallback((newAlarm) => {
+    setActiveAlarms((prevAlarms) => {
+      const isDuplicate = prevAlarms.some((alarm) => alarm.id === newAlarm.id);
+      return isDuplicate ? prevAlarms : [...prevAlarms, newAlarm];
+    });
+  }, []);
 
   // Initialize the component
   useEffect(() => {
