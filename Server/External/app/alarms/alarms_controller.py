@@ -8,6 +8,7 @@ and fetching alarm-related data for frontend usage.
 from flask import request, jsonify
 from .alarms_service import AlarmService
 from app.socketio_instance import socketio
+import requests
 
 
 class AlarmController:
@@ -48,6 +49,8 @@ class AlarmController:
         if new_alarm["status"] == "success":
             # Notify frontend about the new alarm
             socketio.emit("new_alarm", new_alarm["alarm"])
+            # Turning on speaker through LAN-Server
+            response = requests.get("http://127.0.0.1:5100/speaker/start-speaker")
             return jsonify(new_alarm), 201
         else:
             return jsonify({"message": new_alarm["message"]}), 400
