@@ -175,7 +175,9 @@ const AlarmDetailPage = () => {
   //Gustav and Alinas attempt to do functions to avoid code duplications.
   const stopExternalSpeaker = async () => {
     try {
-      const speakerResponse = await axios.get(`${lanURL}/test/stop-speaker`); //hard coded server
+      const speakerResponse = await axios.post(
+        `${lanURL}/speaker/stop-speaker`,
+      ); //hard coded server
       if (speakerResponse.status === 200) {
         console.log(
           "External speaker stopped successfully:",
