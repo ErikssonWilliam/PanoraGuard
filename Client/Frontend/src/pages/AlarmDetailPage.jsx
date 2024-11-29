@@ -156,7 +156,6 @@ const AlarmDetailPage = () => {
     }
   }, [location.state]);
 
-  //I didnt touch this since I did not know if it should be included - Gustav A
   //Gustav and Alinas attempt to do functions to avoid code duplications.
   const stopExternalSpeaker = async () => {
     try {

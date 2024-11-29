@@ -68,28 +68,6 @@ const CameraConfig = () => {
     }
   };
 
-  // // Fetch the brightness level of the selected camera
-  // const fetchBrightnessLevel = async (cameraId) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${lanURL}/brightness/get-brightness?camera_id=${cameraId}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-  //       },
-  //     });
-  //     const data = response.data;
-
-  //     if (data.brightness_level) {
-  //       setBrightnessLevel(data.brightness_level);
-  //     } else {
-  //       console.warn("Brightness level not found in the response data.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching brightness level:", error);
-  //   }
-  // };
-
   useEffect(() => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
