@@ -66,7 +66,7 @@ const Login = () => {
     <div className="flex w-full h-screen">
       {/* Left Panel */}
       <div className="leftPanel flex flex-1 justify-center items-center bg-gray-100">
-        <div className="flex flex-col items-center lg:w-full sm:w-4/5">
+        <div className="flex flex-col items-center md:w-full xs:w-4/5">
           <form
             onSubmit={handleSubmit}
             className="bg-LightGray p-8 rounded-lg shadow-md"

@@ -25,8 +25,8 @@ const AlarmRow = ({ alarm }) => {
   return (
     alarm && (
       <div className="bg-gray-300 p-2 mb-4 rounded-lg shadow-md max-w-5xl mx-auto">
-        <div className="flex items-center justify-between space-x-4">
-          <span className="flex items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
+        <div className="flex md:grid md:grid-cols-5 md:gap-4 items-center justify-between space-x-4 xs:flex-wrap">
+          <div className="flex md:col-span-1 items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
             <img
               src={cameraIcon}
               alt="Camera icon"
@@ -36,20 +36,20 @@ const AlarmRow = ({ alarm }) => {
               Camera: {alarm.camera_id || "Unknown Camera"}{" "}
               {/* Camera = Camera ID */}
             </span>
-          </span>
+          </div>
 
-          <span className="flex items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
+          <div className="flex md:col-span-1 items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
             <img
               src={locationIcon}
               alt="Location icon"
               className="mr-2 w-4 h-4 object-contain"
             />
             <span className="text-sm font-medium text-gray-700">
-              Location: {alarm.camera_location || "Unknown Location"}
+              Location: {alarm.location || "Unknown Location"}
             </span>
-          </span>
+          </div>
 
-          <span className="flex items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
+          <div className="flex md:col-span-1 items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
             <img
               src={detectIcon}
               alt="Detection icon"
@@ -58,10 +58,10 @@ const AlarmRow = ({ alarm }) => {
             <span className="text-sm font-medium text-gray-700">
               Detected: {alarm.type || "N/A"}
             </span>
-          </span>
+          </div>
 
-          <span
-            className={`flex items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg shadow transition duration-200`}
+          <div
+            className={`flex md:col-span-1 items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg shadow transition duration-200`}
             title={
               alarm.status === "PENDING"
                 ? "This alarm is currently active"
@@ -83,11 +83,11 @@ const AlarmRow = ({ alarm }) => {
                   : alarm.status === "IGNORED"
                     ? "Ignored"
                     : "Unknown"}
-          </span>
+          </div>
 
           <button
             onClick={handleDetailsClick}
-            className=" bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200 min-w-[130px]"
+            className=" bg-cyan-700 md:col-span-1 hover:bg-cyan-800 text-white px-4 py-3 rounded-lg  transition duration-200 min-w-[130px]"
           >
             Details
           </button>
