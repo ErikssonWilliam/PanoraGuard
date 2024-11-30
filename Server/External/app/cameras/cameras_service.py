@@ -1,4 +1,9 @@
-# CameraService.py
+"""
+This file defines the CameraService class, responsible for managing camera-related operations.
+It interacts with the database models to retrieve data, and manage camera configurations such
+as confidence thresholds, locations, schedules, and IP addresses.
+"""
+
 from app.extensions import db
 from flask import jsonify
 from app.models import Camera
@@ -8,25 +13,25 @@ import json
 
 class CameraService:
     @staticmethod
-    def add_camera():
-        # Placeholder logic, complete as necessary
-        return jsonify({"message": "Add camera functionality not implemented"}), 501
-
-    @staticmethod
     def get_cameras() -> List[dict]:
+        """
+        Retrieve all cameras and their details from the database.
+
+        Returns:
+            Response: JSON list of cameras with their details, including parsed schedules.
+        """
         cameras = Camera.query.all()
         cameras_list = []
 
         for camera in cameras:
             camera_dict = camera.to_dict()
 
-            # Check if 'schedule' is not None and if it can be parsed as JSON
+            # Parse schedule if present and valid; otherwise, initialize to empty dict.
             if camera_dict["schedule"]:
                 try:
                     camera_dict["schedule"] = json.loads(camera_dict["schedule"])
                 except json.JSONDecodeError:
-                    # If it's not valid JSON, you can either set it to None or an empty object
-                    camera_dict["schedule"] = {}  # Or [] depending on your use case
+                    camera_dict["schedule"] = {}
             else:
                 camera_dict["schedule"] = {}
 
@@ -36,11 +41,26 @@ class CameraService:
 
     @staticmethod
     def locations() -> List[dict]:
+        """
+        Retrieve distinct locations from all cameras.
+
+        Returns:
+            List[dict]: A list of locations.
+        """
         locations = db.session.query(Camera.location).distinct().all()
         return [{"location": location[0]} for location in locations]
 
     @staticmethod
     def cameraID_by_location(location: str) -> List[dict]:
+        """
+        Retrieve camera IDs by a specific location.
+
+        Parameters:
+            location (str): The location to filter cameras.
+
+        Returns:
+            List[dict]: A list of camera IDs for the specified location.
+        """
         camera_ids = (
             db.session.query(Camera.id).filter(Camera.location == location).all()
         )
@@ -48,6 +68,15 @@ class CameraService:
 
     @staticmethod
     def get_camera_by_id(camera_id):
+        """
+        Retrieve a camera by its ID.
+
+        Parameters:
+            camera_id (string): The ID of the camera.
+
+        Returns:
+            dict or None: The camera's details if found, or None if not found.
+        """
         try:
             camera = Camera.query.get(camera_id)
             if camera:
@@ -61,6 +90,16 @@ class CameraService:
 
     @staticmethod
     def set_confidence(camera_id, confidence):
+        """
+        Set the confidence threshold for a camera.
+
+        Parameters:
+            camera_id (string): The ID of the camera.
+            confidence (float): The confidence threshold to set.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         camera = Camera.query.filter_by(id=camera_id).first()
         if not camera:
             return jsonify({"status": "No camera found"}), 404
@@ -75,19 +114,24 @@ class CameraService:
             return jsonify({"status": "error", "message": str(e)}), 500
 
     @staticmethod
-    def delete_camera_by_id(camera_id):
-        # Placeholder logic, complete as necessary
-        return jsonify({"message": "Delete camera functionality not implemented"}), 501
-
-    @staticmethod
     def update_confidence(camera_id, confidence):
+        """
+        Update the confidence threshold of a camera.
+
+        Parameters:
+            camera_id (string): The ID of the camera.
+            confidence (float): The new confidence threshold.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
+
         camera = Camera.query.get(camera_id)
 
         if not camera:
             return jsonify({"error": "Camera was not found"}), 404
 
         try:
-            # Update and save confidence threshold
             camera.confidence_threshold = float(confidence)
             db.session.commit()
             return jsonify(
@@ -102,31 +146,45 @@ class CameraService:
 
     @staticmethod
     def update_location(camera_id, location):
-        # Fetch the camera object
+        """
+        Update the location of a camera.
+
+        Parameters:
+            camera_id (string): The ID of the camera.
+            location (str): The new location to set.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         camera = Camera.query.get(camera_id)
 
         if not camera:
             return jsonify({"error": "Camera not found"}), 404
 
         try:
-            # Update the location
             camera.location = location
-            db.session.commit()  # Commit changes to the database
+            db.session.commit()
 
-            # Return a success response
             return jsonify(
                 {
                     "message": "Location updated successfully",
                     "location": camera.location,
                 }
             ), 200
-        except Exception as e:
-            # Log the exception for debugging
-            print("Error in CameraService.update_location:", e)
+        except Exception:
             return jsonify({"error": "Failed to update location"}), 500
 
     @staticmethod
     def get_confidence_threshold_by_id(camera_id):
+        """
+        Retrieve the confidence threshold of a camera by its ID.
+
+        Parameters:
+            camera_id (string): The ID of the camera.
+
+        Returns:
+            float or None: The confidence threshold if found, or None if not.
+        """
         try:
             camera = Camera.query.get(camera_id)
             if camera:
@@ -138,15 +196,24 @@ class CameraService:
 
     @staticmethod
     def update_ip(camera_id, ip_address):
+        """
+        Update the IP address of a camera.
+
+        Parameters:
+            camera_id (string): The ID of the camera.
+            ip_address (str): The new IP address to set.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         camera = Camera.query.get(camera_id)
 
         if not camera:
             return jsonify({"error": "Camera not found"}), 404
 
         try:
-            # Update the IP address
             camera.ip_address = ip_address
-            db.session.commit()  # Save changes to the database
+            db.session.commit()
 
             return jsonify(
                 {
@@ -160,17 +227,25 @@ class CameraService:
 
     @staticmethod
     def update_schedule(camera_id, schedule):
-        # Fetch the camera object by ID
+        """
+        Update the schedule of a camera.
+
+        Parameters:
+            camera_id (string): The ID of the camera.
+            schedule (str): The new schedule in JSON format.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         camera = Camera.query.get(camera_id)
 
         if not camera:
             return jsonify({"error": "Camera not found"}), 404
 
         try:
-            # Update the schedule attribute (it can be None initially)
             print(schedule)
             camera.schedule = schedule
-            db.session.commit()  # Commit changes to the database
+            db.session.commit()
 
             return jsonify(
                 {
