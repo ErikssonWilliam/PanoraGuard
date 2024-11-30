@@ -57,13 +57,12 @@ class AlarmController:
 
     @staticmethod
     def __start_speaker():
-        # Private static method to turn on speakers
+        """
+        Private static method to turn on the speaker at the LAN server.
+        """
         try:
-            # response = requests.post("https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker") #LAN-ServerURL
             response = requests.post("http://127.0.0.1:5100/speaker/start-speaker")
-
-            # Handle the response from the LAN server
-            response.raise_for_status()  # Raise an exception for HTTP errors
+            response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
             print(f"Failed to start speaker: {e}")

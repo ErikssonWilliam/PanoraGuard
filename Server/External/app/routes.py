@@ -3,11 +3,6 @@ from .users.users_routes import users_bp
 from .cameras.cameras_routes import cameras_bp
 from .auth.auth_routes import auth_bp
 
-# Register blueprints
-
-# Empty testdb for postman
-users_db = {}
-
 
 def init_routes(app):
     app.register_blueprint(users_bp, url_prefix="/users")

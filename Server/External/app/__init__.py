@@ -3,7 +3,7 @@ from flask_jwt_extended import JWTManager
 from .extensions import bcrypt, db, migrate
 from .routes import init_routes
 from flask_cors import CORS
-from .socketio_instance import socketio  # Import the SocketIO instance
+from .socketio_instance import socketio
 
 
 def create_app():
