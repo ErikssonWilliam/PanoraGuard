@@ -1,4 +1,8 @@
-# move logic here
+"""
+Service for managing user-related operations.
+This service interacts directly with the database models and handles business logic.
+"""
+
 import re
 import secrets
 import string
@@ -9,22 +13,43 @@ from app.extensions import bcrypt
 
 
 class UserService:
-    # Try add Type annotations for all Service classes
     session = db.session
 
     def get_users() -> List[User]:
+        """
+        Retrieve a list of all users.
+
+        Returns:
+            List[User]: List of User objects.
+        """
         return User.query.all()
 
     def get_user_by_id(user_id: str) -> Union[User, None]:
+        # Retrieve a user by their ID
         return User.query.filter_by(id=user_id).first()
 
     def get_user_by_username(user_name: str) -> Union[User, None]:
+        # Retrieve a user by their username
         return User.query.filter_by(username=user_name).first()
 
     def get_user_by_email(email: str):
+        # Retrieve a user by their email address
         return User.query.filter_by(email=email).first()
 
     def create_user(username: str, password: str, role: UserRole, email: str) -> User:
+        """
+        Create a new user.
+
+        Parameters:
+            username (str): The username of the user.
+            password (str): The plain-text password of the user.
+            role (UserRole): The role of the user (e.g., GUARD, OPERATOR).
+            email (str): The email of the user.
+
+        Returns:
+            User: The created User object.
+        """
+
         new_user = User(
             username=username,
             password_hash=bcrypt.generate_password_hash(password).decode("utf-8"),
@@ -36,6 +61,17 @@ class UserService:
         return new_user
 
     def update_user(user: User, data: dict) -> User:
+        """
+        Update user details.
+
+        Parameters:
+            user (User): The User object to update.
+            data (dict): Dictionary of fields to update.
+
+        Returns:
+            User: The updated User object.
+        """
+
         if data.get("username"):
             user.username = data.get("username")
         if data.get("email"):
@@ -50,6 +86,15 @@ class UserService:
         return user
 
     def delete_user(user_id: str) -> bool:
+        """
+        Delete a user by their ID.
+
+        Parameters:
+            user_id (str): The ID of the user to delete.
+
+        Returns:
+            bool: True if user was deleted, False otherwise.
+        """
         user = User.query.get(user_id)
         if user:
             UserService.session.delete(user)
@@ -58,6 +103,18 @@ class UserService:
         return False
 
     def validity_check(data: dict):
+        """
+        Validate user input data for creating/updating a user.
+
+        Parameters:
+            data (dict): Dictionary of user data.
+
+        Raises:
+            ValueError: If any required field is missing or invalid.
+
+        Returns:
+            bool: True if validation succeeds.
+        """
         required_fields = ["username", "password", "role", "email"]
 
         for field in required_fields:
@@ -77,6 +134,15 @@ class UserService:
         return True
 
     def generate_random_password(length=12):
+        """
+        Generate a random secure password.
+
+        Parameters:
+            length (int): The length of the password (default is 12).
+
+        Returns:
+            str: The generated password.
+        """
         alphabet = string.ascii_letters + string.digits + string.punctuation
         password = "".join(secrets.choice(alphabet) for i in range(length))
         print(password)
