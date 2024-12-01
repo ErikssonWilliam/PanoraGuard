@@ -61,7 +61,10 @@ class AlarmController:
         Private static method to turn on the speaker at the LAN server.
         """
         try:
-            response = requests.post("http://127.0.0.1:5100/speaker/start-speaker")
+            # response = requests.post("https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker") # URL to Raspery Pi server
+            response = requests.post(
+                "http://127.0.0.1:5100/speaker/start-speaker"
+            )  # URL to local server
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
