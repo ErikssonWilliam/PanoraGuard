@@ -5,6 +5,43 @@ import Header from "../components/OperatorHeader";
 import { externalURL, lanURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
 
+const useFetchUserInfo = (userId) => {
+  const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      setLoading(true);
+      setError(""); // Clear any previous errors
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await fetch(`${externalURL}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+
+        const data = await response.json();
+        setUserInfo(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchUserInfo();
+  }, [userId]);
+
+  return { userInfo, loading, error };
+};
+
 const AlarmDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -18,6 +55,10 @@ const AlarmDetailPage = () => {
   const [callChecked, setCallChecked] = useState(false);
   const [operatorUsername, setOperatorUsername] = useState("N/A");
   const [, setFormattedStatus] = useState("");
+
+  const userId = localStorage.getItem("userId");
+
+  const { userInfo } = useFetchUserInfo(userId);
 
   const alarm_state =
     location.state?.alarm || sessionStorage.getItem("alarmId");
@@ -357,7 +398,7 @@ const AlarmDetailPage = () => {
 
   return (
     <div className="bg-custom-bg min-h-screen max-h-screen flex flex-col overflow-hidden">
-      <Header />
+      <Header userInfo={userInfo} />
       <div className="flex-grow flex flex-col items-center p-8 overflow-hidden">
         <div className="flex w-11/12 justify-between bg-custom-bg max-w-6xl overflow-hidden">
           <div className="w-2/5 overflow-hidden">
