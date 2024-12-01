@@ -1,4 +1,3 @@
----
 stages:
   - external-lint
   - lan-lint
@@ -28,8 +27,9 @@ external-test:
   script:
     - pytest --cov=app --cov-report=html --maxfail=1
   artifacts:
+    name: "External"
     paths:
-      - htmlcov/
+      - Server/External/htmlcov/
     expire_in: 1 week
 
 lan-lint:
@@ -53,8 +53,9 @@ lan-test:
   script:
     - pytest --cov=app --cov-report=html --maxfail=1
   artifacts:
+    name: "LAN"
     paths:
-      - htmlcov/
+      - Server/LAN/htmlcov/
     expire_in: 1 week
 
 front-end-lint:
@@ -79,6 +80,7 @@ pages:
       - public
   # only:
   #   - main
+
 
 
 # variables:
