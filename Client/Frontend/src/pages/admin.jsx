@@ -82,8 +82,10 @@ const Admin = () => {
         </button>
 
         {/* Centered Logo */}
-        <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-          <img src={logo} alt="PanoraGuard logo" className="h-5" />
+        <div className=" flex justify-center items-center">
+          <Link to="/admin">
+            <img src={logo} alt="PanoraGuard logo" className="h-5" />
+          </Link>
         </div>
 
         {/* Right Icons */}

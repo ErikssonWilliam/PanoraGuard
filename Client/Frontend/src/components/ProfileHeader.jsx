@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import bellIcon from "../assets/bell-01.png";
 
@@ -28,11 +28,15 @@ const Header = ({ userInfo, setErrorMessage }) => {
       <div className="w-6"></div>
 
       {/* Centered Logo with Manual Left Shift */}
-      <img
-        src={logo}
-        alt="PanoraGuard logo"
-        className="absolute left-1/2 transform -translate-x-[56%] h-5"
-      />
+
+      <Link>
+        <img
+          src={logo}
+          alt="PanoraGuard logo"
+          className="absolute left-1/2 transform -translate-x-[56%] h-5"
+          onClick={navigateToHome}
+        />
+      </Link>
 
       {/* Right Notification Icon */}
       <div className="ml-auto w-6 flex justify-end">
