@@ -122,7 +122,7 @@ class UserService:
                 raise ValueError(f"'{field}' is required and cannot be empty.")
 
         role = data.get("role")
-        if role not in ["GUARD", "OPERATOR"]:
+        if role not in ["GUARD", "OPERATOR", "MANAGER"]:
             raise ValueError("Invalid role.")
         email = data.get("email").strip()
         is_valid_email = (
