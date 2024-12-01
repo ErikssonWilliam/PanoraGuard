@@ -4,6 +4,7 @@ from .database import db
 from .speaker import speaker_bp
 from .brightness import br_bp
 from .livestream import ls_bp
+from .alarms import al_bp
 
 
 def create_app():
@@ -24,5 +25,6 @@ def create_app():
     app.register_blueprint(speaker_bp, url_prefix="/speaker")
     app.register_blueprint(br_bp, url_prefix="/brightness")
     app.register_blueprint(ls_bp, url_prefix="/livestream")
+    app.register_blueprint(al_bp, url_prefix="/alarms")
 
     return app
