@@ -1,7 +1,8 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from app.utils import get_jwt_claims
-#from app.database import Camera
+
+# from app.database import Camera
 import jwt
 
 
