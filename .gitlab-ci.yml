@@ -1,58 +1,141 @@
----
 stages:
-  - deploy
+  - external-lint
+  - lan-lint
+  - front-end-lint
+  - external-test
+  - lan-test
+  - coverage-report
 
-variables:
-  LIU_COURSE_CODE: tddc88
-  LIU_COURSE_TERM: ht24
-  LIU_GROUP_NAME: company3
-  LIU_PROJECT_HOST: ${LIU_COURSE_CODE}-${LIU_GROUP_NAME}-${LIU_COURSE_TERM}.kubernetes-public.it.liu.se
-  POD_NAMESPACE: tddc88-ht24-company3
-
-retrieve kubeconfig:
-  stage: deploy
-  when: manual
-  image: bitnami/kubectl
+external-lint:
+  stage: external-lint
+  image: python:3.10
   before_script:
-    - kubectl config use-context tddc88-ht24/infrastructure:tddc88-ht24
+    - cd Server/External
+    - pip install ruff
   script:
-    - TOKEN_DATA=$(kubectl get secret admin-user-token -o json)
-    - CA=$(echo "$TOKEN_DATA" | jq '.data."ca.crt"' -r | base64 -d)
-    - TOKEN=$(echo "$TOKEN_DATA" | jq '.data.token' -r | base64 -d)
-    - |
-      cat << EOF # Store this generated kubeconfig as .kube/config
-      ---
-      apiVersion: v1
-      clusters:
-      - cluster:
-          server: https://tddc88-ht24.course.kubernetes.it.liu.se/
-          certificate-authority-data: $(echo "$CA" | base64 -w0)
-        name: tddc88
-      contexts:
-      - context:
-          cluster: 
-          namespace: $POD_NAMESPACE
-          user: tddc88
-        name: tddc88
-      current-context: tddc88
-      kind: Config
-      preferences: {}
-      users:
-      - name: tddc88
-        user:
-          token: $TOKEN
-      EOF
+    - ruff check
+    - ruff format --check
 
-status:
-  stage: deploy
-  image: bitnami/kubectl
+external-test:
+  stage: external-test
+  image: python:3.10
   before_script:
-    - kubectl version --output=yaml
-    - kubectl config view
-    - kubectl config get-contexts
-    - kubectl config use-context tddc88-ht24/infrastructure:tddc88-ht24
+    - cd Server/External
+    - apt-get update && apt-get install -y gcc
+    - pip install -r requirements.txt
+    - pip install pytest pytest-cov coverage
   script:
-    - kubectl config get-contexts
-    - kubectl get pods
-  variables:
-    GIT_STRATEGY: none
+    - pytest --cov=app --cov-report=html --maxfail=1
+  artifacts:
+    name: "External"
+    paths:
+      - Server/External/htmlcov/
+    expire_in: 1 week
+
+lan-lint:
+  stage: lan-lint
+  image: python:3.10
+  before_script:
+    - cd Server/LAN
+    - pip install ruff
+  script:
+    - ruff check
+    - ruff format --check
+
+lan-test:
+  stage: lan-test
+  image: python:3.10
+  before_script:
+    - cd Server/LAN
+    - apt-get update && apt-get install -y gcc
+    - pip install -r requirements.txt
+    - pip install pytest pytest-cov coverage
+  script:
+    - pytest --cov=app --cov-report=html --maxfail=1
+  artifacts:
+    name: "LAN"
+    paths:
+      - Server/LAN/htmlcov/
+    expire_in: 1 week
+
+front-end-lint:
+  stage: front-end-lint
+  image: node:20
+  before_script:
+    - cd Client/Frontend
+    - npm install
+  script:
+    - npx prettier --check .
+    - npx eslint .
+
+pages:
+  stage: coverage-report
+  script:
+    - mkdir -p public/external
+    - mkdir -p public/lan
+    - cp -r Server/External/htmlcov/* public/external/
+    - cp -r Server/LAN/htmlcov/* public/lan/
+    - cp index.html public/index.html
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+    - development
+
+
+
+# variables:
+#   LIU_COURSE_CODE: tddc88
+#   LIU_COURSE_TERM: ht24
+#   LIU_GROUP_NAME: company3
+#   LIU_PROJECT_HOST: ${LIU_COURSE_CODE}-${LIU_GROUP_NAME}-${LIU_COURSE_TERM}.kubernetes-public.it.liu.se
+#   POD_NAMESPACE: tddc88-ht24-company3
+
+# retrieve kubeconfig:
+#   stage: deploy
+#   when: manual
+#   image: bitnami/kubectl
+#   before_script:
+#     - kubectl config use-context tddc88-ht24/infrastructure:tddc88-ht24
+#   script:
+#     - TOKEN_DATA=$(kubectl get secret admin-user-token -o json)
+#     - CA=$(echo "$TOKEN_DATA" | jq '.data."ca.crt"' -r | base64 -d)
+#     - TOKEN=$(echo "$TOKEN_DATA" | jq '.data.token' -r | base64 -d)
+#     - |
+#       cat << EOF # Store this generated kubeconfig as .kube/config
+#       ---
+#       apiVersion: v1
+#       clusters:
+#       - cluster:
+#           server: https://tddc88-ht24.course.kubernetes.it.liu.se/
+#           certificate-authority-data: $(echo "$CA" | base64 -w0)
+#         name: tddc88
+#       contexts:
+#       - context:
+#           cluster: 
+#           namespace: $POD_NAMESPACE
+#           user: tddc88
+#         name: tddc88
+#       current-context: tddc88
+#       kind: Config
+#       preferences: {}
+#       users:
+#       - name: tddc88
+#         user:
+#           token: $TOKEN
+#       EOF
+
+# status:
+#   stage: deploy
+#   image: bitnami/kubectl
+#   before_script:
+#     - kubectl version --output=yaml
+#     - kubectl config view
+#     - kubectl config get-contexts
+#     - kubectl config use-context tddc88-ht24/infrastructure:tddc88-ht24
+#   script:
+#     - kubectl config get-contexts
+#     - kubectl get pods
+#   variables:
+#     GIT_STRATEGY: none

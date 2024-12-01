@@ -1,0 +1,4 @@
+[format]
+exclude = ["Server/External/app/migrations/*.py"]
+[lint]
+exclude = ["Server/External/app/migrations/*.py"]

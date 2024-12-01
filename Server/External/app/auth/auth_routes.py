@@ -1,24 +1,44 @@
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
-from app.models import *
+"""
+This file defines the authentication-related routes for the Flask application.
+Routes include login and a protected example route.
+"""
+
+from flask import Blueprint
+from flask_jwt_extended import jwt_required
 from .auth_controller import AuthController
 
-from .auth_db_mock import users_db
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint("auth", __name__)
 
-@auth_bp.route('/login', methods=['POST'])
+
+@auth_bp.route("/login", methods=["POST"])
 def login():
+    """
+    Route to log in a user and retrieve a JWT token.
+
+    Example Request:
+        POST /login
+        {
+            "username": "user123",
+            "password": "password123"
+        }
+
+    Returns:
+        JSON response with the token if successful or an error message otherwise.
+    """
     return AuthController.login()
 
-#Route för att förnya access tokens med refresh tokens
-@auth_bp.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True)  # Kräver att refresh token skickas
-def refresh():
-    return AuthController.refresh()
 
-@auth_bp.route('/protected', methods=['GET'])
-@jwt_required()  # Kräver giltig access token
+@auth_bp.route("/protected", methods=["GET"])
+@jwt_required()
 def protected():
-    return AuthController.protected()
+    """
+    Route to demonstrate access to a protected resource.
 
+    Requires:
+        A valid JWT token in the Authorization header.
+
+    Returns:
+        JSON response with the current logged-in user's information.
+    """
+    return AuthController.protected()

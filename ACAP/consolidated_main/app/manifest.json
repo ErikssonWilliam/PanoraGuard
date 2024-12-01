@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.7.0",
+  "acapPackageConf": {
+    "setup": {
+      "appName": "alarm_identifier",
+      "vendor": "Axis Communications",
+      "embeddedSdkVersion": "3.0",
+      "vendorUrl": "https://www.axis.com",
+      "runMode": "never",
+      "version": "1.0.0"
+    }
+  },
+  "resources": {
+    "dbus": {
+      "requiredMethods": [
+        "com.axis.HTTPConf1.VAPIXServiceAccounts1.GetCredentials"
+      ]
+    }
+  }
+}

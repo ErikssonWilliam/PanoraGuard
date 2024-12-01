@@ -1,4 +1,10 @@
+PyJWT==2.9.0
 psycopg2-binary
 python-dotenv
 flask
 flask-sqlalchemy
+flask-cors
+requests
+pyjwt
+pre-commit
+opencv-python

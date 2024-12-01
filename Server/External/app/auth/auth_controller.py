@@ -1,41 +1,54 @@
+"""
+This file defines the AuthController class, responsible for handling HTTP requests related to authentication.
+"""
+
 from flask import jsonify, request
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
-from datetime import datetime, timedelta
-from .auth_db_mock import users_db
+from flask_jwt_extended import get_jwt_identity
 from .auth_service import AuthService
 
-#will request entered data, tries the calls and returns the results
-
-#bcrypt = Bcrypt()
 
 class AuthController:
-
     def login():
-        username = request.json.get('username', None)
-        password = request.json.get('password', None)
+        """
+        Handle user login by validating credentials and returning a JWT token.
+
+        Example Request Body:
+            {
+                "username": "user123",
+                "password": "password123"
+            }
+
+        Returns:
+            Response: JSON containing the JWT token and user information if successful.
+            Otherwise, an error message and appropriate HTTP status code.
+        """
+
+        data = request.json
+        username = data.get("username")
+        password = data.get("password")
+
+        if not username or not password:
+            return {"error": "Username and password are required"}, 400
 
         try:
-            token = AuthService.login(username, password)
-            return jsonify(access_token = token), 200
+            result = AuthService.login(username, password)
+            return jsonify(result), 200
+        except KeyError:
+            return {"error": "User not found"}, 400
+        except ValueError:
+            return {"error": "Invalid password"}, 401
         except Exception as e:
-            return jsonify({"msg": "Invalid username or password"}), 401
+            return {"error": str(e)}, 500
 
-    def refresh():
-        current_user = get_jwt_identity()  # Hämtar användaren från refresh token
-        new_access_token = create_access_token(identity=current_user, expires_delta=timedelta(minutes=15))
-        return jsonify(access_token=new_access_token), 200
-    
     def protected():
-        current_user = get_jwt_identity()  # hämtar den inloggade användaren
+        """
+        Handle access to a protected resource.
+
+        Requires:
+            A valid JWT token in the Authorization header.
+
+        Returns:
+            Response: JSON containing the current user's identity.
+        """
+        current_user = get_jwt_identity()
         return jsonify(logged_in_as=current_user), 200
-    
-    
-    
-#   #Logout + blacklist, tveksamt om detta är bästa hanteringen
-#   @auth.route('/logout', methods=['POST'])
-#   @jwt_required()
-#   def logout():
-#   jti = get_jwt()["jti"]  # JWT ID för att identifiera tokenen som ska ogiltigförklaras (blacklisting)
-#   Här skulle du lägga till denna token till en blacklist om du implementerar en sådan
-#     return jsonify(msg="Utloggad"), 200
