@@ -12,13 +12,13 @@ const AlarmRow = ({ alarm }) => {
 
   const getStatusClass = () => {
     if (alarm.status === "PENDING") {
-      return "bg-red-600 hover:bg-red-500";
+      return "bg-red-600";
     } else if (alarm.status === "NOTIFIED") {
-      return "bg-[#7E8736] hover:bg-[#575F1D]"; // Yellow for notified
+      return "bg-[#7E8736]"; // Yellow for notified
     } else if (alarm.status === "RESOLVED") {
-      return "bg-[#216657] hover:bg-[#12493D]"; // Green for resolved
+      return "bg-[#216657]"; // Green for resolved
     } else if (alarm.status === "IGNORED") {
-      return "bg-[#788D8E] hover:bg-[#5F6C6C]"; // Dark gray for ignored
+      return "bg-[#788D8E]"; // Dark gray for ignored
     }
   };
 
@@ -60,8 +60,8 @@ const AlarmRow = ({ alarm }) => {
             </span>
           </div>
 
-          <div
-            className={`flex md:col-span-1 items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg shadow transition duration-200`}
+          <span
+            className={`flex items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg`}
             title={
               alarm.status === "PENDING"
                 ? "This alarm is currently active"
@@ -83,11 +83,11 @@ const AlarmRow = ({ alarm }) => {
                   : alarm.status === "IGNORED"
                     ? "Ignored"
                     : "Unknown"}
-          </div>
+          </span>
 
           <button
             onClick={handleDetailsClick}
-            className=" bg-cyan-700 md:col-span-1 hover:bg-cyan-800 text-white px-4 py-3 rounded-lg  transition duration-200 min-w-[130px]"
+            className=" bg-cyan-700 hover:bg-cyan-800 text-white px-4 py-3 rounded-lg transition duration-200 min-w-[130px]"
           >
             Details
           </button>

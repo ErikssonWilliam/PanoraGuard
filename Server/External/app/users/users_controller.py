@@ -1,13 +1,20 @@
+"""
+Controller for managing user-related HTTP requests.
+This class handles input data validation and delegates logic to the UserService.
+"""
+
 from flask import jsonify, request
-
-# from ..auth.auth_db_mock import users_db
 from .users_service import UserService
-
-# will request entered data, tries the calls and returns the results
 
 
 class UserController:
     def get_users():
+        """
+        Fetch all users.
+
+        Returns:
+            Response: JSON list of users.
+        """
         users = UserService.get_users()
         return (
             jsonify(
@@ -17,12 +24,27 @@ class UserController:
         )
 
     def get_user_by_id(user_id: str):
+        """
+        Fetch details of a specific user.
+
+        Parameters:
+            user_id (str): The ID of the user.
+
+        Returns:
+            Response: JSON with user details or error message.
+        """
         user = UserService.get_user_by_id(user_id)
         if user:
             return jsonify(user.exposed_fields()), 200
         return jsonify({"error": "User not found"}), 404
 
     def create_user():
+        """
+        Create a new user.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         data = request.json
 
         if data.get("role") == "GUARD":
@@ -53,6 +75,12 @@ class UserController:
             return jsonify({"error": str(e)}), 400
 
     def update_user(user_id: str):
+        """
+        Updates a user.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         data = request.json
         user = UserService.get_user_by_id(user_id)
         updated = UserService.update_user(user, data)
@@ -61,6 +89,12 @@ class UserController:
         return jsonify({"message": "User not found"}), 404
 
     def delete_user(user_id: str):
+        """
+        Deletes a user.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         deleted = UserService.delete_user(user_id)
         if deleted:
             return jsonify({"message": "User deleted"}), 200
