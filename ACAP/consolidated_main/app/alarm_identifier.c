@@ -29,13 +29,9 @@
 // Define constants
 #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
 // #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
-// #define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add" // Local external server
- #define EXTERNAL_URL "https://company3-externalserver.azurewebsites.net/alarms/add" // Cloud external server
-//#define EXTERNAL_URL "https://13.69.228.9/alarms/add" // cloud external as ip adress
+#define LAN_URL "http://192.168.1.104:5100/alarms/redirect"
 
 #define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // Endpoint for enabling snapshots
-
-// -----------------------------------------
 
 /**
  * Structure to hold channel topic and source information.
@@ -92,7 +88,7 @@ static size_t write_callback(void *contents, size_t size, size_t nmemb, void *us
  * Parameters:
  *   data (const char*): JSON-formatted data to send.
  */
-static void post_to_external(const char *data)
+static void post_alarms(const char *data)
 {
     CURL *curl;
     CURLcode res;
@@ -103,11 +99,11 @@ static void post_to_external(const char *data)
         headers = curl_slist_append(headers, "Accept: application/json");
         headers = curl_slist_append(headers, "Content-Type: application/json");
 
-        curl_easy_setopt(curl, CURLOPT_URL, EXTERNAL_URL);
+        curl_easy_setopt(curl, CURLOPT_URL, LAN_URL);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+        //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // detailed logging
 
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
@@ -198,7 +194,7 @@ static bool parse_json_payload(const mdb_message_payload_t *payload, char **type
     json_t *classes = json_object_get(root, "classes");
     if (!json_is_array(classes) || json_array_size(classes) == 0)
     {
-        syslog(LOG_ERR, "JSON parsing error: No classes object in alarm data");
+        syslog(LOG_INFO, "No classes object in alarm data");
         json_decref(root);
         return false;
     }
@@ -277,7 +273,7 @@ static void on_message(const mdb_message_t *message, void *user_data)
 
     // Convert JSON object to string
     char *json_str = json_dumps(json_data, JSON_ENCODE_ANY);
-    post_to_external(json_str);
+    post_alarms(json_str);
 
     // Free allocated resources
     free(json_str);
@@ -288,8 +284,6 @@ static void on_message(const mdb_message_t *message, void *user_data)
 
 /**
  * Callback for writing HTTP response data from snapshot-related requests.
- *
- * Logs the HTTP response received from the camera.
  *
  * Parameters:
  *   contents (void*): Response data buffer.
@@ -304,7 +298,6 @@ static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb,
 {
     (void)userp;
     size_t total_size = size * nmemb;
-    syslog(LOG_INFO, "Response from camera: %.*s", (int)total_size, (char *)contents);
     return total_size;
 }
 
@@ -443,9 +436,6 @@ static void enable_best_snapshot(void)
     }
     free(credentials);
 }
-
-
-// ------------------------------------------------------------------
 
 static void on_done_subscriber_create(const mdb_error_t *error, void *user_data)
 {
