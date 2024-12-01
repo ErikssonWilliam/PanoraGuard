@@ -75,6 +75,7 @@ pages:
     - mkdir -p public/lan
     - cp -r Server/External/htmlcov/* public/external/
     - cp -r Server/LAN/htmlcov/* public/lan/
+    - cp index.html public/index.html
   artifacts:
     paths:
       - public
