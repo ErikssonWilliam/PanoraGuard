@@ -184,7 +184,7 @@ const ChangeUser = () => {
           placeholder="Search by name"
           value={searchTerm}
           onChange={handleSearch}
-          className="w-full px-4 py-2 border-1 border-cyan-700 rounded-lg shadow-sm focus:ring-cyan-700 focus:border-cyan-700"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
 
