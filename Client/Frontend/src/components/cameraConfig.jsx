@@ -8,13 +8,28 @@ const CameraConfig = () => {
   const [cameras, setCameras] = useState([]); // State to store cameras
   const [selectedCameraID, setSelectedCameraID] = useState(""); // Track selected camera
 
-  // Fetch the confidence threshold for the selected camera
-  // // const fetchConfidenceThreshold = async (cameraId) => {
-  // //   try {
-  // //     const response = await fetch(
-  // //       `${externalURL}/cameras/${cameraId}/confidence`,
-  // //     );
-  // //     const data = await response.json();
+  // // Fetch the confidence threshold for the selected camera
+  // const fetchConfidenceThreshold = async (cameraId) => {
+  //   try {
+  //     const token = localStorage.getItem("accessToken");
+  //     const response = await fetch(
+  //       `${externalURL}/cameras/${cameraId}/confidence`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       },
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error(
+  //         `Failed to fetch confidence threshold: ${response.statusText}`,
+  //       );
+  //     }
+
+  //     const data = await response.json();
 
   //     if (data.confidence_threshold) {
   //       setConfidenceLevel(data.confidence_threshold * 100);
@@ -57,9 +72,19 @@ const CameraConfig = () => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
       try {
+        const token = localStorage.getItem("accessToken");
         const response = await fetch(`${externalURL}/cameras/`, {
           method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch cameras");
+        }
+
         const data = await response.json();
         console.log(data);
         console.log(data);

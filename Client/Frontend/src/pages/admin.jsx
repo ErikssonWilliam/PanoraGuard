@@ -72,24 +72,22 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen relative bg-gray-100">
-      {/* Header with Hamburger Menu */}
-      <header className="relative flex items-center p-4 bg-[#F5F7FA] border-b">
+      <header className="fixed top-0 left-0 w-full z-20 flex items-center justify-between p-4 bg-[#F5F7FA] border-b shadow-md">
+        {/* Sidebar Toggle Button */}
         <button
-          className="text-2xl"
+          className="text-2xl w-6 h-6 flex items-center justify-center"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
           <FaBars />
         </button>
 
         {/* Centered Logo */}
-        <img
-          src={logo}
-          alt="PanoraGuard logo"
-          className="absolute left-1/2 transform -translate-x-1/2 h-5"
-        />
+        <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+          <img src={logo} alt="PanoraGuard logo" className="h-5" />
+        </div>
 
-        {/* Right Icons (Notification and User) */}
-        <div className="ml-auto flex space-x-4">
+        {/* Right Icons */}
+        <div className="w-6 flex justify-end">
           <Link to="/profile">
             <img
               src={userIcon}
@@ -108,7 +106,7 @@ const Admin = () => {
       >
         {/* Close Icon */}
         <div className="flex justify-between items-center mb-6">
-          <span className="text-lg font-semibold">Navigation</span>
+          {/* <span className="text-lg font-semibold">Navigation</span> */}
           <button className="text-xl" onClick={() => setIsSidebarOpen(false)}>
             <FaTimes />
           </button>

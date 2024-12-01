@@ -25,8 +25,8 @@ const AlarmDetailPage = () => {
 
   const fetchOperatorDetails = async (operatorId) => {
     // Fetches operator details by ID and sets the username or "N/A" on error.
-    const token = localStorage.getItem("accessToken");
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await axios.get(`${externalURL}/users/${operatorId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -40,6 +40,22 @@ const AlarmDetailPage = () => {
   };
 
   useEffect(() => {
+    const fetchOperatorDetailsIfNeeded = async (alarm) => {
+      if (
+        alarm?.status !== "PENDING" &&
+        alarm?.operator_id &&
+        alarm.operator_id !== "N/A"
+      ) {
+        await fetchOperatorDetails(alarm.operator_id);
+      }
+    };
+
+    if (alarm) {
+      fetchOperatorDetailsIfNeeded(alarm);
+    }
+  }, [alarm]);
+
+  useEffect(() => {
     // if (!id) {
     //   setNotificationMessage("Alarm ID is missing.");
     //   setNotificationType("error");
@@ -51,8 +67,8 @@ const AlarmDetailPage = () => {
     // sessionStorage.removeItem("alarmData");
 
     // const fetchAlarmDetails = async () => {
-    //   const token = localStorage.getItem("accessToken");
     //   try {
+    //     const token = localStorage.getItem("accessToken");
     //     const response = await axios.get(`${externalURL}/alarms/${id}`, {
     //       headers: {
     //         Authorization: `Bearer ${token}`,
@@ -96,8 +112,14 @@ const AlarmDetailPage = () => {
 
     const fetchAlarmImage = async () => {
       try {
+        const token = localStorage.getItem("accessToken");
         const imageResponse = await axios.get(
           `${externalURL}/alarms/${alarm_state.id}/image`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
@@ -112,7 +134,12 @@ const AlarmDetailPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${externalURL}/users/guards`);
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(`${externalURL}/users/guards`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setUsers(response.data);
       } catch (err) {
         console.error("Error fetching guards:", err);
@@ -148,7 +175,9 @@ const AlarmDetailPage = () => {
   //Gustav and Alinas attempt to do functions to avoid code duplications.
   const stopExternalSpeaker = async () => {
     try {
-      const speakerResponse = await axios.get(`${lanURL}/test/stop-speaker`); //hard coded server
+      const speakerResponse = await axios.post(
+        `${lanURL}/speaker/stop-speaker`,
+      ); //hard coded server
       if (speakerResponse.status === 200) {
         console.log(
           "External speaker stopped successfully:",
@@ -176,6 +205,7 @@ const AlarmDetailPage = () => {
     }
 
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await axios.put(
         `${externalURL}/alarms/${alarm.id}/status`,
         {
@@ -183,7 +213,13 @@ const AlarmDetailPage = () => {
           guard_id: guardID, // Include guard_id in the request payload
           operator_id: operatorId, // Include operator_id from localStorage
         },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
+
       setAlarm((prevAlarm) => ({
         ...prevAlarm,
         status: response.data.status,
@@ -223,13 +259,14 @@ const AlarmDetailPage = () => {
 
   const notifyGuard = async (guardID) => {
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${externalURL}/alarms/notify/${guardID}/${alarm.id}`,
         {},
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -364,7 +401,22 @@ const AlarmDetailPage = () => {
         {alarm?.status !== "RESOLVED" && alarm?.status !== "IGNORED" && (
           <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
             {alarm?.status === "NOTIFIED" ? (
-              <div className="flex justify-center w-full">
+              // Layout for "NOTIFIED" status
+              <div className="flex justify-center w-full space-x-4">
+                <button
+                  onClick={() =>
+                    navigate("/live-feed", {
+                      state: {
+                        id: alarm.id,
+                        alarm_state,
+                        camera_id: alarm.camera_id,
+                      },
+                    })
+                  }
+                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+                >
+                  Look at the live feed
+                </button>
                 <button
                   onClick={() => updateAlarmStatus("RESOLVED")}
                   className="bg-[#EBB305] text-white px-6 py-3 rounded-lg hover:bg-[#FACC14] transition duration-200"
@@ -373,6 +425,7 @@ const AlarmDetailPage = () => {
                 </button>
               </div>
             ) : (
+              // Layout for "PENDING" och other statuses
               <div className="flex justify-between w-full">
                 <button
                   onClick={() =>
@@ -412,6 +465,7 @@ const AlarmDetailPage = () => {
                 </button>
               </div>
             )}
+            {/* Notification Message and Manual Notify */}
             <div className="mt-2 h-20 flex flex-col items-center">
               {notificationMessage && (
                 <p
