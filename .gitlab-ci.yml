@@ -44,13 +44,10 @@ lan-lint:
 
 lan-test:
   stage: lan-test
-  image: hdgigante/python-opencv:4.10.0-ubuntu
+  image: hdgigante/python-opencv
   before_script:
     - cd Server/LAN
-    - apt-get update && apt-get install -y gcc
-    - apt-get install -y python3.12-venv
-    - python3 -m venv venv
-    - source venv/bin/activate
+    - dnf install -y gcc
     - pip install -r requirements.txt
     - pip install pytest pytest-cov coverage
   script:
