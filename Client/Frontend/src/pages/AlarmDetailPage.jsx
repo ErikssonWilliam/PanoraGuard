@@ -267,23 +267,34 @@ const AlarmDetailPage = () => {
         operator_id: response.data.operator_id,
       }));
 
+      const navigateToHome = () => {
+        switch (userInfo.role.toLowerCase()) {
+          case "admin":
+            navigate("/admin");
+            break;
+          case "operator":
+            navigate("/operator");
+            break;
+        }
+      };
+
       fetchOperatorDetails(response.data.operator_id);
 
       switch (newStatus) {
         case "IGNORED":
           window.alert("Alarm dismissed successfully.");
-          navigate("/operator"); // Navigate back to the operator page after confirmation
+          navigateToHome(); // Navigate back to the operator page after confirmation
           stopExternalSpeaker();
           break;
 
         case "NOTIFIED":
           window.alert(`Alarm status updated to Notified`);
-          navigate("/operator"); // Navigate back to the operator page after confirmation
+          navigateToHome(); // Navigate back to the operator page after confirmation
           break;
 
         case "RESOLVED":
           window.alert(`Alarm status updated to Resolved`);
-          navigate("/operator"); // Navigate back to the operator page after confirmation
+          navigateToHome(); // Navigate back to the operator page after confirmation
           stopExternalSpeaker();
           break;
 

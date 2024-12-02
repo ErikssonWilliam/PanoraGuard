@@ -5,7 +5,7 @@ const LiveFeedHeader = () => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate("/operator"); // Om `id` saknas, navigera tillbaka till huvudlistan
+    navigate(-1); // Om `id` saknas, navigera tillbaka till huvudlistan
   };
 
   return (
