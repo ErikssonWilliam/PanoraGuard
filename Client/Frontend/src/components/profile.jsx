@@ -4,6 +4,7 @@ import { externalURL } from "../api/axiosConfig";
 import Header from "./ProfileHeader.jsx";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "./Notification.jsx";
+import axios from "axios";
 
 const useFetchUserInfo = (userId) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -15,22 +16,16 @@ const useFetchUserInfo = (userId) => {
       setError(""); // Clear any previous errors
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await fetch(`${externalURL}/users/${userId}`, {
-          method: "GET",
+        const response = await axios.get(`${externalURL}/users/${userId}`, {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch user info");
-        }
-
-        const data = await response.json();
+        const data = response.data;
         setUserInfo(data);
       } catch (error) {
-        setError(error.message);
+        setError(error.response?.data?.error || "Failed to fetch user info");
       } finally {
         setLoading(false);
       }
@@ -68,31 +63,35 @@ const ProfilePage = () => {
     } else if (newPassword.length < 8) {
       setErrorMessage("Password must be at least 8 characters long!");
       return;
-    } else {
-      setErrorMessage("");
+    }
+    setErrorMessage("");
 
-      try {
-        const token = localStorage.getItem("accessToken");
-        const response = await fetch(`${externalURL}/users/${userId}`, {
-          method: "PUT",
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        `${externalURL}/users/${userId}`,
+        { newPassword },
+        {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ newPassword }),
-        });
+        },
+      );
 
-        if (response.ok) {
-          alert("Password changed successfully!");
-        } else {
-          throw new Error("Server Error!");
-        }
-      } catch (error) {
-        console.log(error);
-        alert("Something went wrong!");
-      }
+      const data = response.data;
+      console.log("Server response:", data);
+
+      alert("Password changed successfully!");
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error changing password:", error);
+      setErrorMessage(
+        error.response?.data?.error ||
+          "Failed to change password. Please try again.",
+      );
     }
   };
+
   if (!isUserLoggedInWithRole("ANY")) {
     return (
       <Notification

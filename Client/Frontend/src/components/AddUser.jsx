@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { externalURL } from "../api/axiosConfig";
+import axios from "axios";
 
 const AddnewUser = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,22 +29,15 @@ const AddnewUser = () => {
 
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch(`${externalURL}/users/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await axios.post(
+        `${externalURL}/users/create`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-        body: JSON.stringify(formData),
-      });
-
-      // If response is not ok, handle the error
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Something went wrong");
-      }
-
-      const data = await response.json();
+      );
 
       setFormData({
         username: "",
@@ -52,12 +46,12 @@ const AddnewUser = () => {
         role: "GUARD",
       });
 
-      console.log("User added successfully:", data);
-      alert(`User ${data.user.username} added successfully`);
+      console.log("User added successfully:", response.data);
+      alert(`User ${response.data.user.username} added successfully`);
       setErrorMessage("");
     } catch (error) {
       console.error("Error adding user", error);
-      setErrorMessage(error.message);
+      setErrorMessage(error.response?.data?.error || "Something went wrong");
     }
   };
 
