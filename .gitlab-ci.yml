@@ -44,10 +44,11 @@ lan-lint:
 
 lan-test:
   stage: lan-test
-  image: python:3.10
+  image: hdgigante/python-opencv
   before_script:
     - cd Server/LAN
-    - apt-get update && apt-get install -y gcc
+    - dnf install -y gcc
+    - dnf install -y mesa-libGL
     - pip install -r requirements.txt
     - pip install pytest pytest-cov coverage
   script:

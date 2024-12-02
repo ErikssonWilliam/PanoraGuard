@@ -106,9 +106,10 @@ class CameraService:
         try:
             camera.confidence_threshold = float(confidence)
             db.session.commit()
-            return jsonify(
-                {"status": "success", "confidence_threshold": confidence}
-            ), 200
+            return (
+                jsonify({"status": "success", "confidence_threshold": confidence}),
+                200,
+            )
         except Exception as e:
             print("Error in CameraService.set_confidence:", e)
             return jsonify({"status": "error", "message": str(e)}), 500
@@ -134,12 +135,15 @@ class CameraService:
         try:
             camera.confidence_threshold = float(confidence)
             db.session.commit()
-            return jsonify(
-                {
-                    "message": "Confidence threshold updated successfully",
-                    "confidence_threshold": camera.confidence_threshold,
-                }
-            ), 200
+            return (
+                jsonify(
+                    {
+                        "message": "Confidence threshold updated successfully",
+                        "confidence_threshold": camera.confidence_threshold,
+                    }
+                ),
+                200,
+            )
         except Exception as e:
             print("Error in CameraService.update_confidence:", e)
             return jsonify({"error": "Failed to update confidence threshold"}), 500
@@ -165,12 +169,15 @@ class CameraService:
             camera.location = location
             db.session.commit()
 
-            return jsonify(
-                {
-                    "message": "Location updated successfully",
-                    "location": camera.location,
-                }
-            ), 200
+            return (
+                jsonify(
+                    {
+                        "message": "Location updated successfully",
+                        "location": camera.location,
+                    }
+                ),
+                200,
+            )
         except Exception:
             return jsonify({"error": "Failed to update location"}), 500
 
@@ -215,12 +222,15 @@ class CameraService:
             camera.ip_address = ip_address
             db.session.commit()
 
-            return jsonify(
-                {
-                    "message": "IP address updated successfully",
-                    "ip_address": camera.ip_address,
-                }
-            ), 200
+            return (
+                jsonify(
+                    {
+                        "message": "IP address updated successfully",
+                        "ip_address": camera.ip_address,
+                    }
+                ),
+                200,
+            )
         except Exception as e:
             print("Error in CameraService.update_ip:", e)
             return jsonify({"error": "Failed to update IP address"}), 500
@@ -247,12 +257,15 @@ class CameraService:
             camera.schedule = schedule
             db.session.commit()
 
-            return jsonify(
-                {
-                    "message": "Schedule updated successfully",
-                    "schedule": camera.schedule,
-                }
-            ), 200
+            return (
+                jsonify(
+                    {
+                        "message": "Schedule updated successfully",
+                        "schedule": camera.schedule,
+                    }
+                ),
+                200,
+            )
         except Exception as e:
             print("Error in CameraService.update_schedule:", e)
             return jsonify({"error": "Failed to update schedule"}), 500
