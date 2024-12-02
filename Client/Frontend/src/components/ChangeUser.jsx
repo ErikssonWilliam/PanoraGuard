@@ -36,7 +36,7 @@ const ChangeUser = () => {
                 headers: {
                   Authorization: `Bearer ${accessToken}`,
                 },
-              }
+              },
             );
 
             return {
@@ -54,7 +54,7 @@ const ChangeUser = () => {
               role: "Unknown",
             };
           }
-        })
+        }),
       );
 
       setUsers(userWithRoles);
@@ -70,7 +70,7 @@ const ChangeUser = () => {
   // Delete user by ID
   const handleDelete = async (userId) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this user?",
     );
     if (!confirmDelete) return;
 
@@ -125,19 +125,19 @@ const ChangeUser = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       if (response.status === 200) {
         setUsers(
           users.map((user) =>
-            user.id === userId ? { ...user, role: newRole } : user
-          )
+            user.id === userId ? { ...user, role: newRole } : user,
+          ),
         );
         setFilteredUsers(
           filteredUsers.map((user) =>
-            user.id === userId ? { ...user, role: newRole } : user
-          )
+            user.id === userId ? { ...user, role: newRole } : user,
+          ),
         );
         setRoleChanges((prevChanges) => {
           const updatedChanges = { ...prevChanges };
@@ -157,7 +157,7 @@ const ChangeUser = () => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
     const filtered = users.filter((user) =>
-      user.username.toLowerCase().includes(term)
+      user.username.toLowerCase().includes(term),
     );
     setFilteredUsers(filtered);
   };
@@ -207,9 +207,7 @@ const ChangeUser = () => {
                   <strong>Role:</strong>
                   <select
                     value={roleChanges[user.id] || user.role}
-                    onChange={(e) =>
-                      handleRoleChange(user.id, e.target.value)
-                    }
+                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
                     className="ml-2 px-2 py-1 border rounded-md"
                     disabled={user.role === "ADMIN"} // Disable dropdown for Admin users
                   >
