@@ -9,6 +9,7 @@ from flask import request, jsonify
 from .alarms_service import AlarmService
 from app.socketio_instance import socketio
 import requests
+from config import Config
 
 
 class AlarmController:
@@ -61,10 +62,7 @@ class AlarmController:
         Private static method to turn on the speaker at the LAN server.
         """
         try:
-            # response = requests.post("https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker") # URL to Raspery Pi server
-            response = requests.post(
-                "http://127.0.0.1:5100/speaker/start-speaker"
-            )  # URL to local server
+            response = requests.post(Config.SPEAKER_URL)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
