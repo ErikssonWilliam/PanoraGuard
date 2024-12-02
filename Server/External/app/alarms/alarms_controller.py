@@ -123,6 +123,7 @@ class AlarmController:
         if updated_alarm:
             return jsonify(updated_alarm), 200
         else:
-            return jsonify(
-                {"message": "Alarm not found or invalid guard/operator ID"}
-            ), 404
+            return (
+                jsonify({"message": "Alarm not found or invalid guard/operator ID"}),
+                404,
+            )
