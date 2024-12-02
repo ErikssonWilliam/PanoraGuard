@@ -75,7 +75,7 @@ def notify_guard(guard_ID, alarm_ID):
 
 
 @alarms_bp.route("/add", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def add_alarm():
     """
     Adds a new alarm to the system.
