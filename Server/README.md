@@ -75,6 +75,24 @@ CAMERA_PASSWORD = secure # only for LAN
 
 3. Replace `PASSWORD` in `DATABASE_URL` with the password you set during PostgreSQL installation.
 
+### Change URL to correct server IP-address
+
+To ensure the **external server** communicates correctly with the LAN server for speaker control, make sure that the correct URL is defined:
+
+1. Open the file located at:
+   ```plaintext
+   /Server/External/config.py
+   ````
+2. Edit the `SPEAKER_URL` in this file to match your environment. The file contains a line like this:
+   ```python
+   # SPEAKER_URL = "https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker"  # URL to Raspberry Pi LAN server
+   SPEAKER_URL = "http://127.0.0.1:5100/speaker/start-speaker"  # URL to local LAN server
+   ```
+3. Ensure the `SPEAKER_URL` is set to the appropriate value:
+   - **Running Locally**: Use `http://127.0.0.1:5100/speaker/start-speaker` for the local LAN server.
+   - **Running in the Cloud**: Use `https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker` for the deployed Raspberry Pi LAN server.
+4. Save the file after necessary changes.
+
 ### Run the Application
 
 ```bash
