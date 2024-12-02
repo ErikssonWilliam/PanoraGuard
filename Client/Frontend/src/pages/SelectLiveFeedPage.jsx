@@ -48,7 +48,7 @@ const SelectLiveFeedPage = () => {
 
   const { userInfo } = useFetchUserInfo(userId);
 
-  if (!isUserLoggedInWithRole("OPERATOR")) {
+  if (!isUserLoggedInWithRole("OPERATOR") && !isUserLoggedInWithRole("ADMIN")) {
     return (
       <Notification
         message={

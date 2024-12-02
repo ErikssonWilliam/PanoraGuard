@@ -6,16 +6,32 @@ import userIcon from "../assets/user-01.png";
 const Header = ({ userInfo, setErrorMessage }) => {
   const navigate = useNavigate();
 
+  // Function for admin/operator to redirect to their home page by clicking the bell button user's role
+  const navigateToRolePage = () => {
+    const userRole = localStorage.getItem("userRole");
+
+    switch (userRole) {
+      case "ADMIN":
+        navigate("/admin");
+        break;
+      case "OPERATOR":
+        navigate("/operator");
+        break;
+      default:
+        console.error("Unknown role, unable to navigate.");
+    }
+  };
+
   // Function to navigate based on the user's role
   const navigateToHome = () => {
     switch (userInfo.role.toLowerCase()) {
-      case "admin":
+      case "ADMIN":
         navigate("/admin");
         break;
-      case "operator":
+      case "OPERATOR":
         navigate("/operator");
         break;
-      case "manager":
+      case "MANAGER":
         navigate("/dashboard");
         break;
       default:
@@ -35,15 +51,17 @@ const Header = ({ userInfo, setErrorMessage }) => {
         />
       </Link>
 
-      {/* Right Icons (Notification and User) */}
+      {/* Notification Icon with Role-Based Navigation */}
       <div className="ml-auto flex space-x-4">
-        <Link to="/operator">
+        <button onClick={navigateToRolePage}>
           <img
             src={bellIcon}
             alt="Notification icon"
             className="w-6 h-6 hover:scale-110 transition-transform duration-200"
           />
-        </Link>
+        </button>
+
+        {/* User Profile Icon */}
         <Link to="/profile">
           <img
             src={userIcon}
