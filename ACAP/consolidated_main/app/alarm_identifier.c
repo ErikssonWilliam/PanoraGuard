@@ -27,9 +27,9 @@
 #include <gio/gio.h>   // For D-Bus credentials
 
 // Define constants
-#define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
-// #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
-#define LAN_URL "http://192.168.1.104:5100/alarms/redirect"
+//#define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
+#define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
+#define LAN_URL "http://192.168.1.144:5100/alarms/redirect" //Static IP for rasberry pi LAN
 
 #define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // Endpoint for enabling snapshots
 
@@ -298,6 +298,7 @@ static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb,
 {
     (void)userp;
     size_t total_size = size * nmemb;
+    syslog(LOG_INFO, "Enable snapshot callback responded: %.*s", (int)total_size, (char *)contents);
     return total_size;
 }
 
