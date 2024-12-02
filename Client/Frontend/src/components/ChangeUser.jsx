@@ -30,14 +30,13 @@ const ChangeUser = () => {
       const userWithRoles = await Promise.all(
         data.map(async (user) => {
           try {
-            // Make an additional API call to get detailed user info, including the role
             const userResponse = await axios.get(
               `${externalURL}/users/${user.id}`,
               {
                 headers: {
                   Authorization: `Bearer ${accessToken}`,
                 },
-              },
+              }
             );
 
             return {
@@ -55,11 +54,11 @@ const ChangeUser = () => {
               role: "Unknown",
             };
           }
-        }),
+        })
       );
 
       setUsers(userWithRoles);
-      setFilteredUsers(userWithRoles); // Initialize filteredUsers with full list
+      setFilteredUsers(userWithRoles);
     } catch (error) {
       console.error("Error fetching users:", error);
       setUsers([]);
@@ -71,7 +70,7 @@ const ChangeUser = () => {
   // Delete user by ID
   const handleDelete = async (userId) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?",
+      "Are you sure you want to delete this user?"
     );
     if (!confirmDelete) return;
 
@@ -126,23 +125,23 @@ const ChangeUser = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
 
       if (response.status === 200) {
         setUsers(
           users.map((user) =>
-            user.id === userId ? { ...user, role: newRole } : user,
-          ),
+            user.id === userId ? { ...user, role: newRole } : user
+          )
         );
         setFilteredUsers(
           filteredUsers.map((user) =>
-            user.id === userId ? { ...user, role: newRole } : user,
-          ),
+            user.id === userId ? { ...user, role: newRole } : user
+          )
         );
         setRoleChanges((prevChanges) => {
           const updatedChanges = { ...prevChanges };
-          delete updatedChanges[userId]; // Remove the user from the role changes state
+          delete updatedChanges[userId];
           return updatedChanges;
         });
         alert("Role updated successfully.");
@@ -158,7 +157,7 @@ const ChangeUser = () => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
     const filtered = users.filter((user) =>
-      user.username.toLowerCase().includes(term),
+      user.username.toLowerCase().includes(term)
     );
     setFilteredUsers(filtered);
   };
@@ -193,7 +192,9 @@ const ChangeUser = () => {
           {filteredUsers.map((user) => (
             <li
               key={user.id}
-              className="p-4 border border-gray-300 rounded-md bg-gray-50 shadow-sm flex items-center justify-between"
+              className={`p-4 border border-gray-300 rounded-md shadow-sm flex items-center justify-between ${
+                user.role === "ADMIN" ? "bg-blue-100" : "bg-gray-50"
+              }`}
             >
               <div>
                 <p className="text-sm font-medium text-gray-800">
@@ -206,8 +207,11 @@ const ChangeUser = () => {
                   <strong>Role:</strong>
                   <select
                     value={roleChanges[user.id] || user.role}
-                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    onChange={(e) =>
+                      handleRoleChange(user.id, e.target.value)
+                    }
                     className="ml-2 px-2 py-1 border rounded-md"
+                    disabled={user.role === "ADMIN"} // Disable dropdown for Admin users
                   >
                     <option value="OPERATOR">Operator</option>
                     <option value="GUARD">Guard</option>
@@ -215,19 +219,24 @@ const ChangeUser = () => {
                 </p>
               </div>
               <div className="flex space-x-2">
-                <button
-                  className="text-sm py-2 px-4 rounded-md rounded bg-red-500 text-white hover:bg-red-700 transition"
-                  onClick={() => handleDelete(user.id)}
-                >
-                  Remove
-                </button>
-                {roleChanges[user.id] && roleChanges[user.id] !== user.role && (
-                  <button
-                    className="text-sm px-4 py-2 bg-cyan-700 text-white py-2 px-4 rounded-md hover:bg-cyan-800 transition-colors"
-                    onClick={() => handleRoleUpdate(user.id)}
-                  >
-                    Update
-                  </button>
+                {user.role !== "ADMIN" && (
+                  <>
+                    <button
+                      className="text-sm py-2 px-4 rounded-md bg-red-500 text-white hover:bg-red-700 transition"
+                      onClick={() => handleDelete(user.id)}
+                    >
+                      Remove
+                    </button>
+                    {roleChanges[user.id] &&
+                      roleChanges[user.id] !== user.role && (
+                        <button
+                          className="text-sm px-4 py-2 bg-cyan-700 text-white rounded-md hover:bg-cyan-800 transition-colors"
+                          onClick={() => handleRoleUpdate(user.id)}
+                        >
+                          Update
+                        </button>
+                      )}
+                  </>
                 )}
               </div>
             </li>
