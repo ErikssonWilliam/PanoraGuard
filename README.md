@@ -1,13 +1,26 @@
-# PanoraGuard
-
-Welcome to **PanoraGuard**, a security surveillance system developed by **Company 3** in collaboration with **AXIS Communications**.
+<div style="text-align: center;">
+  <img src="Client/Frontend/src/assets/PanoraGuard.svg" alt="PanoraGuard Logo" width="200"/>
+</div>
 
 ---
 
+Welcome to **PanoraGuard**, a security surveillance system developed by **Company 3** in collaboration with **AXIS Communications**.
+
+Explore the product on our live cloud deployment:  
+[**PanoraGuard Cloud Product**](https://ashy-meadow-0a76ab703.5.azurestaticapps.net/)
+
+---
+
+
+<div style="text-align: center;">
+  <img src="Client/Frontend/src/assets/C3WBG.png" alt="Company 3 Logo" width="200" style="display: inline-block; margin-right: 10px;"/>
+  <img src="Client/Frontend/src/assets/AxisLogo.png" alt="AXIS Communications Logo" width="200" style="display: inline-block;"/>
+</div>
+
+
 ## Who are we?
 
-Check in our company website:
-https://company-members-rajag969-b760ce3a61d886c9508e8e542a6936a0f6ede1.gitlab-pages.liu.se/
+Learn more about us on our company website:  [Company Website](https://company-members-rajag969-b760ce3a61d886c9508e8e542a6936a0f6ede1.gitlab-pages.liu.se/)
 
 ---
 
@@ -44,6 +57,19 @@ PanoraGuard integrates both **hardware** and **software** components:
 3. **External Server**: Cloud-based system for alarm handling, business logic, and database management.
 4. **LAN Server**: Local server managing camera schedules, live feeds, and configurations.
 
+### Data Flow:
+
+1. **Object Detection**: The built-in ACAP on AXIS cameras detects objects (e.g., human/face) and sends data (type, confidence score, timestamp, camera ID) to the LAN server on the same network.
+2. **Data Forwarding**: The LAN server forwards the information to the external server (Azure cloud or local server for development).
+3. **Alarm Creation**: The external server applies business logic to decide if an alarm should be created (e.g., confidence score above threshold, no active alarms for the same camera). Alarms are stored in the database.
+4. **Speaker Activation**: If an alarm is triggered, the external server instructs the LAN server to activate the speaker for a warning audio signal.
+5. **Frontend Notification**: The external server notifies the frontend via WebSocket, updating the GUI with the new alarm, including a snapshot, metadata, and live camera feed.
+6. **Operator Action**: The operator can dismiss the alarm (disabling the speaker and updating the alarm status to "ignored") or notify a guard (sending an email with alarm details). Guards notify the operator when resolved, and the operator updates the status to "resolved."
+7. **Admin Features**: Admins configure camera settings, schedules, and confidence thresholds via the frontend, which communicates with both the external and LAN servers.
+
+This seamless flow ensures efficient alarm management and real-time decision-making. 
+
+
 ---
 
 ## How to Run the System
@@ -53,7 +79,7 @@ PanoraGuard integrates both **hardware** and **software** components:
 1. **Clone the Repository** and follow setup instructions in `/Client` and `/Server` directories.
 2. Connect hardware:
    - Cameras and speakers to a network switch.
-   - Switch connected to a router with internet access.
+   - Network switch connected to a router with internet access.
 3. Connect your computer to the same network.
 4. Install the ACAP on cameras using instructions in `/ACAP` README.
 5. Start all components:
@@ -63,7 +89,7 @@ PanoraGuard integrates both **hardware** and **software** components:
 ### Running in the Cloud
 
 1. Set up cameras and speakers on the same network as the **LAN Server** running on a Raspberry Pi.
-2. Install the ACAP with the cloud server's endpoint (see `/ACAP` README).
+2. Install the ACAP with the LAN server's deployed endpoint (see `/ACAP` README).
 3. Start the LAN Server on the Raspberry Pi.
 4. Access the cloud GUI at:  
    [PanoraGuard Cloud GUI](https://ashy-meadow-0a76ab703.5.azurestaticapps.net)
