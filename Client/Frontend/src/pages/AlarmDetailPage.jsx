@@ -5,6 +5,7 @@ import Header from "../components/OperatorHeader";
 import { externalURL, lanURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
 import { useAuthStore } from "../utils/useAuthStore";
+import { useCallback } from "react";
 
 const useFetchUserInfo = (userId) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -55,27 +56,31 @@ const AlarmDetailPage = () => {
   const [callChecked, setCallChecked] = useState(false);
   const [operatorUsername, setOperatorUsername] = useState("N/A");
   const [, setFormattedStatus] = useState("");
+  const { token, userId } = useAuthStore();
 
-  const userId = localStorage.getItem("userId");
+  // const userId = localStorage.getItem("userId");
 
   const { userInfo } = useFetchUserInfo(userId);
-  const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
+  // const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
+  const operatorId = userId;
 
-  const fetchOperatorDetails = async (operatorId) => {
-    // Fetches operator details by ID and sets the username or "N/A" on error.
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await axios.get(`${externalURL}/users/${operatorId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setOperatorUsername(response.data.username || "N/A");
-    } catch (error) {
-      console.error("Error fetching operator details:", error);
-      setOperatorUsername("N/A");
-    }
-  };
+  const fetchOperatorDetails = useCallback(
+    async (operatorId) => {
+      // Fetches operator details by ID and sets the username or "N/A" on error.
+      try {
+        const response = await axios.get(`${externalURL}/users/${operatorId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setOperatorUsername(response.data.username || "N/A");
+      } catch (error) {
+        console.error("Error fetching operator details:", error);
+        setOperatorUsername("N/A");
+      }
+    },
+    [token],
+  );
 
   useEffect(() => {
     const fetchOperatorDetailsIfNeeded = async (alarm) => {
@@ -85,18 +90,19 @@ const AlarmDetailPage = () => {
         alarm.operator_id !== "N/A"
       ) {
         await fetchOperatorDetails(alarm.operator_id);
+      } else {
+        console.log("something missing from alarm data");
       }
     };
 
     if (alarm) {
       fetchOperatorDetailsIfNeeded(alarm);
     }
-  }, [alarm]);
+  }, [alarm, fetchOperatorDetails]);
 
   useEffect(() => {
     const fetchAlarmImage = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
         const imageResponse = await axios.get(
           `${externalURL}/alarms/${alarm.id}/image`,
           {
@@ -118,7 +124,6 @@ const AlarmDetailPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${externalURL}/users/guards`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -136,7 +141,7 @@ const AlarmDetailPage = () => {
     // fetchAlarmDetails();
     fetchAlarmImage();
     fetchUsers();
-  }, [navigate, location, alarm.id]);
+  }, [navigate, location, alarm.id, token]);
 
   useEffect(() => {
     if (alarm?.status) {
@@ -188,7 +193,6 @@ const AlarmDetailPage = () => {
     }
 
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.put(
         `${externalURL}/alarms/${alarm.id}/status`,
         {
@@ -253,7 +257,6 @@ const AlarmDetailPage = () => {
 
   const notifyGuard = async (guardID) => {
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${externalURL}/alarms/notify/${guardID}/${alarm.id}`,
         {},

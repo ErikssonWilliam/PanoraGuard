@@ -5,6 +5,7 @@ import Header from "./ProfileHeader";
 import Notification from "./Notification";
 import { useAuthStore } from "../utils/useAuthStore";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // Reusable Loader Component
 const Loader = () => (
@@ -20,6 +21,7 @@ const ProfilePage = () => {
   const { userId, token, setError, clearAuth } = useAuthStore();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch user info
   useEffect(() => {
@@ -68,6 +70,7 @@ const ProfilePage = () => {
       alert("Password changed successfully.");
       setNewPassword("");
       setRepeatPassword("");
+      setErrorMessage("");
     } catch (error) {
       setErrorMessage(
         error.response?.data?.error || "Failed to change password.",
@@ -78,7 +81,7 @@ const ProfilePage = () => {
   // Handle logout
   const handleLogout = () => {
     clearAuth();
-    window.location.href = "/";
+    navigate("/");
   };
 
   if (!userId || !token) {
