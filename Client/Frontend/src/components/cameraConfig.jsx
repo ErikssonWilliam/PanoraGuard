@@ -27,7 +27,10 @@ const CameraConfig = () => {
         setBrightnessLevel(data.brightness_level);
       }
     } catch (error) {
-      console.error("Error fetching brightness level:", error.response?.data?.error || error.message);
+      console.error(
+        "Error fetching brightness level:",
+        error.response?.data?.error || error.message,
+      );
     }
   };
 
@@ -58,7 +61,10 @@ const CameraConfig = () => {
           fetchBrightnessLevel(allCameras[0].id);
         }
       } catch (error) {
-        console.error("Error fetching cameras:", error.response?.data?.error || error.message);
+        console.error(
+          "Error fetching cameras:",
+          error.response?.data?.error || error.message,
+        );
       }
     };
 
@@ -79,17 +85,25 @@ const CameraConfig = () => {
         },
       );
 
+      const data = response.data;
+      console.log("Server response:", data);
+
       const updatedCameras = cameras.map((camera) =>
         camera.id === selectedCameraID
           ? { ...camera, confidence_threshold: confidenceLevel / 100 }
-          : camera
+          : camera,
       );
       setCameras(updatedCameras);
 
       alert("Confidence level updated successfully");
     } catch (error) {
-      console.error("Error updating confidence level:", error.response?.data?.error || error.message);
-      alert(error.response?.data?.error || "Failed to update confidence level.");
+      console.error(
+        "Error updating confidence level:",
+        error.response?.data?.error || error.message,
+      );
+      alert(
+        error.response?.data?.error || "Failed to update confidence level.",
+      );
     }
   };
 
@@ -97,20 +111,31 @@ const CameraConfig = () => {
   const updateBrightnessLevel = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await axios.put(`${lanURL}/brightness/set-brightness`, {
-        camera_id: selectedCameraID,
-        new_brightness: parseInt(brightnessLevel, 10),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.put(
+        `${lanURL}/brightness/set-brightness`,
+        {
+          camera_id: selectedCameraID,
+          new_brightness: parseInt(brightnessLevel, 10),
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const data = response.data;
+      console.log("Server response:", data);
 
       alert("Brightness level updated successfully");
     } catch (error) {
-      console.error("Error updating brightness level:", error.response?.data?.error || error.message);
-      alert(error.response?.data?.error || "Failed to update brightness level.");
+      console.error(
+        "Error updating brightness level:",
+        error.response?.data?.error || error.message,
+      );
+      alert(
+        error.response?.data?.error || "Failed to update brightness level.",
+      );
     }
   };
 

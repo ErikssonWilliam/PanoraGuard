@@ -29,13 +29,15 @@ const AddnewUser = () => {
 
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await axios.post(`${externalURL}/users/create`,
+      const response = await axios.post(
+        `${externalURL}/users/create`,
         formData,
-         {
-        headers: {
-          Authorization: `Bearer ${token}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       setFormData({
         username: "",

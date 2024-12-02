@@ -45,20 +45,19 @@ const Login = () => {
           break;
         default:
           setErrorMessage("Unknown role");
-        }
-        setErrorMessage("");
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        if (error.response && error.response.data && error.response.data.error) {
-          setErrorMessage(error.response.data.error); // Extract backend message
-        } else {
-          setErrorMessage("An unexpected error occurred. Please try again.");
-        }
-        console.error("Error logging in:", error);
       }
-    };
-  
+      setErrorMessage("");
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrorMessage(error.response.data.error); // Extract backend message
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+      }
+      console.error("Error logging in:", error);
+    }
+  };
 
   return (
     <div className="flex w-full h-screen">

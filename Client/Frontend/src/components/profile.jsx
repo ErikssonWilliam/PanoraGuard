@@ -64,28 +64,34 @@ const ProfilePage = () => {
       setErrorMessage("Password must be at least 8 characters long!");
       return;
     }
-      setErrorMessage("");
+    setErrorMessage("");
 
-      try {
-        const token = localStorage.getItem("accessToken");
-        const response = await axios.put(`${externalURL}/users/${userId}`,
-          { newPassword },
-          {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        `${externalURL}/users/${userId}`,
+        { newPassword },
+        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        });
+        },
+      );
 
-          alert("Password changed successfully!");
-          setErrorMessage("");
-        } catch (error) {
-          console.error("Error changing password:", error);
-          setErrorMessage(
-            error.response?.data?.error || "Failed to change password. Please try again."
-          );
-        }
-      };
-      
+      const data = response.data;
+      console.log("Server response:", data);
+
+      alert("Password changed successfully!");
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error changing password:", error);
+      setErrorMessage(
+        error.response?.data?.error ||
+          "Failed to change password. Please try again.",
+      );
+    }
+  };
+
   if (!isUserLoggedInWithRole("ANY")) {
     return (
       <Notification

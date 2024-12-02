@@ -51,12 +51,15 @@ const Scheduler = ({ cameraId }) => {
           setSchedule(Array.from({ length: 24 }, () => Array(7).fill(false)));
         }
       } catch (err) {
-        console.error("Error fetching schedule:", err.response?.data?.error || err.message);
+        console.error(
+          "Error fetching schedule:",
+          err.response?.data?.error || err.message,
+        );
         setError(err.response?.data?.error || "Failed to fetch schedule.");
-    } finally {
+      } finally {
         setLoading(false);
-    }
-};
+      }
+    };
 
     fetchSchedule();
   }, [cameraId, days]);
@@ -113,7 +116,10 @@ const Scheduler = ({ cameraId }) => {
 
       alert("Schedule updated successfully");
     } catch (error) {
-      console.error("Error updating schedule:", error.response?.data?.error || error.message);
+      console.error(
+        "Error updating schedule:",
+        error.response?.data?.error || error.message,
+      );
       alert(error.response?.data?.error || "Error updating schedule");
     }
   };
