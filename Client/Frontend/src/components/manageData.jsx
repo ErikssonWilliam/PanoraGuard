@@ -90,41 +90,27 @@ const ManageData = () => {
     <div className="p-6 text-sm font-poppings">
       <div className="w-full max-w-[1224px] mx-auto p-6">
         <div className="flex flex-col items-center gap-8">
-          <div className="flex flex-col w-full lg:w-3/4 bg-white p-6 shadow-lg rounded-lg">
-            <div className="mb-8">
+          <div className="flex flex-col w-full lg:w-3/4 bg-gray-300 p-6 shadow-lg rounded-lg m-4">
+            <div className="mb-8 bg-white shadow-lg rounded-lg p-4">
               <StatisticsForm onSubmit={handleFormSubmit} />
             </div>
 
             <section className="flex flex-col space-y-6">
-              <div className="text-center">
-                <h2 className="text-xl font-semibold text-slate-700 mb-2 uppercase tracking-wide">
+              <div className="text-center bg-white shadow-lg rounded-lg p-4">
+                <h2 className="text-xl font-semibold text-NavyBlue mb-2 uppercase tracking-wide">
                   Total Alerts
                 </h2>
-                <div className="text-4xl font-bold text-sky-900 mb-4">
+                <div className="text-4xl font-bold text-NavyBlue mb-4">
                   {loading ? "Loading..." : getTotalAlerts()}
                 </div>
-                <div className="text-sm text-slate-500">
+                <div className="text-sm text-NavyBlue">
                   from {filters.fromDate} to {filters.tillDate}
                 </div>
               </div>
-
-              <div className="h-px bg-slate-300 mb-6" />
-
-              <div>
-                {/* Title and line: Left aligned */}
-                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight text-left">
-                  Camera-wise Alarm Breakdown
-                </h3>
-                <CameraAlarmChart
-                  selectedLocation={filters.location}
-                  selectedCamera={filters.camera}
-                />
-              </div>
-
               {/* Title and pie chart: Left-aligned title and centered pie chart */}
-              <div className="flex flex-col">
-                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight text-left">
-                  Camera-wise Alarm Distribution (Pie Chart)
+              <div className="bg-white shadow-lg rounded-lg p-4">
+                <h3 className="text-2xl font-semibold text-NavyBlue mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                  Location-wise Alarm Distribution
                 </h3>
                 <div className="flex justify-center">
                   <div className="w-4/5 lg:w-2/5">
@@ -134,10 +120,19 @@ const ManageData = () => {
                   </div>
                 </div>
               </div>
+              <div className="bg-white shadow-lg rounded-lg p-4">
+                <h3 className="text-2xl font-semibold text-NavyBlue mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                  Camera-wise Alarm Breakdown
+                </h3>
+                <CameraAlarmChart
+                  selectedLocation={filters.location}
+                  selectedCamera={filters.camera}
+                />
+              </div>
 
-              <div>
-                <h3 className="text-2xl font-semibold text-sky-900 mb-4 border-b-2 border-sky-900 pb-2 tracking-tight text-left">
-                  Alarm Resolution Over Time
+              <div className="bg-white shadow-lg rounded-lg p-4">
+                <h3 className="text-2xl font-semibold text-NavyBlue mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
+                  Day-wise Alarm Breakdown
                 </h3>
                 <AlarmResolutionChart
                   selectedLocation={filters.location}
