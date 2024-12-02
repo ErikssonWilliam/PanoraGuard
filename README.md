@@ -22,7 +22,10 @@ Explore the product on our live cloud deployment:
 
 Learn more about us on our company website:  [Company Website](https://company-members-rajag969-b760ce3a61d886c9508e8e542a6936a0f6ede1.gitlab-pages.liu.se/)
 
----
+## Follow the journey
+- [**Demo iteration 2**](https://drive.google.com/file/d/1ICRIwVadDdsYsEZzZyCarr14lxmGuBHL/view?usp=drive_link)
+- [**Demo iteration 3**](https://drive.google.com/file/d/1vbIL0ewWdcuGKRSdi8LCC5NupxmdV6Gc/view?usp=drive_link)
+
 
 ## What is PanoraGuard?
 
