@@ -29,7 +29,9 @@
 // Define constants
 #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
 // #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
-#define LAN_URL "http://192.168.1.104:5100/alarms/redirect"
+#define SERVER_URL "http://192.168.1.145:5000/alarms/add" // RUNNING LOCALLY: URL for sending alarms to local external server
+// #define SERVER_URL "https://airedale-engaging-easily.ngrok-free.app/alarms/redirect" // RUNNING IN CLOUD: URL for sending alarms to deployed LAN server
+
 
 #define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // Endpoint for enabling snapshots
 
@@ -99,7 +101,7 @@ static void post_alarms(const char *data)
         headers = curl_slist_append(headers, "Accept: application/json");
         headers = curl_slist_append(headers, "Content-Type: application/json");
 
-        curl_easy_setopt(curl, CURLOPT_URL, LAN_URL);
+        curl_easy_setopt(curl, CURLOPT_URL, SERVER_URL);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
