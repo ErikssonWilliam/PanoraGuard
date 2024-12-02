@@ -82,9 +82,6 @@ pages:
   only:
     - main
     - development
-
-
-
 # variables:
 #   LIU_COURSE_CODE: tddc88
 #   LIU_COURSE_TERM: ht24
@@ -113,7 +110,7 @@ pages:
 #         name: tddc88
 #       contexts:
 #       - context:
-#           cluster: 
+#           cluster:
 #           namespace: $POD_NAMESPACE
 #           user: tddc88
 #         name: tddc88
