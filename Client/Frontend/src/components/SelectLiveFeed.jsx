@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { externalURL, lanURL } from "../api/axiosConfig";
+import axios from "axios";
 
 const SelectLiveFeed = () => {
   const [cameras, setCameras] = useState([]); // State to store cameras
@@ -10,14 +11,12 @@ const SelectLiveFeed = () => {
     const fetchCameras = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await fetch(`${externalURL}/cameras/`, {
-          method: "GET",
+        const response = await axios.get(`${externalURL}/cameras/`, {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
-        const data = await response.json();
+        const data = response.data;
         console.log(data);
         console.log(data);
         const allCameras = data.map((camera) => ({

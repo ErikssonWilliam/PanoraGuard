@@ -5,6 +5,7 @@ import axisLogo from "../assets/AxisLogo.png";
 import c3Logo from "../assets/C3.svg";
 import panoraGuardLogo from "../assets/PanoraGuard.svg";
 import rightPanelImage from "../assets/pattern.png";
+import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -24,20 +25,9 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${externalURL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await axios.post(`${externalURL}/auth/login`, formData);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Something went wrong");
-      }
-
-      const user = await response.json(); // Fetch and store user data
+      const user = await response.data; // Fetch and store user data
 
       localStorage.setItem("accessToken", user.access_token);
       localStorage.setItem("userId", user.user_id);
@@ -55,15 +45,20 @@ const Login = () => {
           break;
         default:
           setErrorMessage("Unknown role");
+        }
+        setErrorMessage("");
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        if (error.response && error.response.data && error.response.data.error) {
+          setErrorMessage(error.response.data.error); // Extract backend message
+        } else {
+          setErrorMessage("An unexpected error occurred. Please try again.");
+        }
+        console.error("Error logging in:", error);
       }
-      setErrorMessage("");
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error("Error logging in", error);
-      setErrorMessage(error.message);
-    }
-  };
+    };
+  
 
   return (
     <div className="flex w-full h-screen">

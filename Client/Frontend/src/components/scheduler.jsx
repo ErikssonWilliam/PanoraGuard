@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { externalURL } from "../api/axiosConfig";
+import axios from "axios";
 
 const Scheduler = ({ cameraId }) => {
   const days = useMemo(
@@ -31,19 +32,13 @@ const Scheduler = ({ cameraId }) => {
 
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await fetch(`${externalURL}/cameras/${cameraId}`, {
-          method: "GET",
+        const response = await axios.get(`${externalURL}/cameras/${cameraId}`, {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch schedule");
-        }
-
-        const data = await response.json();
+        const data = response.data;
 
         if (data.schedule && data.schedule.week) {
           const transformedSchedule = Array.from(
@@ -56,12 +51,12 @@ const Scheduler = ({ cameraId }) => {
           setSchedule(Array.from({ length: 24 }, () => Array(7).fill(false)));
         }
       } catch (err) {
-        console.error("Error fetching schedule:", err);
-        setError(err.message);
-      } finally {
+        console.error("Error fetching schedule:", err.response?.data?.error || err.message);
+        setError(err.response?.data?.error || "Failed to fetch schedule.");
+    } finally {
         setLoading(false);
-      }
-    };
+    }
+};
 
     fetchSchedule();
   }, [cameraId, days]);
@@ -104,26 +99,22 @@ const Scheduler = ({ cameraId }) => {
 
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch(
+      const response = await axios.put(
         `${externalURL}/cameras/${cameraId}/schedule`,
+        scheduleJSON,
         {
-          method: "PUT",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(scheduleJSON),
         },
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to update schedule");
-      }
+      const data = response.data;
+      console.log(data);
 
       alert("Schedule updated successfully");
     } catch (error) {
-      console.error("Error updating schedule:", error);
-      alert("Error updating schedule");
+      console.error("Error updating schedule:", error.response?.data?.error || error.message);
+      alert(error.response?.data?.error || "Error updating schedule");
     }
   };
 
