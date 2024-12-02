@@ -21,7 +21,7 @@ const Header = ({ userInfo, setErrorMessage }) => {
         console.error("Unknown role, unable to navigate.");
     }
   };
-  
+
   // Function to navigate based on the user's role
   const navigateToHome = () => {
     switch (userInfo.role.toLowerCase()) {
@@ -51,7 +51,7 @@ const Header = ({ userInfo, setErrorMessage }) => {
         />
       </Link>
 
-       {/* Notification Icon with Role-Based Navigation */}
+      {/* Notification Icon with Role-Based Navigation */}
       <div className="ml-auto flex space-x-4">
         <button onClick={navigateToRolePage}>
           <img
