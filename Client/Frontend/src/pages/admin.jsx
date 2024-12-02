@@ -12,7 +12,7 @@ import CameraConfig from "../components/cameraConfig";
 import ManageData from "../components/manageData";
 import AddnewUser from "../components/AddUser";
 import { Link } from "react-router-dom";
-import AlertDetails from "../components/AlertDetails";
+import AlarmList from "../components/AlarmList.jsx";
 import ChangeUser from "../components/ChangeUser"; // Import the ChangeUser component
 import userIcon from "../assets/user-01.png";
 import logo from "../assets/logo.png";
@@ -50,7 +50,7 @@ const Admin = () => {
       case "OperatorView":
         return (
           <div className="md:p-8 xs:p-4">
-            <AlertDetails />
+            <AlarmList />
           </div>
         );
       case "ManageData":

@@ -1,21 +1,33 @@
-import Header from "../components/SelectLiveFeedHeader";
-import SelectLiveFeed from "../components/SelectLiveFeed.jsx";
-import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
-import Notification from "../components/Notification.jsx";
-
 import { useEffect, useState } from "react";
+import Header from "../components/SelectLiveFeedHeader";
+import SelectLiveFeed from "../components/SelectLiveFeed";
+import Notification from "../components/Notification";
+import { useAuthStore } from "../utils/useAuthStore";
 import { externalURL } from "../api/axiosConfig";
 
-const useFetchUserInfo = (userId) => {
+// Loader Component
+const Loader = () => (
+  <div className="flex justify-center items-center h-screen">
+    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"></div>
+  </div>
+);
+
+const SelectLiveFeedPage = () => {
+  const { token, setError, userId, role } = useAuthStore();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+
+  // Fetch user information
   useEffect(() => {
     const fetchUserInfo = async () => {
+      if (!userId || !token) {
+        setError("Unauthorized access.");
+        return;
+      }
+
       setLoading(true);
-      setError(""); // Clear any previous errors
+      setError("");
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "GET",
           headers: {
@@ -31,31 +43,24 @@ const useFetchUserInfo = (userId) => {
         const data = await response.json();
         setUserInfo(data);
       } catch (error) {
-        setError(error.message);
+        setError(error.message || "Failed to fetch user info.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (userId) fetchUserInfo();
-  }, [userId]);
+    fetchUserInfo();
+  }, [userId, token, setError]);
 
-  return { userInfo, loading, error };
-};
-
-const SelectLiveFeedPage = () => {
-  const userId = localStorage.getItem("userId");
-
-  const { userInfo } = useFetchUserInfo(userId);
-
-  if (!isUserLoggedInWithRole("OPERATOR") && !isUserLoggedInWithRole("ADMIN")) {
+  // Role-based access control
+  if (!["OPERATOR", "ADMIN"].includes(role)) {
     return (
-      <Notification
-        message={
-          "You do not have access to this page. Please log in with the correct credentials."
-        }
-      />
+      <Notification message="You do not have access to this page. Please log in with the correct credentials." />
     );
+  }
+
+  if (loading) {
+    return <Loader />;
   }
 
   return (
