@@ -20,11 +20,15 @@ def redirect_alarm():
         if response.status_code == 201:
             return jsonify({"message": "Alarm added successfully."}), 201
         else:
-            return jsonify(
-                {"error": "Failed to add alarm", "details": response.text}
-            ), response.status_code
+            return (
+                jsonify({"error": "Failed to add alarm", "details": response.text}),
+                response.status_code,
+            )
 
     except requests.RequestException as e:
-        return jsonify(
-            {"error": "An error occurred while adding the alarm", "details": str(e)}
-        ), 500
+        return (
+            jsonify(
+                {"error": "An error occurred while adding the alarm", "details": str(e)}
+            ),
+            500,
+        )

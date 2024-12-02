@@ -2,7 +2,7 @@
 
 ## 1. Database Setup
 
-### Install PostgreSQL
+### Install PostgreSQL & Connect to Local DB
 
 1. Download and install **PostgreSQL**.
    - https://www.postgresql.org/download/
@@ -21,9 +21,18 @@
    - Press **Save**.
 5. The local instance of the database is now created.
 
+**Note:** If having the correct credentials to the Azure database instance, you can connect to the cloud database hosted in Azure from the pgAdmin4 desktop application as well.
+
 ---
 
 ## 2. Backend Setup
+
+This process needs to be completed in both the `Server/External` and `Server/LAN` directories.
+
+1. Open **a separate terminal for each server**.
+2. Follow the steps outlined in the `2. Backend Setup` section below.
+3. Execute each instruction in the corresponding terminal for both servers.
+
 
 ### Prerequisites
 
@@ -35,10 +44,10 @@
 
 ```bash
 python -m venv venv # or python3 -m venv venv
-# For Windows
+# For Windows:
 Set-ExecutionPolicy Unrestricted -Scope Process
 venv\Scripts\activate # Windows
-# For macOS/Linux
+# For macOS/Linux:
 source venv/bin/activate
 ```
 
@@ -65,6 +74,24 @@ CAMERA_PASSWORD = secure # only for LAN
 ```
 
 3. Replace `PASSWORD` in `DATABASE_URL` with the password you set during PostgreSQL installation.
+
+### Change URL to correct server IP-address
+
+To ensure the **external server** communicates correctly with the LAN server for speaker control, make sure that the correct URL is defined:
+
+1. Open the file located at:
+   ```plaintext
+   /Server/External/config.py
+   ````
+2. Edit the `SPEAKER_URL` in this file to match your environment. The file contains a line like this:
+   ```python
+   # SPEAKER_URL = "https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker"  # URL to Raspberry Pi LAN server
+   SPEAKER_URL = "http://127.0.0.1:5100/speaker/start-speaker"  # URL to local LAN server
+   ```
+3. Ensure the `SPEAKER_URL` is set to the appropriate value:
+   - **Running Locally**: Use `http://127.0.0.1:5100/speaker/start-speaker` for the local LAN server.
+   - **Running in the Cloud**: Use `https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker` for the deployed Raspberry Pi LAN server.
+4. Save the file after necessary changes.
 
 ### Run the Application
 
@@ -164,3 +191,13 @@ python reset_database_windows.py # for Windows
 ```
 
 This should resolve any issues related to the database.
+
+
+# Server - Production Environment Setup
+To be finished...
+
+1. *Optional*: Connect to Azure database instance from pgAdmin4 desktop  application.
+
+2. **LAN Server**: Start the Rasperry Pie LAN server, and connect it to the same network as the camera.
+
+3. **External Server**: Spinning in the cloud 24/7 on an Azure Web App server instance.

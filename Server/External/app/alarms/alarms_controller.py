@@ -9,6 +9,7 @@ from flask import request, jsonify
 from .alarms_service import AlarmService
 from app.socketio_instance import socketio
 import requests
+from config import Config
 
 
 class AlarmController:
@@ -61,7 +62,7 @@ class AlarmController:
         Private static method to turn on the speaker at the LAN server.
         """
         try:
-            response = requests.post("http://127.0.0.1:5100/speaker/start-speaker")
+            response = requests.post(Config.SPEAKER_URL)
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
@@ -120,6 +121,7 @@ class AlarmController:
         if updated_alarm:
             return jsonify(updated_alarm), 200
         else:
-            return jsonify(
-                {"message": "Alarm not found or invalid guard/operator ID"}
-            ), 404
+            return (
+                jsonify({"message": "Alarm not found or invalid guard/operator ID"}),
+                404,
+            )

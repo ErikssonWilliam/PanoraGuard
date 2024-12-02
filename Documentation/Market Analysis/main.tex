@@ -10,6 +10,8 @@
 \usepackage{lscape}
 \usepackage{csquotes}
 \usepackage{multirow}
+\usepackage{{ragged2e}}
+\usepackage{{tabularx}}
 \addbibresource{bibliography.bib}
 \usepackage[a4paper,pdftex,bottom=20mm, width=160mm]{geometry} % A4paper margins
 \setlength{\parindent}{0pt} % Tar bort indenteringen på paragrafer 
@@ -29,7 +31,11 @@
 
 \begin{document}
 
+
+
 \maketitle
+\newpage
+\input{version_control/version_log} 
 
 
 \newpage
@@ -37,10 +43,7 @@
 \newpage
 
 \section{Introduction}
-% Introduction to the document and it's content
-% syftet med denna rapport är att stödja requirement speification OCH att kunna prioritera requirements gentemot development team.
-% Börja detta stycke med som info om Axis
- To maintain its competitive edge and meet the dynamic needs of its customers, the company seeks to develop a cutting-edge software solution that enhances its product offerings and aligns with its strategic growth objectives.
+To maintain its competitive edge and meet the dynamic needs of its customers, the company seeks to develop a cutting-edge software solution that enhances its product offerings and aligns with its strategic growth objectives.
 
 This market analysis aims to provide a comprehensive understanding of the current market environment, competitive dynamics, and customer needs that will influence the development of the proposed software solution. By leveraging strategic frameworks such as PEST analysis, Porter’s Five Forces, SWOT, and an examination of the company’s market goals and segmentation strategies, this analysis will identify key opportunities and challenges within the security sector. 
 
@@ -171,7 +174,6 @@ Axis Communications AB targets two key market segments. One of these is markets 
 By integrating its focus on high-quality products, cybersecurity, and industry-specific solutions, Axis Communications is positioned as a trusted leader in the global surveillance market \cite{mckinsey2023}. With innovations in advanced technological capabilities such as AI, deep learning, and cloud-based surveillance \cite{axis_about}, the product portfolio o the company are considered reliable and of high quality.
 
 \subsection{NABC Framework}
-% Write this
 In this section the NABC (Need, Approach, Benefit, Competition) framework will be used to discuss the usefulness of a security surveillance system developed for Axis Communications.
 
 \subsubsection{Need}

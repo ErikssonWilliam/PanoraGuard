@@ -4,6 +4,8 @@ ACAPs are built-in applications on AXIS cameras.
 
 The purpose of the ACAP is to identify objects with a specified confidence level and send this information to an external server. The external server uses this data to trigger alarms if necessary and display them on a GUI.
 
+**Important Note**: Since the cloud server in the Azure environment won't accept requests directly from the ACAP in the camera, the information is first passed to a LAN server on the same local area network as the camera, which then forwards it to the external server. ***This logic applies when running in the cloud, when running locally the ACAP can send information directly to the external server***.
+
 ## Overview
 
 The main code file for the ACAP is located at `/ACAP/consolidated_main/app/alarm_identifier.c`.
@@ -13,11 +15,13 @@ This file contains the core functionality of the ACAP and is where you will make
 The ACAP must be installed on each camera, with the **following modifications** made to the code file for each camera:
 
 1.  `CAMERA_ID`: Update this to the appropriate ID for the camera on which the ACAP will be installed.
-2.  `EXTERNAL_URL`: Update this to the IP address of the server where the system will send the data.
+2.  `SERVER_URL`: Update this to the IP address of the server where the system will send the data.
+      - **Running Locally**: URL to local external server.
+      - **Running in the Cloud**: URL to deployed LAN server.
 
 ## Prerequisites
 
-- Docker Desktop must be installed and running.
+- **Docker Desktop** must be installed and running. However, you do not need to do anything in the application. Just make sure it is running.
 
 ## Build and Install
 
@@ -28,27 +32,36 @@ Follow these steps to build and install an ACAP using Docker.
 1. Open the main code file:
    `/ACAP/consolidated_main/app/alarm_identifier.c`.
 
-2. Update the following lines (line 17-20):
+2. Update the following lines (line 30-33):
 
    ```c
-   // Define constants
-   #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera ip 121
-   // #define CAMERA_ID "B8A44F9EEFE0" //Serial nummber for camera ip 116
-   #define EXTERNAL_URL "http://192.168.1.145:5000/alarms/add"
+   #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
+   // #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
+   #define SERVER_URL "http://192.168.1.145:5000/alarms/add" // RUNNING LOCALLY: URL for sending alarms to local external server
+   // #define SERVER_URL "https://airedale-engaging-easily.ngrok-free.app/alarms/redirect" // RUNNING IN CLOUD: URL for sending alarms to deployed LAN server
    ```
 
    - `CAMERA_ID`: Set to the correct camera serial number.
-   - `EXTERNAL_URL`: Change `192.168.1.145:5000` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
+   - `EXTERNAL_URL`:   
+      - **Running Locally**: Change `192.168.1.145:5000` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
+      - **Running in the Cloud**: Use the deployed Rasperry Pie endpoint: `https://airedale-engaging-easily.ngrok-free.app/alarms/redirect`.
 
-3. To find the local server's IP:
+3. To find the camera's IP address:
+
+   - Ensure the hardware is set up, and your computer is connected to the same network.
+   - Open a browser and try accessing these URLs:  
+     - `http://192.168.1.121/`  
+     - `http://192.168.1.116/`  
+   - The URL that responds indicates the camera's IP address. Match the IP address to its corresponding serial number in the code (lines 30-31) and update the `CAMERA_ID` accordingly.
+
+
+
+4. To find the local server's IP:
 
    - Be on the same network as the camera.
    - Start the external server as described in `/Server/README`.
    - Use the displayed IP address.
 
-4. For the cloud server:
-   - Set `EXTERNAL_URL` to:
-     `https://company3-externalserver.azurewebsites.net/alarms/add`.
 
 ### Step 2: Build the Docker Image
 
@@ -62,16 +75,15 @@ Follow these steps to build and install an ACAP using Docker.
    ```bash
    docker build --tag <Image Name> .
    ```
-   Replace `<Image Name> with name of your choice.
+   Replace `<Image Name>` with name of your choice.
 
 ### Step 3: Create Container and Extract Build Files
 
 - **Windows**:
-
-```bash
-docker create <Image Name>
-docker cp <Image ID>:/opt/app ./build
-```
+   ```bash
+   docker create <Image Name>
+   docker cp <Image ID>:/opt/app ./build
+   ```
 
 - **Mac/Linux**:
   ```bash

@@ -44,10 +44,11 @@ lan-lint:
 
 lan-test:
   stage: lan-test
-  image: python:3.10
+  image: hdgigante/python-opencv
   before_script:
     - cd Server/LAN
-    - apt-get update && apt-get install -y gcc
+    - dnf install -y gcc
+    - dnf install -y mesa-libGL
     - pip install -r requirements.txt
     - pip install pytest pytest-cov coverage
   script:
@@ -82,9 +83,6 @@ pages:
   only:
     - main
     - development
-
-
-
 # variables:
 #   LIU_COURSE_CODE: tddc88
 #   LIU_COURSE_TERM: ht24
@@ -113,7 +111,7 @@ pages:
 #         name: tddc88
 #       contexts:
 #       - context:
-#           cluster: 
+#           cluster:
 #           namespace: $POD_NAMESPACE
 #           user: tddc88
 #         name: tddc88
