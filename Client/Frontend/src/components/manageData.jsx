@@ -5,6 +5,7 @@ import CameraAlarmChart from "./CameraAlarmChart";
 import AlarmResolutionChart from "./AlarmResolutionChart";
 import { externalURL } from "../api/axiosConfig";
 import CameraAlarmPieChart from "./CameraAlarmPieChart"; // Import CameraAlarmPieChart
+import { useAuthStore } from "../utils/useAuthStore";
 
 const ManageData = () => {
   const [alertData, setAlertData] = useState({
@@ -17,7 +18,7 @@ const ManageData = () => {
     fromDate: "", // User-defined start date
     tillDate: "", // User-defined end date
   });
-
+  const { token } = useAuthStore();
   const [loading, setLoading] = useState(false); // Track loading state
 
   // Fetch alarm data whenever filters change (location, camera, fromDate, tillDate)
@@ -25,7 +26,6 @@ const ManageData = () => {
     const fetchAlarmData = async () => {
       setLoading(true); // Set loading to true when data fetching starts
       try {
-        const token = localStorage.getItem("accessToken");
         // Fetch alarm data using a single API with dynamic location and camera
         const response = await axios.get(
           `${externalURL}/alarms/bylocation/${filters.location}/${filters.camera}`,
@@ -55,7 +55,13 @@ const ManageData = () => {
     if (filters.location && filters.camera) {
       fetchAlarmData();
     }
-  }, [filters.location, filters.camera, filters.fromDate, filters.tillDate]); // Re-run the effect if any of the filters change
+  }, [
+    filters.location,
+    filters.camera,
+    filters.fromDate,
+    filters.tillDate,
+    token,
+  ]); // Re-run the effect if any of the filters change
 
   // Calculate the total number of alarms after filtering by date
   const getTotalAlerts = () => {

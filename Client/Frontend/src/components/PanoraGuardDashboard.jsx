@@ -8,6 +8,7 @@ import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "./Notification.jsx";
 import { externalURL } from "../api/axiosConfig.js";
 import CameraAlarmPieChart from "./CameraAlarmPieChart";
+import { useAuthStore } from "../utils/useAuthStore.js";
 
 function PanoraGuardDashboard() {
   const [alertData, setAlertData] = useState({
@@ -21,6 +22,7 @@ function PanoraGuardDashboard() {
     tillDate: "", // User-defined end date
   });
 
+  const { token } = useAuthStore();
   const [loading, setLoading] = useState(false); // Track loading state
 
   // Fetch alarm data whenever filters change (location, camera, fromDate, tillDate)
@@ -30,7 +32,6 @@ function PanoraGuardDashboard() {
 
       try {
         // Fetch alarm data using a single API with dynamic location and camera
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(
           `${externalURL}/alarms/bylocation/${filters.location}/${filters.camera}`,
           {
@@ -59,7 +60,13 @@ function PanoraGuardDashboard() {
     if (filters.location && filters.camera) {
       fetchAlarmData();
     }
-  }, [filters.location, filters.camera, filters.fromDate, filters.tillDate]); // Re-run the effect if any of the filters change
+  }, [
+    filters.location,
+    filters.camera,
+    filters.fromDate,
+    filters.tillDate,
+    token,
+  ]); // Re-run the effect if any of the filters change
 
   // Calculate the total number of alarms after filtering by date
   const getTotalAlerts = () => {

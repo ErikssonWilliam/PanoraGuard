@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { externalURL, lanURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const LiveFeed = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const { error, token, setError } = useAuthStore();
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
@@ -19,7 +20,6 @@ const LiveFeed = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${externalURL}/users/guards`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -32,7 +32,7 @@ const LiveFeed = () => {
       }
     };
     fetchUsers();
-  }, []);
+  }, [setError, token]);
 
   // useEffect(() => {
   //   // Fetch the image with axios
@@ -40,7 +40,7 @@ const LiveFeed = () => {
   //     try {
   //       const response = await axios.get(`${lanURL}/livestream/${camera_id}`, {
   //         headers: {
-  //           'Authorization': `Bearer ${localStorage.getItem("accessToken")}`,
+  //           'Authorization': `Bearer ${token}`,
   //         },
   //         responseType: 'blob', // Important to get the image as a Blob
   //       });
@@ -65,7 +65,6 @@ const LiveFeed = () => {
     if (!confirmAction) return;
 
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.put(
         `${externalURL}/alarms/${id}/status`,
         {
@@ -105,7 +104,6 @@ const LiveFeed = () => {
     if (!confirmNotify) return;
 
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${externalURL}/alarms/notify/${selectedUserId}/${id}`,
         {},

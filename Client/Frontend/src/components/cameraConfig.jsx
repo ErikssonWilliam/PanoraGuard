@@ -1,44 +1,45 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { externalURL, lanURL } from "../api/axiosConfig"; // Consolidated imports
 import Scheduler from "./scheduler";
 import axios from "axios";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const CameraConfig = () => {
   const [confidenceLevel, setConfidenceLevel] = useState(50); // Default confidence level
   const [brightnessLevel, setBrightnessLevel] = useState(50); // Default brightness level
   const [cameras, setCameras] = useState([]); // State to store cameras
   const [selectedCameraID, setSelectedCameraID] = useState(""); // Track selected camera
+  const { error, token, setError } = useAuthStore();
 
   // Fetch the brightness level of the selected camera
-  const fetchBrightnessLevel = async (cameraId) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await axios.get(
-        `${lanURL}/brightness/get-brightness?camera_id=${cameraId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+  const fetchBrightnessLevel = useCallback(
+    async (cameraId) => {
+      try {
+        const response = await axios.get(
+          `${lanURL}/brightness/get-brightness?camera_id=${cameraId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        },
-      );
-      const data = response.data;
+        );
+        const data = response.data;
 
-      if (data.brightness_level) {
-        setBrightnessLevel(data.brightness_level);
+        if (data.brightness_level) {
+          setBrightnessLevel(data.brightness_level);
+        }
+      } catch (error) {
+        setError(error.response?.data?.error || error.message);
+        console.error("Error fetching brightness level:", error);
       }
-    } catch (error) {
-      console.error(
-        "Error fetching brightness level:",
-        error.response?.data?.error || error.message,
-      );
-    }
-  };
+    },
+    [setError, token],
+  );
 
   useEffect(() => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${externalURL}/cameras/`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,20 +62,17 @@ const CameraConfig = () => {
           fetchBrightnessLevel(allCameras[0].id);
         }
       } catch (error) {
-        console.error(
-          "Error fetching cameras:",
-          error.response?.data?.error || error.message,
-        );
+        setError(error.response?.data?.error || error.message);
+        console.error("Error fetching brightness level:", error);
       }
     };
 
     fetchCameras();
-  }, []);
+  }, [fetchBrightnessLevel, error, setError, token]);
 
   // Handle updating confidence level for the selected camera
   const updateConfidenceLevel = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.put(
         `${externalURL}/cameras/${selectedCameraID}/confidence`,
         { confidence: confidenceLevel / 100 },
@@ -97,10 +95,11 @@ const CameraConfig = () => {
 
       alert("Confidence level updated successfully");
     } catch (error) {
-      console.error(
-        "Error updating confidence level:",
-        error.response?.data?.error || error.message,
-      );
+      setError(error.response?.data?.error || error.message);
+      console.error("Error fetching brightness level:", error);
+      {
+        /* Need Message Component*/
+      }
       alert(
         error.response?.data?.error || "Failed to update confidence level.",
       );
@@ -110,7 +109,6 @@ const CameraConfig = () => {
   // Handle updating brightness level for the selected camera
   const updateBrightnessLevel = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.put(
         `${lanURL}/brightness/set-brightness`,
         {
@@ -129,10 +127,8 @@ const CameraConfig = () => {
 
       alert("Brightness level updated successfully");
     } catch (error) {
-      console.error(
-        "Error updating brightness level:",
-        error.response?.data?.error || error.message,
-      );
+      setError(error.response?.data?.error || error.message);
+      console.error("Error fetching brightness level:", error);
       alert(
         error.response?.data?.error || "Failed to update brightness level.",
       );

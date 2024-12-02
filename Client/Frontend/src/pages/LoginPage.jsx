@@ -6,11 +6,12 @@ import c3Logo from "../assets/C3.svg";
 import panoraGuardLogo from "../assets/PanoraGuard.svg";
 import rightPanelImage from "../assets/pattern.png";
 import axios from "axios";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const { error, setToken, setUserId, setUserRole, setError } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -29,9 +30,9 @@ const Login = () => {
 
       const user = await response.data; // Fetch and store user data
 
-      localStorage.setItem("accessToken", user.access_token);
-      localStorage.setItem("userId", user.user_id);
-      localStorage.setItem("userRole", user.role);
+      setToken(user.access_token);
+      setUserId(user.user_id);
+      setUserRole(user.role);
 
       switch (user.role) {
         case "ADMIN":
@@ -44,16 +45,16 @@ const Login = () => {
           navigate("/dashboard");
           break;
         default:
-          setErrorMessage("Unknown role");
+          setError("Unknown role");
       }
-      setErrorMessage("");
+      setError("");
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       if (error.response && error.response.data && error.response.data.error) {
-        setErrorMessage(error.response.data.error); // Extract backend message
+        setError(error.response.data.error); // Extract backend message
       } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
+        setError("An unexpected error occurred. Please try again.");
       }
       console.error("Error logging in:", error);
     }
@@ -81,10 +82,10 @@ const Login = () => {
               </h3>
 
               {/* Error message */}
-              {errorMessage && (
+              {error && (
                 <div style={{ color: "red", marginTop: "10px" }}>
                   <strong>Error: </strong>
-                  {errorMessage}
+                  {error}
                 </div>
               )}
 
