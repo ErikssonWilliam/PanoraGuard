@@ -4,8 +4,6 @@ import axios from "axios";
 import { useAuthStore } from "../utils/useAuthStore";
 
 const Scheduler = ({ cameraId }) => {
-
-
   const [schedule, setSchedule] = useState(
     Array.from({ length: 24 }, () => Array(7).fill(false)),
   );
