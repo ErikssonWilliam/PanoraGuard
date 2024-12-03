@@ -27,7 +27,7 @@ const AlarmResolutionChart = ({
     if (selectedLocation && selectedCamera && fromDate && tillDate) {
       const fetchAlarms = async () => {
         setLoading(true);
-        setError(null); // Reset error state on each fetch
+        setError(""); // Reset error state on each fetch
 
         try {
           const response = await axios.get(
