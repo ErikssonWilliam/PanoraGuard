@@ -76,9 +76,9 @@ def run_schedule(app):
                 acap_states[id] = 0
 
         while True:
+            check_schedules()
             seconds_until_next_minute = 60 - datetime.now().second
             print("Sleeping for: " + str(seconds_until_next_minute))
             time.sleep(
                 seconds_until_next_minute
             )  # Wait until the next minute starts (at :00 seconds)
-            check_schedules()
