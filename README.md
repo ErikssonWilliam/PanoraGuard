@@ -11,21 +11,19 @@ Explore the product on our live cloud deployment:
 
 ---
 
-
 <div style="text-align: center;">
   <img src="Client/Frontend/src/assets/C3WBG.png" alt="Company 3 Logo" width="200" style="display: inline-block; margin-right: 10px;"/>
   <img src="Client/Frontend/src/assets/AxisLogo.png" alt="AXIS Communications Logo" width="200" style="display: inline-block;"/>
 </div>
 
-
 ## Who are we?
 
-Learn more about us on our company website:  [Company Website](https://company-members-rajag969-b760ce3a61d886c9508e8e542a6936a0f6ede1.gitlab-pages.liu.se/)
+Learn more about us on our company website: [Company Website](https://company-members-rajag969-b760ce3a61d886c9508e8e542a6936a0f6ede1.gitlab-pages.liu.se/)
 
 ## Follow the journey
+
 - [**Demo iteration 2**](https://drive.google.com/file/d/1ICRIwVadDdsYsEZzZyCarr14lxmGuBHL/view?usp=drive_link)
 - [**Demo iteration 3**](https://drive.google.com/file/d/1vbIL0ewWdcuGKRSdi8LCC5NupxmdV6Gc/view?usp=drive_link)
-
 
 ## What is PanoraGuard?
 
@@ -70,8 +68,7 @@ PanoraGuard integrates both **hardware** and **software** components:
 6. **Operator Action**: The operator can dismiss the alarm (disabling the speaker and updating the alarm status to "ignored") or notify a guard (sending an email with alarm details). Guards notify the operator when resolved, and the operator updates the status to "resolved."
 7. **Admin Features**: Admins configure camera settings, schedules, and confidence thresholds via the frontend, which communicates with both the external and LAN servers.
 
-This seamless flow ensures efficient alarm management and real-time decision-making. 
-
+This seamless flow ensures efficient alarm management and real-time decision-making.
 
 ---
 

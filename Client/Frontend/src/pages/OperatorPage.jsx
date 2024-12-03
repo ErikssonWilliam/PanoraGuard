@@ -3,7 +3,9 @@ import AlarmList from "../components/AlarmList.jsx";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "../components/Notification.jsx";
 const OperatorPage = () => {
-  if (!isUserLoggedInWithRole("OPERATOR")) {
+  if (
+    !(isUserLoggedInWithRole("OPERATOR") || isUserLoggedInWithRole("ADMIN"))
+  ) {
     return (
       <Notification
         message={
