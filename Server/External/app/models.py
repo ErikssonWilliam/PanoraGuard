@@ -50,6 +50,15 @@ class User(db.Model):
             "role": self.role.name,
         }
 
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "password_hash": self.password_hash,
+            "username": self.username,
+            "email": self.email,
+            "role": self.role.name,
+        }
+
 
 # Represents a camera in the system, which triggers alarms.
 class Camera(db.Model):
