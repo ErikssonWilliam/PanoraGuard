@@ -20,7 +20,7 @@ import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "../components/Notification.jsx";
 
 const Admin = () => {
-  const [selectedComponent, setSelectedComponent] = useState("Camera");
+  const [selectedComponent, setSelectedComponent] = useState("OperatorView");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Manage sidebar visibility
 
   if (!isUserLoggedInWithRole("ADMIN")) {

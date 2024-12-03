@@ -30,6 +30,12 @@ const Header = ({ userInfo, setErrorMessage }) => {
       {/* Centered Logo with Manual Left Shift */}
 
       <button onClick={navigateToHome}>
+      <button
+            onClick={() => navigate(-1)}
+            className="absolute top-2 left-2 bg-[#237F94] text-white px-4 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+          >
+            Back
+          </button>
         <img
           src={logo}
           alt="PanoraGuard logo"
