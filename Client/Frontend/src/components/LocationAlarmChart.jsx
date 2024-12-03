@@ -11,11 +11,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const LocationAlarmChart = ({ selectedLocation }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { error, token, setError } = useAuthStore(null);
 
   useEffect(() => {
     const fetchAlarmData = async () => {
@@ -23,7 +24,6 @@ const LocationAlarmChart = ({ selectedLocation }) => {
       setError(null);
 
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(
           `${externalURL}/alarms/bylocation/${selectedLocation}`,
           {
@@ -66,7 +66,7 @@ const LocationAlarmChart = ({ selectedLocation }) => {
     if (selectedLocation) {
       fetchAlarmData();
     }
-  }, [selectedLocation]);
+  }, [selectedLocation, setError, token]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;

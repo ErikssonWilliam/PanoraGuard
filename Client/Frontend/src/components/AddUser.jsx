@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { externalURL } from "../api/axiosConfig";
 import axios from "axios";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const AddnewUser = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const { error, token, setError } = useAuthStore();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -23,12 +24,11 @@ const AddnewUser = () => {
   const handleSubmit = async () => {
     // Validate password length for roles other than "GUARD"
     if (formData.role !== "GUARD" && formData.password.length <= 7) {
-      setErrorMessage("Password must be longer than 7 characters.");
+      setError("Password must be longer than 7 characters.");
       return;
     }
 
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${externalURL}/users/create`,
         formData,
@@ -48,10 +48,10 @@ const AddnewUser = () => {
 
       console.log("User added successfully:", response.data);
       alert(`User ${response.data.user.username} added successfully`);
-      setErrorMessage("");
+      setError("");
     } catch (error) {
       console.error("Error adding user", error);
-      setErrorMessage(error.response?.data?.error || "Something went wrong");
+      setError(error.response?.data?.error || "Something went wrong");
     }
   };
 
@@ -130,9 +130,10 @@ const AddnewUser = () => {
         >
           Submit
         </button>
-        {errorMessage && (
+        {error && (
           <div className="text-red-600 text-sm font-medium mt-2">
-            <strong>Error:</strong> {errorMessage}
+            <strong>Error:</strong> {error}
+            {/* Need Message Component*/}
           </div>
         )}
       </div>

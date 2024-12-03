@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 function StatisticsForm({ onSubmit }) {
   const [locations, setLocations] = useState([]);
@@ -9,12 +10,12 @@ function StatisticsForm({ onSubmit }) {
   const [selectedCamera, setSelectedCamera] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [tillDate, setTillDate] = useState("");
+  const { token } = useAuthStore();
 
   // Fetch locations when component mounts
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${externalURL}/cameras/locations`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -36,14 +37,13 @@ function StatisticsForm({ onSubmit }) {
     };
 
     fetchLocations();
-  }, []);
+  }, [token]);
 
   // Fetch cameras when a location is selected
   useEffect(() => {
     const fetchCameras = async () => {
       if (selectedLocation) {
         try {
-          const token = localStorage.getItem("accessToken");
           const response = await axios.get(
             `${externalURL}/cameras/locations/${selectedLocation}`,
             {
@@ -73,7 +73,7 @@ function StatisticsForm({ onSubmit }) {
     };
 
     fetchCameras();
-  }, [selectedLocation]);
+  }, [selectedLocation, token]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();

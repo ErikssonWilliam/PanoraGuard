@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { externalURL } from "../api/axiosConfig";
 import axios from "axios";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const Scheduler = ({ cameraId }) => {
   const days = useMemo(
@@ -22,7 +23,7 @@ const Scheduler = ({ cameraId }) => {
   );
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { error, token, setError } = useAuthStore(null);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -31,7 +32,6 @@ const Scheduler = ({ cameraId }) => {
       setError(null);
 
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${externalURL}/cameras/${cameraId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ const Scheduler = ({ cameraId }) => {
     };
 
     fetchSchedule();
-  }, [cameraId, days]);
+  }, [cameraId, days, setError, token]);
 
   const toggleCell = (hourIndex, dayIndex) => {
     const newSchedule = [...schedule];
@@ -101,7 +101,6 @@ const Scheduler = ({ cameraId }) => {
     console.log("Payload being sent to server:", scheduleJSON);
 
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.put(
         `${externalURL}/cameras/${cameraId}/schedule`,
         scheduleJSON,

@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const AlarmResolutionChart = ({
   selectedLocation,
@@ -20,7 +21,7 @@ const AlarmResolutionChart = ({
 }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { error, token, setError } = useAuthStore();
 
   useEffect(() => {
     if (selectedLocation && selectedCamera && fromDate && tillDate) {
@@ -29,7 +30,6 @@ const AlarmResolutionChart = ({
         setError(null); // Reset error state on each fetch
 
         try {
-          const token = localStorage.getItem("accessToken");
           const response = await axios.get(
             `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
             {
@@ -88,7 +88,7 @@ const AlarmResolutionChart = ({
 
       fetchAlarms();
     }
-  }, [selectedLocation, selectedCamera, fromDate, tillDate]);
+  }, [selectedLocation, selectedCamera, fromDate, tillDate, setError, token]);
 
   // Generate date range between fromDate and tillDate
   const generateDateRange = (startDate, endDate) => {
@@ -103,6 +103,9 @@ const AlarmResolutionChart = ({
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
+  {
+    /* Need Message Component*/
+  }
 
   return (
     <ResponsiveContainer width="100%" height={400}>

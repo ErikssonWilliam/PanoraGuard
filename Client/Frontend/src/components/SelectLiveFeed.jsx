@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { externalURL, lanURL } from "../api/axiosConfig";
 import axios from "axios";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const SelectLiveFeed = () => {
   const [cameras, setCameras] = useState([]); // State to store cameras
   const [selectedCameraID, setSelectedCameraID] = useState(""); // Track selected camera
-
+  const { token } = useAuthStore();
   useEffect(() => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${externalURL}/cameras/`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -35,7 +35,7 @@ const SelectLiveFeed = () => {
     };
 
     fetchCameras();
-  }, []);
+  }, [token]);
 
   const handleCameraChange = (e) => {
     const cameraId = e.target.value;

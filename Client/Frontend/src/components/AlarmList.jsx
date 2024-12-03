@@ -4,11 +4,12 @@ import OldAlarms from "./OldAlarms";
 import ActiveAlarms from "./ActiveAlarms";
 import socket from "../utils/socket";
 import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
-const AlertDetails = () => {
+const AlarmList = () => {
   const [activeAlarms, setActiveAlarms] = useState([]);
   const [oldAlarms, setOldAlarms] = useState([]);
-  const [error, setError] = useState("");
+  const { error, token, setError } = useAuthStore();
 
   const sortByTimestamp = useCallback(
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
@@ -25,7 +26,6 @@ const AlertDetails = () => {
   // Fetch alarms from the server
   const fetchAlarms = useCallback(async () => {
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.get(`${externalURL}/alarms/`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ const AlertDetails = () => {
       console.error("Error fetching alarms:", err);
       setError("Failed to load alarms.");
     }
-  }, [sortByStatusAndTimestamp, sortByTimestamp]);
+  }, [setError, sortByStatusAndTimestamp, sortByTimestamp, token]);
 
   // Handle new alarms from the socket
   const handleNewAlarm = useCallback((newAlarm) => {
@@ -81,7 +81,9 @@ const AlertDetails = () => {
       socket.off("new_alarm", handleNewAlarm);
     };
   }, [fetchAlarms, handleNewAlarm]);
-
+  {
+    /* Need Message Component*/
+  }
   if (error) {
     return <div>{error}</div>;
   }
@@ -112,4 +114,4 @@ const AlertDetails = () => {
   );
 };
 
-export default AlertDetails;
+export default AlarmList;

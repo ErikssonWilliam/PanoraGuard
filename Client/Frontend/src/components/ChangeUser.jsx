@@ -1,27 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const ChangeUser = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const { error, token, setError } = useAuthStore();
   const [roleChanges, setRoleChanges] = useState({}); // Tracks role changes for each user
 
   // Fetch users from the API
-  const fetchUsers = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-
-    if (!accessToken) {
-      setErrorMessage("No access token found. Please log in.");
+  const fetchUsers = useCallback(async () => {
+    if (!token) {
+      setError("No access token found. Please log in.");
       return;
     }
 
     try {
       const response = await axios.get(`${externalURL}/users/`, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const data = response.data;
@@ -34,7 +33,7 @@ const ChangeUser = () => {
               `${externalURL}/users/${user.id}`,
               {
                 headers: {
-                  Authorization: `Bearer ${accessToken}`,
+                  Authorization: `Bearer ${token}`,
                 },
               },
             );
@@ -63,19 +62,16 @@ const ChangeUser = () => {
       console.error("Error fetching users:", error);
       setUsers([]);
       setFilteredUsers([]);
-      setErrorMessage("Failed to fetch users. Please try again.");
+      setError("Failed to fetch users. Please try again.");
     }
-  };
-
+  }, [setError, token]);
   // Delete user by ID
   const handleDelete = async (userId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this user?",
     );
     if (!confirmDelete) return;
-
-    const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
+    if (!token) {
       alert("No access token found. Please log in.");
       return;
     }
@@ -83,7 +79,7 @@ const ChangeUser = () => {
     try {
       const response = await axios.delete(`${externalURL}/users/${userId}`, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -94,7 +90,7 @@ const ChangeUser = () => {
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      setErrorMessage("Failed to delete user. Please try again.");
+      setError("Failed to delete user. Please try again.");
     }
   };
 
@@ -111,8 +107,7 @@ const ChangeUser = () => {
     const newRole = roleChanges[userId];
     if (!newRole) return;
 
-    const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
+    if (!token) {
       alert("No access token found. Please log in.");
       return;
     }
@@ -123,7 +118,7 @@ const ChangeUser = () => {
         { role: newRole },
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -148,7 +143,7 @@ const ChangeUser = () => {
       }
     } catch (error) {
       console.error("Error updating role:", error);
-      setErrorMessage("Failed to update user role. Please try again.");
+      setError("Failed to update user role. Please try again.");
     }
   };
 
@@ -165,15 +160,17 @@ const ChangeUser = () => {
   // Fetch users on component mount
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   return (
     <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-10">
       <h2 className="text-2xl font-semibold text-center text-NavyBlue mb-6">
         User List
       </h2>
-      {errorMessage && (
-        <p className="text-center text-red-500 mb-4">{errorMessage}</p>
+      {error && (
+        <p className="text-center text-red-500 mb-4">
+          {error}
+        </p> /* Need Message Component*/
       )}
 
       {/* Search Bar */}

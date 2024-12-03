@@ -4,17 +4,18 @@ import axios from "axios";
 import Header from "../components/OperatorHeader";
 import { externalURL, lanURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
+import { useAuthStore } from "../utils/useAuthStore";
+import { useCallback } from "react";
 
 const useFetchUserInfo = (userId) => {
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { token, error, setError } = useAuthStore();
   useEffect(() => {
     const fetchUserInfo = async () => {
       setLoading(true);
       setError(""); // Clear any previous errors
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "GET",
           headers: {
@@ -37,7 +38,7 @@ const useFetchUserInfo = (userId) => {
     };
 
     if (userId) fetchUserInfo();
-  }, [userId]);
+  }, [setError, token, userId]);
 
   return { userInfo, loading, error };
 };
@@ -45,7 +46,7 @@ const useFetchUserInfo = (userId) => {
 const AlarmDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [alarm, setAlarm] = useState(null);
+  const [alarm, setAlarm] = useState(location.state?.alarm);
   const [liveFootage, setLiveFootage] = useState(""); // State for live footage image
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("");
@@ -55,30 +56,31 @@ const AlarmDetailPage = () => {
   const [callChecked, setCallChecked] = useState(false);
   const [operatorUsername, setOperatorUsername] = useState("N/A");
   const [, setFormattedStatus] = useState("");
+  const { token, userId } = useAuthStore();
 
-  const userId = localStorage.getItem("userId");
+  // const userId = localStorage.getItem("userId");
 
   const { userInfo } = useFetchUserInfo(userId);
+  // const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
+  const operatorId = userId;
 
-  const alarm_state =
-    location.state?.alarm || sessionStorage.getItem("alarmId");
-  const operatorId = localStorage.getItem("userId"); // Get operator ID from localStorage
-
-  const fetchOperatorDetails = async (operatorId) => {
-    // Fetches operator details by ID and sets the username or "N/A" on error.
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await axios.get(`${externalURL}/users/${operatorId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setOperatorUsername(response.data.username || "N/A");
-    } catch (error) {
-      console.error("Error fetching operator details:", error);
-      setOperatorUsername("N/A");
-    }
-  };
+  const fetchOperatorDetails = useCallback(
+    async (operatorId) => {
+      // Fetches operator details by ID and sets the username or "N/A" on error.
+      try {
+        const response = await axios.get(`${externalURL}/users/${operatorId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setOperatorUsername(response.data.username || "N/A");
+      } catch (error) {
+        console.error("Error fetching operator details:", error);
+        setOperatorUsername("N/A");
+      }
+    },
+    [token],
+  );
 
   useEffect(() => {
     const fetchOperatorDetailsIfNeeded = async (alarm) => {
@@ -88,74 +90,21 @@ const AlarmDetailPage = () => {
         alarm.operator_id !== "N/A"
       ) {
         await fetchOperatorDetails(alarm.operator_id);
+      } else {
+        console.log("something missing from alarm data");
       }
     };
 
     if (alarm) {
       fetchOperatorDetailsIfNeeded(alarm);
     }
-  }, [alarm]);
+  }, [alarm, fetchOperatorDetails]);
 
   useEffect(() => {
-    // if (!id) {
-    //   setNotificationMessage("Alarm ID is missing.");
-    //   setNotificationType("error");
-    //   setFormattedStatus("Alarm ID is missing.");
-    //   navigate("/alert-details");
-    //   return;
-    // }
-
-    // sessionStorage.removeItem("alarmData");
-
-    // const fetchAlarmDetails = async () => {
-    //   try {
-    //     const token = localStorage.getItem("accessToken");
-    //     const response = await axios.get(`${externalURL}/alarms/${id}`, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     });
-    //     const alarmData = response.data;
-    //     const location = response.data.camera_location;
-    //     console.log("Alarm data:", alarmData);
-    //     setAlarm({
-    //       id: alarmData.id || alarmData.alarm_id,
-    //       camera_id: alarmData.camera_id || "N/A",
-    //       location: location || "N/A",
-    //       type: alarmData.type || "N/A",
-    //       confidence_score: alarmData.confidence_score || 0,
-    //       timestamp: alarmData.timestamp || "N/A",
-    //       operator_id: alarmData.operator_id || "N/A",
-    //       status: alarmData.status || "N/A",
-    //     });
-
-    //     if (alarmData.operator_id && alarmData.operator_id !== "N/A") {
-    //       console.log(
-    //         "Operator ID found in alarm data:",
-    //         alarmData.operator_id,
-    //       );
-    //       fetchOperatorDetails(alarmData.operator_id);
-    //     } else {
-    //       console.warn(
-    //         "Operator ID is missing or invalid:",
-    //         alarmData.operator_id,
-    //       );
-    //     }
-    //   } catch (err) {
-    //     setNotificationMessage(
-    //       err.response && err.response.status === 404
-    //         ? "Alarm not found."
-    //         : "Failed to load alarm details.",
-    //     );
-    //     setNotificationType("error");
-    //   }
-    // };
-
     const fetchAlarmImage = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
         const imageResponse = await axios.get(
-          `${externalURL}/alarms/${alarm_state.id}/image`,
+          `${externalURL}/alarms/${alarm.id}/image`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -175,7 +124,6 @@ const AlarmDetailPage = () => {
 
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
         const response = await axios.get(`${externalURL}/users/guards`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -193,8 +141,7 @@ const AlarmDetailPage = () => {
     // fetchAlarmDetails();
     fetchAlarmImage();
     fetchUsers();
-    setAlarm(alarm_state);
-  }, [navigate, location, alarm_state]);
+  }, [navigate, location, alarm.id, token]);
 
   useEffect(() => {
     if (alarm?.status) {
@@ -246,7 +193,6 @@ const AlarmDetailPage = () => {
     }
 
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.put(
         `${externalURL}/alarms/${alarm.id}/status`,
         {
@@ -311,7 +257,6 @@ const AlarmDetailPage = () => {
 
   const notifyGuard = async (guardID) => {
     try {
-      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${externalURL}/alarms/notify/${guardID}/${alarm.id}`,
         {},
@@ -460,7 +405,7 @@ const AlarmDetailPage = () => {
                     navigate("/live-feed", {
                       state: {
                         id: alarm.id,
-                        alarm_state,
+                        alarm,
                         camera_id: alarm.camera_id,
                       },
                     })

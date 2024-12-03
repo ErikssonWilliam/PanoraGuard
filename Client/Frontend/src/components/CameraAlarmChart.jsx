@@ -11,11 +11,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { error, token, setError } = useAuthStore();
 
   useEffect(() => {
     // Ensure the location and camera are selected
@@ -25,7 +26,6 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
         setError(null); // Reset any previous error state
 
         try {
-          const token = localStorage.getItem("accessToken");
           const response = await axios.get(
             `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
             {
@@ -66,7 +66,7 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
 
       fetchAlarms();
     }
-  }, [selectedLocation, selectedCamera]); // Dependency on location and camera
+  }, [selectedLocation, selectedCamera, setError, token]); // Dependency on location and camera
 
   // If loading, show a loading message
   if (loading) return <div>Loading...</div>;
