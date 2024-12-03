@@ -10,6 +10,7 @@ const AlarmRow = ({ alarm }) => {
     navigate("/alarm-details", { state: { alarm: alarm } });
   };
 
+  // Colors for the alarms
   const getStatusClass = () => {
     if (alarm.status === "PENDING") {
       return "bg-red-600";
@@ -33,8 +34,8 @@ const AlarmRow = ({ alarm }) => {
               className="mr-2 w-4 h-4 object-contain"
             />
             <span className="text-sm font-medium text-gray-700">
-              Camera: {alarm.camera_id || "Unknown Camera"}{" "}
               {/* Camera = Camera ID */}
+              Camera: {alarm.camera_id || "Unknown Camera"}{" "}
             </span>
           </div>
 
