@@ -65,7 +65,7 @@ const ProfilePage = () => {
       await axios.put(
         `${externalURL}/users/${userId}`,
         { password },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       alert("Password changed successfully.");
       setPassword("");
@@ -73,7 +73,7 @@ const ProfilePage = () => {
       setErrorMessage("");
     } catch (error) {
       setErrorMessage(
-        error.response?.data?.error || "Failed to change password."
+        error.response?.data?.error || "Failed to change password.",
       );
     }
   };
