@@ -72,7 +72,7 @@ const AlarmList = () => {
 
   // Initialize the component
   useEffect(() => {
-    setError("")
+    setError("");
     fetchAlarms();
 
     // Listen for socket events

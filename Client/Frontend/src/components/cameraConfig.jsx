@@ -66,7 +66,7 @@ const CameraConfig = () => {
         console.error("Error fetching brightness level:", error);
       }
     };
-    setError("")
+    setError("");
     fetchCameras();
   }, [fetchBrightnessLevel, setError, token]);
 

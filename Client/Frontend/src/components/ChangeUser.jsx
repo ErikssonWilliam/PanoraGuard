@@ -159,7 +159,7 @@ const ChangeUser = () => {
 
   // Fetch users on component mount
   useEffect(() => {
-    setError("")
+    setError("");
     fetchUsers();
   }, [fetchUsers, setError]);
 
