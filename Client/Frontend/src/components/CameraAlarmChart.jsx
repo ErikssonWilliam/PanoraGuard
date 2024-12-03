@@ -23,7 +23,7 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
     if (selectedLocation && selectedCamera) {
       const fetchAlarms = async () => {
         setLoading(true);
-        setError(null); // Reset any previous error state
+        setError(""); // Reset any previous error state
 
         try {
           const response = await axios.get(
