@@ -209,7 +209,10 @@ const ChangeUser = () => {
                     className="ml-2 px-2 py-1 border rounded-md"
                     disabled={user.role === "ADMIN"} // Disable dropdown for Admin users
                   >
-                    <option value="ADMIN" disabled hidden>Admin</option> {/**So that admin role would show as Admin instead of showing operation as admin role */}
+                    <option value="ADMIN" disabled hidden>
+                      Admin
+                    </option>{" "}
+                    {/**So that admin role would show as Admin instead of showing operation as admin role */}
                     <option value="OPERATOR">Operator</option>
                     <option value="GUARD">Guard</option>
                   </select>

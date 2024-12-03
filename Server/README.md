@@ -33,7 +33,6 @@ This process needs to be completed in both the `Server/External` and `Server/LAN
 2. Follow the steps outlined in the `2. Backend Setup` section below.
 3. Execute each instruction in the corresponding terminal for both servers.
 
-
 ### Prerequisites
 
 - Python
@@ -82,7 +81,7 @@ To ensure the **external server** communicates correctly with the LAN server for
 1. Open the file located at:
    ```plaintext
    /Server/External/config.py
-   ````
+   ```
 2. Edit the `SPEAKER_URL` in this file to match your environment. The file contains a line like this:
    ```python
    # SPEAKER_URL = "https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker"  # URL to Raspberry Pi LAN server
@@ -192,11 +191,11 @@ python reset_database_windows.py # for Windows
 
 This should resolve any issues related to the database.
 
-
 # Server - Production Environment Setup
+
 To be finished...
 
-1. *Optional*: Connect to Azure database instance from pgAdmin4 desktop  application.
+1. _Optional_: Connect to Azure database instance from pgAdmin4 desktop application.
 
 2. **LAN Server**: Start the Rasperry Pie LAN server, and connect it to the same network as the camera.
 
