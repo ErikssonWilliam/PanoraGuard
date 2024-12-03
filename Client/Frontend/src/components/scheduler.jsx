@@ -4,6 +4,12 @@ import axios from "axios";
 import { useAuthStore } from "../utils/useAuthStore";
 
 const Scheduler = ({ cameraId }) => {
+  const [schedule, setSchedule] = useState(
+    Array.from({ length: 24 }, () => Array(7).fill(false)),
+  );
+
+  const [loading, setLoading] = useState(true);
+  const { error, token, setError } = useAuthStore();
   const days = useMemo(
     () => [
       "Monday",
@@ -17,14 +23,6 @@ const Scheduler = ({ cameraId }) => {
     [],
   );
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
-
-  const [schedule, setSchedule] = useState(
-    Array.from({ length: 24 }, () => Array(7).fill(false)),
-  );
-
-  const [loading, setLoading] = useState(true);
-  const { error, token, setError } = useAuthStore();
-
   useEffect(() => {
     const fetchSchedule = async () => {
       if (!cameraId) return;

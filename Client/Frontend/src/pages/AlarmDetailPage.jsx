@@ -371,7 +371,7 @@ const AlarmDetailPage = () => {
                   Alert number: {alarm.id || "N/A"}
                 </p>
                 <p className="text-lg">Camera ID: {alarm.camera_id}</p>
-                <p className="text-lg">Location: {alarm.location}</p>
+                <p className="text-lg">Location: {alarm.camera_location}</p>
                 <p className="text-lg">Type: {alarm.type}</p>
                 <p className="text-lg">
                   Confidence Level:{" "}
