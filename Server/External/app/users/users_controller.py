@@ -47,16 +47,16 @@ class UserController:
         """
         data = request.json
 
-        if data.get("role") == "GUARD":
-            generated_password = UserService.generate_random_password()
-            data["password"] = generated_password
-            print(f"Random password generated for 'guard': {generated_password}")
-
         if UserService.get_user_by_username(data["username"]):
             return jsonify({"error": "Name already exists"}), 400
 
         if UserService.get_user_by_email(data["email"]):
             return jsonify({"error": "Email already exists"}), 400
+
+        if data.get("role") == "GUARD":
+            generated_password = UserService.generate_random_password()
+            data["password"] = generated_password
+            print(f"Random password generated for 'guard': {generated_password}")
 
         try:
             UserService.validity_check(data)
@@ -86,7 +86,7 @@ class UserController:
 
         if not user:
             return jsonify({"error": "User not found"}), 404
-        
+
         try:
             updated_data = user.to_dict()
             updated_data.update(data)

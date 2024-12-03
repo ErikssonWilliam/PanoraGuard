@@ -49,7 +49,7 @@ class User(db.Model):
             "email": self.email,
             "role": self.role.name,
         }
-    
+
     def to_dict(self):
         return {
             "id": str(self.id),

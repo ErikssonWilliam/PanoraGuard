@@ -79,7 +79,9 @@ class UserService:
         if "role" in data:
             user.role = data["role"]
         if "password" in data:
-            user.password_hash = bcrypt.generate_password_hash(data["password"]).decode("utf-8")
+            user.password_hash = bcrypt.generate_password_hash(data["password"]).decode(
+                "utf-8"
+            )
 
         UserService.session.commit()
         return user
