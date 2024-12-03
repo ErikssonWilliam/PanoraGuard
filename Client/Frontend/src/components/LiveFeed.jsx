@@ -31,6 +31,7 @@ const LiveFeed = () => {
         setError("Failed to load guards.");
       }
     };
+    setError("")
     fetchUsers();
   }, [setError, token]);
 

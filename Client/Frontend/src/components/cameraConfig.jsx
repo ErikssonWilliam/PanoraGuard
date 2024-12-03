@@ -9,7 +9,7 @@ const CameraConfig = () => {
   const [brightnessLevel, setBrightnessLevel] = useState(50); // Default brightness level
   const [cameras, setCameras] = useState([]); // State to store cameras
   const [selectedCameraID, setSelectedCameraID] = useState(""); // Track selected camera
-  const { error, token, setError } = useAuthStore();
+  const { token, setError } = useAuthStore();
 
   // Fetch the brightness level of the selected camera
   const fetchBrightnessLevel = useCallback(
@@ -66,9 +66,9 @@ const CameraConfig = () => {
         console.error("Error fetching brightness level:", error);
       }
     };
-
+    setError("")
     fetchCameras();
-  }, [fetchBrightnessLevel, error, setError, token]);
+  }, [fetchBrightnessLevel, setError, token]);
 
   // Handle updating confidence level for the selected camera
   const updateConfidenceLevel = async () => {

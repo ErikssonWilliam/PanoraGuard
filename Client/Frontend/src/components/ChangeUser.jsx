@@ -159,8 +159,9 @@ const ChangeUser = () => {
 
   // Fetch users on component mount
   useEffect(() => {
+    setError("")
     fetchUsers();
-  }, [fetchUsers]);
+  }, [fetchUsers, setError]);
 
   return (
     <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-10">

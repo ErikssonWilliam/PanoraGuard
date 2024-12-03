@@ -27,7 +27,7 @@ const Scheduler = ({ cameraId }) => {
     const fetchSchedule = async () => {
       if (!cameraId) return;
       setLoading(true);
-      setError(null);
+      setError("");
 
       try {
         const response = await axios.get(`${externalURL}/cameras/${cameraId}`, {
