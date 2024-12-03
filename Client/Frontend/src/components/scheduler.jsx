@@ -23,7 +23,7 @@ const Scheduler = ({ cameraId }) => {
   );
 
   const [loading, setLoading] = useState(true);
-  const { error, token, setError } = useAuthStore(null);
+  const { error, token, setError } = useAuthStore();
 
   useEffect(() => {
     const fetchSchedule = async () => {
