@@ -46,13 +46,13 @@ const useFetchUserInfo = (userId) => {
 const AlarmDetailPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [alarm, setAlarm] = useState(location.state?.alarm);
+  const [alarm, setAlarm] = useState(location.state?.alarm); // Extract alarm details from the passed state
   const [liveFootage, setLiveFootage] = useState(""); // State for live footage image
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("");
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]); // List of guards
   const [selectedUserId, setSelectedUserId] = useState("");
-  const [manualNotifyVisible, setManualNotifyVisible] = useState(false);
+  const [manualNotifyVisible, setManualNotifyVisible] = useState(false); // Toggle for manual notification confirmation
   const [callChecked, setCallChecked] = useState(false);
   const [operatorUsername, setOperatorUsername] = useState("N/A");
   const [, setFormattedStatus] = useState("");
@@ -65,8 +65,8 @@ const AlarmDetailPage = () => {
   const operatorId = userId;
 
   const fetchOperatorDetails = useCallback(
+    // Fetches operator details by ID and updates the operator username
     async (operatorId) => {
-      // Fetches operator details by ID and sets the username or "N/A" on error.
       try {
         const response = await axios.get(`${externalURL}/users/${operatorId}`, {
           headers: {
@@ -83,6 +83,7 @@ const AlarmDetailPage = () => {
   );
 
   useEffect(() => {
+    // Fetches operator details if the alarm is not "PENDING" and has a valid operator_id
     const fetchOperatorDetailsIfNeeded = async (alarm) => {
       if (
         alarm?.status !== "PENDING" &&
@@ -90,8 +91,6 @@ const AlarmDetailPage = () => {
         alarm.operator_id !== "N/A"
       ) {
         await fetchOperatorDetails(alarm.operator_id);
-      } else {
-        console.log("something missing from alarm data");
       }
     };
 
@@ -122,6 +121,7 @@ const AlarmDetailPage = () => {
       }
     };
 
+    // Fetches the list of guards from the server and updates the users state
     const fetchUsers = async () => {
       try {
         const response = await axios.get(`${externalURL}/users/guards`, {
@@ -182,6 +182,7 @@ const AlarmDetailPage = () => {
     }
   };
 
+  // Updates the alarm status on the server and handles associated actions (navigation, notifications, stopping speaker) based on the new status.
   const updateAlarmStatus = async (newStatus, guardID = null) => {
     if (newStatus === "RESOLVED") {
       const confirmResolve = window.confirm(
@@ -255,6 +256,7 @@ const AlarmDetailPage = () => {
     }
   };
 
+  //Notify the guard function
   const notifyGuard = async (guardID) => {
     try {
       const response = await axios.post(
@@ -292,6 +294,7 @@ const AlarmDetailPage = () => {
     }
   };
 
+  // Handles notifying a selected guard and updating the alarm status to "NOTIFIED"; manages error handling and user feedback if the notification fails.
   const handleNotifyAndUpdate = async () => {
     if (!selectedUserId) {
       setNotificationMessage("Please select a guard to notify.");
@@ -336,6 +339,7 @@ const AlarmDetailPage = () => {
     updateAlarmStatus("IGNORED");
   };
 
+  // Manual confirmation in case notify the guard function fails
   const handleManualNotifyConfirm = async () => {
     if (callChecked) {
       await updateAlarmStatus("NOTIFIED");

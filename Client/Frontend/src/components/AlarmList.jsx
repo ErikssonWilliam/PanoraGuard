@@ -16,21 +16,24 @@ const AlarmList = () => {
     [],
   );
 
-  // Sort by status and timestamp
   const sortByStatusAndTimestamp = useCallback((a, b) => {
     if (a.status === "NOTIFIED" && b.status === "PENDING") return -1;
     if (a.status === "PENDING" && b.status === "NOTIFIED") return 1;
     return new Date(b.timestamp) - new Date(a.timestamp);
   }, []);
 
-  // Fetch alarms from the server
   const fetchAlarms = useCallback(async () => {
     try {
-      const response = await axios.get(`${externalURL}/alarms`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      // Fetch alarms with pagination from backend
+      const response = await axios.get(
+        `${externalURL}/alarms?page=1&per_page=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
+
       const allAlarms = response.data;
 
       // Process active alarms
@@ -41,28 +44,20 @@ const AlarmList = () => {
         .sort(sortByStatusAndTimestamp);
       setActiveAlarms(active);
 
-      // Process old alarms
+      // Process old alarms (pagination handled by backend)
       const old = allAlarms
         .filter(
-          (alarm) =>
-            (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
-            alarm.operator_id !== null &&
-            alarm.operator_id !== "N/A" &&
-            alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b",
+          (alarm) => alarm.status === "RESOLVED" || alarm.status === "IGNORED",
         )
-        .sort(sortByTimestamp)
-        .slice(0, 10);
-      setOldAlarms(old);
+        .sort(sortByTimestamp);
 
-      console.log("Active alarms after filtering:", active);
-      console.log("Old alarms after filtering:", old);
+      setOldAlarms(old);
     } catch (err) {
       console.error("Error fetching alarms:", err);
       setError("Failed to load alarms.");
     }
   }, [setError, sortByStatusAndTimestamp, sortByTimestamp, token]);
 
-  // Handle new alarms from the socket
   const handleNewAlarm = useCallback((newAlarm) => {
     setActiveAlarms((prevAlarms) => {
       const isDuplicate = prevAlarms.some((alarm) => alarm.id === newAlarm.id);
@@ -70,21 +65,17 @@ const AlarmList = () => {
     });
   }, []);
 
-  // Initialize the component
   useEffect(() => {
     setError("");
     fetchAlarms();
 
-    // Listen for socket events
     socket.on("new_alarm", handleNewAlarm);
 
     return () => {
       socket.off("new_alarm", handleNewAlarm);
     };
   }, [fetchAlarms, handleNewAlarm, setError]);
-  {
-    /* Need Message Component*/
-  }
+
   if (error) {
     return <div>{error}</div>;
   }

@@ -3,6 +3,8 @@ import axios from "axios";
 import AlarmRow from "./AlarmRow";
 import { externalURL } from "../api/axiosConfig";
 
+// Fetches the 10 latest "resolved" or "ignored" alarms from the backend
+// using pagination and displays them in a scrollable list.
 const ResolvedAlarms = () => {
   const [resolvedAlarms, setResolvedAlarms] = useState([]);
   const [error, setError] = useState("");
@@ -10,16 +12,18 @@ const ResolvedAlarms = () => {
   useEffect(() => {
     const fetchResolvedAlarms = async () => {
       try {
-        const response = await axios.get(`${externalURL}/alarms`);
-        const resolved = response.data
-          .filter(
-            (alarm) =>
-              (alarm.status === "resolved" || alarm.status === "ignored") &&
-              alarm.operator_id !== null &&
-              alarm.operator_id !== "N/A" &&
-              alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b", // Exclude specific operator ID
-          )
-          .slice(0, 10); // Limit to the most recent 10 alarms
+        const response = await axios.get(
+          `${externalURL}/alarms?page=1&per_page=10`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+
+        const resolved = response.data.filter(
+          (alarm) => alarm.status === "resolved" || alarm.status === "ignored",
+        );
 
         setResolvedAlarms(resolved);
       } catch (err) {

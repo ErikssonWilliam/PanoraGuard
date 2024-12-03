@@ -1,5 +1,6 @@
 import AlarmRow from "./AlarmRow";
 
+// Adjusts the viewports for the scroll of old alarms for different resolutions (can be found in the tailwind config file)
 const OldAlarms = ({ oldAlarms, activeAlarmCount }) => {
   const getHeightClass = () => {
     if (activeAlarmCount >= 3)
