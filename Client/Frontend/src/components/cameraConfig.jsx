@@ -86,23 +86,12 @@ const CameraConfig = () => {
       const data = response.data;
       console.log("Server response:", data);
 
-      const updatedCameras = cameras.map((camera) =>
-        camera.id === selectedCameraID
-          ? { ...camera, confidence_threshold: confidenceLevel / 100 }
-          : camera,
-      );
-      setCameras(updatedCameras);
-
+      cameras.filter(
+        (camera) => camera.id === selectedCameraID,
+      )[0].condidence_threshold = confidenceLevel / 100;
       alert("Confidence level updated successfully");
     } catch (error) {
-      setError(error.response?.data?.error || error.message);
-      console.error("Error fetching brightness level:", error);
-      {
-        /* Need Message Component*/
-      }
-      alert(
-        error.response?.data?.error || "Failed to update confidence level.",
-      );
+      console.error("Error updating confidence level:", error);
     }
   };
 
