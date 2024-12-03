@@ -184,16 +184,14 @@ class AlarmService:
             # Update the operator_id if provided
             if operator_id:
                 operator = User.query.filter_by(id=operator_id).first()
-                print("Role: " + operator.role.value)
-                print("From enum: " + UserRole.ADMIN.value)
-
-                if operator.role.value not in [
-                    UserRole.OPERATOR.value,
-                    UserRole.ADMIN.value,
-                ]:
-                    return None  # The role does not have permission to do this
 
                 if operator:
+                    if operator.role.value not in [
+                        UserRole.OPERATOR.value,
+                        UserRole.ADMIN.value,
+                    ]:
+                        return None  # The role does not have permission to do this
+
                     alarm.operator_id = operator_id
                 else:
                     return None  # Invalid operator_id
