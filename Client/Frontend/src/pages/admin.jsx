@@ -35,16 +35,16 @@ const Admin = () => {
 
   const renderContent = () => {
     switch (selectedComponent) {
-      case "AddUser":
-        return (
-          <div className="md:p-8 xs:p-4">
-            <AddnewUser />
-          </div>
-        );
       case "Camera":
         return (
           <div className="md:p-8 xs:p-4">
             <CameraConfig />
+          </div>
+        );
+      case "ManageData":
+        return (
+          <div className="md:p-8 xs:p-4">
+            <ManageData />
           </div>
         );
       case "OperatorView":
@@ -53,10 +53,10 @@ const Admin = () => {
             <AlertDetails />
           </div>
         );
-      case "ManageData":
+      case "AddUser":
         return (
           <div className="md:p-8 xs:p-4">
-            <ManageData />
+            <AddnewUser />
           </div>
         );
       case "ChangeUser":
@@ -118,18 +118,6 @@ const Admin = () => {
         <div className="space-y-6">
           <button
             onClick={() => {
-              setSelectedComponent("AddUser");
-              setIsSidebarOpen(false);
-            }}
-            className={`flex items-center gap-4 w-full px-4 py-2 rounded-lg hover:bg-gray-700 transition ${
-              selectedComponent === "AddUser" ? "bg-gray-700" : ""
-            }`}
-          >
-            <FaUserPlus className="text-lg" />
-            <span>Add New User</span>
-          </button>
-          <button
-            onClick={() => {
               setSelectedComponent("Camera");
               setIsSidebarOpen(false);
             }}
@@ -163,6 +151,18 @@ const Admin = () => {
           >
             <FaDatabase className="text-lg" />
             <span>Manage Data</span>
+          </button>
+          <button
+            onClick={() => {
+              setSelectedComponent("AddUser");
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center gap-4 w-full px-4 py-2 rounded-lg hover:bg-gray-700 transition ${
+              selectedComponent === "AddUser" ? "bg-gray-700" : ""
+            }`}
+          >
+            <FaUserPlus className="text-lg" />
+            <span>Add New User</span>
           </button>
           <button
             onClick={() => {
