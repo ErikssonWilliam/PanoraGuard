@@ -32,7 +32,7 @@ def test_video_feed_valid(mock_get_jwt_claims, mock_get_camera_ip, mock_camera_i
     mock_get_camera_ip.return_value = mock_camera_ip
 
     with app.test_client() as client:
-        response = client.get(f"/livestream/1")
+        response = client.get("/livestream/1")
 
         assert response.status_code == 200
         assert response.content_type == "multipart/x-mixed-replace; boundary=frame"
@@ -49,7 +49,7 @@ def test_video_feed_unauthorized(mock_get_jwt_claims, mock_get_camera_ip, app):
     mock_get_camera_ip.return_value = "192.168.1.1"
 
     with app.test_client() as client:
-        response = client.get(f"/livestream/1")
+        response = client.get("/livestream/1")
 
         # Verify the response status
         assert response.status_code == 200  # Expect 200 if role check is disabled
@@ -66,7 +66,7 @@ def test_video_feed_camera_not_found(mock_get_camera_ip, app):
     mock_get_camera_ip.return_value = None
 
     with app.test_client() as client:
-        response = client.get(f"/livestream/999")
+        response = client.get("/livestream/999")
 
         assert response.status_code == 404
         assert "error" in response.json
