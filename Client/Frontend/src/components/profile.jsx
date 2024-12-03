@@ -15,7 +15,7 @@ const Loader = () => (
 );
 
 const ProfilePage = () => {
-  const [newPassword, setNewPassword] = useState("");
+  const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { userId, token, setError, clearAuth } = useAuthStore();
@@ -51,7 +51,7 @@ const ProfilePage = () => {
   // Handle password change
   const handlePasswordChange = async (e) => {
     e.preventDefault();
-    if (newPassword !== repeatPassword) {
+    if (password !== repeatPassword) {
       setErrorMessage("Passwords do not match.");
       return;
     }
@@ -64,11 +64,11 @@ const ProfilePage = () => {
     try {
       await axios.put(
         `${externalURL}/users/${userId}`,
-        { newPassword },
+        { password },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Password changed successfully.");
-      setNewPassword("");
+      setPassword("");
       setRepeatPassword("");
       setErrorMessage("");
     } catch (error) {
@@ -113,8 +113,8 @@ const ProfilePage = () => {
           <form onSubmit={handlePasswordChange}>
             <InputField
               label="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
             />
             <InputField

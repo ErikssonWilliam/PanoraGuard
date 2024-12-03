@@ -83,10 +83,18 @@ class UserController:
         """
         data = request.json
         user = UserService.get_user_by_id(user_id)
-        updated = UserService.update_user(user, data)
-        if updated:
+
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        try:
+            updated_data = user.to_dict()
+            updated_data.update(data)
+            UserService.validity_check(updated_data)
+            UserService.update_user(user, data)
             return jsonify({"message": "User updated"}), 200
-        return jsonify({"message": "Invalid update, info did not update."}), 400
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
 
     def delete_user(user_id: str):
         """
