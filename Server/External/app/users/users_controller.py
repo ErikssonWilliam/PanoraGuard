@@ -86,7 +86,7 @@ class UserController:
         updated = UserService.update_user(user, data)
         if updated:
             return jsonify({"message": "User updated"}), 200
-        return jsonify({"message": "User not found"}), 404
+        return jsonify({"message": "Invalid update, info did not update."}), 400
 
     def delete_user(user_id: str):
         """

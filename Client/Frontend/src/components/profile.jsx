@@ -56,16 +56,16 @@ const ProfilePage = () => {
       return;
     }
 
-    if (newPassword.length < 8) {
+    /*if (newPassword.length < 8) {
       setErrorMessage("Password must be at least 8 characters.");
       return;
-    }
+    }*/
 
     try {
       await axios.put(
         `${externalURL}/users/${userId}`,
         { newPassword },
-        { headers: { Authorization: `Bearer ${token}` } },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       alert("Password changed successfully.");
       setNewPassword("");
@@ -73,7 +73,7 @@ const ProfilePage = () => {
       setErrorMessage("");
     } catch (error) {
       setErrorMessage(
-        error.response?.data?.error || "Failed to change password.",
+        error.response?.data?.error || "Failed to change password."
       );
     }
   };

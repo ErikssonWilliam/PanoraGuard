@@ -71,17 +71,23 @@ class UserService:
         Returns:
             User: The updated User object.
         """
+        tmp_user = user
 
         if data.get("username"):
-            user.username = data.get("username")
+            tmp_user.username = data.get("username")
         if data.get("email"):
-            user.email = data.get("email")
+            tmp_user.email = data.get("email")
         if data.get("role"):
-            user.role = data.get("role")
+            tmp_user.role = data.get("role")
         if data.get("newPassword"):
-            user.password_hash = bcrypt.generate_password_hash(
+            tmp_user.password_hash = bcrypt.generate_password_hash(
                 data.get("newPassword")
             ).decode("utf-8")
+
+        if not UserService.validity_check(tmp_user):
+            return False
+        
+        user = tmp_user
         UserService.session.commit()
         return user
 
@@ -121,6 +127,9 @@ class UserService:
             if not data.get(field) or not str(data[field]).strip():
                 raise ValueError(f"'{field}' is required and cannot be empty.")
 
+        password = data.get("password")
+        UserService.validate_password(password)
+
         role = data.get("role")
         if role not in ["GUARD", "OPERATOR", "MANAGER"]:
             raise ValueError("Invalid role.")
@@ -147,3 +156,7 @@ class UserService:
         password = "".join(secrets.choice(alphabet) for i in range(length))
         print(password)
         return password
+
+    def validate_password(pw):
+        if pw.length < 8:
+            raise ValueError("Password must be at least 8 characters long.")
