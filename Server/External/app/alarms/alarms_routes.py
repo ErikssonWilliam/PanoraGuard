@@ -10,7 +10,7 @@ from flask_jwt_extended import jwt_required
 alarms_bp = Blueprint("alarms", __name__)
 
 
-@alarms_bp.route("/", methods=["GET"])
+@alarms_bp.route("", methods=["GET"])
 @jwt_required()
 def get_alarms():
     """

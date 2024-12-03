@@ -18,19 +18,23 @@ from email.mime.image import MIMEImage
 
 class AlarmService:
     @staticmethod
-    def get_alarms() -> List[dict]:
+    def get_alarms(page: int = 1, per_page: int = 10) -> List[dict]:
         """
-        Retrieves all alarms along with their associated camera locations.
+        Retrieves alarms with pagination.
+
+        Args:
+            page (int): The current page number (default is 1).
+            per_page (int): The number of alarms per page (default is 10).
 
         Returns:
-            List[dict]: A list of alarms with their details and locations.
+            List[dict]: A list of alarms with their details.
         """
-        alarms = (
-            db.session.query(Alarm, Camera.location)
-            .join(Camera, Camera.id == Alarm.camera_id)
-            .all()
-        )
-        return [{**alarm.to_dict(), "location": location} for alarm, location in alarms]
+        # Calculate the offset
+        offset = (page - 1) * per_page
+
+        # Query for alarms with limit and offset
+        alarms = db.session.query(Alarm).limit(per_page).offset(offset).all()
+        return [alarm.to_dict() for alarm in alarms]
 
     def get_active_alarms(alarm_type: str) -> List[dict]:
         if alarm_type.lower() == "new":
