@@ -58,6 +58,7 @@ const AlarmList = () => {
     }
   }, [setError, sortByStatusAndTimestamp, sortByTimestamp, token]);
 
+  // Handle new alarms from the socket
   const handleNewAlarm = useCallback((newAlarm) => {
     setActiveAlarms((prevAlarms) => {
       const isDuplicate = prevAlarms.some((alarm) => alarm.id === newAlarm.id);
@@ -65,10 +66,12 @@ const AlarmList = () => {
     });
   }, []);
 
+  // Initialize the component
   useEffect(() => {
     setError("");
     fetchAlarms();
 
+    // Listen for socket events
     socket.on("new_alarm", handleNewAlarm);
 
     return () => {
