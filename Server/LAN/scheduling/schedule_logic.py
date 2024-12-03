@@ -65,6 +65,16 @@ def check_schedules():
 # TODO Are we going to actually check every minute or only once every hour at minute 00? If we choose the latter, we need to remember to check the schedule of a camera also when that schedule has been changed by the user, so if the user changes the current hour, that change will take effect right away.
 def run_schedule(app):
     with app.app_context():
+        # Initially for each camera, make sure the ACAP is turned off and the state is set to 0
+        cameras = get_cameras()
+        for camera in cameras:
+            id = camera.get("id")
+            res = toggle_acap(camera.get("ip_address"), "stop")
+
+            if res:  # update state if toggle succeded
+                print("ACAP successfully stopped")
+                acap_states[id] = 0
+
         while True:
             seconds_until_next_minute = 60 - datetime.now().second
             print("Sleeping for: " + str(seconds_until_next_minute))
