@@ -151,30 +151,7 @@ const LiveFeed = () => {
         </div>
       ) : (
         <div className="flex justify-between w-full mt-4 max-w-2xl">
-          <select
-            value={selectedUserId}
-            onChange={(e) => setSelectedUserId(e.target.value)}
-            className="border p-2 rounded-md"
-          >
-            <option value="">Select a guard</option>
-            {users.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.username}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={notifyGuard}
-            className="bg-[#237F94] text-white px-5 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-          >
-            Notify the Guard
-          </button>
-          <button
-            onClick={() => updateAlarmStatus("IGNORED")}
-            className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition duration-200"
-          >
-            Dismiss the alert
-          </button>
+  
         </div>
       )}
 
