@@ -26,7 +26,7 @@ const AlarmList = () => {
   // Fetch alarms from the server
   const fetchAlarms = useCallback(async () => {
     try {
-      const response = await axios.get(`${externalURL}/alarms/`, {
+      const response = await axios.get(`${externalURL}/alarms`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -72,6 +72,7 @@ const AlarmList = () => {
 
   // Initialize the component
   useEffect(() => {
+    setError("");
     fetchAlarms();
 
     // Listen for socket events
@@ -80,7 +81,7 @@ const AlarmList = () => {
     return () => {
       socket.off("new_alarm", handleNewAlarm);
     };
-  }, [fetchAlarms, handleNewAlarm]);
+  }, [fetchAlarms, handleNewAlarm, setError]);
   {
     /* Need Message Component*/
   }

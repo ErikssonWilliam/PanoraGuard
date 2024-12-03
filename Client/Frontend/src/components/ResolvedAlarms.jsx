@@ -10,7 +10,7 @@ const ResolvedAlarms = () => {
   useEffect(() => {
     const fetchResolvedAlarms = async () => {
       try {
-        const response = await axios.get(`${externalURL}/alarms/`);
+        const response = await axios.get(`${externalURL}/alarms`);
         const resolved = response.data
           .filter(
             (alarm) =>

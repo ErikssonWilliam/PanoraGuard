@@ -13,7 +13,7 @@ const Loader = () => (
 );
 
 const SelectLiveFeedPage = () => {
-  const { token, setError, userId, role } = useAuthStore();
+  const { token, setError, userId, userRole } = useAuthStore();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -53,7 +53,7 @@ const SelectLiveFeedPage = () => {
   }, [userId, token, setError]);
 
   // Role-based access control
-  if (!["OPERATOR", "ADMIN"].includes(role)) {
+  if (!["OPERATOR", "ADMIN"].includes(userRole)) {
     return (
       <Notification message="You do not have access to this page. Please log in with the correct credentials." />
     );
