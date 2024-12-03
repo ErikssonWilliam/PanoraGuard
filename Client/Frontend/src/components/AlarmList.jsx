@@ -26,7 +26,7 @@ const AlarmList = () => {
   // Fetch alarms from the server
   const fetchAlarms = useCallback(async () => {
     try {
-      const response = await axios.get(`${externalURL}/alarms/`, {
+      const response = await axios.get(`${externalURL}/alarms`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

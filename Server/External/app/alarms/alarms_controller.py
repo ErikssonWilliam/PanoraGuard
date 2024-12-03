@@ -15,12 +15,22 @@ from config import Config
 class AlarmController:
     def get_alarms():
         """
-        Retrieves all alarms.
+        Retrieves alarms with pagination.
+
+        Query Parameters:
+        page (int): The current page number (default is 1).
+        per_page (int): The number of alarms per page (default is 10).
 
         Returns:
-            Response: JSON response with a list of alarms and HTTP status code 200.
+        Response: JSON response with a list of alarms and HTTP status code 200.
         """
-        return jsonify(AlarmService.get_alarms()), 200
+        # Get query parameters for pagination with default values
+        page = request.args.get("page", default=1, type=int)
+        per_page = request.args.get("per_page", default=10, type=int)
+        # Retrieve paginated alarms
+        alarms = AlarmService.get_alarms(page=page, per_page=per_page)
+
+        return jsonify(alarms), 200
 
     def get_active_alarms(type):
         """
