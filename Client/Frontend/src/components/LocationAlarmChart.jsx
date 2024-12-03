@@ -21,7 +21,7 @@ const LocationAlarmChart = ({ selectedLocation }) => {
   useEffect(() => {
     const fetchAlarmData = async () => {
       setLoading(true);
-      setError(null);
+      setError("");
 
       try {
         const response = await axios.get(

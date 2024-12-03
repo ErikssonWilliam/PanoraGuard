@@ -69,7 +69,7 @@ class CameraService:
     @staticmethod
     def get_camera_by_id(camera_id):
         """
-        Retrieve a camera by its ID.
+            Retrieve a camera by its ID.
 
         Parameters:
             camera_id (string): The ID of the camera.
@@ -81,7 +81,13 @@ class CameraService:
             camera = Camera.query.get(camera_id)
             if camera:
                 camera_dict = camera.to_dict()
-                camera_dict["schedule"] = json.loads(camera_dict["schedule"])
+                # Check if 'schedule' exists and handle accordingly
+                if "schedule" in camera_dict and camera_dict["schedule"]:
+                    camera_dict["schedule"] = json.loads(camera_dict["schedule"])
+                else:
+                    camera_dict["schedule"] = (
+                        ""  # Default to an empty string if not present
+                    )
                 return camera_dict
             return None
         except Exception as e:
