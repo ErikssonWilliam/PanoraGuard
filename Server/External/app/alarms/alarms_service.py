@@ -218,9 +218,14 @@ class AlarmService:
 
         # Get the image URL from the alarm
         alarm = Alarm.query.filter_by(id=alarm_ID).first()
+        camera = Camera.query.filter_by(id=alarm.camera_id).first()
         if not alarm:
             return jsonify({"status": "No alarm found"}), 404
 
+        camera = Camera.query.filter_by(id=alarm.camera_id).first()
+        if not camera:
+            return jsonify({"status": "No camera found"}), 404
+        
         # Retrieve the associated image snapshot URL
         image_base64 = alarm.image_base64
         if not image_base64:
@@ -228,8 +233,8 @@ class AlarmService:
 
         # Send the email
         score = alarm.confidence_score
-        subject = "Human Detected Alert"
-        body = f"Slow down cowboy! \nYou have been caught with a score: {score}\n Please check the image attached.\n Head to camera id: {alarm.camera_id}"
+        subject = "Active Alarm"
+        body = f"Dear Guard {guard.username}\nThere is an alarm with a score: {score}\n Please check the image attached.\n Location: {camera.location}"
         to_email = guard.email
         # Gmail account credentials
         from_email = "tddc88.company3@gmail.com"
