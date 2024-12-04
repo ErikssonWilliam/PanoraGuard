@@ -112,7 +112,6 @@ def test_notify_guard_alarm_no_image(app, guard, alarm, session):
 
 def test_notify_guard_image_decode_failure(app, guard, alarm, session):
     with app.app_context():
-
         alarm_with_invalid_image = session.query(Alarm).get(alarm.id)
         alarm_with_invalid_image.image_base64 = "invalid_base64_data"
         session.commit()
