@@ -11,3 +11,4 @@ flask_cors
 flask_socketio
 pre-commit
 requests
+schedule
