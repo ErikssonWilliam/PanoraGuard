@@ -1,9 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
 from .database import db
-from .testRoutes import test_bp
+from .speaker import speaker_bp
 from .brightness import br_bp
 from .livestream import ls_bp
+from .alarms import al_bp
 
 
 def create_app():
@@ -21,8 +22,9 @@ def create_app():
 
     # Import and register routes
 
-    app.register_blueprint(test_bp, url_prefix="/test")
+    app.register_blueprint(speaker_bp, url_prefix="/speaker")
     app.register_blueprint(br_bp, url_prefix="/brightness")
     app.register_blueprint(ls_bp, url_prefix="/livestream")
+    app.register_blueprint(al_bp, url_prefix="/alarms")
 
     return app

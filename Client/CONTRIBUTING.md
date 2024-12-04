@@ -7,10 +7,11 @@ When writing code in JavaScript, developers should adhere to these documentation
 At the top of a file, above any imports, provide a concise description of the file's purpose.
 
 ### Example File Header:
+
 ```javascript
 /**
- * This file provides utility functions for basic arithmetic operations, including addition, 
- * subtraction, multiplication, and division. The functions are designed to support both 
+ * This file provides utility functions for basic arithmetic operations, including addition,
+ * subtraction, multiplication, and division. The functions are designed to support both
  * integer and floating-point values and return the corresponding results.
  */
 ```
@@ -20,19 +21,20 @@ At the top of a file, above any imports, provide a concise description of the fi
 Above each function, provide a description of its purpose, parameters, returns and any important details.
 
 ### Example Function Description:
+
 ```javascript
 /**
  * Function that computes the sum of two integers.
- * 
+ *
  * Parameters:
  *   a (number): The first integer.
  *   b (number): The second integer.
- * 
+ *
  * Returns:
  *   number: The sum of a and b.
  */
 function add(a, b) {
-    return a + b;
+  return a + b;
 }
 ```
 

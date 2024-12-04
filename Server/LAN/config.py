@@ -24,6 +24,8 @@ class Config:
     if is_pytest_running():
         SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
         SECRET_KEY = secrets.token_hex(16)
+        CAMERA_USERNAME = "test_username"
+        CAMERA_PASSWORD = "test_password"
     else:
         REQUIRED_ENV_VARS = [
             "DATABASE_URL",

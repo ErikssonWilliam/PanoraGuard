@@ -3,6 +3,15 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     screens: {
+      // for windowsizes
+      xs: "480px", // Small phones
+      sm: "640px", // Phones
+      md: "768px", // Tablets
+      lg: "1024px", // Small laptops
+      xl: "1280px", // Desktops
+      "2xl": "1536px", // Large desktops
+      "4k": "2560px", // 4K displays
+      //for window sizes ends
       sd: "1024px", // Large screens: standard laptops and smaller desktops
       hd: "1280px", // Extra-large screens: wider desktops
       fhd: "1920px", // Full HD

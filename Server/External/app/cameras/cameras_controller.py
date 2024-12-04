@@ -1,4 +1,9 @@
-# CameraController.py
+"""
+Controller for managing camera-related operations.
+This class handles HTTP requests, validates input data,
+and interacts with the CameraService.
+"""
+
 from flask import request, jsonify, abort
 from .cameras_service import CameraService
 import json
@@ -7,45 +12,83 @@ import json
 class CameraController:
     @staticmethod
     def get_cameras():
+        """
+        Get a list of all cameras.
+
+        Returns:
+            Response: JSON list of cameras.
+        """
         return CameraService.get_cameras()
 
     @staticmethod
-    def add_camera():
-        return CameraService.add_camera()
-
-    @staticmethod
     def locations():
+        """
+        Get a list of unique camera locations.
+
+        Returns:
+            Response: JSON list of locations.
+        """
         return CameraService.locations()
 
     @staticmethod
     def cameraID_by_location(location):
+        """
+        Get camera IDs by a specific location.
+
+        Parameters:
+            location (str): The location to filter cameras.
+
+        Returns:
+            Response: JSON list of camera IDs.
+        """
         return CameraService.cameraID_by_location(location)
 
     @staticmethod
     def get_camera(camera_id):
-        # Call the service to get the camera data
+        """
+        Get details of a specific camera.
+
+        Parameters:
+            camera_id (str): The ID of the camera.
+
+        Returns:
+            Response: JSON with camera details or 404 error if not found.
+        """
+
         camera_data = CameraService.get_camera_by_id(camera_id)
 
-        # Check if camera data is found and return it, or return a 404 error
         if camera_data:
             return jsonify(camera_data), 200
         else:
             abort(404, description="Camera not found")
 
     @staticmethod
-    def delete_camera(camera_id):
-        return CameraService.delete_camera(camera_id)
-
-    @staticmethod
     def set_confidence(camera_id, confidence):
+        """
+        Set the confidence threshold for a specific camera.
+
+        Parameters:
+            camera_id (str): The ID of the camera.
+            confidence (float): The confidence threshold to set.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         return CameraService.set_confidence(camera_id, confidence)
 
     @staticmethod
     def get_confidence_threshold(camera_id):
-        # Call the service to get the confidence threshold
+        """
+        Get the confidence threshold for a specific camera.
+
+        Parameters:
+            camera_id (str): The ID of the camera.
+
+        Returns:
+            Response: JSON with the confidence threshold or 404 error if not found.
+        """
         confidence_threshold = CameraService.get_confidence_threshold_by_id(camera_id)
 
-        # Check if the confidence threshold is found, or return a 404 error
         if confidence_threshold is not None:
             return jsonify({"confidence_threshold": confidence_threshold}), 200
         else:
@@ -53,10 +96,15 @@ class CameraController:
 
     @staticmethod
     def update_confidence(camera_id):
+        """
+        Update the confidence threshold for a specific camera.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         data = request.json
         confidence = data.get("confidence")
 
-        # Validate and pass the confidence to the service layer
         if confidence is not None:
             return CameraService.update_confidence(camera_id, confidence)
         else:
@@ -64,10 +112,15 @@ class CameraController:
 
     @staticmethod
     def update_ip(camera_id):
+        """
+        Update the IP address of a specific camera.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         data = request.json
         ip_address = data.get("ip_address")
 
-        # Validate the input
         if ip_address is not None:
             return CameraService.update_ip(camera_id, ip_address)
         else:
@@ -75,6 +128,12 @@ class CameraController:
 
     @staticmethod
     def update_location(camera_id):
+        """
+        Update the location of a specific camera.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         data = request.json
         location = data.get("location")
 
@@ -85,6 +144,12 @@ class CameraController:
 
     @staticmethod
     def process_camera_data():
+        """
+        Process uploaded camera data.
+
+        Returns:
+            Response: JSON with the received data or a failure message.
+        """
         data = request.json
         topic = data.get("topic")
         source = data.get("source")
@@ -110,10 +175,15 @@ class CameraController:
 
     @staticmethod
     def update_schedule(camera_id):
+        """
+        Update the schedule of a specific camera.
+
+        Returns:
+            Response: JSON indicating success or failure.
+        """
         data = request.json
         schedule = data.get("schedule")
 
-        # If the schedule is None or empty, proceed with the update
         if schedule is not None:
             schedule = json.dumps(schedule)
             return CameraService.update_schedule(camera_id, schedule)

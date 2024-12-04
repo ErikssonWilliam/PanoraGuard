@@ -28,11 +28,14 @@ def get_brightness():
 
     # Check if the role is "ADMIN"
     if role != "ADMIN":
-        return jsonify(
-            {
-                "error": "Unauthorized access. You need the 'ADMIN' role to get the brightness."
-            }
-        ), 403
+        return (
+            jsonify(
+                {
+                    "error": "Unauthorized access. You need the 'ADMIN' role to get the brightness."
+                }
+            ),
+            403,
+        )
 
     camera_id = request.args.get("camera_id")  # Get camera_id from query parameters
     if not camera_id:
@@ -52,12 +55,15 @@ def get_brightness():
                 return jsonify({"brightness_level": brightness_level}), 200
         return jsonify({"error": "Brightness level not found"}), 404
     else:
-        return jsonify(
-            {
-                "error": "Failed to retrieve brightness level",
-                "status_code": response.status_code,
-            }
-        ), response.status_code
+        return (
+            jsonify(
+                {
+                    "error": "Failed to retrieve brightness level",
+                    "status_code": response.status_code,
+                }
+            ),
+            response.status_code,
+        )
 
 
 @br_bp.route("/set-brightness", methods=["PUT"])
@@ -76,11 +82,14 @@ def set_brightness():
     # Check if the role is "ADMIN"
     if role != "ADMIN":
         print("role is not ADMIN")
-        return jsonify(
-            {
-                "error": "Unauthorized access. You need the 'ADMIN' role to change the brightness."
-            }
-        ), 403
+        return (
+            jsonify(
+                {
+                    "error": "Unauthorized access. You need the 'ADMIN' role to change the brightness."
+                }
+            ),
+            403,
+        )
 
     data = request.get_json()
     camera_id = data.get("camera_id")
@@ -90,9 +99,10 @@ def set_brightness():
         return jsonify({"error": "Both camera_id and new_brightness are required"}), 400
 
     if not (0 <= new_brightness <= 100):
-        return jsonify(
-            {"error": "Brightness level must be an integer between 0 and 100"}
-        ), 400
+        return (
+            jsonify({"error": "Brightness level must be an integer between 0 and 100"}),
+            400,
+        )
 
     # Retrieve the camera IP address using the camera_id
     camera_ip = get_camera_ip(camera_id)
@@ -102,16 +112,22 @@ def set_brightness():
     url = f"http://{camera_ip}/axis-cgi/param.cgi?action=update&ImageSource.I0.Sensor.Brightness={new_brightness}"
     response = requests.get(url, auth=HTTPBasicAuth(username, password))
     if response.status_code == 200:
-        return jsonify(
-            {
-                "message": "Brightness level updated successfully",
-                "brightness_level": new_brightness,
-            }
-        ), 200
+        return (
+            jsonify(
+                {
+                    "message": "Brightness level updated successfully",
+                    "brightness_level": new_brightness,
+                }
+            ),
+            200,
+        )
     else:
-        return jsonify(
-            {
-                "error": "Failed to update brightness level",
-                "status_code": response.status_code,
-            }
-        ), response.status_code
+        return (
+            jsonify(
+                {
+                    "error": "Failed to update brightness level",
+                    "status_code": response.status_code,
+                }
+            ),
+            response.status_code,
+        )

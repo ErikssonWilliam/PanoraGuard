@@ -7,10 +7,11 @@ When writing code in Python, developers should adhere to these documentation sta
 At the top of a file, above any imports, provide a concise description of the file's purpose.
 
 ### Example File Header:
+
 ```python
 """
-This file provides utility functions for basic arithmetic operations, including addition, 
-subtraction, multiplication, and division. The functions are designed to support both 
+This file provides utility functions for basic arithmetic operations, including addition,
+subtraction, multiplication, and division. The functions are designed to support both
 integer and floating-point values and return the corresponding results.
 """
 ```
@@ -20,6 +21,7 @@ integer and floating-point values and return the corresponding results.
 For each function, below the `def` line, provide a description of the function's purpose, parameters, returns and any important details.
 
 ### Example Function Description:
+
 ```python
 def add(a: int, b: int) -> int:
     """
@@ -40,6 +42,7 @@ def add(a: int, b: int) -> int:
 For each route, below the `def` line, provide a description of the route's purpose and any important details. If parameters are passed in the URL, an example request should be provided. If data is sent in the request body, an example request body should be provided.
 
 ### Example Route Description:
+
 ```python
 @app.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
