@@ -39,14 +39,18 @@ const AlarmList = () => {
 
         const allAlarms = response.data;
 
-        const active = allAlarms
-          .filter(
-            (alarm) =>
-              alarm.status === "PENDING" || alarm.status === "NOTIFIED",
-          )
-          .sort(sortByStatusAndTimestamp);
-        setActiveAlarms(active);
+        // Update alarm if on page 1
+        if (page === 1) {
+          const active = allAlarms
+            .filter(
+              (alarm) =>
+                alarm.status === "PENDING" || alarm.status === "NOTIFIED",
+            )
+            .sort(sortByStatusAndTimestamp);
+          setActiveAlarms(active);
+        }
 
+        // Update old alarms
         const old = allAlarms
           .filter(
             (alarm) =>
@@ -137,7 +141,7 @@ const AlarmList = () => {
         </section>
       </div>
 
-      <div className="flex justify-center space-x-4 mt-4">
+      <div className="flex justify-center items-center space-x-4 mt-4">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
@@ -149,6 +153,12 @@ const AlarmList = () => {
         >
           Previous
         </button>
+
+        {/* Page Count Display */}
+        <span className="text-lg text-gray-700">
+          Page {currentPage} of {totalPages}
+        </span>
+
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
