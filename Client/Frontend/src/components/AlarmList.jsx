@@ -137,7 +137,7 @@ const AlarmList = () => {
         </section>
       </div>
 
-      <div className="flex justify-center space-x-4 mt-4">
+      <div className="flex justify-center items-center space-x-4 mt-4">
         <button
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
@@ -149,6 +149,12 @@ const AlarmList = () => {
         >
           Previous
         </button>
+
+        {/* Page Count Display */}
+        <span className="text-lg text-gray-700">
+          Page {currentPage} of {totalPages}
+        </span>
+
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}
