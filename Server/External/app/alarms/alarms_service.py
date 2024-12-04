@@ -6,7 +6,7 @@ managing alarms, including notifications and email handling.
 from app.models import Alarm, AlarmStatus, User, UserRole, Camera
 from typing import List
 from flask import jsonify
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 from app.extensions import db
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -20,7 +20,7 @@ class AlarmService:
     @staticmethod
     def get_alarms(page: int = 1, per_page: int = 10) -> List[dict]:
         """
-        Retrieves alarms with pagination.
+        Retrieves alarms with pagination, sorted by timestamp (newest first).
 
         Args:
             page (int): The current page number (default is 1).
@@ -32,9 +32,25 @@ class AlarmService:
         # Calculate the offset
         offset = (page - 1) * per_page
 
-        # Query for alarms with limit and offset
-        alarms = db.session.query(Alarm).limit(per_page).offset(offset).all()
+        # Query for alarms with limit, offset, and sorting by timestamp
+        alarms = (
+            db.session.query(Alarm)
+            .order_by(desc(Alarm.timestamp))
+            .limit(per_page)
+            .offset(offset)
+            .all()
+        )
         return [alarm.to_dict() for alarm in alarms]
+
+    @staticmethod
+    def get_total_records() -> int:
+        """
+        Returns the total number of records in the Alarm table.
+
+        Returns:
+            int: The total count of alarms.
+        """
+        return db.session.query(func.count(Alarm.id)).scalar()
 
     def get_active_alarms(alarm_type: str) -> List[dict]:
         if alarm_type.lower() == "new":
