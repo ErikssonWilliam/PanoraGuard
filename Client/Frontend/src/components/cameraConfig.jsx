@@ -86,6 +86,9 @@ const CameraConfig = () => {
       const data = response.data;
       console.log("Server response:", data);
 
+      if (!response.ok) {
+        throw new Error("Failed to update confidence level");
+      }
       cameras.filter(
         (camera) => camera.id === selectedCameraID,
       )[0].condidence_threshold = confidenceLevel / 100;
