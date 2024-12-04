@@ -94,7 +94,13 @@ const AlarmList = () => {
     return () => {
       socket.off("new_alarm", handleNewAlarm);
     };
-  }, [fetchAlarms, fetchTotalAlarmsCount, handleNewAlarm, setError, currentPage]);
+  }, [
+    fetchAlarms,
+    fetchTotalAlarmsCount,
+    handleNewAlarm,
+    setError,
+    currentPage,
+  ]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -136,7 +142,9 @@ const AlarmList = () => {
           onClick={handlePreviousPage}
           disabled={currentPage === 1}
           className={`px-4 py-2 rounded-md text-white text-lg ${
-            currentPage === 1 ? "bg-gray-400" : "bg-[#237F94] hover:bg-[#1E6D7C]"
+            currentPage === 1
+              ? "bg-gray-400"
+              : "bg-[#237F94] hover:bg-[#1E6D7C]"
           }`}
         >
           Previous
