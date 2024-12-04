@@ -138,36 +138,35 @@ const AlarmList = () => {
       </div>
 
       <div className="flex justify-center items-center space-x-4 mt-4">
-  <button
-    onClick={handlePreviousPage}
-    disabled={currentPage === 1}
-    className={`px-4 py-2 rounded-md text-white text-lg ${
-      currentPage === 1
-        ? "bg-gray-400"
-        : "bg-[#237F94] hover:bg-[#1E6D7C]"
-    }`}
-  >
-    Previous
-  </button>
+        <button
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 rounded-md text-white text-lg ${
+            currentPage === 1
+              ? "bg-gray-400"
+              : "bg-[#237F94] hover:bg-[#1E6D7C]"
+          }`}
+        >
+          Previous
+        </button>
 
-  {/* Page Count Display */}
-  <span className="text-lg text-gray-700">
-    Page {currentPage} of {totalPages}
-  </span>
+        {/* Page Count Display */}
+        <span className="text-lg text-gray-700">
+          Page {currentPage} of {totalPages}
+        </span>
 
-  <button
-    onClick={handleNextPage}
-    disabled={currentPage === totalPages}
-    className={`px-4 py-2 rounded-md text-white text-lg ${
-      currentPage === totalPages
-        ? "bg-gray-400"
-        : "bg-[#237F94] hover:bg-[#1E6D7C]"
-    }`}
-  >
-    Next
-  </button>
-</div>
-
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 rounded-md text-white text-lg ${
+            currentPage === totalPages
+              ? "bg-gray-400"
+              : "bg-[#237F94] hover:bg-[#1E6D7C]"
+          }`}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
