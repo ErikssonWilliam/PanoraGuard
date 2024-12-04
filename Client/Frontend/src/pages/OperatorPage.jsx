@@ -1,9 +1,11 @@
 import Header from "../components/OperatorHeader";
-import AlertDetails from "../components/AlertDetails";
+import AlarmList from "../components/AlarmList.jsx";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "../components/Notification.jsx";
 const OperatorPage = () => {
-  if (!isUserLoggedInWithRole("OPERATOR")) {
+  if (
+    !(isUserLoggedInWithRole("OPERATOR") || isUserLoggedInWithRole("ADMIN"))
+  ) {
     return (
       <Notification
         message={
@@ -15,7 +17,7 @@ const OperatorPage = () => {
   return (
     <div className="bg-custom-bg min-h-screen">
       <Header />
-      <AlertDetails />
+      <AlarmList />
     </div>
   );
 };

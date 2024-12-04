@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { externalURL } from "../api/axiosConfig";
+import axios from "axios";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const AddnewUser = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const { error, token, setError } = useAuthStore();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -22,28 +24,20 @@ const AddnewUser = () => {
   const handleSubmit = async () => {
     // Validate password length for roles other than "GUARD"
     if (formData.role !== "GUARD" && formData.password.length <= 7) {
-      setErrorMessage("Password must be longer than 7 characters.");
+      setError("Password must be longer than 7 characters.");
       return;
     }
 
     try {
-      const token = localStorage.getItem("accessToken");
-      const response = await fetch(`${externalURL}/users/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await axios.post(
+        `${externalURL}/users/create`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-        body: JSON.stringify(formData),
-      });
-
-      // If response is not ok, handle the error
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Something went wrong");
-      }
-
-      const data = await response.json();
+      );
 
       setFormData({
         username: "",
@@ -52,12 +46,12 @@ const AddnewUser = () => {
         role: "GUARD",
       });
 
-      console.log("User added successfully:", data);
-      alert(`User ${data.user.username} added successfully`);
-      setErrorMessage("");
+      console.log("User added successfully:", response.data);
+      alert(`User ${response.data.user.username} added successfully`);
+      setError("");
     } catch (error) {
       console.error("Error adding user", error);
-      setErrorMessage(error.message);
+      setError(error.response?.data?.error || "Something went wrong");
     }
   };
 
@@ -127,17 +121,19 @@ const AddnewUser = () => {
             {/** Add more options */}
             <option value="GUARD">GUARD</option>
             <option value="OPERATOR">OPERATOR</option>
+            <option value="MANAGER">MANAGER</option>
           </select>
         </div>
         <button
-          className="submitButton mt-4 bg-[#237F94] hover:bg-[#1E6D7C] text-white rounded-lg p-2 w-full"
+          className="submitButton mt-4 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg p-2 w-full"
           onClick={handleSubmit}
         >
           Submit
         </button>
-        {errorMessage && (
+        {error && (
           <div className="text-red-600 text-sm font-medium mt-2">
-            <strong>Error:</strong> {errorMessage}
+            <strong>Error:</strong> {error}
+            {/* Need Message Component*/}
           </div>
         )}
       </div>

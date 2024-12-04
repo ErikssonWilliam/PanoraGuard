@@ -1,0 +1,4 @@
+# Document Ownership for Architecture Notebook
+
+Document Owner: [Architect]
+The architect is the document owner of the architectural notebook.
