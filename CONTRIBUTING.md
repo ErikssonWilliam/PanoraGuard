@@ -1,6 +1,6 @@
 # Code Documentation Standards
 
-When contributing to the project, a developer should follow the code documentation standard for the component they are working on. 
+When contributing to the project, a developer should follow the code documentation standard for the component they are working on.
 
 The code documentation standard for a specific component of the project is stated in the repository of that component:
 
