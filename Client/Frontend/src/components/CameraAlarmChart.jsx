@@ -10,23 +10,31 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { error, token, setError } = useAuthStore();
 
   useEffect(() => {
     // Ensure the location and camera are selected
     if (selectedLocation && selectedCamera) {
-      setLoading(true);
-      setError(null); // Reset any previous error state
+      const fetchAlarms = async () => {
+        setLoading(true);
+        setError(""); // Reset any previous error state
 
-      axios
-        .get(
-          `http://127.0.0.1:5000/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
-        )
-        .then((response) => {
+        try {
+          const response = await axios.get(
+            `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Use JWT token for authorization
+              },
+            },
+          );
+
           const alarms = response.data;
           console.log("Fetched alarms:", alarms); // Log alarms inside the .then block
 
@@ -48,15 +56,17 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
             setData([]);
             setError("No alarms found.");
           }
-          setLoading(false);
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Error fetching alarm data:", error);
           setError("Failed to load data");
+        } finally {
           setLoading(false);
-        });
+        }
+      };
+
+      fetchAlarms();
     }
-  }, [selectedLocation, selectedCamera]); // Dependency on location and camera
+  }, [selectedLocation, selectedCamera, setError, token]); // Dependency on location and camera
 
   // If loading, show a loading message
   if (loading) return <div>Loading...</div>;
@@ -74,8 +84,8 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
         <Legend
           formatter={(value) => <span className="text-black">{value}</span>}
         />
-        <Bar dataKey="addressed" stackId="a" fill="#155E75" />
-        <Bar dataKey="ignored" stackId="a" fill="#38B2AC" />
+        <Bar dataKey="addressed" stackId="a" fill="#003249" />
+        <Bar dataKey="ignored" stackId="a" fill="#007ea7" />
       </BarChart>
     </ResponsiveContainer>
   );

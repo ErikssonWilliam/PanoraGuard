@@ -1,5 +1,6 @@
 import AlarmRow from "./AlarmRow";
 
+// Adjusts the viewports for the scroll of old alarms for different resolutions (can be found in the tailwind config file)
 const OldAlarms = ({ oldAlarms, activeAlarmCount }) => {
   const getHeightClass = () => {
     if (activeAlarmCount >= 3)
@@ -16,13 +17,7 @@ const OldAlarms = ({ oldAlarms, activeAlarmCount }) => {
       className={`rounded-lg border-gray-300 overflow-y-auto p-4 sd:p-3 hd:p-1 fhd:p-5 wuxga:p-5 ${getHeightClass()}`}
     >
       {Array.isArray(oldAlarms) && oldAlarms.length > 0 ? (
-        oldAlarms.map((alarm) => (
-          <AlarmRow
-            key={alarm.id}
-            {...alarm}
-            statusStyle={{ backgroundColor: "green", color: "white" }}
-          />
-        ))
+        oldAlarms.map((alarm) => <AlarmRow key={alarm.id} alarm={alarm} />)
       ) : (
         <p className="text-gray-500 text-center">No old alarms found.</p>
       )}

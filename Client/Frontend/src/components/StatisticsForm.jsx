@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 function StatisticsForm({ onSubmit }) {
   const [locations, setLocations] = useState([]);
@@ -8,12 +10,18 @@ function StatisticsForm({ onSubmit }) {
   const [selectedCamera, setSelectedCamera] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [tillDate, setTillDate] = useState("");
+  const { token } = useAuthStore();
 
   // Fetch locations when component mounts
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:5000/cameras/locations")
-      .then((response) => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get(`${externalURL}/cameras/locations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         // Ensure the response is an array and contains objects with a 'location' key
         if (Array.isArray(response.data)) {
           setLocations(response.data);
@@ -23,18 +31,28 @@ function StatisticsForm({ onSubmit }) {
             response.data,
           );
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching locations:", error);
-      });
-  }, []);
+      }
+    };
+
+    fetchLocations();
+  }, [token]);
 
   // Fetch cameras when a location is selected
   useEffect(() => {
-    if (selectedLocation) {
-      axios
-        .get(`http://127.0.0.1:5000/cameras/locations/${selectedLocation}`)
-        .then((response) => {
+    const fetchCameras = async () => {
+      if (selectedLocation) {
+        try {
+          const response = await axios.get(
+            `${externalURL}/cameras/locations/${selectedLocation}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+
           // Ensure the response is an array and contains camera IDs
           if (Array.isArray(response.data)) {
             setCameras(response.data);
@@ -44,16 +62,18 @@ function StatisticsForm({ onSubmit }) {
               response.data,
             );
           }
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Error fetching cameras:", error);
-        });
-    } else {
-      // Clear camera list if no location is selected
-      setCameras([]);
-      setSelectedCamera(""); // Reset the selected camera
-    }
-  }, [selectedLocation]);
+        }
+      } else {
+        // Clear camera list if no location is selected
+        setCameras([]);
+        setSelectedCamera(""); // Reset the selected camera
+      }
+    };
+
+    fetchCameras();
+  }, [selectedLocation, token]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
