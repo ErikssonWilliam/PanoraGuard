@@ -26,45 +26,45 @@ const AlarmList = () => {
   }, []);
 
   const fetchAlarms = useCallback(
-  async (page) => {
-    try {
-      const response = await axios.get(
-        `${externalURL}/alarms?page=${page}&per_page=${perPage}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `${externalURL}/alarms?page=${page}&per_page=${perPage}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
+        );
+
+        const allAlarms = response.data;
+
+        // Update alarm if on page 1
+        if (page === 1) {
+          const active = allAlarms
+            .filter(
+              (alarm) =>
+                alarm.status === "PENDING" || alarm.status === "NOTIFIED",
+            )
+            .sort(sortByStatusAndTimestamp);
+          setActiveAlarms(active);
         }
-      );
 
-      const allAlarms = response.data;
-
-      // Update alarm if on page 1
-      if (page === 1) {
-        const active = allAlarms
+        // Update old alarms
+        const old = allAlarms
           .filter(
             (alarm) =>
-              alarm.status === "PENDING" || alarm.status === "NOTIFIED"
+              alarm.status === "RESOLVED" || alarm.status === "IGNORED",
           )
-          .sort(sortByStatusAndTimestamp);
-        setActiveAlarms(active);
+          .sort(sortByTimestamp);
+        setOldAlarms(old);
+      } catch (err) {
+        console.error("Error fetching alarms:", err);
+        setError("Failed to load alarms.");
       }
-
-      // Uppdatera gamla larm
-      const old = allAlarms
-        .filter(
-          (alarm) =>
-            alarm.status === "RESOLVED" || alarm.status === "IGNORED"
-        )
-        .sort(sortByTimestamp);
-      setOldAlarms(old);
-    } catch (err) {
-      console.error("Error fetching alarms:", err);
-      setError("Failed to load alarms.");
-    }
-  },
-  [setError, sortByStatusAndTimestamp, sortByTimestamp, token]
-);
+    },
+    [setError, sortByStatusAndTimestamp, sortByTimestamp, token],
+  );
 
   const fetchTotalAlarmsCount = useCallback(async () => {
     try {
