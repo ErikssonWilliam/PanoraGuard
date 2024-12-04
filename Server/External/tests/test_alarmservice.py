@@ -24,13 +24,32 @@ def guard(session):
 
 
 @pytest.fixture
+def camera(session):
+    """Fixture to create a test camera."""
+    session.query(Camera).delete()
+    session.commit()
+    camera = Camera(
+        id="cameratest",
+        ip_address="127.0.0.1",
+        location="Test Location",
+        confidence_threshold=0.9,
+        schedule="Test Schedule",
+    )
+
+    session.add(camera)
+    session.commit()
+    return camera
+
+
+
+@pytest.fixture
 def alarm(session):
     """Fixture to create a test alarm."""
     session.query(Alarm).delete()
     session.commit()
     alarm = Alarm(
         id=uuid4(),
-        camera_id="camera_123",
+        camera_id="cameratest",
         type="human_detected",
         confidence_score=0.95,
         status=AlarmStatus.PENDING,

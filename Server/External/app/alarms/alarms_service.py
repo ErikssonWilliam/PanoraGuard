@@ -218,7 +218,6 @@ class AlarmService:
 
         # Get the image URL from the alarm
         alarm = Alarm.query.filter_by(id=alarm_ID).first()
-        camera = Camera.query.filter_by(id=alarm.camera_id).first()
         if not alarm:
             return jsonify({"status": "No alarm found"}), 404
 
