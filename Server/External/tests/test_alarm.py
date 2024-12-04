@@ -41,18 +41,27 @@ def sample_alarms(session, sample_camera):
 
 
 def test_get_alarms(session, sample_alarms):
+    # Sort sample alarms by timestamp in descending order
+    expected_alarms = sorted(
+        [alarm.to_dict() for alarm in sample_alarms],
+        key=lambda x: x["timestamp"],
+        reverse=True,
+    )
+
+    # Call the service method
     result = AlarmService.get_alarms()
 
+    # Ensure the number of alarms matches
     assert len(result) == len(sample_alarms)
 
-    expected_alarms = [alarm.to_dict() for alarm in sample_alarms]
-
+    # Compare each alarm in the sorted expected list to the result
     for expected, retrieved in zip(expected_alarms, result):
         assert expected["camera_id"] == retrieved["camera_id"]
         assert expected["confidence_score"] == retrieved["confidence_score"]
         assert expected["status"] == retrieved["status"]
         assert expected["type"] == retrieved["type"]
 
+    # Cleanup the sample alarms from the database
     for alarm in sample_alarms:
         session.delete(alarm)
     session.commit()

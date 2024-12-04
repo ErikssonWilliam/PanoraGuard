@@ -31,6 +31,12 @@ def get_active_alarms(type):
     return AlarmController.get_active_alarms(type)
 
 
+@alarms_bp.route("/count", methods=["GET"])
+@jwt_required()
+def count_alarms():
+    return AlarmController.count_alarms()
+
+
 @alarms_bp.route("/<string:alarm_ID>/image", methods=["GET"])
 @jwt_required()
 def get_alarm_image(alarm_ID):
