@@ -225,7 +225,7 @@ class AlarmService:
         camera = Camera.query.filter_by(id=alarm.camera_id).first()
         if not camera:
             return jsonify({"status": "No camera found"}), 404
-        
+
         # Retrieve the associated image snapshot URL
         image_base64 = alarm.image_base64
         if not image_base64:
