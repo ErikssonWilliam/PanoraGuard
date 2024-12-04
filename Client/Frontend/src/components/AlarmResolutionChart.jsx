@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { externalURL } from "../api/axiosConfig";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const AlarmResolutionChart = ({
   selectedLocation,
@@ -20,21 +21,26 @@ const AlarmResolutionChart = ({
 }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { error, token, setError } = useAuthStore();
 
   useEffect(() => {
     if (selectedLocation && selectedCamera && fromDate && tillDate) {
-      setLoading(true);
-      setError(null); // Reset error state on each fetch
+      const fetchAlarms = async () => {
+        setLoading(true);
+        setError(""); // Reset error state on each fetch
 
-      // Fetch alarms data
-      axios
-        .get(
-          `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
-        )
-        .then((response) => {
+        try {
+          const response = await axios.get(
+            `${externalURL}/alarms/bylocation/${selectedLocation}/${selectedCamera}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+
           const alarms = response.data;
-          console.log("Fetched alarms:", alarms); // Log for debugging
+          console.log("Fetched alarms:", alarms);
 
           // Filter alarms based on the selected date range
           const filteredAlarms = alarms.filter((alarm) => {
@@ -44,7 +50,7 @@ const AlarmResolutionChart = ({
             );
           });
 
-          console.log("Filtered alarms:", filteredAlarms); // Log filtered alarms for debugging
+          console.log("Filtered alarms:", filteredAlarms);
 
           // Create an array of all dates from fromDate to tillDate
           const dateRange = generateDateRange(
@@ -72,15 +78,17 @@ const AlarmResolutionChart = ({
           });
 
           setData(chartData); // Set the prepared data to the state
+        } catch (error) {
+          console.error("Error fetching alarms:", error);
+          setError("Failed to fetch alarms.");
+        } finally {
           setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching alarm data:", error);
-          setError("Failed to load data");
-          setLoading(false);
-        });
+        }
+      };
+
+      fetchAlarms();
     }
-  }, [selectedLocation, selectedCamera, fromDate, tillDate]);
+  }, [selectedLocation, selectedCamera, fromDate, tillDate, setError, token]);
 
   // Generate date range between fromDate and tillDate
   const generateDateRange = (startDate, endDate) => {
@@ -95,6 +103,9 @@ const AlarmResolutionChart = ({
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
+  {
+    /* Need Message Component*/
+  }
 
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -107,14 +118,14 @@ const AlarmResolutionChart = ({
         <Area
           type="monotone"
           dataKey="resolved"
-          stroke="#155E75" // Dark cyan for resolved
-          fill="#155E75"
+          stroke="#003249" // Dark cyan for resolved
+          fill="#003249"
         />
         <Area
           type="monotone"
           dataKey="unresolved"
-          stroke="#38B2AC" // Vibrant cyan for unresolved
-          fill="#38B2AC"
+          stroke="#007ea7" // Vibrant cyan for unresolved
+          fill="#007ea7"
         />
       </AreaChart>
     </ResponsiveContainer>

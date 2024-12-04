@@ -7,7 +7,6 @@ from sqlalchemy.dialects.postgresql import UUID
 
 
 class UserRole(Enum):
-    # Enum for user roles
     OPERATOR = "OPERATOR"
     MANAGER = "MANAGER"
     ADMIN = "ADMIN"
@@ -23,26 +22,9 @@ class AlarmStatus(Enum):
 
 
 class AlarmObjectType(Enum):
-    # Enum for user roles
     HUMAN = "HUMAN"
     FACE = "FACE"
     VEHICLE = "VEHICLE"
-
-
-# probably don't need these
-# class CameraControlType(Enum):
-#     # Enum for camera control settings
-#     BRIGHTNESS = "BRIGHTNESS"
-#     ACTIVE_STATUS = "ACTIVE_STATUS"  # For activating or deactivating cameras
-#     ZOOM_LEVEL = "ZOOM_LEVEL"
-
-
-# @dataclass
-# class JWTToken:
-#     # @Gustav Alsenhed, Unsure whether this one is needed /Olof
-#     sub: UUIDType  # User's ID
-#     role: UserRole  # User's role
-#     exp: datetime  # Expiration time
 
 
 ##################################################
@@ -52,7 +34,6 @@ class AlarmObjectType(Enum):
 
 # Represents a user in the system, such as an operator or manager.
 class User(db.Model):
-    # Class for user
     __tablename__ = "users"
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -71,7 +52,6 @@ class User(db.Model):
 
 
 # Represents a camera in the system, which triggers alarms.
-# Camera Model
 class Camera(db.Model):
     __tablename__ = "cameras"
     id = db.Column(db.String, primary_key=True)
@@ -120,42 +100,3 @@ class Alarm(db.Model):
             "guard_id": str(self.guard_id) if self.guard_id else None,
             "camera_location": self.camera.location if self.camera else None,
         }
-
-
-# Todo: apply AlarmObjectType enum to Alarm model, probably needs to change how acap sends requests(not sure)
-
-
-# # ToDo: The alarm shoud NOT have video_clip_id and image_snapshot_id as attributes/relationships...?
-# # Also: Add type to the alarm; Human, Vehicle, Face, etc.?
-
-
-# class CameraControlAction(db.Model):
-#     # Class for camera control action
-#     __tablename__ = "camera_control_actions"
-#     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     camera_id = db.Column(db.String, db.ForeignKey("cameras.id"), nullable=False)
-#     initiated_by = db.Column(
-#         UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=False
-#     )
-#     control_type = db.Column(db.Enum(CameraControlType), nullable=False)
-#     value = db.Column(db.String, nullable=False)
-#     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-# Schedule model and status TBD at a later stage #
-
-# class ScheduleType(Enum):
-#     DAILY = "daily"
-#     WEEKLY = "weekly"
-
-# class Schedule(db.Model):
-#     __tablename__ = 'schedules'
-#     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-#     device_id = db.Column(UUID(as_uuid=True), nullable=False)
-#     start_date = db.Column(db.DateTime, nullable=False)
-#     end_date = db.Column(db.DateTime, nullable=False)
-#     recurring = db.Column(db.Boolean, nullable=False, default=False)
-#     schedule_type = db.Column(db.Enum(ScheduleType))
-#     created_by_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.id'))
-#     active_hours_start = db.Column(db.Time, nullable=False)
-#     active_hours_end = db.Column(db.Time, nullable=False)

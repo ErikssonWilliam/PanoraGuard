@@ -1,59 +1,52 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { externalURL, lanURL } from "../api/axiosConfig"; // Consolidated imports
 import Scheduler from "./scheduler";
+import axios from "axios";
+import { useAuthStore } from "../utils/useAuthStore";
 
 const CameraConfig = () => {
   const [confidenceLevel, setConfidenceLevel] = useState(50); // Default confidence level
   const [brightnessLevel, setBrightnessLevel] = useState(50); // Default brightness level
   const [cameras, setCameras] = useState([]); // State to store cameras
   const [selectedCameraID, setSelectedCameraID] = useState(""); // Track selected camera
-
-  // Fetch the confidence threshold for the selected camera
-  // const fetchConfidenceThreshold = async (cameraId) => {
-  //   try {
-  //     const response = await fetch(
-  //       `${externalURL}/cameras/${cameraId}/confidence`,
-  //     );
-  //     const data = await response.json();
-
-  //     if (data.confidence_threshold) {
-  //       setConfidenceLevel(data.confidence_threshold * 100);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching confidence threshold:", error);
-  //   }
-  // };
+  const { token, setError } = useAuthStore();
 
   // Fetch the brightness level of the selected camera
-  const fetchBrightnessLevel = async (cameraId) => {
-    try {
-      const response = await fetch(
-        `${lanURL}/brightness/get-brightness?camera_id=${cameraId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  const fetchBrightnessLevel = useCallback(
+    async (cameraId) => {
+      try {
+        const response = await axios.get(
+          `${lanURL}/brightness/get-brightness?camera_id=${cameraId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        },
-      );
-      const data = await response.json();
+        );
+        const data = response.data;
 
-      if (data.brightness_level) {
-        setBrightnessLevel(data.brightness_level);
+        if (data.brightness_level) {
+          setBrightnessLevel(data.brightness_level);
+        }
+      } catch (error) {
+        setError(error.response?.data?.error || error.message);
+        console.error("Error fetching brightness level:", error);
       }
-    } catch (error) {
-      console.error("Error fetching brightness level:", error);
-    }
-  };
+    },
+    [setError, token],
+  );
 
   useEffect(() => {
     // Fetch the list of cameras to get their locations
     const fetchCameras = async () => {
       try {
-        const response = await fetch(`${externalURL}/cameras/`, {
-          method: "GET",
+        const response = await axios.get(`${externalURL}/cameras/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-        const data = await response.json();
+
+        const data = response.data;
         console.log(data);
         const allCameras = data.map((camera) => ({
           id: camera.id,
@@ -69,30 +62,29 @@ const CameraConfig = () => {
           fetchBrightnessLevel(allCameras[0].id);
         }
       } catch (error) {
-        console.error("Error fetching camera locations:", error);
+        setError(error.response?.data?.error || error.message);
+        console.error("Error fetching brightness level:", error);
       }
     };
-
+    setError("");
     fetchCameras();
-  }, []);
+  }, [fetchBrightnessLevel, setError, token]);
 
   // Handle updating confidence level for the selected camera
   const updateConfidenceLevel = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
-      const response = await fetch(
+      const response = await axios.put(
         `${externalURL}/cameras/${selectedCameraID}/confidence`,
+        { confidence: confidenceLevel / 100 },
         {
-          method: "PUT",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            confidence: confidenceLevel / 100,
-          }),
         },
       );
+
+      const data = response.data;
+      console.log("Server response:", data);
 
       if (!response.ok) {
         throw new Error("Failed to update confidence level");
@@ -109,25 +101,29 @@ const CameraConfig = () => {
   // Handle updating brightness level for the selected camera
   const updateBrightnessLevel = async () => {
     try {
-      const response = await fetch(`${lanURL}/brightness/set-brightness`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-        body: JSON.stringify({
+      const response = await axios.put(
+        `${lanURL}/brightness/set-brightness`,
+        {
           camera_id: selectedCameraID,
           new_brightness: parseInt(brightnessLevel, 10),
-        }),
-      });
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to update brightness level");
-      }
+      const data = response.data;
+      console.log("Server response:", data);
 
       alert("Brightness level updated successfully");
     } catch (error) {
-      console.error("Error updating brightness level:", error);
+      setError(error.response?.data?.error || error.message);
+      console.error("Error fetching brightness level:", error);
+      alert(
+        error.response?.data?.error || "Failed to update brightness level.",
+      );
     }
   };
 
@@ -143,13 +139,13 @@ const CameraConfig = () => {
   };
 
   return (
-    <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-4xl mx-auto mt-10 space-y-8">
-      <h2 className="text-2xl font-semibold text-center text-NavyBlue">
+    <div className="font-poppins bg-gray-300 md:p-6 xs:p-2 rounded-lg shadow-lg max-w-4xl mx-auto mt-10 space-y-8 ">
+      <h2 className="md:text-2xl xs:text-xl font-semibold text-center text-NavyBlue">
         Camera Configuration
       </h2>
 
       {/* Camera Selection */}
-      <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
+      <div className="space-y-4 p-6  border border-gray-300 bg-BG rounded-lg">
         <label
           htmlFor="location"
           className="block text-gray-700 font-medium text-lg"
@@ -174,11 +170,11 @@ const CameraConfig = () => {
       <div className="space-y-4 p-6 border border-gray-300 bg-BG rounded-lg">
         <label
           htmlFor="confidence-level"
-          className="block text-gray-700 font-medium text-lg"
+          className="block text-gray-700 md:font-medium xs:font-extralight text-lg"
         >
           Confidence Level
         </label>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center ">
           <input
             type="range"
             id="confidence-level"
@@ -186,12 +182,12 @@ const CameraConfig = () => {
             max="100"
             value={confidenceLevel}
             onChange={(e) => setConfidenceLevel(e.target.value)}
-            className="w-full"
+            className="w-full accent-cyan-700"
           />
           <span className="text-gray-600">{confidenceLevel}%</span>
         </div>
         <button
-          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-2 rounded-md transition"
           onClick={updateConfidenceLevel}
         >
           Update Confidence
@@ -206,7 +202,7 @@ const CameraConfig = () => {
         >
           Brightness Level
         </label>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center">
           <input
             type="range"
             id="brightness-level"
@@ -214,12 +210,12 @@ const CameraConfig = () => {
             max="100"
             value={brightnessLevel}
             onChange={(e) => setBrightnessLevel(e.target.value)}
-            className="w-full"
+            className="w-full accent-cyan-700"
           />
           <span className="text-gray-600">{brightnessLevel}%</span>
         </div>
         <button
-          className="bg-NavyBlue text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+          className="bg-cyan-700 hover:bg-cyan-800 text-white px-6 py-2 rounded-md transition"
           onClick={updateBrightnessLevel}
         >
           Update Brightness

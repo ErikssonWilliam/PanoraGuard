@@ -15,7 +15,7 @@ def get_jwt_claims(request):
             # Decode the token using your secret key and algorithm
             decoded_token = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])
 
-            # Access the role inside the 'sub' object
+            # Access the role inside the 'sub' object
             user_id = decoded_token.get("sub", {}).get(
                 "user_id"
             )  # Get user_id from 'sub'
