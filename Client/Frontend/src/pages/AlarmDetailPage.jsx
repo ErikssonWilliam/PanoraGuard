@@ -473,7 +473,7 @@ const AlarmDetailPage = () => {
                 </div>
                 <button
                   onClick={handleDismissAlert}
-                  className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
+                  className="bg-NewRed text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
                 >
                   Dismiss the alert
                 </button>
