@@ -215,6 +215,7 @@ const ChangeUser = () => {
                     {/**So that admin role would show as Admin instead of showing operation as admin role */}
                     <option value="OPERATOR">Operator</option>
                     <option value="GUARD">Guard</option>
+                    <option value="MANAGER">Manager</option>
                   </select>
                 </p>
               </div>
