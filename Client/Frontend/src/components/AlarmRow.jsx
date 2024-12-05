@@ -13,9 +13,9 @@ const AlarmRow = ({ alarm }) => {
   // Colors for the alarms
   const getStatusClass = () => {
     if (alarm.status === "PENDING") {
-      return "bg-red-600";
+      return "bg-NewRed";
     } else if (alarm.status === "NOTIFIED") {
-      return "bg-[#7E8736]"; // Yellow for notified
+      return "bg-NewYellow"; // Yellow for notified
     } else if (alarm.status === "RESOLVED") {
       return "bg-[#216657]"; // Green for resolved
     } else if (alarm.status === "IGNORED") {
