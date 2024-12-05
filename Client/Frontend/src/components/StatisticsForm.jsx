@@ -28,7 +28,7 @@ function StatisticsForm({ onSubmit }) {
         } else {
           console.error(
             "Expected an array for locations, but got:",
-            response.data
+            response.data,
           );
         }
       } catch (error) {
@@ -50,7 +50,7 @@ function StatisticsForm({ onSubmit }) {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
 
           // Ensure the response is an array and contains camera IDs
@@ -64,7 +64,7 @@ function StatisticsForm({ onSubmit }) {
           } else {
             console.error(
               "Expected an array for cameras, but got:",
-              response.data
+              response.data,
             );
           }
         } catch (error) {
