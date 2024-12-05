@@ -79,6 +79,9 @@ const ManageData = () => {
     // Convert fromDate and tillDate to Date objects for comparison
     const from = fromDate ? new Date(fromDate) : null;
     const till = tillDate ? new Date(tillDate) : null;
+    if (till) {
+      till.setHours(23, 59, 59, 999);
+    }
     console.log("Alarm data:", alertData.alarms);
 
     return alarms.filter((alarm) => {
