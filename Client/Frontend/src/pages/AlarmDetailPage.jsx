@@ -79,7 +79,7 @@ const AlarmDetailPage = () => {
         setOperatorUsername("N/A");
       }
     },
-    [token],
+    [token]
   );
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const AlarmDetailPage = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         if (imageResponse.data && imageResponse.data.image) {
           // Update liveFootage with Base64 image data URL
@@ -153,7 +153,7 @@ const AlarmDetailPage = () => {
   useEffect(() => {
     if (location.state?.notifyFailed) {
       setNotificationMessage(
-        "Notification failed. Call the guard and confirm manual handling.",
+        "Notification failed. Call the guard and confirm manual handling."
       );
       setNotificationType("error");
       setManualNotifyVisible(true);
@@ -164,17 +164,17 @@ const AlarmDetailPage = () => {
   const stopExternalSpeaker = async () => {
     try {
       const speakerResponse = await axios.post(
-        `${lanURL}/speaker/stop-speaker`,
+        `${lanURL}/speaker/stop-speaker`
       ); //hard coded server
       if (speakerResponse.status === 200) {
         console.log(
           "External speaker stopped successfully:",
-          speakerResponse.data,
+          speakerResponse.data
         );
       } else {
         console.warn(
           "Failed to stop the external speaker:",
-          speakerResponse.data,
+          speakerResponse.data
         );
       }
     } catch (speakerError) {
@@ -186,7 +186,7 @@ const AlarmDetailPage = () => {
   const updateAlarmStatus = async (newStatus, guardID = null) => {
     if (newStatus === "RESOLVED") {
       const confirmResolve = window.confirm(
-        "Are you sure you want to resolve the alarm?",
+        "Are you sure you want to resolve the alarm?"
       );
       if (!confirmResolve) {
         return; // Exit if user cancels the confirmation
@@ -205,7 +205,7 @@ const AlarmDetailPage = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       setAlarm((prevAlarm) => ({
@@ -267,7 +267,7 @@ const AlarmDetailPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       const guardName =
@@ -282,7 +282,7 @@ const AlarmDetailPage = () => {
     } catch (err) {
       console.error(
         "Error notifying the guard:",
-        err.response ? err.response.data : err.message,
+        err.response ? err.response.data : err.message
       );
 
       // Set notification message on failure
@@ -303,7 +303,7 @@ const AlarmDetailPage = () => {
     }
 
     const confirmNotify = window.confirm(
-      "Are you sure you want to notify the guard?",
+      "Are you sure you want to notify the guard?"
     );
     if (!confirmNotify) return;
 
@@ -318,7 +318,7 @@ const AlarmDetailPage = () => {
           status: "PENDING",
         }));
         setNotificationMessage(
-          "Notification failed. Call the guard immediately to ensure the alert is acknowledged.",
+          "Notification failed. Call the guard immediately to ensure the alert is acknowledged."
         );
         setNotificationType("error");
       }
@@ -331,7 +331,7 @@ const AlarmDetailPage = () => {
 
   const handleDismissAlert = () => {
     const confirmDismiss = window.confirm(
-      "Are you sure you want to dismiss the alarm?",
+      "Are you sure you want to dismiss the alarm?"
     );
     if (!confirmDismiss) {
       return;
@@ -344,13 +344,13 @@ const AlarmDetailPage = () => {
     if (callChecked) {
       await updateAlarmStatus("NOTIFIED");
       setNotificationMessage(
-        "Manual notification confirmed. Status updated to notified.",
+        "Manual notification confirmed. Status updated to notified."
       );
       setNotificationType("success");
       setManualNotifyVisible(false);
     } else {
       setNotificationMessage(
-        "Please call the guard and check Call to confirm manual notification.",
+        "Please call the guard and check Call to confirm manual notification."
       );
       setNotificationType("error");
     }
@@ -370,11 +370,10 @@ const AlarmDetailPage = () => {
             </button>
             <img
               src={liveFootage}
-              alt="Live footage"
               className="w-full h-full object-contain rounded-lg"
             />
           </div>
-          <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[300px]">
+          <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[500px]">
             {alarm ? (
               <>
                 <p className="text-xl font-semibold mb-2">
