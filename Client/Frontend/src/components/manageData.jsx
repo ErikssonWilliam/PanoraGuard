@@ -6,6 +6,7 @@ import AlarmResolutionChart from "./AlarmResolutionChart";
 import { externalURL } from "../api/axiosConfig";
 import CameraAlarmPieChart from "./CameraAlarmPieChart"; // Import CameraAlarmPieChart
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const ManageData = () => {
   const [alertData, setAlertData] = useState({
@@ -18,7 +19,7 @@ const ManageData = () => {
     fromDate: "", // User-defined start date
     tillDate: "", // User-defined end date
   });
-  const { token } = useAuthStore();
+  const { token, error, setError } = useAuthStore();
   const [loading, setLoading] = useState(false); // Track loading state
 
   // Fetch alarm data whenever filters change (location, camera, fromDate, tillDate)
@@ -43,7 +44,7 @@ const ManageData = () => {
         });
       } catch (error) {
         console.error("Error fetching alert data:", error);
-        alert(
+        setError(
           "There was an error fetching the data. Please check the console for details.",
         );
       } finally {
@@ -61,6 +62,7 @@ const ManageData = () => {
     filters.fromDate,
     filters.tillDate,
     token,
+    setError,
   ]); // Re-run the effect if any of the filters change
 
   // Calculate the total number of alarms after filtering by date
@@ -147,6 +149,14 @@ const ManageData = () => {
                   tillDate={filters.tillDate}
                 />
               </div>
+              {error && (
+                <MessageBox
+                  message={error}
+                  onExit={() => {
+                    setError("");
+                  }}
+                />
+              )}
             </section>
           </div>
         </div>

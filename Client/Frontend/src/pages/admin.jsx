@@ -18,12 +18,12 @@ import userIcon from "../assets/user-01.png";
 import logo from "../assets/logo.png";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "../components/Notification.jsx";
-import { useAuthStore } from "../utils/useAuthStore.js";
+import MessageBox from "../components/MessageBox.jsx";
 
 const Admin = () => {
   const [selectedComponent, setSelectedComponent] = useState("OperatorView");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Manage sidebar visibility
-  const { setError } = useAuthStore();
+  const [error, setError] = useState("");
 
   if (!isUserLoggedInWithRole("ADMIN")) {
     return (
@@ -115,7 +115,6 @@ const Admin = () => {
             className="text-xl"
             onClick={() => {
               setIsSidebarOpen(false);
-              setError("");
             }}
           >
             <FaTimes />
@@ -197,6 +196,14 @@ const Admin = () => {
       >
         {renderContent()}
       </div>
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
     </div>
   );
 };

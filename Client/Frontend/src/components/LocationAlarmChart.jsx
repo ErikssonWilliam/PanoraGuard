@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { externalURL } from "../api/axiosConfig";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const LocationAlarmChart = ({ selectedLocation }) => {
   const [data, setData] = useState([]);
@@ -21,7 +22,6 @@ const LocationAlarmChart = ({ selectedLocation }) => {
   useEffect(() => {
     const fetchAlarmData = async () => {
       setLoading(true);
-      setError("");
 
       try {
         const response = await axios.get(
@@ -69,7 +69,6 @@ const LocationAlarmChart = ({ selectedLocation }) => {
   }, [selectedLocation, setError, token]);
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -84,6 +83,14 @@ const LocationAlarmChart = ({ selectedLocation }) => {
         <Bar dataKey="addressed" stackId="a" fill="#1E3A8A" />
         <Bar dataKey="ignored" stackId="a" fill="#E5E7EB" />
       </BarChart>
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
     </ResponsiveContainer>
   );
 };

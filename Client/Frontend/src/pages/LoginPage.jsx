@@ -11,7 +11,8 @@ import { useAuthStore } from "../utils/useAuthStore";
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const { error, setToken, setUserId, setUserRole, setError } = useAuthStore();
+  const [error, setError] = useState("");
+  const { setToken, setUserId, setUserRole } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 

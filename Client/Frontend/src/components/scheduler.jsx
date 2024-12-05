@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { externalURL } from "../api/axiosConfig";
 import axios from "axios";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const Scheduler = ({ cameraId }) => {
   const [schedule, setSchedule] = useState(
@@ -10,6 +11,7 @@ const Scheduler = ({ cameraId }) => {
 
   const [loading, setLoading] = useState(true);
   const { error, token, setError } = useAuthStore();
+  const [successMessage, setSuccessMessage] = useState("");
   const days = useMemo(
     () => [
       "Monday",
@@ -27,7 +29,6 @@ const Scheduler = ({ cameraId }) => {
     const fetchSchedule = async () => {
       if (!cameraId) return;
       setLoading(true);
-      setError("");
 
       try {
         const response = await axios.get(`${externalURL}/cameras/${cameraId}`, {
@@ -88,7 +89,7 @@ const Scheduler = ({ cameraId }) => {
 
   const updateSchedule = async () => {
     if (!cameraId) {
-      alert("No camera selected");
+      setError("No camera selected");
       return;
     }
 
@@ -111,13 +112,13 @@ const Scheduler = ({ cameraId }) => {
       const data = response.data;
       console.log(data);
 
-      alert("Schedule updated successfully");
+      setSuccessMessage("Schedule updated successfully");
     } catch (error) {
       console.error(
         "Error updating schedule:",
         error.response?.data?.error || error.message,
       );
-      alert(error.response?.data?.error || "Error updating schedule");
+      setError(error.response?.data?.error || "Error updating schedule");
     }
   };
 
@@ -132,7 +133,22 @@ const Scheduler = ({ cameraId }) => {
         >
           Update
         </button>
-        {error && <p className="text-red-600">{error}</p>}
+        {error && (
+          <MessageBox
+            message={error}
+            onExit={() => {
+              setError("");
+            }}
+          />
+        )}
+        {successMessage && (
+          <MessageBox
+            message={successMessage}
+            onExit={() => {
+              setSuccessMessage("");
+            }}
+          />
+        )}
       </div>
       <div className="overflow-auto mt-4">
         <table className="table-auto text-sm border-collapse border border-gray-300 w-full">
