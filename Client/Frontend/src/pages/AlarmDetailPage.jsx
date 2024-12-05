@@ -370,11 +370,10 @@ const AlarmDetailPage = () => {
             </button>
             <img
               src={liveFootage}
-              alt="Live footage"
               className="w-full h-full object-contain rounded-lg"
             />
           </div>
-          <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[300px]">
+          <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[500px]">
             {alarm ? (
               <>
                 <p className="text-xl font-semibold mb-2">
