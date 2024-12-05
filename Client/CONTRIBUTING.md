@@ -2,6 +2,16 @@
 
 When writing code in JavaScript, developers should adhere to these documentation standards.
 
+## General
+
+Rather than over-documenting their code, developers should prioritise writing clear and well-structured code that is easy to understand. For example: 
+
+- Functions and variables should have descriptive names so it is easy to understand their purposes. 
+- There should be consistency with indentation and spacing between blocks of code to ensure high readability. 
+- Simple and straightforward logic should be prioritised, rather than using overly complicated solutions.
+
+However, code that is not self-explanatory or trivial should be documented by the developer of the code, in order for other developers to be able to understand and maintain the code.
+
 ## File Header
 
 At the top of a file, above any imports, provide a concise description of the file's purpose.
@@ -18,7 +28,7 @@ At the top of a file, above any imports, provide a concise description of the fi
 
 ## Function Documentation
 
-Above each function, provide a description of its purpose, parameters, returns and any important details.
+Above non-trivial functions, provide a description of the function's purpose, parameters, returns and any important details.
 
 ### Example Function Description:
 

@@ -25,6 +25,12 @@ const Header = ({ userInfo, setErrorMessage }) => {
 
   return (
     <header className="relative flex items-center p-4 bg-[#F5F7FA] border-b -mb-6">
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-2 left-2 bg-[#237F94] text-white px-4 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+      >
+        Back
+      </button>
       {/* Centered Logo */}
       <button onClick={navigateToHome}>
         <img

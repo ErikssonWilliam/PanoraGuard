@@ -106,7 +106,6 @@ const ProfilePage = () => {
       <div className="mainContent grid lg:grid-cols-5 p-4 pt-10">
         {/* User Info Section */}
         <UserInfoSection userInfo={userInfo} profileImage={profileImage} />
-
         {/* Change Password Section */}
         <div className="lg:col-span-2 pt-20 xs:row-span-1 bg-BG rounded-lg p-6 mx-10 mt-4">
           <h2 className="text-lg font-semibold">Change Password</h2>
@@ -148,8 +147,8 @@ const ProfilePage = () => {
 };
 
 const UserInfoSection = ({ userInfo, profileImage }) => (
-  <div className="lg:col-span-3 flex bg-white rounded-lg lg:h-[80vh] h-auto">
-    <div className="blueSection w-52 bg-NavyBlue p-2 relative rounded-tl-lg rounded-bl-lg">
+  <div className="lg:col-span-3 flex xs:flex-row bg-white rounded-lg lg:h-[80vh] h-auto">
+    <div className="blueSection w-52 bg-NavyBlue p-2 relative rounded-tl-lg rounded-bl-lg  xs:flex-initial">
       <div className="profilePicture w-48 h-48 bg-gray-300 rounded-full overflow-hidden absolute top-1/2 transform -translate-y-1/2">
         <img
           src={profileImage}
@@ -158,7 +157,7 @@ const UserInfoSection = ({ userInfo, profileImage }) => (
         />
       </div>
     </div>
-    <div className="whiteSection bg-LightGray p-6 rounded-tr-lg rounded-br-lg">
+    <div className="whiteSection bg-LightGray flex-1 p-6 rounded-tr-lg rounded-br-lg">
       <h2 className="text-3xl font-bold text-NavyBlue">
         Hello {userInfo.username},
       </h2>
