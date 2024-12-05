@@ -223,7 +223,7 @@ const ChangeUser = () => {
                 {user.role !== "ADMIN" && (
                   <>
                     <button
-                      className="text-sm py-2 px-4 rounded-md bg-red-500 text-white hover:bg-red-700 transition"
+                      className="text-sm py-2 px-4 rounded-md bg-NewRed text-white hover:bg-red-700 transition"
                       onClick={() => handleDelete(user.id)}
                     >
                       Remove

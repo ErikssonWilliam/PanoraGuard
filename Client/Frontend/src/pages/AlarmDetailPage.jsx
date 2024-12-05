@@ -361,6 +361,7 @@ const AlarmDetailPage = () => {
       <Header userInfo={userInfo} />
       <div className="flex-grow flex flex-col items-center p-8 overflow-hidden">
         <div className="flex w-11/12 justify-between bg-custom-bg max-w-6xl overflow-hidden">
+          {/* Left Image Box */}
           <div className="w-2/5 overflow-hidden">
             <button
               onClick={() => navigate(-1)}
@@ -368,11 +369,18 @@ const AlarmDetailPage = () => {
             >
               Back
             </button>
-            <img
-              src={liveFootage}
-              className="w-full h-full object-contain rounded-lg"
-            />
+            {alarm?.status !== "IGNORED" ? (
+              <img
+                src={liveFootage}
+                className="w-full h-full object-contain rounded-lg"
+                alt="Live Footage"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg"></div>
+            )}
           </div>
+
+          {/* Right Details Box */}
           <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[500px]">
             {alarm ? (
               <>
@@ -465,7 +473,7 @@ const AlarmDetailPage = () => {
                 </div>
                 <button
                   onClick={handleDismissAlert}
-                  className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
+                  className="bg-NewRed text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
                 >
                   Dismiss the alert
                 </button>
