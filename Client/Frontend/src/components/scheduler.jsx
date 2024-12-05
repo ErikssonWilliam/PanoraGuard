@@ -192,7 +192,6 @@ const Scheduler = ({ cameraId }) => {
       </div>
     </div>
   );
-  
 };
 
 export default Scheduler;
