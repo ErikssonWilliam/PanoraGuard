@@ -103,7 +103,7 @@ class UserService:
             return True
         return False
 
-    def validity_check(data: dict):
+    def validity_check(data: dict, required_fields: list):
         """
         Validate user input data for creating/updating a user.
 
@@ -116,7 +116,6 @@ class UserService:
         Returns:
             bool: True if validation succeeds.
         """
-        required_fields = ["username", "password", "role", "email"]
 
         for field in required_fields:
             if not data.get(field) or not str(data[field]).strip():

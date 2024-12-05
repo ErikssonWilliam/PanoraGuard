@@ -59,7 +59,8 @@ class UserController:
             print(f"Random password generated for 'guard': {generated_password}")
 
         try:
-            UserService.validity_check(data)
+            required_fields = ["username", "password", "role", "email"]
+            UserService.validity_check(data, required_fields)
 
             new_user = UserService.create_user(
                 username=data["username"].strip(),
@@ -90,7 +91,8 @@ class UserController:
         try:
             updated_data = user.to_dict()
             updated_data.update(data)
-            UserService.validity_check(updated_data)
+            required_fields = ["username", "email", "role", "password_hash"]
+            UserService.validity_check(updated_data, required_fields)
             UserService.update_user(user, data)
             return jsonify({"message": "User updated"}), 200
         except ValueError as e:
