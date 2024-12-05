@@ -13,8 +13,8 @@ const ManageData = () => {
   });
 
   const [filters, setFilters] = useState({
-    location: "A-huset", // Example location
-    camera: "B8A44F9EEE36", // Example camera ID
+    location: "", // Example location
+    camera: "", // Example camera ID
     fromDate: "", // User-defined start date
     tillDate: "", // User-defined end date
   });
@@ -33,7 +33,7 @@ const ManageData = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          },
+          }
         );
         console.log("Fetched alarms:", response.data);
 
@@ -44,7 +44,7 @@ const ManageData = () => {
       } catch (error) {
         console.error("Error fetching alert data:", error);
         alert(
-          "There was an error fetching the data. Please check the console for details.",
+          "There was an error fetching the data. Please check the console for details."
         );
       } finally {
         setLoading(false); // Set loading to false when data fetching is complete
@@ -89,6 +89,7 @@ const ManageData = () => {
   };
 
   const handleFormSubmit = (filters) => {
+    console.log("Updated filters from form:", filters);
     setFilters(filters); // Update filters and trigger useEffect to fetch data
   };
 
