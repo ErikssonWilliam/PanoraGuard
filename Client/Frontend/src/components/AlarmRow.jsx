@@ -26,16 +26,17 @@ const AlarmRow = ({ alarm }) => {
   return (
     alarm && (
       <div className="bg-gray-300 p-2 mb-4 rounded-lg shadow-md max-w-5xl mx-auto">
-        <div className="flex md:grid md:grid-cols-5 md:gap-4 items-center justify-between space-x-4 xs:flex-wrap">
-          <div className="flex md:col-span-1 items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-9 items-center">
+          <div className="flex items-center justify-center bg-white p-3 rounded-lg shadow min-w-[200px]">
             <img
-              src={cameraIcon}
-              alt="Camera icon"
+              src={detectIcon}
+              alt="Detection icon"
               className="mr-2 w-4 h-4 object-contain"
             />
             <span className="text-sm font-medium text-gray-700">
-              {/* Camera = Camera ID */}
-              Camera: {alarm.camera_id || "Unknown Camera"}{" "}
+              {alarm.timestamp !== "N/A"
+                ? new Date(alarm.timestamp).toLocaleString()
+                : "N/A"}
             </span>
           </div>
 
@@ -52,12 +53,12 @@ const AlarmRow = ({ alarm }) => {
 
           <div className="flex md:col-span-1 items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
             <img
-              src={detectIcon}
-              alt="Detection icon"
+              src={cameraIcon}
+              alt="Camera icon"
               className="mr-2 w-4 h-4 object-contain"
             />
             <span className="text-sm font-medium text-gray-700">
-              Detected: {alarm.type || "N/A"}
+              Camera: {alarm.camera_id || "Unknown Camera"}{" "}
             </span>
           </div>
 
