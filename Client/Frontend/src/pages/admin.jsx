@@ -14,10 +14,10 @@ import AddnewUser from "../components/AddUser";
 import { Link } from "react-router-dom";
 import AlarmList from "../components/AlarmList.jsx";
 import ChangeUser from "../components/ChangeUser"; // Import the ChangeUser component
-import userIcon from "../assets/user-01.png";
 import logo from "../assets/logo.png";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "../components/Notification.jsx";
+import ProfileDropdown from "../components/ProfileDropdown"; // Import the ProfileDropdown component
 
 const Admin = () => {
   const [selectedComponent, setSelectedComponent] = useState("OperatorView");
@@ -90,13 +90,8 @@ const Admin = () => {
 
         {/* Right Icons */}
         <div className="w-6 flex justify-end">
-          <Link to="/profile">
-            <img
-              src={userIcon}
-              alt="User icon"
-              className="w-6 h-6 hover:scale-110 transition-transform duration-200"
-            />
-          </Link>
+          {/* Profile Dropdown instead of static user icon */}
+          <ProfileDropdown />
         </div>
       </header>
 
