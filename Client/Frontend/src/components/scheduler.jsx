@@ -126,13 +126,24 @@ const Scheduler = ({ cameraId }) => {
 
   return (
     <div className="pt-4 bg-gray-100 min-h-screen">
-      <div className="pt-4">
+      <div className="pt-4 flex items-center space-x-4">
         <button
           className="w-1/5 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg p-2"
           onClick={updateSchedule}
         >
           Update
         </button>
+        {/* Legend for Active/Non-active */}
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 bg-cyan-600"></div>
+            <span className="text-sm">Active</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 bg-gray-100 border border-gray-300"></div>
+            <span className="text-sm">Non-active</span>
+          </div>
+        </div>
       </div>
       <div className="overflow-auto mt-4">
         <table className="table-auto text-sm border-collapse border border-gray-300 w-full">
@@ -181,6 +192,7 @@ const Scheduler = ({ cameraId }) => {
       </div>
     </div>
   );
+  
 };
 
 export default Scheduler;
