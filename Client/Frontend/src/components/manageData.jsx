@@ -109,9 +109,11 @@ const ManageData = () => {
                 <div className="text-4xl font-bold text-NavyBlue mb-4">
                   {loading ? "Loading..." : getTotalAlerts()}
                 </div>
-                <div className="text-sm text-NavyBlue">
-                  from {filters.fromDate} to {filters.tillDate}
-                </div>
+                {filters.fromDate && filters.tillDate && (
+                  <div className="text-sm text-NavyBlue">
+                    from {filters.fromDate} to {filters.tillDate}
+                  </div>
+                )}
               </div>
               {/* Title and pie chart: Left-aligned title and centered pie chart */}
               <div className="bg-white shadow-lg rounded-lg p-4">
@@ -128,7 +130,7 @@ const ManageData = () => {
               </div>
               <div className="bg-white shadow-lg rounded-lg p-4">
                 <h3 className="text-2xl font-semibold text-NavyBlue mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
-                  Camera-wise Alarm Breakdown
+                  Alarm Insights by Camera
                 </h3>
                 <CameraAlarmChart
                   selectedLocation={filters.location}
@@ -140,7 +142,7 @@ const ManageData = () => {
 
               <div className="bg-white shadow-lg rounded-lg p-4">
                 <h3 className="text-2xl font-semibold text-NavyBlue mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
-                  Day-wise Alarm Breakdown
+                  Daily Alarm Trends
                 </h3>
                 <AlarmResolutionChart
                   selectedLocation={filters.location}
