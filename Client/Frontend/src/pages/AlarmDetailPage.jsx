@@ -360,50 +360,59 @@ const AlarmDetailPage = () => {
     <div className="bg-custom-bg min-h-screen max-h-screen flex flex-col overflow-hidden">
       <Header userInfo={userInfo} />
       <div className="flex-grow flex flex-col items-center p-8 overflow-hidden">
-        <div className="flex w-11/12 justify-between bg-custom-bg max-w-6xl overflow-hidden">
-          <div className="w-2/5 overflow-hidden">
-            <button
-              onClick={() => navigate(-1)}
-              className="absolute top-2 left-2 bg-[#237F94] text-white px-4 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-            >
-              Back
-            </button>
-            <img
-              src={liveFootage}
-              className="w-full h-full object-contain rounded-lg"
-            />
-          </div>
-          <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[500px]">
-            {alarm ? (
-              <>
-                <p className="text-xl font-semibold mb-2">
-                  Alert number: {alarm.id || "N/A"}
-                </p>
-                <p className="text-lg">Camera ID: {alarm.camera_id}</p>
-                <p className="text-lg">Location: {alarm.camera_location}</p>
-                <p className="text-lg">Type: {alarm.type}</p>
-                <p className="text-lg">
-                  Confidence Level:{" "}
-                  {alarm.confidence_score
-                    ? (alarm.confidence_score * 100).toFixed(2) + "%"
-                    : "N/A"}
-                </p>
-                <p className="text-lg">
-                  Timestamp:{" "}
-                  {alarm.timestamp !== "N/A"
-                    ? new Date(alarm.timestamp).toLocaleString()
-                    : "N/A"}
-                </p>
-                <p className="text-lg">Operator: {operatorUsername}</p>
-                <p className="text-lg">
-                  Status: {formatStatusToSentenceCase(alarm.status)}
-                </p>
-              </>
-            ) : (
-              <p>Loading alarm details...</p>
-            )}
-          </div>
-        </div>
+      <div className="flex w-11/12 justify-between bg-custom-bg max-w-6xl overflow-hidden">
+  {/* Left Image Box */}
+  <div className="w-2/5 overflow-hidden">
+    <button
+      onClick={() => navigate(-1)}
+      className="absolute top-2 left-2 bg-[#237F94] text-white px-4 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+    >
+      Back
+    </button>
+    {alarm?.status !== "IGNORED" ? (
+      <img
+        src={liveFootage}
+        className="w-full h-full object-contain rounded-lg"
+        alt="Live Footage"
+      />
+    ) : (
+      <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+      </div>
+    )}
+  </div>
+
+  {/* Right Details Box */}
+  <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[500px]">
+    {alarm ? (
+      <>
+        <p className="text-xl font-semibold mb-2">
+          Alert number: {alarm.id || "N/A"}
+        </p>
+        <p className="text-lg">Camera ID: {alarm.camera_id}</p>
+        <p className="text-lg">Location: {alarm.camera_location}</p>
+        <p className="text-lg">Type: {alarm.type}</p>
+        <p className="text-lg">
+          Confidence Level:{" "}
+          {alarm.confidence_score
+            ? (alarm.confidence_score * 100).toFixed(2) + "%"
+            : "N/A"}
+        </p>
+        <p className="text-lg">
+          Timestamp:{" "}
+          {alarm.timestamp !== "N/A"
+            ? new Date(alarm.timestamp).toLocaleString()
+            : "N/A"}
+        </p>
+        <p className="text-lg">Operator: {operatorUsername}</p>
+        <p className="text-lg">
+          Status: {formatStatusToSentenceCase(alarm.status)}
+        </p>
+      </>
+    ) : (
+      <p>Loading alarm details...</p>
+    )}
+  </div>
+</div>
         {alarm?.status !== "RESOLVED" && alarm?.status !== "IGNORED" && (
           <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
             {alarm?.status === "NOTIFIED" ? (
