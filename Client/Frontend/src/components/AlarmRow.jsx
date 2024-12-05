@@ -26,17 +26,17 @@ const AlarmRow = ({ alarm }) => {
   return (
     alarm && (
       <div className="bg-gray-300 p-2 mb-4 rounded-lg shadow-md max-w-5xl mx-auto">
-  <div className="grid grid-cols-1 md:grid-cols-5 gap-9 items-center">
-    <div className="flex items-center justify-center bg-white p-3 rounded-lg shadow min-w-[200px]">
-    <img
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-9 items-center">
+          <div className="flex items-center justify-center bg-white p-3 rounded-lg shadow min-w-[200px]">
+            <img
               src={detectIcon}
               alt="Detection icon"
               className="mr-2 w-4 h-4 object-contain"
             />
             <span className="text-sm font-medium text-gray-700">
-            {alarm.timestamp !== "N/A"
-                    ? new Date(alarm.timestamp).toLocaleString()
-                    : "N/A"}
+              {alarm.timestamp !== "N/A"
+                ? new Date(alarm.timestamp).toLocaleString()
+                : "N/A"}
             </span>
           </div>
 
@@ -52,7 +52,7 @@ const AlarmRow = ({ alarm }) => {
           </div>
 
           <div className="flex md:col-span-1 items-center justify-center min-w-[200px] bg-white p-3 rounded-lg shadow">
-          <img
+            <img
               src={cameraIcon}
               alt="Camera icon"
               className="mr-2 w-4 h-4 object-contain"
