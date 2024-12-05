@@ -18,10 +18,12 @@ import userIcon from "../assets/user-01.png";
 import logo from "../assets/logo.png";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "../components/Notification.jsx";
+import { useAuthStore } from "../utils/useAuthStore.js";
 
 const Admin = () => {
   const [selectedComponent, setSelectedComponent] = useState("OperatorView");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Manage sidebar visibility
+  const { setError } = useAuthStore();
 
   if (!isUserLoggedInWithRole("ADMIN")) {
     return (
@@ -109,7 +111,13 @@ const Admin = () => {
         {/* Close Icon */}
         <div className="flex justify-between items-center mb-6">
           {/* <span className="text-lg font-semibold">Navigation</span> */}
-          <button className="text-xl" onClick={() => setIsSidebarOpen(false)}>
+          <button
+            className="text-xl"
+            onClick={() => {
+              setIsSidebarOpen(false);
+              setError("");
+            }}
+          >
             <FaTimes />
           </button>
         </div>

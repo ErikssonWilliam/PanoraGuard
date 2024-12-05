@@ -122,17 +122,17 @@ const Scheduler = ({ cameraId }) => {
   };
 
   if (loading) return <div>Loading schedule...</div>;
-  if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="pt-4 bg-gray-100 min-h-screen">
-      <div className="pt-4">
+    <div className=" bg-gray-100 min-h-screen">
+      <div className="pt-1">
         <button
           className="w-1/5 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg p-2"
           onClick={updateSchedule}
         >
           Update
         </button>
+        {error && <p className="text-red-600">{error}</p>}
       </div>
       <div className="overflow-auto mt-4">
         <table className="table-auto text-sm border-collapse border border-gray-300 w-full">
