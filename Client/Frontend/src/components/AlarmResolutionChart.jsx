@@ -101,7 +101,10 @@ const AlarmResolutionChart = ({
     return dates;
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>Select a location, camera, and date range to display the chart</div>
+    );
   if (error) return <div>{error}</div>;
   {
     /* Need Message Component*/

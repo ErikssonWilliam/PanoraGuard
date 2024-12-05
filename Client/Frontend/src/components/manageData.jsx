@@ -116,13 +116,13 @@ const ManageData = () => {
               {/* Title and pie chart: Left-aligned title and centered pie chart */}
               <div className="bg-white shadow-lg rounded-lg p-4">
                 <h3 className="text-2xl font-semibold text-NavyBlue mb-4 border-b-2 border-sky-900 pb-2 tracking-tight">
-                  Location-wise Alarm Distribution
+                  Alarm Distribution by Location
                 </h3>
                 <div className="flex justify-center">
                   <div className="w-4/5 lg:w-2/5">
                     {" "}
                     {/* Adjust the width here as needed */}
-                    <CameraAlarmPieChart alarms={alertData.alarms} />
+                    <CameraAlarmPieChart alarms={filterAlarms()} />
                   </div>
                 </div>
               </div>
@@ -133,6 +133,8 @@ const ManageData = () => {
                 <CameraAlarmChart
                   selectedLocation={filters.location}
                   selectedCamera={filters.camera}
+                  fromDate={filters.fromDate}
+                  tillDate={filters.tillDate}
                 />
               </div>
 
