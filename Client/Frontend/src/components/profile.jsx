@@ -105,7 +105,7 @@ const ProfilePage = () => {
       {/* Main Content */}
       <div className="mainContent grid lg:grid-cols-5 p-4 pt-10">
         {/* User Info Section */}
-          <UserInfoSection userInfo={userInfo} profileImage={profileImage} />
+        <UserInfoSection userInfo={userInfo} profileImage={profileImage} />
         {/* Change Password Section */}
         <div className="lg:col-span-2 pt-20 xs:row-span-1 bg-BG rounded-lg p-6 mx-10 mt-4">
           <h2 className="text-lg font-semibold">Change Password</h2>
