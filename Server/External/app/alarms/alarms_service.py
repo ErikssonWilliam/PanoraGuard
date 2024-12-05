@@ -236,7 +236,7 @@ class AlarmService:
         alarm = Alarm.query.filter_by(id=alarm_ID).first()
         if not alarm:
             return jsonify({"status": "No alarm found"}), 404
-        
+
         camera = Camera.query.filter_by(id=alarm.camera_id).first()
         if not camera:
             return jsonify({"status": "No camera found"}), 404
