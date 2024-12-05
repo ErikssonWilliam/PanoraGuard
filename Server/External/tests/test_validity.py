@@ -38,7 +38,7 @@ def test_validity_check_invalid_role():
     invalid_data = {
         "username": "testuser",
         "password": "password123",
-        "role": "ADMIN",
+        "role": "INVALID",
         "email": "testuser@example.com",
     }
     with pytest.raises(ValueError, match="Invalid role."):

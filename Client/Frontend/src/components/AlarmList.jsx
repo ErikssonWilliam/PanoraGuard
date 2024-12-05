@@ -9,60 +9,74 @@ import { useAuthStore } from "../utils/useAuthStore";
 const AlarmList = () => {
   const [activeAlarms, setActiveAlarms] = useState([]);
   const [oldAlarms, setOldAlarms] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const { error, token, setError } = useAuthStore();
+  const perPage = 10;
 
   const sortByTimestamp = useCallback(
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
     [],
   );
 
-  // Sort by status and timestamp
   const sortByStatusAndTimestamp = useCallback((a, b) => {
     if (a.status === "NOTIFIED" && b.status === "PENDING") return -1;
     if (a.status === "PENDING" && b.status === "NOTIFIED") return 1;
     return new Date(b.timestamp) - new Date(a.timestamp);
   }, []);
 
-  // Fetch alarms from the server
-  const fetchAlarms = useCallback(async () => {
+  const fetchAlarms = useCallback(
+    async (page) => {
+      try {
+        const response = await axios.get(
+          `${externalURL}/alarms?page=${page}&per_page=${perPage}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const allAlarms = response.data;
+
+        const active = allAlarms
+          .filter(
+            (alarm) =>
+              alarm.status === "PENDING" || alarm.status === "NOTIFIED",
+          )
+          .sort(sortByStatusAndTimestamp);
+        setActiveAlarms(active);
+
+        const old = allAlarms
+          .filter(
+            (alarm) =>
+              alarm.status === "RESOLVED" || alarm.status === "IGNORED",
+          )
+          .sort(sortByTimestamp);
+        setOldAlarms(old);
+      } catch (err) {
+        console.error("Error fetching alarms:", err);
+        setError("Failed to load alarms.");
+      }
+    },
+    [setError, sortByStatusAndTimestamp, sortByTimestamp, token],
+  );
+
+  const fetchTotalAlarmsCount = useCallback(async () => {
     try {
-      const response = await axios.get(`${externalURL}/alarms`, {
+      const response = await axios.get(`${externalURL}/alarms/count`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      const allAlarms = response.data;
-
-      // Process active alarms
-      const active = allAlarms
-        .filter(
-          (alarm) => alarm.status === "PENDING" || alarm.status === "NOTIFIED",
-        )
-        .sort(sortByStatusAndTimestamp);
-      setActiveAlarms(active);
-
-      // Process old alarms
-      const old = allAlarms
-        .filter(
-          (alarm) =>
-            (alarm.status === "RESOLVED" || alarm.status === "IGNORED") &&
-            alarm.operator_id !== null &&
-            alarm.operator_id !== "N/A" &&
-            alarm.operator_id !== "714d0fe2-e04f-4bed-af5e-97faa8a9bb6b",
-        )
-        .sort(sortByTimestamp)
-        .slice(0, 10);
-      setOldAlarms(old);
-
-      console.log("Active alarms after filtering:", active);
-      console.log("Old alarms after filtering:", old);
+      const totalAlarms = response.data.total_alarms;
+      setTotalPages(Math.ceil(totalAlarms / perPage));
     } catch (err) {
-      console.error("Error fetching alarms:", err);
-      setError("Failed to load alarms.");
+      console.error("Error fetching total alarms count:", err);
+      setError("Failed to fetch total alarms count.");
     }
-  }, [setError, sortByStatusAndTimestamp, sortByTimestamp, token]);
+  }, [setError, token]);
 
-  // Handle new alarms from the socket
   const handleNewAlarm = useCallback((newAlarm) => {
     setActiveAlarms((prevAlarms) => {
       const isDuplicate = prevAlarms.some((alarm) => alarm.id === newAlarm.id);
@@ -70,21 +84,32 @@ const AlarmList = () => {
     });
   }, []);
 
-  // Initialize the component
   useEffect(() => {
     setError("");
-    fetchAlarms();
+    fetchTotalAlarmsCount();
+    fetchAlarms(currentPage);
 
-    // Listen for socket events
     socket.on("new_alarm", handleNewAlarm);
 
     return () => {
       socket.off("new_alarm", handleNewAlarm);
     };
-  }, [fetchAlarms, handleNewAlarm, setError]);
-  {
-    /* Need Message Component*/
-  }
+  }, [
+    fetchAlarms,
+    fetchTotalAlarmsCount,
+    handleNewAlarm,
+    setError,
+    currentPage,
+  ]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -110,6 +135,31 @@ const AlarmList = () => {
             activeAlarmCount={activeAlarms.length}
           />
         </section>
+      </div>
+
+      <div className="flex justify-center space-x-4 mt-4">
+        <button
+          onClick={handlePreviousPage}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 rounded-md text-white text-lg ${
+            currentPage === 1
+              ? "bg-gray-400"
+              : "bg-[#237F94] hover:bg-[#1E6D7C]"
+          }`}
+        >
+          Previous
+        </button>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 rounded-md text-white text-lg ${
+            currentPage === totalPages
+              ? "bg-gray-400"
+              : "bg-[#237F94] hover:bg-[#1E6D7C]"
+          }`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
