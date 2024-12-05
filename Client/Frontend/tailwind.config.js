@@ -31,6 +31,8 @@ export default {
         BG: "#F5F7FA",
         ButtonsBlue: "#0650C6",
         AlaramRed: "#C60606",
+        NewRed: "#D43941",
+        NewYellow: "#E4B468",
       },
       keyframes: {
         float: {
