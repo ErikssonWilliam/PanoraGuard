@@ -5,6 +5,7 @@ import ActiveAlarms from "./ActiveAlarms";
 import socket from "../utils/socket";
 import { externalURL } from "../api/axiosConfig";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const AlarmList = () => {
   const [activeAlarms, setActiveAlarms] = useState([]);
@@ -89,7 +90,6 @@ const AlarmList = () => {
   }, []);
 
   useEffect(() => {
-    setError("");
     fetchTotalAlarmsCount();
     fetchAlarms(currentPage);
 
@@ -114,32 +114,24 @@ const AlarmList = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
-    <div className="p-4 flex flex-col space-y-6">
-      <div className="ml-10">
-        <section>
-          <h2 className="text-2xl font-semibold mb-4 text-NavyBlue">
-            Active Alarms:
-          </h2>
-          <ActiveAlarms activeAlarms={activeAlarms} />
-        </section>
-      </div>
+    <div className="p-20 flex flex-col space-y-6">
+      <section className="flex flex-col items-center">
+        <h2 className="text-2xl font-semibold mt-6 mb-4 text-NavyBlue">
+          Active Alarms:
+        </h2>
+        <ActiveAlarms activeAlarms={activeAlarms} />
+      </section>
 
-      <div className="ml-10">
-        <section>
-          <h2 className="text-2xl font-semibold mt-6 mb-4 text-NavyBlue">
-            Old Alarms:
-          </h2>
-          <OldAlarms
-            oldAlarms={oldAlarms}
-            activeAlarmCount={activeAlarms.length}
-          />
-        </section>
-      </div>
+      <section className="flex flex-col items-center">
+        <h2 className="text-2xl font-semibold mt-6 mb-4 text-NavyBlue">
+          Old Alarms:
+        </h2>
+        <OldAlarms
+          oldAlarms={oldAlarms}
+          activeAlarmCount={activeAlarms.length}
+        />
+      </section>
 
       <div className="flex justify-center items-center space-x-4 mt-4">
         <button
@@ -170,6 +162,14 @@ const AlarmList = () => {
         >
           Next
         </button>
+        {error && (
+          <MessageBox
+            message={error}
+            onExit={() => {
+              setError("");
+            }}
+          />
+        )}
       </div>
     </div>
   );
