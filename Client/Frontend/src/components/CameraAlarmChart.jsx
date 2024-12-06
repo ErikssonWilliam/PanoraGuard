@@ -82,10 +82,7 @@ const CameraAlarmChart = ({
   }, [selectedLocation, selectedCamera, fromDate, toDate, setError, token]); // Dependency on location and camera
 
   // If loading, show a loading message
-  if (loading)
-    return (
-      <div>Select a location, camera, and date range to display the chart</div>
-    );
+  if (loading) return <div>Loading...</div>;
 
   return (
     <ResponsiveContainer width="100%" height={400}>
