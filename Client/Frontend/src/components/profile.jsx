@@ -6,6 +6,7 @@ import Notification from "./Notification";
 import { useAuthStore } from "../utils/useAuthStore";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import MessageBox from "./MessageBox";
 
 // Reusable Loader Component
 const Loader = () => (
@@ -18,7 +19,8 @@ const ProfilePage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { userId, token, setError, clearAuth } = useAuthStore();
+  const [successMessage, setSuccessMessage] = useState("");
+  const { error, userId, token, setError, clearAuth } = useAuthStore();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -32,7 +34,6 @@ const ProfilePage = () => {
       }
 
       setLoading(true);
-      setError("");
       try {
         const response = await axios.get(`${externalURL}/users/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -67,7 +68,7 @@ const ProfilePage = () => {
         { newPassword },
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      alert("Password changed successfully.");
+      setSuccessMessage("Password changed successfully.");
       setNewPassword("");
       setRepeatPassword("");
       setErrorMessage("");
@@ -140,6 +141,22 @@ const ProfilePage = () => {
           >
             Log Out
           </button>
+          {error && (
+            <MessageBox
+              message={error}
+              onExit={() => {
+                setError("");
+              }}
+            />
+          )}
+          {successMessage && (
+            <MessageBox
+              message={successMessage}
+              onExit={() => {
+                setSuccessMessage("");
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

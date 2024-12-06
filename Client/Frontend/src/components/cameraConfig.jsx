@@ -3,13 +3,15 @@ import { externalURL, lanURL } from "../api/axiosConfig"; // Consolidated import
 import Scheduler from "./scheduler";
 import axios from "axios";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const CameraConfig = () => {
   const [confidenceLevel, setConfidenceLevel] = useState(50); // Default confidence level
   const [brightnessLevel, setBrightnessLevel] = useState(50); // Default brightness level
   const [cameras, setCameras] = useState([]); // State to store cameras
   const [selectedCameraID, setSelectedCameraID] = useState(""); // Track selected camera
-  const { token, setError } = useAuthStore();
+  const [successMessage, setSuccessMessage] = useState("");
+  const { error, token, setError } = useAuthStore();
 
   // Fetch the brightness level of the selected camera
   const fetchBrightnessLevel = useCallback(
@@ -66,7 +68,6 @@ const CameraConfig = () => {
         console.error("Error fetching brightness level:", error);
       }
     };
-    setError("");
     fetchCameras();
   }, [fetchBrightnessLevel, setError, token]);
 
@@ -89,7 +90,7 @@ const CameraConfig = () => {
       cameras.filter(
         (camera) => camera.id === selectedCameraID,
       )[0].condidence_threshold = confidenceLevel / 100;
-      alert("Confidence level updated successfully");
+      setSuccessMessage("Confidence level updated successfully");
     } catch (error) {
       console.error("Error updating confidence level:", error);
     }
@@ -114,13 +115,10 @@ const CameraConfig = () => {
       const data = response.data;
       console.log("Server response:", data);
 
-      alert("Brightness level updated successfully");
+      setSuccessMessage("Brightness level updated successfully");
     } catch (error) {
       setError(error.response?.data?.error || error.message);
       console.error("Error fetching brightness level:", error);
-      alert(
-        error.response?.data?.error || "Failed to update brightness level.",
-      );
     }
   };
 
@@ -224,6 +222,22 @@ const CameraConfig = () => {
         <h3 className="text-lg font-medium text-gray-700">Schedule Cameras</h3>
         <Scheduler cameraId={selectedCameraID} />
       </div>
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
+      {successMessage && (
+        <MessageBox
+          message={successMessage}
+          onExit={() => {
+            setSuccessMessage("");
+          }}
+        />
+      )}
     </div>
   );
 };

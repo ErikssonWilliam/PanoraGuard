@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { externalURL } from "../api/axiosConfig";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const CameraAlarmChart = ({
   selectedLocation,
@@ -28,7 +29,6 @@ const CameraAlarmChart = ({
     if (selectedLocation && selectedCamera && fromDate && toDate) {
       const fetchAlarms = async () => {
         setLoading(true);
-        setError(""); // Reset any previous error state
 
         try {
           const response = await axios.get(
@@ -87,9 +87,6 @@ const CameraAlarmChart = ({
       <div>Select a location, camera, and date range to display the chart</div>
     );
 
-  // If error, show an error message
-  if (error) return <div>{error}</div>;
-
   return (
     <ResponsiveContainer width="100%" height={400}>
       <BarChart data={data}>
@@ -103,6 +100,14 @@ const CameraAlarmChart = ({
         <Bar dataKey="addressed" stackId="a" fill="#003249" />
         <Bar dataKey="ignored" stackId="a" fill="#007ea7" />
       </BarChart>
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
     </ResponsiveContainer>
   );
 };
