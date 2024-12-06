@@ -75,7 +75,6 @@ class AlarmController:
             with current_app.app_context():
                 socketio.emit("new_alarm", new_alarm["alarm"])
             # Turning on speaker through LAN-Server
-            AlarmController.__start_speaker()
             return jsonify(new_alarm), 201
         else:
             return jsonify({"message": new_alarm["message"]}), 400
