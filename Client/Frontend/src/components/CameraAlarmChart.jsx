@@ -37,7 +37,7 @@ const CameraAlarmChart = ({
               headers: {
                 Authorization: `Bearer ${token}`, // Use JWT token for authorization
               },
-            }
+            },
           );
 
           const alarms = response.data;
@@ -57,11 +57,11 @@ const CameraAlarmChart = ({
 
           // Ensure alarms data is present and process it
           const addressed = filteredAlarms.filter(
-            (alarm) => alarm.status === "RESOLVED"
+            (alarm) => alarm.status === "RESOLVED",
           ).length;
 
           const ignored = filteredAlarms.filter(
-            (alarm) => alarm.status === "IGNORED"
+            (alarm) => alarm.status === "IGNORED",
           ).length;
 
           // Prepare data for the chart

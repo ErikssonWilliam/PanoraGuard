@@ -6,7 +6,7 @@ import MessageBox from "./MessageBox";
 
 const Scheduler = ({ cameraId }) => {
   const [schedule, setSchedule] = useState(
-    Array.from({ length: 24 }, () => Array(7).fill(false))
+    Array.from({ length: 24 }, () => Array(7).fill(false)),
   );
 
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ const Scheduler = ({ cameraId }) => {
       "Saturday",
       "Sunday",
     ],
-    []
+    [],
   );
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
   useEffect(() => {
@@ -43,7 +43,7 @@ const Scheduler = ({ cameraId }) => {
           const transformedSchedule = Array.from(
             { length: 24 },
             (_, hourIndex) =>
-              days.map((day) => data.schedule.week[day][hourIndex] === 1)
+              days.map((day) => data.schedule.week[day][hourIndex] === 1),
           );
           setSchedule(transformedSchedule);
         } else {
@@ -52,7 +52,7 @@ const Scheduler = ({ cameraId }) => {
       } catch (err) {
         console.error(
           "Error fetching schedule:",
-          err.response?.data?.error || err.message
+          err.response?.data?.error || err.message,
         );
         setError(err.response?.data?.error || "Failed to fetch schedule.");
       } finally {
@@ -107,7 +107,7 @@ const Scheduler = ({ cameraId }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const data = response.data;
       console.log(data);
@@ -116,7 +116,7 @@ const Scheduler = ({ cameraId }) => {
     } catch (error) {
       console.error(
         "Error updating schedule:",
-        error.response?.data?.error || error.message
+        error.response?.data?.error || error.message,
       );
       setError(error.response?.data?.error || "Error updating schedule");
     }
