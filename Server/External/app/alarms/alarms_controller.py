@@ -5,7 +5,7 @@ creating, updating, and deleting alarms. It also includes functionalities for no
 and fetching alarm-related data for frontend usage.
 """
 
-from flask import request, jsonify
+from flask import current_app, request, jsonify
 from .alarms_service import AlarmService
 from app.socketio_instance import socketio
 import requests
@@ -72,7 +72,8 @@ class AlarmController:
         new_alarm = AlarmService.create_alarm(alarm_data)
         if new_alarm["status"] == "success":
             # Notify frontend about the new alarm
-            socketio.emit("new_alarm", new_alarm["alarm"])
+            with current_app.app_context():
+                socketio.emit("new_alarm", new_alarm["alarm"])
             # Turning on speaker through LAN-Server
             AlarmController.__start_speaker()
             return jsonify(new_alarm), 201
