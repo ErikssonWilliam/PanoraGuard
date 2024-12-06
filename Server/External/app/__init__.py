@@ -31,6 +31,7 @@ def create_app():
         cors_allowed_origins=[
             "http://localhost:3000",
             "https://ashy-meadow-0a76ab703.5.azurestaticapps.net",
+            "https://panoraguard.se",
         ],
         async_mode="eventlet",
     )

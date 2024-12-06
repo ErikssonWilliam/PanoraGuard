@@ -92,6 +92,22 @@ To ensure the **external server** communicates correctly with the LAN server for
    - **Running in the Cloud**: Use `https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker` for the deployed Raspberry Pi LAN server.
 4. Save the file after necessary changes.
 
+To ensure the **LAN server** communicates correctly with the external server for alarm handling, and with the speaker, make sure that the correct URLs is defined:
+
+1. Open the file located at:
+   ```plaintext
+   /Server/LAN/config.py
+   ```
+2. Edit the `SPEAKER_IP` in this file to match your speaker. The file contains a line like this:
+   ```python
+   SPEAKER_IP = "192.168.1.108"
+   ```
+3. Edit the `EXTERNAL_ALARMS_ADD` in this file to match your **external server**, while keeping the route *alarms/add
+   ```python
+   EXTERNAL_ALARMS_ADD = "https://company3-externalserver.azurewebsites.net/alarms/add"
+   ```
+4. Save the file after necessary changes.
+
 ### Run the Application
 
 ```bash
