@@ -8,7 +8,7 @@ speaker_bp = Blueprint("speaker_api", __name__)
 # AXIS device credentials
 username = Config.CAMERA_USERNAME
 password = Config.CAMERA_PASSWORD
-speaker_ip_adress = Config.CAMERA_IP
+speaker_ip_adress = Config.SPEAKER_IP
 
 # Speaker code from Alina
 
