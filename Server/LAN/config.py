@@ -44,5 +44,9 @@ class Config:
         SECRET_KEY = os.getenv("SECRET_KEY")
         CAMERA_USERNAME = os.getenv("CAMERA_USERNAME")
         CAMERA_PASSWORD = os.getenv("CAMERA_PASSWORD")
+        
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    CAMERA_IP = "192.168.1.108"
+    EXTERNAL_ALARMS_ADD = "https://company3-externalserver.azurewebsites.net/alarms/add"

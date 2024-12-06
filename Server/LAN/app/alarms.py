@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import requests
-
+from config import Config
 al_bp = Blueprint("alarms", __name__)
 
 
@@ -11,7 +11,7 @@ def redirect_alarm():
         return jsonify({"error": "alarm data required"}), 400
 
     try:
-        url = "https://company3-externalserver.azurewebsites.net/alarms/add"
+        url = Config.EXTERNAL_ALARMS_ADD
         # Forward the POST request with the received alarm data to the deployed server
         response = requests.post(
             url, json=alarm_data, headers={"Content-Type": "application/json"}
