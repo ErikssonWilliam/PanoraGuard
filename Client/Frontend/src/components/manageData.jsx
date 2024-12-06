@@ -163,14 +163,14 @@ const ManageData = () => {
                   />
                 </div>
                 {error && (
-                <MessageBox
-                  message={error}
-                  onExit={() => {
-                    setError("");
-                  }}
-                />
-              )}
-            </section>
+                  <MessageBox
+                    message={error}
+                    onExit={() => {
+                      setError("");
+                    }}
+                  />
+                )}
+              </section>
             )}
           </div>
         </div>

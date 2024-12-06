@@ -171,14 +171,14 @@ function PanoraGuardDashboard() {
                     toDate={filters.toDate}
                   />
                   {error && (
-                  <MessageBox
-                    message={error}
-                    onExit={() => {
-                      setError("");
-                    }}
-                  />
-                )}
-              </div>
+                    <MessageBox
+                      message={error}
+                      onExit={() => {
+                        setError("");
+                      }}
+                    />
+                  )}
+                </div>
               </section>
             )}
           </div>
