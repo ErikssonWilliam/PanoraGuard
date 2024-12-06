@@ -42,11 +42,14 @@ const AlarmResolutionChart = ({
           const alarms = response.data;
           console.log("Fetched alarms:", alarms);
 
+          const adjustedTillDate = new Date(tillDate);
+          adjustedTillDate.setHours(23, 59, 59, 999);
+
           // Filter alarms based on the selected date range
           const filteredAlarms = alarms.filter((alarm) => {
             const timestamp = new Date(alarm.timestamp);
             return (
-              timestamp >= new Date(fromDate) && timestamp <= new Date(tillDate)
+              timestamp >= new Date(fromDate) && timestamp <= adjustedTillDate
             );
           });
 

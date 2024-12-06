@@ -5,6 +5,7 @@ import Header from "../components/OperatorHeader";
 import { externalURL, lanURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
 import { useAuthStore } from "../utils/useAuthStore";
+import { HiOutlineArrowLeft } from "react-icons/hi";
 import { useCallback } from "react";
 import MessageBox from "../components/MessageBox";
 
@@ -287,18 +288,25 @@ const AlarmDetailPage = () => {
       <Header userInfo={userInfo} />
       <div className="flex-grow flex flex-col items-center p-8 overflow-hidden">
         <div className="flex w-11/12 justify-between bg-custom-bg max-w-6xl overflow-hidden">
+          {/* Left Image Box */}
           <div className="w-2/5 overflow-hidden">
-            <button
+            <HiOutlineArrowLeft
               onClick={() => navigate(-1)}
-              className="absolute top-2 left-2 bg-[#237F94] text-white px-4 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-            >
-              Back
-            </button>
-            <img
-              src={liveFootage}
-              className="w-full h-full object-contain rounded-lg"
+              className="absolute top-4 left-4 text-Black text-2xl cursor-pointer transition-transform duration-200 hover:scale-110"
+              title="Go Back"
             />
+            {alarm?.status !== "IGNORED" ? (
+              <img
+                src={liveFootage}
+                className="w-full h-full object-contain rounded-lg"
+                alt="Live Footage"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg"></div>
+            )}
           </div>
+
+          {/* Right Details Box */}
           <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[500px]">
             {alarm ? (
               <>
@@ -334,7 +342,7 @@ const AlarmDetailPage = () => {
           <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
             {alarm?.status === "NOTIFIED" ? (
               // Layout for "NOTIFIED" status
-              <div className="flex justify-center w-full space-x-4">
+              <div className="flex justify-center w-full space-x-4 bg-gray-200 p-4 rounded-lg shadow-md">
                 <button
                   onClick={() =>
                     navigate("/live-feed", {
@@ -345,7 +353,7 @@ const AlarmDetailPage = () => {
                       },
                     })
                   }
-                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+                  className="border-2 border-[#237F94] text-[#237F94] font-semibold px-6 py-3 rounded-lg hover:bg-[#1E6D7C] hover:text-white transition duration-200"
                 >
                   Look at the live feed
                 </button>
@@ -363,14 +371,14 @@ const AlarmDetailPage = () => {
               </div>
             ) : (
               // Layout for "PENDING" och other statuses
-              <div className="flex justify-between w-full">
+              <div className="flex justify-evenly w-full bg-gray-200 p-4 rounded-lg shadow-md">
                 <button
                   onClick={() =>
                     navigate("/live-feed", {
                       state: { id: alarm.id, camera_id: alarm.camera_id },
                     })
                   }
-                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+                  className="border-2 border-[#237F94] text-[#237F94] font-semibold px-6 py-3 rounded-lg hover:bg-[#1E6D7C] hover:text-white transition duration-200"
                 >
                   Look at the live feed
                 </button>
@@ -396,7 +404,7 @@ const AlarmDetailPage = () => {
                 </div>
                 <button
                   onClick={handleDismissAlert}
-                  className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
+                  className="border-2 border-NewRed text-NewRed font-semibold px-6 py-3 rounded-lg hover:bg-red-700 hover:text-white transition duration-200"
                 >
                   Dismiss the alert
                 </button>

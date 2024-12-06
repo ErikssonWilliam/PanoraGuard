@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import userIcon from "../assets/user-01.png";
+import ProfileDropdown from "./ProfileDropdown";
 
 const Header = ({ userInfo, setErrorMessage }) => {
   const navigate = useNavigate();
@@ -36,13 +36,7 @@ const Header = ({ userInfo, setErrorMessage }) => {
 
       {/* Right Icons (Notification and User) */}
       <div className="ml-auto flex space-x-4">
-        <Link to="/profile">
-          <img
-            src={userIcon}
-            alt="User icon"
-            className="w-6 h-6 hover:scale-110 transition-transform duration-200"
-          />
-        </Link>
+        <ProfileDropdown />
       </div>
     </header>
   );
