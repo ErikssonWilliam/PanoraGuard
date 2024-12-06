@@ -46,3 +46,11 @@ class Config:
         "http://127.0.0.1:5100/speaker/start-speaker"  # URL to local LAN server
     )
     # SPEAKER_URL = "https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker"  # URL to Raspberry Pi LAN server
+
+    # Define the URL constants
+    # Uncomment the URL you want to use
+    # SPEAKER_URL = (
+    #    "http://127.0.0.1:5100/speaker/start-speaker"  # URL to local LAN server
+    # )
+
+    SPEAKER_URL = "https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker"  # URL to Raspberry Pi LAN server
