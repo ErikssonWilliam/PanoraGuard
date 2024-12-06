@@ -9,7 +9,7 @@ function StatisticsForm({ onSubmit }) {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedCamera, setSelectedCamera] = useState("");
   const [fromDate, setFromDate] = useState("");
-  const [tillDate, setTillDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const { token } = useAuthStore();
 
   // Fetch locations when component mounts
@@ -86,7 +86,7 @@ function StatisticsForm({ onSubmit }) {
       location: selectedLocation,
       camera: selectedCamera,
       fromDate,
-      tillDate,
+      toDate,
     });
   };
 
@@ -155,7 +155,7 @@ function StatisticsForm({ onSubmit }) {
         </div>
       </div>
 
-      {/* Second Row - From and Till Dates */}
+      {/* Second Row - From and To Dates */}
       <div className="flex gap-8 text-sm leading-none text-cyan-700 flex-wrap mb-6">
         {/* From Date Input */}
         <div className="flex flex-col flex-1">
@@ -177,22 +177,22 @@ function StatisticsForm({ onSubmit }) {
           </div>
         </div>
 
-        {/* Till Date Input */}
+        {/* To Date Input */}
         <div className="flex flex-col flex-1">
           <label
-            htmlFor="tillDate"
+            htmlFor="toDate"
             className="text-sm font-medium text-slate-800 mb-2"
           >
-            Till
+            To
           </label>
           <div className="flex items-center gap-3 py-3 px-4 w-full bg-white rounded-lg border border-slate-300 shadow-sm">
             <input
               type="date"
-              id="tillDate"
+              id="toDate"
               className="w-full bg-transparent border-none focus:outline-none text-slate-900"
-              aria-label="Till Date"
-              value={tillDate}
-              onChange={(e) => setTillDate(e.target.value)}
+              aria-label="To Date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
             />
           </div>
         </div>

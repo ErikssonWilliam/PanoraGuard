@@ -15,11 +15,11 @@ const AlarmRow = ({ alarm }) => {
     if (alarm.status === "PENDING") {
       return "bg-NewRed";
     } else if (alarm.status === "NOTIFIED") {
-      return "bg-NewYellow"; // Yellow for notified
+      return "bg-white border-NewYellow border-4"; // Yellow for notified
     } else if (alarm.status === "RESOLVED") {
-      return "bg-[#216657]"; // Green for resolved
+      return "bg-white border-[#369161] border-4 "; // Green for resolved
     } else if (alarm.status === "IGNORED") {
-      return "bg-[#788D8E]"; // Dark gray for ignored
+      return "bg-white border-[#454545] border-4"; // Dark gray for ignored
     }
   };
 
@@ -63,7 +63,7 @@ const AlarmRow = ({ alarm }) => {
           </div>
 
           <span
-            className={`flex items-center justify-center min-w-[200px] ${getStatusClass()} text-white p-3 rounded-lg`}
+            className={`flex md:col-span-1 items-center justify-center min-w-[200px] h-11 bg-white p-3 rounded-lg shadow`}
             title={
               alarm.status === "PENDING"
                 ? "This alarm is currently active"
@@ -77,14 +77,17 @@ const AlarmRow = ({ alarm }) => {
             }
           >
             {alarm.status === "PENDING"
-              ? "Active Alarm"
+              ? "Active"
               : alarm.status === "NOTIFIED"
                 ? "Notified"
                 : alarm.status === "RESOLVED"
-                  ? "Resolved Alarm"
+                  ? "Resolved"
                   : alarm.status === "IGNORED"
                     ? "Ignored"
                     : "Unknown"}
+            <div
+              className={"w-4 h-4 ml-2 rounded-full " + getStatusClass() + ""}
+            ></div>
           </span>
 
           <button

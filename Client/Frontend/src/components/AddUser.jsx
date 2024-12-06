@@ -56,7 +56,7 @@ const AddnewUser = () => {
   };
 
   return (
-    <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-lg mx-auto mt-10">
+    <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-lg mx-auto mt-20">
       <h2 className="text-2xl font-semibold text-center text-NavyBlue mb-6">
         Add New User
       </h2>

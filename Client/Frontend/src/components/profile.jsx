@@ -136,7 +136,7 @@ const ProfilePage = () => {
           {/* Log Out Button */}
           <button
             onClick={handleLogout}
-            className="bg-NewRed hover:bg-red-700 text-white font-semibold p-2 rounded-lg shadow-lg transition duration-300 w-full"
+            className="border-2 border-NewRed hover:bg-red-700 hover:text-white text-NewRed font-semibold p-2 rounded-lg shadow-lg transition duration-300 w-full"
           >
             Log Out
           </button>
