@@ -8,6 +8,7 @@ speaker_bp = Blueprint("speaker_api", __name__)
 # AXIS device credentials
 username = Config.CAMERA_USERNAME
 password = Config.CAMERA_PASSWORD
+speaker_ip_adress = Config.CAMERA_IP
 
 # Speaker code from Alina
 
@@ -15,7 +16,7 @@ password = Config.CAMERA_PASSWORD
 @speaker_bp.route("/start-speaker", methods=["POST"])
 def start_speaker():
     # Define the speaker URL
-    external_url = "http://192.168.1.108/axis-cgi/playclip.cgi?location=alarm.mp3&repeat=-1&volume=4&audiodeviceid=0&audiooutputid=0"
+    external_url = f"http://{speaker_ip_adress}/axis-cgi/playclip.cgi?location=alarm.mp3&repeat=-1&volume=4&audiodeviceid=0&audiooutputid=0"
 
     # Send POST request to the speaker
     response = requests.post(external_url, auth=HTTPBasicAuth(username, password))
@@ -33,7 +34,7 @@ def start_speaker():
 @speaker_bp.route("/stop-speaker", methods=["POST"])
 def stop_speaker():
     # Define the speaker URL
-    external_url = "http://192.168.1.108/axis-cgi/stopclip.cgi"
+    external_url = f"http://{speaker_ip_adress}/axis-cgi/stopclip.cgi"
 
     # Send POST request to the speaker server
     response = requests.post(external_url, auth=HTTPBasicAuth(username, password))

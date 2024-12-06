@@ -8,6 +8,7 @@ from uuid import uuid4, UUID
 
 @pytest.fixture
 def guard(session):
+    """Fixture to create a test guard."""
     session.query(User).delete()
     session.commit()
     guard = User(
