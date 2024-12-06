@@ -250,8 +250,6 @@ const AlarmDetailPage = () => {
         users.find((user) => user.id === guardID)?.username || "the guard";
       console.log(`Guard ${guardName} notified successfully:`, response.data);
 
-      setSuccessMessage(`Notification sent to ${guardName}.`);
-
       return true; // Notification succeeded
     } catch (err) {
       console.error(

@@ -24,32 +24,35 @@ const MessageBox = ({
     message && (
       <div
         ref={messageBoxRef}
-        className={`z-50 fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 transform
-        px-4 py-2 md:py-4 rounded-md bg-white ${textColor} border-black border-2`}
+        className={`z-50 fixed bottom-1/4 inset-0 flex items-center justify-center p-4`}
       >
-        <p className="text-center text-xl font-semibold">{message}</p>
-        {showButtons && (
-          <div className="flex justify-center gap-4 mt-4">
-            <button
-              onClick={() => {
-                onConfirm();
-                onExit();
-              }}
-              className="px-4 py-2 bg-green-500 text-black text-xl rounded hover:bg-green-600"
-            >
-              Confirm
-            </button>
-            <button
-              onClick={() => {
-                onCancel();
-                onExit("");
-              }}
-              className="px-4 py-2 bg-red-500 text-black text-xl rounded hover:bg-red-600"
-            >
-              Cancel
-            </button>
-          </div>
-        )}
+        <div
+          className={`max-w-sm w-full rounded-lg shadow-lg font-semibold bg-white border ${textColor} transform transition-all duration-300 ease-in-out`}
+        >
+          <p className="text-center text-2xl  py-4">{message}</p>
+          {showButtons && (
+            <div className="flex justify-center gap-4 p-4 border-t">
+              <button
+                onClick={() => {
+                  onConfirm();
+                  onExit();
+                }}
+                className="px-6 py-2 bg-green-500 text-white text-xl rounded-md shadow-sm hover:bg-green-600 transition-colors"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => {
+                  onCancel();
+                  onExit("");
+                }}
+                className="px-6 py-2 bg-red-500 text-white text-xl rounded-md shadow-sm hover:bg-red-600 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     )
   );
