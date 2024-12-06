@@ -17,11 +17,13 @@ import ChangeUser from "../components/ChangeUser"; // Import the ChangeUser comp
 import logo from "../assets/logo.png";
 import { isUserLoggedInWithRole } from "../utils/jwtUtils.js";
 import Notification from "../components/Notification.jsx";
+import MessageBox from "../components/MessageBox.jsx";
 import ProfileDropdown from "../components/ProfileDropdown"; // Import the ProfileDropdown component
 
 const Admin = () => {
   const [selectedComponent, setSelectedComponent] = useState("OperatorView");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Manage sidebar visibility
+  const [error, setError] = useState("");
 
   if (!isUserLoggedInWithRole("ADMIN")) {
     return (
@@ -104,7 +106,12 @@ const Admin = () => {
         {/* Close Icon */}
         <div className="flex justify-between items-center mb-6">
           {/* <span className="text-lg font-semibold">Navigation</span> */}
-          <button className="text-xl" onClick={() => setIsSidebarOpen(false)}>
+          <button
+            className="text-xl"
+            onClick={() => {
+              setIsSidebarOpen(false);
+            }}
+          >
             <FaTimes />
           </button>
         </div>
@@ -184,6 +191,14 @@ const Admin = () => {
       >
         {renderContent()}
       </div>
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
     </div>
   );
 };

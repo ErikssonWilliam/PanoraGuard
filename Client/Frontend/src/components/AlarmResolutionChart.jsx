@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { externalURL } from "../api/axiosConfig";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const AlarmResolutionChart = ({
   selectedLocation,
@@ -27,7 +28,6 @@ const AlarmResolutionChart = ({
     if (selectedLocation && selectedCamera && fromDate && tillDate) {
       const fetchAlarms = async () => {
         setLoading(true);
-        setError(""); // Reset error state on each fetch
 
         try {
           const response = await axios.get(
@@ -108,7 +108,6 @@ const AlarmResolutionChart = ({
     return (
       <div>Select a location, camera, and date range to display the chart</div>
     );
-  if (error) return <div>{error}</div>;
   {
     /* Need Message Component*/
   }
@@ -134,6 +133,14 @@ const AlarmResolutionChart = ({
           fill="#007ea7"
         />
       </AreaChart>
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
     </ResponsiveContainer>
   );
 };
