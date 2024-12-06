@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 import requests
 from config import Config
+
 al_bp = Blueprint("alarms", __name__)
 
 
