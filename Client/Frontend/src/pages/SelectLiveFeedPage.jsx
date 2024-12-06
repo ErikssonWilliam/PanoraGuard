@@ -4,6 +4,7 @@ import SelectLiveFeed from "../components/SelectLiveFeed";
 import Notification from "../components/Notification";
 import { useAuthStore } from "../utils/useAuthStore";
 import { externalURL } from "../api/axiosConfig";
+import MessageBox from "../components/MessageBox";
 
 // Loader Component
 const Loader = () => (
@@ -13,7 +14,7 @@ const Loader = () => (
 );
 
 const SelectLiveFeedPage = () => {
-  const { token, setError, userId, userRole } = useAuthStore();
+  const { token, error, setError, userId, userRole } = useAuthStore();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +27,6 @@ const SelectLiveFeedPage = () => {
       }
 
       setLoading(true);
-      setError("");
       try {
         const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "GET",
@@ -67,6 +67,14 @@ const SelectLiveFeedPage = () => {
     <div className="bg-custom-bg min-h-screen">
       <Header userInfo={userInfo} />
       <SelectLiveFeed />
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -9,6 +9,7 @@ import Notification from "./Notification.jsx";
 import { externalURL } from "../api/axiosConfig.js";
 import CameraAlarmPieChart from "./CameraAlarmPieChart";
 import { useAuthStore } from "../utils/useAuthStore.js";
+import MessageBox from "./MessageBox.jsx";
 
 function PanoraGuardDashboard() {
   const [alertData, setAlertData] = useState({
@@ -24,7 +25,7 @@ function PanoraGuardDashboard() {
 
   const [showData, setShowData] = useState(false);
 
-  const { token } = useAuthStore();
+  const { token, error, setError } = useAuthStore();
   const [loading, setLoading] = useState(false); // Track loading state
 
   // Fetch alarm data whenever filters change (location, camera, fromDate, tillDate)
@@ -50,7 +51,7 @@ function PanoraGuardDashboard() {
         });
       } catch (error) {
         console.error("Error fetching alert data:", error);
-        alert(
+        setError(
           "There was an error fetching the data. Please check the console for details.",
         );
       } finally {
@@ -68,6 +69,7 @@ function PanoraGuardDashboard() {
     filters.fromDate,
     filters.toDate,
     token,
+    setError,
   ]); // Re-run the effect if any of the filters change
 
   // Calculate the total number of alarms after filtering by date
@@ -168,6 +170,14 @@ function PanoraGuardDashboard() {
                     fromDate={filters.fromDate}
                     toDate={filters.toDate}
                   />
+                  {error && (
+                    <MessageBox
+                      message={error}
+                      onExit={() => {
+                        setError("");
+                      }}
+                    />
+                  )}
                 </div>
               </section>
             )}

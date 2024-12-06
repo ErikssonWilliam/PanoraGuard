@@ -5,6 +5,7 @@ import ActiveAlarms from "./ActiveAlarms";
 import socket from "../utils/socket";
 import { externalURL } from "../api/axiosConfig";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const AlarmList = () => {
   const [activeAlarms, setActiveAlarms] = useState([]);
@@ -89,7 +90,6 @@ const AlarmList = () => {
   }, []);
 
   useEffect(() => {
-    setError("");
     fetchTotalAlarmsCount();
     fetchAlarms(currentPage);
 
@@ -113,10 +113,6 @@ const AlarmList = () => {
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
     <div className="p-20 flex flex-col space-y-6">
@@ -166,6 +162,14 @@ const AlarmList = () => {
         >
           Next
         </button>
+        {error && (
+          <MessageBox
+            message={error}
+            onExit={() => {
+              setError("");
+            }}
+          />
+        )}
       </div>
     </div>
   );
