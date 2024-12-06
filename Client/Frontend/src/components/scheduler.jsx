@@ -6,7 +6,7 @@ import MessageBox from "./MessageBox";
 
 const Scheduler = ({ cameraId }) => {
   const [schedule, setSchedule] = useState(
-    Array.from({ length: 24 }, () => Array(7).fill(false)),
+    Array.from({ length: 24 }, () => Array(7).fill(false))
   );
 
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,7 @@ const Scheduler = ({ cameraId }) => {
       "Saturday",
       "Sunday",
     ],
-    [],
+    []
   );
   const hours = Array.from({ length: 24 }, (_, i) => `${i}:00`);
   useEffect(() => {
@@ -43,7 +43,7 @@ const Scheduler = ({ cameraId }) => {
           const transformedSchedule = Array.from(
             { length: 24 },
             (_, hourIndex) =>
-              days.map((day) => data.schedule.week[day][hourIndex] === 1),
+              days.map((day) => data.schedule.week[day][hourIndex] === 1)
           );
           setSchedule(transformedSchedule);
         } else {
@@ -52,7 +52,7 @@ const Scheduler = ({ cameraId }) => {
       } catch (err) {
         console.error(
           "Error fetching schedule:",
-          err.response?.data?.error || err.message,
+          err.response?.data?.error || err.message
         );
         setError(err.response?.data?.error || "Failed to fetch schedule.");
       } finally {
@@ -107,7 +107,7 @@ const Scheduler = ({ cameraId }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       const data = response.data;
       console.log(data);
@@ -116,7 +116,7 @@ const Scheduler = ({ cameraId }) => {
     } catch (error) {
       console.error(
         "Error updating schedule:",
-        error.response?.data?.error || error.message,
+        error.response?.data?.error || error.message
       );
       setError(error.response?.data?.error || "Error updating schedule");
     }
@@ -133,6 +133,16 @@ const Scheduler = ({ cameraId }) => {
         >
           Update
         </button>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 bg-cyan-600"></div>
+            <span className="text-sm">Active</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 bg-gray-100 border border-gray-300"></div>
+            <span className="text-sm">Non-active</span>
+          </div>
+        </div>
         {error && (
           <MessageBox
             message={error}
