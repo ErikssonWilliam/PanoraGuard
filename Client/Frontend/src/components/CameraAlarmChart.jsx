@@ -37,7 +37,7 @@ const CameraAlarmChart = ({
               headers: {
                 Authorization: `Bearer ${token}`, // Use JWT token for authorization
               },
-            },
+            }
           );
 
           const alarms = response.data;
@@ -57,11 +57,11 @@ const CameraAlarmChart = ({
 
           // Ensure alarms data is present and process it
           const addressed = filteredAlarms.filter(
-            (alarm) => alarm.status === "RESOLVED",
+            (alarm) => alarm.status === "RESOLVED"
           ).length;
 
           const ignored = filteredAlarms.filter(
-            (alarm) => alarm.status === "IGNORED",
+            (alarm) => alarm.status === "IGNORED"
           ).length;
 
           // Prepare data for the chart
@@ -82,10 +82,7 @@ const CameraAlarmChart = ({
   }, [selectedLocation, selectedCamera, fromDate, toDate, setError, token]); // Dependency on location and camera
 
   // If loading, show a loading message
-  if (loading)
-    return (
-      <div>Select a location, camera, and date range to display the chart</div>
-    );
+  if (loading) return <div>Loading...</div>;
 
   return (
     <ResponsiveContainer width="100%" height={400}>
