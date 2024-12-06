@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import bellIcon from "../assets/bell-01.png";
+import { HiOutlineArrowLeft } from "react-icons/hi";
 
 const Header = ({ userInfo, setErrorMessage }) => {
   const navigate = useNavigate();
@@ -30,12 +31,11 @@ const Header = ({ userInfo, setErrorMessage }) => {
       {/* Centered Logo with Manual Left Shift */}
 
       <button onClick={navigateToHome}>
-        <button
+        <HiOutlineArrowLeft
           onClick={() => navigate(-1)}
-          className="absolute top-2 left-2 bg-[#237F94] text-white px-4 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-        >
-          Back
-        </button>
+          className="absolute top-4 left-4 text-Black text-2xl cursor-pointer transition-transform duration-200 hover:scale-110"
+          title="Go Back"
+        />
         <img
           src={logo}
           alt="PanoraGuard logo"
