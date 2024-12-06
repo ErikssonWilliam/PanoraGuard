@@ -36,7 +36,7 @@ const AlarmResolutionChart = ({
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            },
           );
 
           const alarms = response.data;
@@ -58,7 +58,7 @@ const AlarmResolutionChart = ({
           // Create an array of all dates from fromDate to tillDate
           const dateRange = generateDateRange(
             new Date(fromDate),
-            new Date(toDate)
+            new Date(toDate),
           );
 
           // Prepare data structure with 0 for resolved and unresolved alarms for each date
@@ -67,14 +67,14 @@ const AlarmResolutionChart = ({
             const dayAlarms = filteredAlarms.filter(
               (alarm) =>
                 new Date(alarm.timestamp).toISOString().split("T")[0] ===
-                dateStr
+                dateStr,
             );
 
             const resolved = dayAlarms.filter(
-              (alarm) => alarm.status === "RESOLVED"
+              (alarm) => alarm.status === "RESOLVED",
             ).length;
             const unresolved = dayAlarms.filter(
-              (alarm) => alarm.status !== "RESOLVED"
+              (alarm) => alarm.status !== "RESOLVED",
             ).length;
 
             return { date: dateStr, resolved, unresolved };
