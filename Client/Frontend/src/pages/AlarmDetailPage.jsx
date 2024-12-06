@@ -5,6 +5,7 @@ import Header from "../components/OperatorHeader";
 import { externalURL, lanURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
 import { useAuthStore } from "../utils/useAuthStore";
+import { HiOutlineArrowLeft } from "react-icons/hi";
 import { useCallback } from "react";
 
 const useFetchUserInfo = (userId) => {
@@ -363,12 +364,11 @@ const AlarmDetailPage = () => {
         <div className="flex w-11/12 justify-between bg-custom-bg max-w-6xl overflow-hidden">
           {/* Left Image Box */}
           <div className="w-2/5 overflow-hidden">
-            <button
+            <HiOutlineArrowLeft
               onClick={() => navigate(-1)}
-              className="absolute top-2 left-2 bg-[#237F94] text-white px-4 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-            >
-              Back
-            </button>
+              className="absolute top-4 left-4 text-Black text-2xl cursor-pointer transition-transform duration-200 hover:scale-110"
+              title="Go Back"
+            />
             {alarm?.status !== "IGNORED" ? (
               <img
                 src={liveFootage}
