@@ -133,6 +133,16 @@ const Scheduler = ({ cameraId }) => {
         >
           Update
         </button>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 bg-cyan-600"></div>
+            <span className="text-sm">Active</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 bg-gray-100 border border-gray-300"></div>
+            <span className="text-sm">Non-active</span>
+          </div>
+        </div>
         {error && (
           <MessageBox
             message={error}
