@@ -13,8 +13,8 @@ const ManageData = () => {
   });
 
   const [filters, setFilters] = useState({
-    location: "A-huset", // Example location
-    camera: "B8A44F9EEE36", // Example camera ID
+    location: "", // Example location
+    camera: "", // Example camera ID
     fromDate: "", // User-defined start date
     tillDate: "", // User-defined end date
   });
@@ -92,6 +92,7 @@ const ManageData = () => {
   };
 
   const handleFormSubmit = (filters) => {
+    console.log("Updated filters from form:", filters);
     setFilters(filters); // Update filters and trigger useEffect to fetch data
   };
 
