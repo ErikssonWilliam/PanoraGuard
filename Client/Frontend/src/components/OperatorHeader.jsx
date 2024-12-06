@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import userIcon from "../assets/user-01.png";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
+import ProfileDropdown from "./ProfileDropdown"; // Import the new dropdown component
 
 const Header = ({ userInfo, setErrorMessage }) => {
   const navigate = useNavigate();
 
-  // Function to navigate based on the user's role
   const navigateToHome = () => {
     switch (userInfo.role.toLowerCase()) {
       case "admin":
@@ -36,17 +35,11 @@ const Header = ({ userInfo, setErrorMessage }) => {
       </button>
 
       {/* Right Icons (Notification and User) */}
-      <div className="ml-auto flex space-x-4">
+      <div className="ml-auto flex space-x-4 relative">
         <Link to="/select-live-feed">
           <HiOutlineVideoCamera className="w-6 h-6 text-gray-800 hover:scale-110 transition-transform duration-200" />
         </Link>
-        <Link to="/profile">
-          <img
-            src={userIcon}
-            alt="User icon"
-            className="w-6 h-6 hover:scale-110 transition-transform duration-200"
-          />
-        </Link>
+        <ProfileDropdown /> {/* Use the ProfileDropdown component */}
       </div>
     </header>
   );

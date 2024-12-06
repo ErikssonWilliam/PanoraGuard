@@ -6,6 +6,7 @@ import Notification from "./Notification";
 import { useAuthStore } from "../utils/useAuthStore";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import MessageBox from "./MessageBox";
 
 // Reusable Loader Component
 const Loader = () => (
@@ -18,7 +19,8 @@ const ProfilePage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { userId, token, setError, clearAuth } = useAuthStore();
+  const [successMessage, setSuccessMessage] = useState("");
+  const { error, userId, token, setError, clearAuth } = useAuthStore();
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -32,7 +34,6 @@ const ProfilePage = () => {
       }
 
       setLoading(true);
-      setError("");
       try {
         const response = await axios.get(`${externalURL}/users/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -67,7 +68,7 @@ const ProfilePage = () => {
         { newPassword },
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      alert("Password changed successfully.");
+      setSuccessMessage("Password changed successfully.");
       setNewPassword("");
       setRepeatPassword("");
       setErrorMessage("");
@@ -106,7 +107,6 @@ const ProfilePage = () => {
       <div className="mainContent grid lg:grid-cols-5 p-4 pt-10">
         {/* User Info Section */}
         <UserInfoSection userInfo={userInfo} profileImage={profileImage} />
-
         {/* Change Password Section */}
         <div className="lg:col-span-2 pt-20 xs:row-span-1 bg-BG rounded-lg p-6 mx-10 mt-4">
           <h2 className="text-lg font-semibold">Change Password</h2>
@@ -137,10 +137,26 @@ const ProfilePage = () => {
           {/* Log Out Button */}
           <button
             onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 text-white font-semibold p-2 rounded-lg shadow-lg transition duration-300 w-full"
+            className="border-2 border-NewRed hover:bg-red-700 hover:text-white text-NewRed font-semibold p-2 rounded-lg shadow-lg transition duration-300 w-full"
           >
             Log Out
           </button>
+          {error && (
+            <MessageBox
+              message={error}
+              onExit={() => {
+                setError("");
+              }}
+            />
+          )}
+          {successMessage && (
+            <MessageBox
+              message={successMessage}
+              onExit={() => {
+                setSuccessMessage("");
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
@@ -148,8 +164,8 @@ const ProfilePage = () => {
 };
 
 const UserInfoSection = ({ userInfo, profileImage }) => (
-  <div className="lg:col-span-3 flex bg-white rounded-lg lg:h-[80vh] h-auto">
-    <div className="blueSection w-52 bg-NavyBlue p-2 relative rounded-tl-lg rounded-bl-lg">
+  <div className="lg:col-span-3 flex xs:flex-row bg-white rounded-lg lg:h-[80vh] h-auto">
+    <div className="blueSection w-52 bg-NavyBlue p-2 relative rounded-tl-lg rounded-bl-lg  xs:flex-initial">
       <div className="profilePicture w-48 h-48 bg-gray-300 rounded-full overflow-hidden absolute top-1/2 transform -translate-y-1/2">
         <img
           src={profileImage}
@@ -158,7 +174,7 @@ const UserInfoSection = ({ userInfo, profileImage }) => (
         />
       </div>
     </div>
-    <div className="whiteSection bg-LightGray p-6 rounded-tr-lg rounded-br-lg">
+    <div className="whiteSection bg-LightGray flex-1 p-6 rounded-tr-lg rounded-br-lg">
       <h2 className="text-3xl font-bold text-NavyBlue">
         Hello {userInfo.username},
       </h2>

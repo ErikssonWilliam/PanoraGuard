@@ -5,7 +5,9 @@ import Header from "../components/OperatorHeader";
 import { externalURL, lanURL } from "../api/axiosConfig";
 import { formatStatusToSentenceCase } from "../utils/formatUtils";
 import { useAuthStore } from "../utils/useAuthStore";
+import { HiOutlineArrowLeft } from "react-icons/hi";
 import { useCallback } from "react";
+import MessageBox from "../components/MessageBox";
 
 const useFetchUserInfo = (userId) => {
   const [userInfo, setUserInfo] = useState(null);
@@ -14,7 +16,6 @@ const useFetchUserInfo = (userId) => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       setLoading(true);
-      setError(""); // Clear any previous errors
       try {
         const response = await fetch(`${externalURL}/users/${userId}`, {
           method: "GET",
@@ -48,15 +49,14 @@ const AlarmDetailPage = () => {
   const location = useLocation();
   const [alarm, setAlarm] = useState(location.state?.alarm); // Extract alarm details from the passed state
   const [liveFootage, setLiveFootage] = useState(""); // State for live footage image
-  const [notificationMessage, setNotificationMessage] = useState("");
-  const [notificationType, setNotificationType] = useState("");
   const [users, setUsers] = useState([]); // List of guards
   const [selectedUserId, setSelectedUserId] = useState("");
-  const [manualNotifyVisible, setManualNotifyVisible] = useState(false); // Toggle for manual notification confirmation
-  const [callChecked, setCallChecked] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [confirmationSubject, setConfirmationSubject] = useState("");
   const [operatorUsername, setOperatorUsername] = useState("N/A");
   const [, setFormattedStatus] = useState("");
-  const { token, userId } = useAuthStore();
+  const { error, setError, token, userId } = useAuthStore();
 
   // const userId = localStorage.getItem("userId");
 
@@ -101,24 +101,26 @@ const AlarmDetailPage = () => {
 
   useEffect(() => {
     const fetchAlarmImage = async () => {
-      try {
-        const imageResponse = await axios.get(
-          `${externalURL}/alarms/${alarm.id}/image`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+      if (alarm.status !== "IGNORED")
+        try {
+          const imageResponse = await axios.get(
+            `${externalURL}/alarms/${alarm.id}/image`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             },
-          },
-        );
-        if (imageResponse.data && imageResponse.data.image) {
-          // Update liveFootage with Base64 image data URL
-          setLiveFootage(`data:image/jpeg;base64,${imageResponse.data.image}`);
+          );
+          if (imageResponse.data && imageResponse.data.image) {
+            // Update liveFootage with Base64 image data URL
+            setLiveFootage(
+              `data:image/jpeg;base64,${imageResponse.data.image}`,
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching image:", error);
+          setError("Failed to load alarm image.");
         }
-      } catch (error) {
-        console.error("Error fetching image:", error);
-        setNotificationMessage("Failed to load alarm image.");
-        setNotificationType("error");
-      }
     };
 
     // Fetches the list of guards from the server and updates the users state
@@ -132,16 +134,13 @@ const AlarmDetailPage = () => {
         setUsers(response.data);
       } catch (err) {
         console.error("Error fetching guards:", err);
-        setNotificationMessage("Failed to load guards.");
-        setNotificationType("error");
+        setError("Failed to load guards.");
       }
     };
 
-    // Call all functions when component loads
-    // fetchAlarmDetails();
     fetchAlarmImage();
     fetchUsers();
-  }, [navigate, location, alarm.id, token]);
+  }, [navigate, location, alarm.id, token, setError, alarm.status]);
 
   useEffect(() => {
     if (alarm?.status) {
@@ -149,16 +148,6 @@ const AlarmDetailPage = () => {
       setFormattedStatus(status);
     }
   }, [alarm]);
-
-  useEffect(() => {
-    if (location.state?.notifyFailed) {
-      setNotificationMessage(
-        "Notification failed. Call the guard and confirm manual handling.",
-      );
-      setNotificationType("error");
-      setManualNotifyVisible(true);
-    }
-  }, [location.state]);
 
   //Gustav and Alinas attempt to do functions to avoid code duplications.
   const stopExternalSpeaker = async () => {
@@ -178,21 +167,12 @@ const AlarmDetailPage = () => {
         );
       }
     } catch (speakerError) {
-      console.error("Error stopping external speaker:", speakerError);
+      setError(`Error stopping external speaker: ${speakerError}`);
     }
   };
 
   // Updates the alarm status on the server and handles associated actions (navigation, notifications, stopping speaker) based on the new status.
   const updateAlarmStatus = async (newStatus, guardID = null) => {
-    if (newStatus === "RESOLVED") {
-      const confirmResolve = window.confirm(
-        "Are you sure you want to resolve the alarm?",
-      );
-      if (!confirmResolve) {
-        return; // Exit if user cancels the confirmation
-      }
-    }
-
     try {
       const response = await axios.put(
         `${externalURL}/alarms/${alarm.id}/status`,
@@ -229,30 +209,26 @@ const AlarmDetailPage = () => {
 
       switch (newStatus) {
         case "IGNORED":
-          window.alert("Alarm dismissed successfully.");
-          navigateToHome(); // Navigate back to the operator page after confirmation
           stopExternalSpeaker();
+          navigateToHome();
           break;
 
         case "NOTIFIED":
-          window.alert(`Alarm status updated to Notified`);
-          navigateToHome(); // Navigate back to the operator page after confirmation
+          navigateToHome();
           break;
 
         case "RESOLVED":
-          window.alert(`Alarm status updated to Resolved`);
-          navigateToHome(); // Navigate back to the operator page after confirmation
           stopExternalSpeaker();
+          navigateToHome();
           break;
 
         default:
-          console.log("Unknown status:", newStatus);
+          setError(`Unknown status: ${newStatus}`);
           break;
       }
     } catch (err) {
       console.error("Error updating alarm status:", err);
-      setNotificationMessage(`Failed to update status to ${newStatus}.`);
-      setNotificationType("error");
+      setError(`Failed to update status to ${newStatus}.`);
     }
   };
 
@@ -274,10 +250,6 @@ const AlarmDetailPage = () => {
         users.find((user) => user.id === guardID)?.username || "the guard";
       console.log(`Guard ${guardName} notified successfully:`, response.data);
 
-      setNotificationMessage(`Notification sent to ${guardName}.`);
-      setNotificationType("success");
-      setManualNotifyVisible(false);
-
       return true; // Notification succeeded
     } catch (err) {
       console.error(
@@ -286,9 +258,7 @@ const AlarmDetailPage = () => {
       );
 
       // Set notification message on failure
-      setNotificationMessage("Failed to notify the guard.");
-      setNotificationType("error");
-      setManualNotifyVisible(true);
+      setError("Failed to notify the guard.");
 
       return false; // Notification failed
     }
@@ -297,84 +267,45 @@ const AlarmDetailPage = () => {
   // Handles notifying a selected guard and updating the alarm status to "NOTIFIED"; manages error handling and user feedback if the notification fails.
   const handleNotifyAndUpdate = async () => {
     if (!selectedUserId) {
-      setNotificationMessage("Please select a guard to notify.");
-      setNotificationType("error");
+      setError("Please select a guard to notify.");
       return;
     }
-
-    const confirmNotify = window.confirm(
-      "Are you sure you want to notify the guard?",
-    );
-    if (!confirmNotify) return;
-
-    try {
-      setNotificationMessage("");
-      const notifySuccess = await notifyGuard(selectedUserId);
-      if (notifySuccess) {
-        await updateAlarmStatus("NOTIFIED", selectedUserId);
-      } else {
-        setAlarm((prevAlarm) => ({
-          ...prevAlarm,
-          status: "PENDING",
-        }));
-        setNotificationMessage(
-          "Notification failed. Call the guard immediately to ensure the alert is acknowledged.",
-        );
-        setNotificationType("error");
-      }
-    } catch (err) {
-      console.error("Error during notification and status update:", err);
-      setNotificationMessage("Failed to update status and notify the guard.");
-      setNotificationType("error");
-    }
+    setConfirmationMessage("Are you sure you want to notify the guard?");
+    setConfirmationSubject("notify");
   };
 
   const handleDismissAlert = () => {
-    const confirmDismiss = window.confirm(
-      "Are you sure you want to dismiss the alarm?",
-    );
-    if (!confirmDismiss) {
-      return;
-    }
-    updateAlarmStatus("IGNORED");
+    setConfirmationMessage("Are you sure you want to dismiss the alarm?");
+    setConfirmationSubject("dismiss");
   };
 
   // Manual confirmation in case notify the guard function fails
-  const handleManualNotifyConfirm = async () => {
-    if (callChecked) {
-      await updateAlarmStatus("NOTIFIED");
-      setNotificationMessage(
-        "Manual notification confirmed. Status updated to notified.",
-      );
-      setNotificationType("success");
-      setManualNotifyVisible(false);
-    } else {
-      setNotificationMessage(
-        "Please call the guard and check Call to confirm manual notification.",
-      );
-      setNotificationType("error");
-    }
-  };
 
   return (
     <div className="bg-custom-bg min-h-screen max-h-screen flex flex-col overflow-hidden">
       <Header userInfo={userInfo} />
       <div className="flex-grow flex flex-col items-center p-8 overflow-hidden">
         <div className="flex w-11/12 justify-between bg-custom-bg max-w-6xl overflow-hidden">
+          {/* Left Image Box */}
           <div className="w-2/5 overflow-hidden">
-            <button
+            <HiOutlineArrowLeft
               onClick={() => navigate(-1)}
-              className="absolute top-2 left-2 bg-[#237F94] text-white px-4 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-            >
-              Back
-            </button>
-            <img
-              src={liveFootage}
-              alt="Live footage"
-              className="w-full h-full object-contain rounded-lg"
+              className="absolute top-4 left-4 text-Black text-2xl cursor-pointer transition-transform duration-200 hover:scale-110"
+              title="Go Back"
             />
+            {alarm?.status !== "IGNORED" ? (
+              <img
+                src={liveFootage}
+                className="w-full h-full object-contain rounded-lg"
+                alt="Live Footage"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-[#F4F7FA] rounded-lg"></div>
+            )}
           </div>
-          <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[300px]">
+
+          {/* Right Details Box */}
+          <div className="w-2/5 bg-gray-200 rounded-lg p-2 ml-2 overflow-y-auto max-h-[500px]">
             {alarm ? (
               <>
                 <p className="text-xl font-semibold mb-2">
@@ -409,7 +340,7 @@ const AlarmDetailPage = () => {
           <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
             {alarm?.status === "NOTIFIED" ? (
               // Layout for "NOTIFIED" status
-              <div className="flex justify-center w-full space-x-4">
+              <div className="flex justify-center w-full space-x-4 bg-gray-200 p-4 rounded-lg shadow-md">
                 <button
                   onClick={() =>
                     navigate("/live-feed", {
@@ -420,12 +351,17 @@ const AlarmDetailPage = () => {
                       },
                     })
                   }
-                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+                  className="border-2 border-[#237F94] text-[#237F94] font-semibold px-6 py-3 rounded-lg hover:bg-[#1E6D7C] hover:text-white transition duration-200"
                 >
                   Look at the live feed
                 </button>
                 <button
-                  onClick={() => updateAlarmStatus("RESOLVED")}
+                  onClick={() => {
+                    setConfirmationMessage(
+                      "Are you sure you want to resolve the alarm?",
+                    );
+                    setConfirmationSubject("resolve");
+                  }}
                   className="bg-[#EBB305] text-white px-6 py-3 rounded-lg hover:bg-[#FACC14] transition duration-200"
                 >
                   Resolve Alarm
@@ -433,14 +369,14 @@ const AlarmDetailPage = () => {
               </div>
             ) : (
               // Layout for "PENDING" och other statuses
-              <div className="flex justify-between w-full">
+              <div className="flex justify-evenly w-full bg-gray-200 p-4 rounded-lg shadow-md">
                 <button
                   onClick={() =>
                     navigate("/live-feed", {
                       state: { id: alarm.id, camera_id: alarm.camera_id },
                     })
                   }
-                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+                  className="border-2 border-[#237F94] text-[#237F94] font-semibold px-6 py-3 rounded-lg hover:bg-[#1E6D7C] hover:text-white transition duration-200"
                 >
                   Look at the live feed
                 </button>
@@ -466,45 +402,80 @@ const AlarmDetailPage = () => {
                 </div>
                 <button
                   onClick={handleDismissAlert}
-                  className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
+                  className="border-2 border-NewRed text-NewRed font-semibold px-6 py-3 rounded-lg hover:bg-red-700 hover:text-white transition duration-200"
                 >
                   Dismiss the alert
                 </button>
               </div>
             )}
-            {/* Notification Message and Manual Notify */}
-            <div className="mt-2 h-20 flex flex-col items-center">
-              {notificationMessage && (
-                <p
-                  className={`text-center ${
-                    notificationType === "success"
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {notificationMessage}
-                </p>
-              )}
-              {manualNotifyVisible && (
-                <div className="mt-2 flex space-x-2 items-center">
-                  <label className="flex items-center space-x-1">
-                    <input
-                      type="checkbox"
-                      checked={callChecked}
-                      onChange={() => setCallChecked(!callChecked)}
-                      className="form-checkbox"
-                    />
-                    <span>Confirm call and manual alert handling.</span>
-                  </label>
-                  <button
-                    onClick={handleManualNotifyConfirm}
-                    className="bg-[#237F94] text-white px-2 py-2 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
-                  >
-                    Confirm
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* Message Boxes*/}
+            {error && (
+              <MessageBox
+                message={error}
+                onExit={() => {
+                  setError("");
+                }}
+              />
+            )}
+            {successMessage && (
+              <MessageBox
+                message={successMessage}
+                onExit={() => {
+                  setSuccessMessage("");
+                }}
+              />
+            )}
+            {confirmationMessage && (
+              <MessageBox
+                message={confirmationMessage}
+                showButtons
+                onConfirm={async () => {
+                  switch (confirmationSubject) {
+                    case "dismiss": {
+                      updateAlarmStatus("IGNORED");
+                      break;
+                    }
+                    case "resolve": {
+                      updateAlarmStatus("RESOLVED");
+                      break;
+                    }
+                    case "notify": {
+                      try {
+                        const notifySuccess = await notifyGuard(selectedUserId);
+                        if (notifySuccess) {
+                          await updateAlarmStatus("NOTIFIED", selectedUserId);
+                        } else {
+                          setAlarm((prevAlarm) => ({
+                            ...prevAlarm,
+                            status: "PENDING",
+                          }));
+                          setConfirmationMessage("");
+                          setConfirmationSubject("");
+                          setError(
+                            "Notification failed. Call the guard immediately to ensure the alert is acknowledged.",
+                          );
+                        }
+                      } catch (err) {
+                        setConfirmationMessage("");
+                        setConfirmationSubject("");
+                        console.error(
+                          "Error during notification and status update:",
+                          err,
+                        );
+                        setError(
+                          "Failed to update status and notify the guard.",
+                        );
+                      }
+                      break;
+                    }
+                  }
+                }}
+                onExit={() => {
+                  setConfirmationMessage("");
+                  setConfirmationSubject("");
+                }}
+              />
+            )}
           </div>
         )}
       </div>

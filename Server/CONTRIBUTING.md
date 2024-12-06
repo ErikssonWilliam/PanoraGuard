@@ -2,6 +2,16 @@
 
 When writing code in Python, developers should adhere to these documentation standards.
 
+## General
+
+Rather than over-documenting their code, developers should prioritise writing clear and well-structured code that is easy to understand. For example: 
+
+- Functions and variables should have descriptive names so it is easy to understand their purposes. 
+- There should be consistency with indentation and spacing between blocks of code to ensure high readability. 
+- Simple and straightforward logic should be prioritised, rather than using overly complicated solutions.
+
+However, code that is not self-explanatory or trivial should be documented by the developer of the code, in order for other developers to be able to understand and maintain the code.
+
 ## File Header
 
 At the top of a file, above any imports, provide a concise description of the file's purpose.
@@ -18,7 +28,7 @@ integer and floating-point values and return the corresponding results.
 
 ## Function Documentation
 
-For each function, below the `def` line, provide a description of the function's purpose, parameters, returns and any important details.
+For non-trivial functions, below the `def` line, provide a description of the function's purpose, parameters, returns and any important details.
 
 ### Example Function Description:
 
@@ -39,7 +49,7 @@ def add(a: int, b: int) -> int:
 
 ## Route Documentation
 
-For each route, below the `def` line, provide a description of the route's purpose and any important details. If parameters are passed in the URL, an example request should be provided. If data is sent in the request body, an example request body should be provided.
+For non-trivial routes, below the `def` line, provide a description of the route's purpose and any important details. If parameters are passed in the URL, an example request should be provided. If data is sent in the request body, an example request body should be provided. This is important in order for other developers to know how they should make a request to the route's URL.
 
 ### Example Route Description:
 
