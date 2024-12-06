@@ -17,7 +17,7 @@ const CameraAlarmChart = ({
   selectedLocation,
   selectedCamera,
   fromDate,
-  tillDate,
+  toDate,
 }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ const CameraAlarmChart = ({
 
   useEffect(() => {
     // Ensure the location and camera are selected
-    if (selectedLocation && selectedCamera && fromDate && tillDate) {
+    if (selectedLocation && selectedCamera && fromDate && toDate) {
       const fetchAlarms = async () => {
         setLoading(true);
         setError(""); // Reset any previous error state
@@ -37,31 +37,31 @@ const CameraAlarmChart = ({
               headers: {
                 Authorization: `Bearer ${token}`, // Use JWT token for authorization
               },
-            },
+            }
           );
 
           const alarms = response.data;
           console.log("Fetched alarms:", alarms); // Log alarms inside the .then block
 
           // Adjust tillDate to include the entire day
-          const adjustedTillDate = new Date(tillDate);
-          adjustedTillDate.setHours(23, 59, 59, 999);
+          const adjustedToDate = new Date(toDate);
+          adjustedToDate.setHours(23, 59, 59, 999);
 
           // Filter alarms based on the selected date range
           const filteredAlarms = alarms.filter((alarm) => {
             const timestamp = new Date(alarm.timestamp);
             return (
-              timestamp >= new Date(fromDate) && timestamp <= adjustedTillDate
+              timestamp >= new Date(fromDate) && timestamp <= adjustedToDate
             );
           });
 
           // Ensure alarms data is present and process it
           const addressed = filteredAlarms.filter(
-            (alarm) => alarm.status === "RESOLVED",
+            (alarm) => alarm.status === "RESOLVED"
           ).length;
 
           const ignored = filteredAlarms.filter(
-            (alarm) => alarm.status === "IGNORED",
+            (alarm) => alarm.status === "IGNORED"
           ).length;
 
           // Prepare data for the chart
@@ -79,7 +79,7 @@ const CameraAlarmChart = ({
 
       fetchAlarms();
     }
-  }, [selectedLocation, selectedCamera, fromDate, tillDate, setError, token]); // Dependency on location and camera
+  }, [selectedLocation, selectedCamera, fromDate, toDate, setError, token]); // Dependency on location and camera
 
   // If loading, show a loading message
   if (loading)
