@@ -2,12 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { externalURL } from "../api/axiosConfig";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const ChangeUser = () => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const { error, token, setError } = useAuthStore();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [idToDelete, setIdToDelete] = useState("");
   const [roleChanges, setRoleChanges] = useState({}); // Tracks role changes for each user
 
   // Fetch users from the API
@@ -67,12 +71,8 @@ const ChangeUser = () => {
   }, [setError, token]);
   // Delete user by ID
   const handleDelete = async (userId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?",
-    );
-    if (!confirmDelete) return;
     if (!token) {
-      alert("No access token found. Please log in.");
+      setError("No access token found. Please log in.");
       return;
     }
 
@@ -84,7 +84,7 @@ const ChangeUser = () => {
       });
 
       if (response.status === 200) {
-        alert("User deleted successfully");
+        setSuccessMessage("User deleted successfully");
         setUsers(users.filter((user) => user.id !== userId));
         setFilteredUsers(filteredUsers.filter((user) => user.id !== userId));
       }
@@ -108,7 +108,7 @@ const ChangeUser = () => {
     if (!newRole) return;
 
     if (!token) {
-      alert("No access token found. Please log in.");
+      setError("No access token found. Please log in.");
       return;
     }
 
@@ -139,7 +139,7 @@ const ChangeUser = () => {
           delete updatedChanges[userId];
           return updatedChanges;
         });
-        alert("Role updated successfully.");
+        setSuccessMessage("Role updated successfully.");
       }
     } catch (error) {
       console.error("Error updating role:", error);
@@ -159,7 +159,6 @@ const ChangeUser = () => {
 
   // Fetch users on component mount
   useEffect(() => {
-    setError("");
     fetchUsers();
   }, [fetchUsers, setError]);
 
@@ -168,11 +167,6 @@ const ChangeUser = () => {
       <h2 className="text-2xl font-semibold text-center text-NavyBlue mb-6">
         User List
       </h2>
-      {error && (
-        <p className="text-center text-red-500 mb-4">
-          {error}
-        </p> /* Need Message Component*/
-      )}
 
       {/* Search Bar */}
       <div className="mb-4">
@@ -215,6 +209,7 @@ const ChangeUser = () => {
                     {/**So that admin role would show as Admin instead of showing operation as admin role */}
                     <option value="OPERATOR">Operator</option>
                     <option value="GUARD">Guard</option>
+                    <option value="MANAGER">Manager</option>
                   </select>
                 </p>
               </div>
@@ -222,8 +217,13 @@ const ChangeUser = () => {
                 {user.role !== "ADMIN" && (
                   <>
                     <button
-                      className="text-sm py-2 px-4 rounded-md bg-red-500 text-white hover:bg-red-700 transition"
-                      onClick={() => handleDelete(user.id)}
+                      className="text-sm py-2 px-4 rounded-md bg-NewRed text-white hover:bg-red-700 transition"
+                      onClick={() => {
+                        setConfirmationMessage(
+                          "Are you sure you want to delete this user",
+                        );
+                        setIdToDelete(user.id);
+                      }}
                     >
                       Remove
                     </button>
@@ -244,6 +244,34 @@ const ChangeUser = () => {
         </ul>
       ) : (
         <p className="text-center text-gray-600">No users found</p>
+      )}
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
+      {successMessage && (
+        <MessageBox
+          message={successMessage}
+          onExit={() => {
+            setSuccessMessage("");
+          }}
+        />
+      )}
+      {confirmationMessage && (
+        <MessageBox
+          message={confirmationMessage}
+          showButtons
+          onConfirm={() => {
+            handleDelete(idToDelete);
+          }}
+          onExit={() => {
+            setConfirmationMessage("");
+          }}
+        />
       )}
     </div>
   );

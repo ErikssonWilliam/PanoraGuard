@@ -2,6 +2,7 @@ import { useState } from "react";
 import { externalURL } from "../api/axiosConfig";
 import axios from "axios";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
 const AddnewUser = () => {
   const { error, token, setError } = useAuthStore();
@@ -11,6 +12,7 @@ const AddnewUser = () => {
     password: "",
     role: "GUARD",
   });
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,7 +20,6 @@ const AddnewUser = () => {
       ...formData,
       [name]: value,
     });
-    console.log(formData);
   };
 
   const handleSubmit = async () => {
@@ -46,17 +47,16 @@ const AddnewUser = () => {
         role: "GUARD",
       });
 
-      console.log("User added successfully:", response.data);
-      alert(`User ${response.data.user.username} added successfully`);
-      setError("");
+      setSuccessMessage(
+        `User ${response.data.user.username} added successfully`,
+      );
     } catch (error) {
-      console.error("Error adding user", error);
       setError(error.response?.data?.error || "Something went wrong");
     }
   };
 
   return (
-    <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-lg mx-auto mt-10">
+    <div className="font-poppins bg-gray-300 p-6 rounded-lg shadow-lg max-w-lg mx-auto mt-20">
       <h2 className="text-2xl font-semibold text-center text-NavyBlue mb-6">
         Add New User
       </h2>
@@ -118,7 +118,6 @@ const AddnewUser = () => {
             onChange={handleChange}
             className="mt-1 w-full p-3 rounded-md border border-gray-300 focus:ring-2 focus:ring-NavyBlue focus:outline-none bg-white"
           >
-            {/** Add more options */}
             <option value="GUARD">GUARD</option>
             <option value="OPERATOR">OPERATOR</option>
             <option value="MANAGER">MANAGER</option>
@@ -130,11 +129,24 @@ const AddnewUser = () => {
         >
           Submit
         </button>
+        {/* MessageBox for error */}
         {error && (
-          <div className="text-red-600 text-sm font-medium mt-2">
-            <strong>Error:</strong> {error}
-            {/* Need Message Component*/}
-          </div>
+          <MessageBox
+            message={error}
+            onExit={() => {
+              setError("");
+            }}
+          />
+        )}
+        {/* MessageBox for success */}
+        {successMessage && (
+          <MessageBox
+            textColor="text-green-600"
+            message={successMessage}
+            onExit={() => {
+              setSuccessMessage("");
+            }}
+          />
         )}
       </div>
     </div>

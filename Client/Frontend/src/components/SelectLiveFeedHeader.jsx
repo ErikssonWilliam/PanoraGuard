@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import userIcon from "../assets/user-01.png";
+import { HiOutlineArrowLeft } from "react-icons/hi";
 
 // Function for admin/operator to redirect to their home page by clicking the bell button user's role
 const Header = ({ userInfo, setErrorMessage }) => {
@@ -25,6 +26,11 @@ const Header = ({ userInfo, setErrorMessage }) => {
 
   return (
     <header className="relative flex items-center p-4 bg-[#F5F7FA] border-b -mb-6">
+      <HiOutlineArrowLeft
+        onClick={() => navigate(-1)}
+        className="absolute top-4 left-4 text-Black text-2xl cursor-pointer transition-transform duration-200 hover:scale-110"
+        title="Go Back"
+      />
       {/* Centered Logo */}
       <button onClick={navigateToHome}>
         <img

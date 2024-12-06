@@ -32,6 +32,19 @@ class AlarmController:
 
         return jsonify(alarms), 200
 
+    def count_alarms():
+        """
+        Endpoint to retrieve the total number of alarms in the database.
+
+        Returns:
+            JSON: A JSON object containing the total number of alarms.
+        """
+        try:
+            total_alarms = AlarmService.get_total_records()
+            return jsonify({"success": True, "total_alarms": total_alarms}), 200
+        except Exception as e:
+            return jsonify({"success": False, "error": str(e)}), 500
+
     def get_active_alarms(type):
         """
         Retrieves active alarms based on the specified type ('new' or 'old').
