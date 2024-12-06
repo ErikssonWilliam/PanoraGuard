@@ -32,6 +32,7 @@ def create_app():
             "http://localhost:3000",
             "https://ashy-meadow-0a76ab703.5.azurestaticapps.net",
         ],
+        async_mode="eventlet",
     )
 
     return app

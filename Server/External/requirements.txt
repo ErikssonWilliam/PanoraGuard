@@ -3,6 +3,7 @@ psycopg2-binary
 python-dotenv
 flask
 gunicorn
+eventlet
 flask-sqlalchemy
 flask-Migrate
 flask_jwt_extended
