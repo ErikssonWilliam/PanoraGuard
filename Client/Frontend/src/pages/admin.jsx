@@ -113,6 +113,18 @@ const Admin = () => {
         <div className="space-y-6">
           <button
             onClick={() => {
+              setSelectedComponent("OperatorView");
+              setIsSidebarOpen(false);
+            }}
+            className={`flex items-center gap-4 w-full px-4 py-2 rounded-lg hover:bg-gray-700 transition ${
+              selectedComponent === "OperatorView" ? "bg-gray-700" : ""
+            }`}
+          >
+            <FaBell className="text-lg" />
+            <span>Alarms</span>
+          </button>
+          <button
+            onClick={() => {
               setSelectedComponent("Camera");
               setIsSidebarOpen(false);
             }}
@@ -125,18 +137,6 @@ const Admin = () => {
           </button>
           <button
             onClick={() => {
-              setSelectedComponent("OperatorView");
-              setIsSidebarOpen(false);
-            }}
-            className={`flex items-center gap-4 w-full px-4 py-2 rounded-lg hover:bg-gray-700 transition ${
-              selectedComponent === "OperatorView" ? "bg-gray-700" : ""
-            }`}
-          >
-            <FaBell className="text-lg" />
-            <span>Alarm Details</span>
-          </button>
-          <button
-            onClick={() => {
               setSelectedComponent("ManageData");
               setIsSidebarOpen(false);
             }}
@@ -145,7 +145,7 @@ const Admin = () => {
             }`}
           >
             <FaDatabase className="text-lg" />
-            <span>Manage Data</span>
+            <span>Alarm Statistics</span>
           </button>
           <button
             onClick={() => {
@@ -157,7 +157,7 @@ const Admin = () => {
             }`}
           >
             <FaUserPlus className="text-lg" />
-            <span>Add New User</span>
+            <span>Add New Users</span>
           </button>
           <button
             onClick={() => {
@@ -169,7 +169,7 @@ const Admin = () => {
             }`}
           >
             <FaUserEdit className="text-lg" />
-            <span>Change User</span>
+            <span>Edit Users</span>
           </button>
         </div>
       </div>
