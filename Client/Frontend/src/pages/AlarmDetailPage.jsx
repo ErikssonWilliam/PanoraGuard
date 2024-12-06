@@ -416,7 +416,7 @@ const AlarmDetailPage = () => {
           <div className="flex flex-col items-center w-10/12 max-w-6xl mt-6 overflow-hidden">
             {alarm?.status === "NOTIFIED" ? (
               // Layout for "NOTIFIED" status
-              <div className="flex justify-center w-full space-x-4">
+              <div className="flex justify-center w-full space-x-4 bg-gray-200 p-4 rounded-lg shadow-md">
                 <button
                   onClick={() =>
                     navigate("/live-feed", {
@@ -427,7 +427,7 @@ const AlarmDetailPage = () => {
                       },
                     })
                   }
-                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+                  className="border-2 border-[#237F94] text-[#237F94] font-semibold px-6 py-3 rounded-lg hover:bg-[#1E6D7C] hover:text-white transition duration-200"
                 >
                   Look at the live feed
                 </button>
@@ -440,14 +440,14 @@ const AlarmDetailPage = () => {
               </div>
             ) : (
               // Layout for "PENDING" och other statuses
-              <div className="flex justify-between w-full">
+              <div className="flex justify-evenly w-full bg-gray-200 p-4 rounded-lg shadow-md">
                 <button
                   onClick={() =>
                     navigate("/live-feed", {
                       state: { id: alarm.id, camera_id: alarm.camera_id },
                     })
                   }
-                  className="bg-[#237F94] text-white px-6 py-3 rounded-lg hover:bg-[#1E6D7C] transition duration-200"
+                  className="border-2 border-[#237F94] text-[#237F94] font-semibold px-6 py-3 rounded-lg hover:bg-[#1E6D7C] hover:text-white transition duration-200"
                 >
                   Look at the live feed
                 </button>
@@ -473,7 +473,7 @@ const AlarmDetailPage = () => {
                 </div>
                 <button
                   onClick={handleDismissAlert}
-                  className="bg-NewRed text-white px-6 py-3 rounded-lg hover:bg-red-700 transition duration-200"
+                  className="border-2 border-NewRed text-NewRed font-semibold px-6 py-3 rounded-lg hover:bg-red-700 hover:text-white transition duration-200"
                 >
                   Dismiss the alert
                 </button>
