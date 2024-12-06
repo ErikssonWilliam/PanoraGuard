@@ -18,14 +18,14 @@ const AlarmResolutionChart = ({
   selectedLocation,
   selectedCamera,
   fromDate,
-  tillDate,
+  toDate,
 }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { error, token, setError } = useAuthStore();
 
   useEffect(() => {
-    if (selectedLocation && selectedCamera && fromDate && tillDate) {
+    if (selectedLocation && selectedCamera && fromDate && toDate) {
       const fetchAlarms = async () => {
         setLoading(true);
 
@@ -42,14 +42,14 @@ const AlarmResolutionChart = ({
           const alarms = response.data;
           console.log("Fetched alarms:", alarms);
 
-          const adjustedTillDate = new Date(tillDate);
-          adjustedTillDate.setHours(23, 59, 59, 999);
+          const adjustedToDate = new Date(toDate);
+          adjustedToDate.setHours(23, 59, 59, 999);
 
           // Filter alarms based on the selected date range
           const filteredAlarms = alarms.filter((alarm) => {
             const timestamp = new Date(alarm.timestamp);
             return (
-              timestamp >= new Date(fromDate) && timestamp <= adjustedTillDate
+              timestamp >= new Date(fromDate) && timestamp <= adjustedToDate
             );
           });
 
@@ -58,7 +58,7 @@ const AlarmResolutionChart = ({
           // Create an array of all dates from fromDate to tillDate
           const dateRange = generateDateRange(
             new Date(fromDate),
-            new Date(tillDate),
+            new Date(toDate),
           );
 
           // Prepare data structure with 0 for resolved and unresolved alarms for each date
@@ -91,7 +91,7 @@ const AlarmResolutionChart = ({
 
       fetchAlarms();
     }
-  }, [selectedLocation, selectedCamera, fromDate, tillDate, setError, token]);
+  }, [selectedLocation, selectedCamera, fromDate, toDate, setError, token]);
 
   // Generate date range between fromDate and tillDate
   const generateDateRange = (startDate, endDate) => {
