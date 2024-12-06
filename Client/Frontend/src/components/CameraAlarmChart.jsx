@@ -12,18 +12,23 @@ import {
 } from "recharts";
 import { externalURL } from "../api/axiosConfig";
 import { useAuthStore } from "../utils/useAuthStore";
+import MessageBox from "./MessageBox";
 
-const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
+const CameraAlarmChart = ({
+  selectedLocation,
+  selectedCamera,
+  fromDate,
+  toDate,
+}) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { error, token, setError } = useAuthStore();
 
   useEffect(() => {
     // Ensure the location and camera are selected
-    if (selectedLocation && selectedCamera) {
+    if (selectedLocation && selectedCamera && fromDate && toDate) {
       const fetchAlarms = async () => {
         setLoading(true);
-        setError(""); // Reset any previous error state
 
         try {
           const response = await axios.get(
@@ -38,27 +43,35 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
           const alarms = response.data;
           console.log("Fetched alarms:", alarms); // Log alarms inside the .then block
 
+          // Adjust tillDate to include the entire day
+          const adjustedToDate = new Date(toDate);
+          adjustedToDate.setHours(23, 59, 59, 999);
+
+          // Filter alarms based on the selected date range
+          const filteredAlarms = alarms.filter((alarm) => {
+            const timestamp = new Date(alarm.timestamp);
+            return (
+              timestamp >= new Date(fromDate) && timestamp <= adjustedToDate
+            );
+          });
+
           // Ensure alarms data is present and process it
-          if (alarms && alarms.length > 0) {
-            const addressed = alarms.filter(
-              (alarm) => alarm.status === "RESOLVED",
-            ).length;
-            const ignored = alarms.filter(
-              (alarm) => alarm.status === "IGNORED",
-            ).length;
+          const addressed = filteredAlarms.filter(
+            (alarm) => alarm.status === "RESOLVED",
+          ).length;
 
-            // Prepare data for the chart
-            const chartData = [{ camera: selectedCamera, addressed, ignored }];
+          const ignored = filteredAlarms.filter(
+            (alarm) => alarm.status === "IGNORED",
+          ).length;
 
-            // Update state with chart data
-            setData(chartData);
-          } else {
-            setData([]);
-            setError("No alarms found.");
-          }
+          // Prepare data for the chart
+          const chartData = [{ camera: selectedCamera, addressed, ignored }];
+
+          // Update state with chart data
+          setData(chartData); // Set the prepared data to the state
         } catch (error) {
-          console.error("Error fetching alarm data:", error);
-          setError("Failed to load data");
+          console.error("Error fetching alarms:", error);
+          setError("Failed to fetch alarms.");
         } finally {
           setLoading(false);
         }
@@ -66,13 +79,10 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
 
       fetchAlarms();
     }
-  }, [selectedLocation, selectedCamera, setError, token]); // Dependency on location and camera
+  }, [selectedLocation, selectedCamera, fromDate, toDate, setError, token]); // Dependency on location and camera
 
   // If loading, show a loading message
   if (loading) return <div>Loading...</div>;
-
-  // If error, show an error message
-  if (error) return <div>{error}</div>;
 
   return (
     <ResponsiveContainer width="100%" height={400}>
@@ -87,6 +97,14 @@ const CameraAlarmChart = ({ selectedLocation, selectedCamera }) => {
         <Bar dataKey="addressed" stackId="a" fill="#003249" />
         <Bar dataKey="ignored" stackId="a" fill="#007ea7" />
       </BarChart>
+      {error && (
+        <MessageBox
+          message={error}
+          onExit={() => {
+            setError("");
+          }}
+        />
+      )}
     </ResponsiveContainer>
   );
 };

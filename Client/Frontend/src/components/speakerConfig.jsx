@@ -46,7 +46,7 @@ const SpeakerConfig = () => {
         <button className="w-1/4 bg-NavyBlue text-white rounded-lg p-2">
           Update
         </button>
-        <button className="w-1/4 text-white rounded-lg p-2 bg-red-700">
+        <button className="w-1/4 text-white rounded-lg p-2 bg-NewRed">
           Deactive Speaker
         </button>
       </div>
