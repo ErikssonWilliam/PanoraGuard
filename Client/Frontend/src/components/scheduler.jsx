@@ -126,7 +126,7 @@ const Scheduler = ({ cameraId }) => {
 
   return (
     <div className=" bg-gray-100 min-h-screen">
-      <div className="pt-1">
+      <div className="pt-4 flex items-center justify-between">
         <button
           className="w-1/5 bg-cyan-700 hover:bg-cyan-800 text-white rounded-lg p-2"
           onClick={updateSchedule}
