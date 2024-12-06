@@ -300,7 +300,7 @@ const AlarmDetailPage = () => {
                 alt="Live Footage"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg"></div>
+              <div className="w-full h-full flex items-center justify-center bg-[#F4F7FA] rounded-lg"></div>
             )}
           </div>
 
