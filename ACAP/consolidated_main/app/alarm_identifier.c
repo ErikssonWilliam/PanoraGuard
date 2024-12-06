@@ -4,7 +4,7 @@
  * This application listens to consolidated track messages from an MDB (Message Database)
  * system, processes them, and sends relevant data to an external server. It also configures
  * camera-specific settings such as enabling "best snapshot" mode.
- * 
+ *
  * Functionality includes:
  *   - JSON payload parsing for alarm data.
  *   - Posting alarm information to an external server.
@@ -104,7 +104,7 @@ static void post_alarms(const char *data)
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-        //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // detailed logging
+        // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); // detailed logging
 
         res = curl_easy_perform(curl);
         if (res != CURLE_OK)
@@ -314,11 +314,11 @@ static size_t write_callback_snapshot(void *contents, size_t size, size_t nmemb,
  * Returns:
  *   char*: Formatted credentials string (must be freed by the caller).
  */
-static char* parse_credentials(GVariant* result)
+static char *parse_credentials(GVariant *result)
 {
-    char* credentials_string = NULL;
-    char* id = NULL;
-    char* password = NULL;
+    char *credentials_string = NULL;
+    char *id = NULL;
+    char *password = NULL;
 
     g_variant_get(result, "(&s)", &credentials_string);
     char id_buffer[256], password_buffer[256];
@@ -331,7 +331,7 @@ static char* parse_credentials(GVariant* result)
 
     id = strdup(id_buffer);
     password = strdup(password_buffer);
-    char* credentials = g_strdup_printf("%s:%s", id, password);
+    char *credentials = g_strdup_printf("%s:%s", id, password);
 
     free(id);
     free(password);
@@ -349,10 +349,10 @@ static char* parse_credentials(GVariant* result)
  * Returns:
  *   char*: Retrieved credentials (must be freed by the caller).
  */
-static char* retrieve_vapix_credentials(const char* username)
+static char *retrieve_vapix_credentials(const char *username)
 {
-    GError* error = NULL;
-    GDBusConnection* connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+    GError *error = NULL;
+    GDBusConnection *connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
 
     if (!connection)
     {
@@ -360,12 +360,12 @@ static char* retrieve_vapix_credentials(const char* username)
         return NULL;
     }
 
-    const char* bus_name = "com.axis.HTTPConf1";
-    const char* object_path = "/com/axis/HTTPConf1/VAPIXServiceAccounts1";
-    const char* interface_name = "com.axis.HTTPConf1.VAPIXServiceAccounts1";
-    const char* method_name = "GetCredentials";
+    const char *bus_name = "com.axis.HTTPConf1";
+    const char *object_path = "/com/axis/HTTPConf1/VAPIXServiceAccounts1";
+    const char *interface_name = "com.axis.HTTPConf1.VAPIXServiceAccounts1";
+    const char *method_name = "GetCredentials";
 
-    GVariant* result = g_dbus_connection_call_sync(connection,
+    GVariant *result = g_dbus_connection_call_sync(connection,
                                                    bus_name,
                                                    object_path,
                                                    interface_name,
@@ -383,7 +383,7 @@ static char* retrieve_vapix_credentials(const char* username)
         return NULL;
     }
 
-    char* credentials = parse_credentials(result);
+    char *credentials = parse_credentials(result);
 
     g_variant_unref(result);
     g_object_unref(connection);
@@ -397,7 +397,7 @@ static char* retrieve_vapix_credentials(const char* username)
  */
 static void enable_best_snapshot(void)
 {
-    char* credentials = retrieve_vapix_credentials("user");
+    char *credentials = retrieve_vapix_credentials("user");
     const char *data = "{\"data\":true}"; // JSON payload to enable best snapshot
     CURL *curl;
     CURLcode res;
