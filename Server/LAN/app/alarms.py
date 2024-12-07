@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 import requests
 from config import Config
+from .speaker import start_speaker
 
 al_bp = Blueprint("alarms", __name__)
 
@@ -19,6 +20,8 @@ def redirect_alarm():
         )
 
         if response.status_code == 201:
+            # Start the speaker after the alarm has been added
+            start_speaker()
             return jsonify({"message": "Alarm added successfully."}), 201
         else:
             return (

@@ -23,7 +23,7 @@ def start_speaker():
 
     # Handle the response from the speaker
     if response.status_code == 200:
-        return jsonify({"status": "success", "external_response": response.json()}), 200
+        return jsonify({"status": "success"}), 200
     else:
         return (
             jsonify({"status": "failed", "error": response.text}),
@@ -41,7 +41,7 @@ def stop_speaker():
 
     # Handle the response from the speaker server
     if response.status_code == 200:
-        return jsonify({"status": "success", "external_response": response.json()}), 200
+        return jsonify({"status": "success"}), 200
     else:
         return (
             jsonify({"status": "failed", "error": response.text}),
