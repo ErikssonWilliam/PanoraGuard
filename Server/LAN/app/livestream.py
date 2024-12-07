@@ -1,3 +1,8 @@
+"""
+This file contains the route for streaming the live feed from a selected camera.
+It also includes functionalty for generating the video frames displayed on the frontend.
+"""
+
 from flask import Blueprint, Response, jsonify, request
 from .utils import get_jwt_claims, get_camera_ip
 import cv2
@@ -31,6 +36,13 @@ def generate_frames(camera_ip):
 
 @ls_bp.route("/<camera_id>")
 def video_feed(camera_id):
+    """
+    Route for streaming the live feed from a selected camera.
+
+    URL parameters:
+        camera_id (str): The ID of the camera.
+    """
+
     # Get the user_id and role from the JWT claims
     _, role = get_jwt_claims(request)
 
