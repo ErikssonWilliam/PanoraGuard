@@ -17,7 +17,7 @@ The ACAP must be installed on each camera, with the **following modifications** 
 1.  `CAMERA_ID`: Update this to the appropriate ID for the camera on which the ACAP will be installed.
 2.  `SERVER_URL`: Update this to the IP address of the server where the system will send the data.
     - **Running Locally**: URL to local external server.
-    - **Running in the Cloud**: URL to deployed LAN server.
+    - **Running Hosted Remotely**: URL to deployed LAN server.
 
 ## Prerequisites
 
@@ -38,13 +38,13 @@ Follow these steps to build and install an ACAP using Docker.
    #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
    // #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
    #define SERVER_URL "http://192.168.1.145:5100/alarms/redirect" // RUNNING LOCALLY: URL for sending alarms to LAN server on localhost
-   // #define SERVER_URL "https://airedale-engaging-easily.ngrok-free.app/alarms/redirect" // RUNNING IN CLOUD: URL for sending alarms to deployed LAN server
+   // #define SERVER_URL "https://airedale-engaging-easily.ngrok-free.app/alarms/redirect" // HOSTED REMOTELY: URL for sending alarms to remotely hosted LAN server
    ```
 
    - `CAMERA_ID`: Set to the correct camera serial number.
    - `EXTERNAL_URL`:
      - **Running Locally**: Change `192.168.1.145:5000` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
-     - **Running in the Cloud**: Use the deployed Rasperry Pie endpoint: `https://airedale-engaging-easily.ngrok-free.app/alarms/redirect`.
+     - **Running Hosted Remotely**: Use the hosted Rasperry Pie endpoint: `https://airedale-engaging-easily.ngrok-free.app/alarms/redirect`.
 
 3. To find the camera's IP address:
 
