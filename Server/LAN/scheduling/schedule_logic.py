@@ -1,3 +1,9 @@
+"""
+This file contains the logic for ensuring that the cameras follow their scheduled behavior.
+It handles starting and stopping of the ACAP that sends alarms, ensuring alarms are
+only triggered from a camera when the camera is scheduled to do so.
+"""
+
 import time
 from datetime import datetime, date
 import json
@@ -15,6 +21,17 @@ acap_states = {}
 
 
 def toggle_acap(camera_ip, action):
+    """
+    Function for starting and stopping an ACAP on a selected camera.
+
+    Parameters:
+        camera_ip (str): The IP-address of the camera.
+        action (str): The desired action, either "start" or "stop".
+
+    Returns:
+        bool: True if the ACAP was toggled successfully, otherwise False.
+    """
+
     url = f"http://{camera_ip}/axis-cgi/applications/control.cgi?action={action}&package={acap_name}"
     try:
         response = requests.post(url, auth=HTTPBasicAuth(username, password))
@@ -30,6 +47,11 @@ def toggle_acap(camera_ip, action):
 
 
 def check_schedules():
+    """
+    Function that checks for each camera if its ACAP needs to be started or stopped,
+    according to the camera's schedule.
+    """
+
     today = date.today().strftime("%A")
     current_time = datetime.now().strftime("%H:%M:%S")
     print("Weekday:", today, ". Current time:", current_time)
@@ -62,8 +84,11 @@ def check_schedules():
             acap_states[id] = isScheduled
 
 
-# TODO Are we going to actually check every minute or only once every hour at minute 00? If we choose the latter, we need to remember to check the schedule of a camera also when that schedule has been changed by the user, so if the user changes the current hour, that change will take effect right away.
 def run_schedule(app):
+    """
+    Function that ensures the schedule of each camera is checked continuously.
+    """
+
     with app.app_context():
         # Initially for each camera, make sure the ACAP is turned off and the state is set to 0
         cameras = get_cameras()
