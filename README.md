@@ -70,6 +70,8 @@ PanoraGuard integrates both **hardware** and **software** components:
 
 This seamless flow ensures efficient alarm management and real-time decision-making.
 
+![System Architecture](architecture.png)
+
 ---
 
 ## How to Run the System
