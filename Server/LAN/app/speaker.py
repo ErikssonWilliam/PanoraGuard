@@ -15,6 +15,7 @@ username = Config.CAMERA_USERNAME
 password = Config.CAMERA_PASSWORD
 speaker_ip_adress = Config.SPEAKER_IP
 
+
 @speaker_bp.route("/start-speaker", methods=["POST"])
 def start_speaker():
     """
