@@ -2,9 +2,9 @@
 
 ACAPs are built-in applications on AXIS cameras.
 
-The purpose of the ACAP is to identify objects with a specified confidence level and send this information to an external server. The external server uses this data to trigger alarms if necessary and display them on a GUI.
+The purpose of the ACAP is to identify objects with a specified confidence level and send this information to a LAN server. The LAN server uses this data to trigger alarms if necessary and forwards it to an external server to display them on a GUI.
 
-**Important Note**: Since the cloud server in the Azure environment won't accept requests directly from the ACAP in the camera, the information is first passed to a LAN server on the same local area network as the camera, which then forwards it to the external server. **_This logic applies when running in the cloud, when running locally the ACAP can send information directly to the external server_**.
+**Important Note**: Since the cloud server in the Azure environment won't accept requests directly from the ACAP in the camera, the information is first passed to a LAN server on the same local area network as the camera, which then forwards it to the external server.
 
 ## Overview
 
@@ -42,7 +42,7 @@ Follow these steps to build and install an ACAP using Docker.
    ```
 
    - `CAMERA_ID`: Set to the correct camera serial number.
-   - `EXTERNAL_URL`:
+   - `SERVER_URL`:
      - **Running Locally**: Change `192.168.1.145:5100` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
      - **Running Hosted Remotely**: Use the adress of the LAN server set up at the target location.
 
@@ -57,7 +57,7 @@ Follow these steps to build and install an ACAP using Docker.
 4. To find the local server's IP:
 
    - Be on the same network as the camera.
-   - Start the external server as described in `/Server/README`.
+   - Start the LAN server as described in `/Server/README`.
    - Use the displayed IP address.
 
 ### Step 2: Build the Docker Image

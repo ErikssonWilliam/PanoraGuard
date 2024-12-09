@@ -55,7 +55,7 @@ PanoraGuard integrates both **hardware** and **software** components:
 
 1. **ACAP**: Custom-built applications on AXIS cameras for object detection.
 2. **Client**: A GUI for operators, admin and managers to monitor and manage alarms.
-3. **External Server**: Cloud-based system for alarm handling, business logic, and database management.
+3. **External Server**: Cloud-hosted server for alarm handling, business logic, and database management.
 4. **LAN Server**: Local server managing camera schedules, live feeds, and configurations.
 
 ### Data Flow:
