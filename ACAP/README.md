@@ -16,8 +16,8 @@ The ACAP must be installed on each camera, with the **following modifications** 
 
 1.  `CAMERA_ID`: Update this to the appropriate ID for the camera on which the ACAP will be installed.
 2.  `SERVER_URL`: Update this to the IP address of the server where the system will send the data.
-    - **Running Locally**: URL to local external server.
-    - **Running Hosted Remotely**: URL to deployed LAN server.
+    - **Running Locally**: URL to local LAN server.
+    - **Running Hosted Remotely**: URL to remotely hosted LAN server.
 
 ## Prerequisites
 
@@ -35,16 +35,16 @@ Follow these steps to build and install an ACAP using Docker.
 2. Update the following lines (line 30-33):
 
    ```c
-   #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
-   // #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
-   #define SERVER_URL "http://192.168.1.145:5100/alarms/redirect" // RUNNING LOCALLY: URL for sending alarms to LAN server on localhost
-   // #define SERVER_URL "https://airedale-engaging-easily.ngrok-free.app/alarms/redirect" // HOSTED REMOTELY: URL for sending alarms to remotely hosted LAN server
+   // #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
+   #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
+   #define SERVER_URL "http://192.168.1.145:5100/alarms/redirect" // RUNNING LOCALLY: URL for sending alarms to local LAN server
+   // #define SERVER_URL "http://192.168.1.144:5100/alarms/redirect" // RUNNING REMOTELY: URL for sending alarms to target LAN server with a static ip
    ```
 
    - `CAMERA_ID`: Set to the correct camera serial number.
    - `EXTERNAL_URL`:
-     - **Running Locally**: Change `192.168.1.145:5000` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
-     - **Running Hosted Remotely**: Use the hosted Rasperry Pie endpoint: `https://airedale-engaging-easily.ngrok-free.app/alarms/redirect`.
+     - **Running Locally**: Change `192.168.1.145:5100` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
+     - **Running Hosted Remotely**: Use the adress of the LAN server set up at the target location.
 
 3. To find the camera's IP address:
 
