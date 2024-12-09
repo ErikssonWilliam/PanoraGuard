@@ -45,14 +45,7 @@ def video_feed(camera_id):
 
     # Get the user_id and role from the JWT claims
     _, role = get_jwt_claims(request)
-
-    # Check if the role is "OPERATOR"
-    # if role != "OPERATOR":
-    #     return jsonify(
-    #         {
-    #             "error": "Unauthorized access. You need the 'OPERATOR' role to view the stream."
-    #         }
-    #     ), 403
+    
     camera_ip = get_camera_ip(camera_id)
     if not camera_ip:
         return jsonify({"error": "Camera not found"}), 404
