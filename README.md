@@ -49,7 +49,7 @@ PanoraGuard integrates both **hardware** and **software** components:
 
 - **AXIS Cameras**: Object detection and alarm triggering.
 - **Speaker System**: For audible warnings.
-- **LAN Server (Raspberry Pi)**: Local management of cameras and system configurations.
+- **LAN Server (Host machine)**: Local management of cameras and system configurations.
 
 ### Software:
 
@@ -90,9 +90,9 @@ This seamless flow ensures efficient alarm management and real-time decision-mak
 
 ### Running in the Cloud
 
-1. Set up cameras and speakers on the same network as the **LAN Server** running on a Raspberry Pi.
-2. Install the ACAP with the LAN server's deployed endpoint (see `/ACAP` README).
-3. Start the LAN Server on the Raspberry Pi.
+1. Set up cameras and speakers on the same network as the **LAN Server** running on a host machine.
+2. Install the ACAP on the cameras, including the correct LAN server endpoint (see `/ACAP` README).
+3. Start the LAN Server on the host machine.
 4. Access the cloud GUI at:  
    [PanoraGuard Cloud GUI](https://ashy-meadow-0a76ab703.5.azurestaticapps.net)
 
