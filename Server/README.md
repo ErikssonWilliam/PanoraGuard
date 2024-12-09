@@ -197,6 +197,6 @@ To be finished...
 
 1. _Optional_: Connect to Azure database instance from pgAdmin4 desktop application.
 
-2. **LAN Server**: Start the Rasperry Pie LAN server, and connect it to the same network as the camera.
+2. **LAN Server**: Start the LAN server, and connect it to the same network as the camera.
 
 3. **External Server**: Spinning in the cloud 24/7 on an Azure Web App server instance.
