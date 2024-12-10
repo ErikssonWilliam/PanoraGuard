@@ -76,22 +76,6 @@ CAMERA_PASSWORD = secure # only for LAN
 
 ### Change URL to correct server IP-address
 
-To ensure the **external server** communicates correctly with the LAN server for speaker control, make sure that the correct URL is defined:
-
-1. Open the file located at:
-   ```plaintext
-   /Server/External/config.py
-   ```
-2. Edit the `SPEAKER_URL` in this file to match your environment. The file contains a line like this:
-   ```python
-   # SPEAKER_URL = "https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker"  # URL to Raspberry Pi LAN server
-   SPEAKER_URL = "http://127.0.0.1:5100/speaker/start-speaker"  # URL to local LAN server
-   ```
-3. Ensure the `SPEAKER_URL` is set to the appropriate value:
-   - **Running Locally**: Use `http://127.0.0.1:5100/speaker/start-speaker` for the local LAN server.
-   - **Running in the Cloud**: Use `https://airedale-engaging-easily.ngrok-free.app/speaker/start-speaker` for the deployed Raspberry Pi LAN server.
-4. Save the file after necessary changes.
-
 To ensure the **LAN server** communicates correctly with the external server for alarm handling, and with the speaker, make sure that the correct URLs is defined:
 
 1. Open the file located at:
@@ -102,7 +86,7 @@ To ensure the **LAN server** communicates correctly with the external server for
    ```python
    SPEAKER_IP = "192.168.1.108"
    ```
-3. Edit the `EXTERNAL_ALARMS_ADD` in this file to match your **external server**, while keeping the route *alarms/add
+3. Edit the `EXTERNAL_ALARMS_ADD` in this file to match your **external server**, while keeping the route \*alarms/add
    ```python
    EXTERNAL_ALARMS_ADD = "https://company3-externalserver.azurewebsites.net/alarms/add"
    ```
@@ -213,6 +197,6 @@ To be finished...
 
 1. _Optional_: Connect to Azure database instance from pgAdmin4 desktop application.
 
-2. **LAN Server**: Start the Rasperry Pie LAN server, and connect it to the same network as the camera.
+2. **LAN Server**: Start the LAN server, and connect it to the same network as the camera.
 
 3. **External Server**: Spinning in the cloud 24/7 on an Azure Web App server instance.
