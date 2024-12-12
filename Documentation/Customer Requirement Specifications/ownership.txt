@@ -1,5 +1,0 @@
-# Document Ownership for Customer Requirements Specification
-
-Document Owner: [Analyst Group]
-# Add section owners below as needed
-
