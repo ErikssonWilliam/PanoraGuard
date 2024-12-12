@@ -1,4 +1,0 @@
-# Document Ownership for Testing Plan
-
-Document Owner: [Testing Group]
-# Add section owners below as needed
