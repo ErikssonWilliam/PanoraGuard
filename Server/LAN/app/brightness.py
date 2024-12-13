@@ -1,3 +1,8 @@
+"""
+This file provides routes for retrieving and changing the brightness level of a camera.
+In order to access these routes, the user must be logged in and have an Admin role.
+"""
+
 from flask import Blueprint, request, jsonify
 import requests
 from requests.auth import HTTPBasicAuth
@@ -21,6 +26,10 @@ def get_brightness():
     """
     Route for retrieving the current brightness level of a camera.
     The request must include the 'camera_id' in the query parameters.
+
+    URL parameters:
+        camera_id (str): The ID of the camera.
+
     Example request:
         GET /get-brightness?camera_id=<camera_id>
     """
@@ -71,6 +80,7 @@ def set_brightness():
     """
     Route for changing the brightness level of a camera.
     The request must include 'camera_id' and 'new_brightness' in the JSON body.
+
     Example request body:
         {
             "camera_id": "<camera_id>",

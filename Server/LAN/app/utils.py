@@ -1,9 +1,24 @@
+"""
+This file contains functionality for extracting information from JWT tokens.
+"""
+
 import jwt
 from .database import Camera
 from config import Config
 
 
 def get_jwt_claims(request):
+    """
+    Function for extracting information from a JWT token.
+    The JWT token is extracted and decoded from the Authorization header of a request.
+
+    Parameters:
+        request (flask.Request): The request containing the Authorization header.
+
+    Returns:
+        tuple: A tuple containing the user ID and role.
+    """
+
     # Get the Authorization header from the request
     auth_header = request.headers.get("Authorization")
 
