@@ -1,13 +1,24 @@
 <div style="text-align: center;">
-  <img src="Client/Frontend/src/assets/PanoraGuard.svg" alt="PanoraGuard Logo" width="200"/>
+  <img src="Client/Frontend/src/assets/PanoraGuard.svg" alt="PanoraGuard Logo" width="400"/>
+</div>
+
+---
+**Final Product Demo Pitch** 
+<div >
+  <!-- Second Icon (YouTube) -->
+  <a href="https://www.youtube.com/watch?v=JkDI--DhFnU&t=1s" target="_blank">
+    <img width=200px src="https://img.shields.io/badge/youtube-%23FF0000.svg?&style=for-the-badge&logo=youtube&logoColor=white&color=FF0000" alt="YouTube"/>
+  </a>
 </div>
 
 ---
 
-Welcome to **PanoraGuard**, a security surveillance system developed by **Company 3** in collaboration with **AXIS Communications**.
+Welcome to **PanoraGuard**, a security surveillance system developed by **Company 3** in collaboration with **AXIS Communications**. 
+
+Project in the course **TDDC88 Software Engineering** at Linköping's University during fall of 2024.
 
 Explore the product on our live cloud deployment:  
-[**PanoraGuard Cloud Product**](https://ashy-meadow-0a76ab703.5.azurestaticapps.net/)
+[**panoraguard.se**](https://panoraguard.se/)
 
 ---
 
@@ -24,6 +35,7 @@ Learn more about us on our company website: [Company Website](https://company-me
 
 - [**Demo iteration 2**](https://drive.google.com/file/d/1ICRIwVadDdsYsEZzZyCarr14lxmGuBHL/view?usp=drive_link)
 - [**Demo iteration 3**](https://drive.google.com/file/d/1vbIL0ewWdcuGKRSdi8LCC5NupxmdV6Gc/view?usp=drive_link)
+- [**Final Product Demo Pitch**](https://www.youtube.com/watch?v=JkDI--DhFnU&t=1s)
 
 ## What is PanoraGuard?
 
@@ -94,7 +106,7 @@ This seamless flow ensures efficient alarm management and real-time decision-mak
 2. Install the ACAP on the cameras, including the correct LAN server endpoint (see `/ACAP` README).
 3. Start the LAN Server on the host machine.
 4. Access the cloud GUI at:  
-   [PanoraGuard Cloud GUI](https://ashy-meadow-0a76ab703.5.azurestaticapps.net)
+   [**panoraguard.se**](https://panoraguard.se/)
 
 ---
 
