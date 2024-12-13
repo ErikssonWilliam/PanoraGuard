@@ -48,7 +48,6 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     SPEAKER_IP = "192.168.1.108"  # Always the same
-    # EXTERNAL_ALARMS_ADD = "https://company3-externalserver.azurewebsites.net/alarms/add" # When using the cloud server
-    EXTERNAL_ALARMS_ADD = (
-        "http://192.168.1.145:5000/alarms/add"  # When using the local server
-    )
+    EXTERNAL_ALARMS_ADD = "https://company3-externalserver.azurewebsites.net/alarms/add" # When using the cloud server
+    # EXTERNAL_ALARMS_ADD = "http://192.168.1.145:5000/alarms/add"  # When using the local server
+
