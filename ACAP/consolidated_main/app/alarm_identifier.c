@@ -27,10 +27,10 @@
 #include <gio/gio.h>   // For D-Bus credentials
 
 // Define constants
-#define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
-// #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
-// #define SERVER_URL "http://192.168.1.145:5000/alarms/add" // RUNNING LOCALLY: URL for sending alarms to local external server
-#define SERVER_URL "http://192.168.1.144:5100/alarms/redirect" // RUNNING IN CLOUD: URL for sending alarms to deployed LAN server with a static ip
+// #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
+#define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
+#define SERVER_URL "http://192.168.1.145:5100/alarms/redirect" // RUNNING LOCALLY: URL for sending alarms to local LAN server
+// #define SERVER_URL "http://192.168.1.144:5100/alarms/redirect" // RUNNING IN CLOUD: URL for sending alarms to deployed LAN server with a static ip
 
 #define ENABLE_SNAPSHOT_URL "http://127.0.0.12/config/rest/best-snapshot/v1/enabled" // Endpoint for enabling snapshots
 

@@ -2,9 +2,9 @@
 
 ACAPs are built-in applications on AXIS cameras.
 
-The purpose of the ACAP is to identify objects with a specified confidence level and send this information to an external server. The external server uses this data to trigger alarms if necessary and display them on a GUI.
+The purpose of the ACAP is to identify objects with a specified confidence level and send this information to a LAN server. The LAN server uses this data to trigger alarms if necessary and forwards it to an external server to display them on a GUI.
 
-**Important Note**: Since the cloud server in the Azure environment won't accept requests directly from the ACAP in the camera, the information is first passed to a LAN server on the same local area network as the camera, which then forwards it to the external server. **_This logic applies when running in the cloud, when running locally the ACAP can send information directly to the external server_**.
+**Important Note**: Since the cloud server in the Azure environment won't accept requests directly from the ACAP in the camera, the information is first passed to a LAN server on the same local area network as the camera, which then forwards it to the external server.
 
 ## Overview
 
@@ -16,8 +16,8 @@ The ACAP must be installed on each camera, with the **following modifications** 
 
 1.  `CAMERA_ID`: Update this to the appropriate ID for the camera on which the ACAP will be installed.
 2.  `SERVER_URL`: Update this to the IP address of the server where the system will send the data.
-    - **Running Locally**: URL to local external server.
-    - **Running in the Cloud**: URL to deployed LAN server.
+    - **Running Locally**: URL to local LAN server.
+    - **Running Hosted Remotely**: URL to remotely hosted LAN server.
 
 ## Prerequisites
 
@@ -35,16 +35,16 @@ Follow these steps to build and install an ACAP using Docker.
 2. Update the following lines (line 30-33):
 
    ```c
-   #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
-   // #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
-   #define SERVER_URL "http://192.168.1.145:5000/alarms/add" // RUNNING LOCALLY: URL for sending alarms to local external server
-   // #define SERVER_URL "https://airedale-engaging-easily.ngrok-free.app/alarms/redirect" // RUNNING IN CLOUD: URL for sending alarms to deployed LAN server
+   // #define CAMERA_ID "B8A44F9EEE36" // Serial number for camera at IP 121
+   #define CAMERA_ID "B8A44F9EEFE0" // Serial number for camera at IP 116
+   #define SERVER_URL "http://192.168.1.145:5100/alarms/redirect" // RUNNING LOCALLY: URL for sending alarms to local LAN server
+   // #define SERVER_URL "http://192.168.1.144:5100/alarms/redirect" // RUNNING REMOTELY: URL for sending alarms to target LAN server with a static ip
    ```
 
    - `CAMERA_ID`: Set to the correct camera serial number.
-   - `EXTERNAL_URL`:
-     - **Running Locally**: Change `192.168.1.145:5000` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
-     - **Running in the Cloud**: Use the deployed Rasperry Pie endpoint: `https://airedale-engaging-easily.ngrok-free.app/alarms/redirect`.
+   - `SERVER_URL`:
+     - **Running Locally**: Change `192.168.1.145:5100` to the server's IP adress while keeping `http://` and `/alarms/add` intact.
+     - **Running Hosted Remotely**: Use the adress of the LAN server set up at the target location.
 
 3. To find the camera's IP address:
 
@@ -57,7 +57,7 @@ Follow these steps to build and install an ACAP using Docker.
 4. To find the local server's IP:
 
    - Be on the same network as the camera.
-   - Start the external server as described in `/Server/README`.
+   - Start the LAN server as described in `/Server/README`.
    - Use the displayed IP address.
 
 ### Step 2: Build the Docker Image

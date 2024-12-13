@@ -56,8 +56,6 @@ def get_alarm_by_camera(location, camera_ID):
 
 
 @alarms_bp.route("/notify/<string:guard_ID>/<string:alarm_ID>", methods=["POST"])
-# Notify guard, works with guard id = 35ad0eab-2347-404e-a833-d8b2fb0367ff,
-# alarm id = cc006a17-0852-4e0e-b13c-36e4092f767d
 @jwt_required()
 def notify_guard(guard_ID, alarm_ID):
     """
@@ -81,7 +79,6 @@ def notify_guard(guard_ID, alarm_ID):
 
 
 @alarms_bp.route("/add", methods=["POST"])
-# @jwt_required()
 def add_alarm():
     """
     Adds a new alarm to the system.
@@ -103,16 +100,10 @@ def add_alarm():
     return AlarmController.add_alarm()
 
 
-# Get alarm by id
-
-
 @alarms_bp.route("/<string:alarm_id>", methods=["GET"])
 @jwt_required()
 def get_alarm_by_id(alarm_id):
     return AlarmController.get_alarm_by_id(alarm_id)
-
-
-# Delete alarm by id
 
 
 @alarms_bp.route("/<string:alarm_id>", methods=["DELETE"])
@@ -121,7 +112,6 @@ def delete_alarm_by_id(alarm_id):
     return AlarmController.delete_alarm_by_id(alarm_id)
 
 
-# Update alarm status by id
 @alarms_bp.route("/<string:alarm_id>/status", methods=["PUT"])
 @jwt_required()
 def update_alarm_status(alarm_id):
