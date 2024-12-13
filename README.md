@@ -1,13 +1,24 @@
 <div style="text-align: center;">
-  <img src="Client/Frontend/src/assets/PanoraGuard.svg" alt="PanoraGuard Logo" width="200"/>
+  <img src="Client/Frontend/src/assets/PanoraGuard.svg" alt="PanoraGuard Logo" width="400"/>
+</div>
+
+---
+**Final Product Demo Pitch** 
+<div >
+  <!-- Second Icon (YouTube) -->
+  <a href="https://www.youtube.com/watch?v=JkDI--DhFnU&t=1s" target="_blank">
+    <img width=200px src="https://img.shields.io/badge/youtube-%23FF0000.svg?&style=for-the-badge&logo=youtube&logoColor=white&color=FF0000" alt="YouTube"/>
+  </a>
 </div>
 
 ---
 
-Welcome to **PanoraGuard**, a security surveillance system developed by **Company 3** in collaboration with **AXIS Communications**.
+Welcome to **PanoraGuard**, a security surveillance system developed by **Company 3** in collaboration with **AXIS Communications**. 
+
+Project in the course **TDDC88 Software Engineering** at Linköping's University during fall of 2024.
 
 Explore the product on our live cloud deployment:  
-[**PanoraGuard Cloud Product**](https://ashy-meadow-0a76ab703.5.azurestaticapps.net/)
+[**panoraguard.se**](https://panoraguard.se/)
 
 ---
 
@@ -24,6 +35,7 @@ Learn more about us on our company website: [Company Website](https://company-me
 
 - [**Demo iteration 2**](https://drive.google.com/file/d/1ICRIwVadDdsYsEZzZyCarr14lxmGuBHL/view?usp=drive_link)
 - [**Demo iteration 3**](https://drive.google.com/file/d/1vbIL0ewWdcuGKRSdi8LCC5NupxmdV6Gc/view?usp=drive_link)
+- [**Final Product Demo Pitch**](https://www.youtube.com/watch?v=JkDI--DhFnU&t=1s)
 
 ## What is PanoraGuard?
 
@@ -49,13 +61,13 @@ PanoraGuard integrates both **hardware** and **software** components:
 
 - **AXIS Cameras**: Object detection and alarm triggering.
 - **Speaker System**: For audible warnings.
-- **LAN Server (Raspberry Pi)**: Local management of cameras and system configurations.
+- **LAN Server (Host machine)**: Local management of cameras and system configurations.
 
 ### Software:
 
 1. **ACAP**: Custom-built applications on AXIS cameras for object detection.
 2. **Client**: A GUI for operators, admin and managers to monitor and manage alarms.
-3. **External Server**: Cloud-based system for alarm handling, business logic, and database management.
+3. **External Server**: Cloud-hosted server for alarm handling, business logic, and database management.
 4. **LAN Server**: Local server managing camera schedules, live feeds, and configurations.
 
 ### Data Flow:
@@ -69,6 +81,8 @@ PanoraGuard integrates both **hardware** and **software** components:
 7. **Admin Features**: Admins configure camera settings, schedules, and confidence thresholds via the frontend, which communicates with both the external and LAN servers.
 
 This seamless flow ensures efficient alarm management and real-time decision-making.
+
+![System Architecture](architecture.png)
 
 ---
 
@@ -88,11 +102,11 @@ This seamless flow ensures efficient alarm management and real-time decision-mak
 
 ### Running in the Cloud
 
-1. Set up cameras and speakers on the same network as the **LAN Server** running on a Raspberry Pi.
-2. Install the ACAP with the LAN server's deployed endpoint (see `/ACAP` README).
-3. Start the LAN Server on the Raspberry Pi.
+1. Set up cameras and speakers on the same network as the **LAN Server** running on a host machine.
+2. Install the ACAP on the cameras, including the correct LAN server endpoint (see `/ACAP` README).
+3. Start the LAN Server on the host machine.
 4. Access the cloud GUI at:  
-   [PanoraGuard Cloud GUI](https://ashy-meadow-0a76ab703.5.azurestaticapps.net)
+   [**panoraguard.se**](https://panoraguard.se/)
 
 ---
 

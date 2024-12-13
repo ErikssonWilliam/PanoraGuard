@@ -1,70 +1,60 @@
 # Document Overview
 
-This overview provides a summary of the documents in the project and their status.
+In this directory, the final documentation delivered for the TDDC88 project in collaboration with Axis Communications is found.
 
 ## Document Status
 
-| Document Name            | Description                           | Status                  | Version |
-| ------------------------ | ------------------------------------- | ----------------------- | ------- |
-| `Contracts`              | Template for creating Group Contracts | Done                    | 1.0     |
-| `Market Analysis`        | Analysis of the market                | Done                    | 2.1     |
-| `Quality Assurance`      | Report ensuring quality               | Living Document         | 2.2     |
-| `Risk Management`        | Assessing the risks in the project    | Initial Version Created | 2.0     |
-| `Requirements`           | Specifies the requirements            | Living Document         | 2.2     |
-| `Project Management`     | Plan for managing the project         | Draft Underway          | 2.1     |
-| `Testing Plan`           | Plan for testing the project          | Living Document         | 2.1     |
-| `Architectural Notebook` | Notebook for the architecture         | Draft Underway          | 2.0     |
+| Document Name                | Description                                               | Status                    | Version |
+| --------------------------- | --------------------------------------------------------- | ------------------------- | ------- |
+| `Architectural Notebook`     | Technical architecture documentation                      | Finished 2024-12-11       | 4.0     |
+| `Contracts`                 | Template for creating Group Contracts                     | Finished 2024-09-15       | 1.0     |
+| `Customer Requirements`     | Specifies customer requirements and user stories          | Finished 2024-12-11       | 4.0     |
+| `Future Implementation`     | Recommendations for future development                    | Finished 2024-12-11       | 1.1     |
+| `Market Analysis`          | Strategic analysis of Axis Communications                 | Finished 2024-11-27       | 3.0     |
+| `Project Management Plan`   | Comprehensive project lifecycle documentation            | Finished 2024-12-12       | 4.2     |
+| `Quality Assurance Plan`    | Quality standards and processes                          | Finished 2024-12-11       | 4.1     |
+| `Risk Management Plan`      | Risk identification and mitigation strategies            | Finished 2024-12-11       | 3.2     |
+| `Testing Plan`             | Testing methodology and execution framework              | Finished 2024-12-11       | 4.1     |
+| `User Manual`              | End-user documentation for PandoraGuard                  | Finished 2024-12-11       | 4.1     |
 
 ## Document Details
 
-### `Contracts`
-
-- **Description**: Brief description of what the document is about.
-- **Created**: [September 2024]
-- **Comments**: [Any details, notes, or changes]
-
 ### `Architectural Notebook`
-
-- **Description**: Brief description of what the document is about.
-- **Created**: [October 2024]
-- **Comments**: Development of the initial architectural notebook is in progress.
-
-### `Market Analysis`
-
-- **Description**: Comprehensive market analysis of Axis Communications, guiding project requirements and development.
-- **Version**: 2.1 (2024-10-17)
-- **Comments**: Minor updates and clarifications for improved accuracy and readability.
+- **Description**: Comprehensive documentation of system architecture, design decisions, and technical specifications for PandoraGuard.
+- **Version**: 4.0 (2024-12-11)
 
 ### `Customer Requirements`
+- **Description**: Detailed specification of customer requirements following IEEE 830-1998 standard, including user stories and traceability matrix.
+- **Version**: 4.0 (2024-12-11)
 
-- **Description**: Outlines customer requirements for the surveillance system, adhering to the IEEE 830-1998 standard.
-- **Version**: 2.2 (2024-10-17)
-- **Comments**: Restructured to improve clarity and traceability of requirements, including sub-requirements.
+### `Future Implementation`
+- **Description**: Detailed recommendations for code improvements, architectural enhancements, and future feature development.
+- **Version**: 1.1 (2024-12-11)
+
+### `Market Analysis`
+- **Description**: Strategic analysis of Axis Communications' market position using PEST, Porter's Five Forces, and SWOT analyses.
+- **Version**: 3.0 (2024-11-27)
 
 ### `Project Management Plan`
-
-- **Description**: Details the project's scope, objectives, stakeholders, constraints, deliverables, and execution strategy.
-- **Version**: 2.1 (2024-10-18)
-- **Comments**: Expanded Project Overview with detailed information and visuals. Adjusted iteration dates and deliverables.
+- **Description**: Master plan documenting project processes, resource management, and milestone tracking.
+- **Version**: 4.2 (2024-12-12)
 
 ### `Quality Assurance Plan`
-
-- **Description**: Outlines processes and procedures for ensuring high-quality software development throughout the project lifecycle.
-- **Version**: 2.2 (2024-10-16)
-- **Comments**: Clarified responsibilities within the Continuous Integration and Delivery section.
+- **Description**: Framework for ensuring software quality through testing, CI/CD, and process evaluation.
+- **Version**: 4.1 (2024-12-11)
 
 ### `Risk Management Plan`
-
-- **Description**: Framework for identifying, analyzing, mitigating, and monitoring potential risks throughout the project.
-- **Version**: 2.0 (2024-10-17)
-- **Comments**: Introduced visual Risk Breakdown Structure, expanded risk categories, and detailed contingency plan.
+- **Description**: Systematic approach to risk identification, analysis, and mitigation throughout the project lifecycle.
+- **Version**: 3.2 (2024-11-21)
 
 ### `Testing Plan`
+- **Description**: Comprehensive testing strategy including unit, system, UX, and acceptance testing methodologies.
+- **Version**: 4.1 (2024-12-11)
 
-- **Description**: Outlines the testing strategy, including types of testing, processes, acceptance criteria, and a detailed time plan.
-- **Version**: 2.1 (2024-10-18)
-- **Comments**: Clarified testing processes, expanded traceability, detailed system testing, and incorporated risk assessment.
+### `User Manual`
+- **Description**: Complete guide for installing, configuring, and using the PandoraGuard system.
+- **Version**: 4.1 (2024-12-11)
 
-## Autogit Program
+## AutoLeaf Program
 
-A program is being developed to handle the documentation and versioning of the project. During the current stage, the program might generate erroneous `readme.md`, which will be rectified shortly. To check out the program, visit [Autogit](https://gitlab.liu.se/adrre341/overleaf-gitlab-pipeline).
+Autoleaf, an AI based utlity, was specifically developed to handle version control & changelog generation for the project. This tool has generated all changelogs found in the current repository, and version tables found in each pdf latex compiled document. To check out the tool, visit [Autogit](https://gitlab.liu.se/adrre341/overleaf-gitlab-pipeline).

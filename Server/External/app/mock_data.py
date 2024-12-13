@@ -142,8 +142,8 @@ def create_mock_alarm_extra(user, camera, statusState, time):
 
 
 def create_random_alarms(user, camera):
-    start_date = datetime(2023, 11, 14)
-    end_date = datetime(2024, 11, 14)
+    start_date = datetime(2024, 10, 14)
+    end_date = datetime(2024, 12, 5)
     num_days = (end_date - start_date).days
 
     for i in range(num_days):
